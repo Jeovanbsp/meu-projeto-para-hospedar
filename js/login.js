@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mensagemRetorno = document.getElementById('mensagem-retorno');
 
   // Define a URL da nossa API
-  const API_URL = 'http://localhost:3000/auth/login';
+  const API_URL = 'https://aishageriatria.onrender.com';
 
   formLogin.addEventListener('submit', async (event) => {
     event.preventDefault(); 

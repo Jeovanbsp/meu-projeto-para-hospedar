@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const mensagemRetorno = document.getElementById('mensagem-retorno');
 
   // 3. Define a URL da nossa API (backend)
-  const API_URL = 'http://localhost:3000/auth/register'; 
+  const API_URL = 'https://aishageriatria.onrender.com'; 
   
   // 4. Adiciona o "ouvinte" de evento no formulário
   formCadastro.addEventListener('submit', async (event) => {

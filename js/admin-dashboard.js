@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
   const tbody = document.getElementById('paciente-tbody');
-  const API_ADMIN_BASE = 'http://localhost:3000/api/admin/';
+  const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
 
   if (!token || role !== 'admin') {
     localStorage.clear();

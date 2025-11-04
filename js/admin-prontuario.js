@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- CONFIGURAÇÃO E SEGURANÇA ---
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
-  const API_URL_BASE = 'http://localhost:3000/api/admin/prontuario/';
+  const API_URL_BASE = 'https://aishageriatria.onrender.com';
   
   // O ID do paciente que está na URL: ?id=XXXXXXXX
   const pacienteId = new URLSearchParams(window.location.search).get('id');
