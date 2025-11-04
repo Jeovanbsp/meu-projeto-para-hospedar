@@ -18,7 +18,31 @@ const adminMiddleware = require('./middleware/adminMiddleware');
 const app = express();
 
 // 4. Configurar Middlewares
-app.use(cors());
+// Arquivo: /index.js (NOVA CONFIGURAÇÃO CORS)
+// ...
+const cors = require('cors');
+// ...
+
+// 3. Configurar Middlewares
+const allowedOrigins = [
+  'http://localhost:3000', // Para seus testes locais (sempre bom manter)
+  'https://aishageriatria.onrender.com', // Sua própria API (para comunicação interna)
+  'https://meu-projeto-para-hospedar.vercel.app' // <--- A URL DO SEU VERCEL!
+];
+
+app.use(cors({
+    origin: function (origin, callback) {
+        // Permite requisições sem 'origin' (como o Postman ou scripts) ou se a origem for permitida
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            // Em produção, isso garante que NINGUÉM mais pode usar sua API
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Permite todos os métodos que estamos usando
+    credentials: true, // Permite o envio de cookies/cabeçalhos de autenticação (importante para o Token)
+}));
 app.use(express.json());
 
 // 5. Pegar as variáveis do .env
