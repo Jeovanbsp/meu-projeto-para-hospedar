@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Prontuário - Admin</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prontuario.css">
+
+    <style>
+        .card-agendamento { margin: 40px auto; }
+        textarea { min-height: 100px; resize: vertical; }
+    </style>
+</head>
+<body>
+    
+    <header class="novo-header">
+        <div class="header-container" style="justify-content: flex-start; gap: 20px;">
+            <a href="admin-dashboard.html" class="logo" style="margin-right: auto;">
+                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 40px;">
+            </a>
+            <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Edição Rápida (Admin)</h3>
+            <button id="btn-logout-admin" class="btn-agendar" style="padding: 8px 15px;">Sair</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-agendamento" id="prontuario-card">
+            
+            <button onclick="window.location.href='admin-dashboard.html';" 
+                    style="background: #ccc; color: #333; margin-bottom: 20px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; display: block; width: 100%; max-width: 250px; margin: 0 auto 20px auto;">
+                &larr; Voltar para a Lista
+            </button>
+
+            <h2 id="titulo-edicao">Editando Prontuário: [Nome do Paciente]</h2>
+            <form id="form-prontuario-principal">
+                <label for="nome-paciente">Nome do Paciente</label>
+                <input type="text" id="nome-paciente" name="nome-paciente" placeholder="Seu nome completo" required>
+                <label for="idade">Idade</label>
+                <input type="number" id="idade" name="idade" placeholder="Sua idade" required>
+                <label for="patologias">Patologias (Doenças)</label>
+                <textarea id="patologias" name="patologias" placeholder="Ex: Hipertensão, Diabetes tipo 2..."></textarea>
+            </form>
+
+            <div class="gerenciador-medicos">
+                <h3>Médicos Assistentes</h3>
+                <form id="form-add-medico" class="form-add-medico no-print"> 
+                    <div class="input-group">
+                        <label for="nome-medico">Nome e Especialidade</label>
+                        <input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos (Cardiologista)" required>
+                    </div>
+                    <button type="submit" id="btn-add-medico">+ Adicionar Médico</button>
+                </form>
+                <ul id="lista-medicos-pills" class="lista-medicos-pills"></ul>
+            </div>
+
+            <div class="gerenciador-medicacao">
+                <h3>Minhas Medicações</h3>
+                <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
+                    <div class="form-linha-inputs">
+                        <div class="input-group">
+                            <label for="nome-medicacao">Nome da Medicação</label>
+                            <input type="text" id="nome-medicacao" placeholder="Nome e dosagem..." required>
+                        </div>
+                        <div class="input-group-pequeno">
+                            <label for="horario-especifico">Horário</label>
+                            <input type="time" id="horario-especifico">
+                        </div>
+                    </div>
+                    <div style="width: 100%;">
+                        <label>Turnos de Uso:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="horario" value="antes_cafe"><span class="checkbox-custom"></span> Antes Café</label>
+                            <label><input type="checkbox" name="horario" value="depois_cafe"><span class="checkbox-custom"></span> Depois Café</label>
+                            <label><input type="checkbox" name="horario" value="almoco"><span class="checkbox-custom"></span> Almoço</label>
+                            <label><input type="checkbox" name="horario" value="tarde"><span class="checkbox-custom"></span> Tarde</label>
+                            <label><input type="checkbox" name="horario" value="antes_jantar"><span class="checkbox-custom"></span> Antes Jantar</label>
+                            <label><input type="checkbox" name="horario" value="antes_dormir"><span class="checkbox-custom"></span> Antes Dormir</label>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-add-medicacao">+ Adicionar</button>
+                </form>
+                <div class="tabela-container">
+                    <table class="tabela-medicacoes">
+                        <thead>
+                            <tr>
+                                <th>Medicação</th>
+                                <th>Turno</th>
+                                <th>Horário</th>
+                                <th class="no-print">Ação</th> 
+                            </tr>
+                        </thead>
+                        <tbody id="lista-medicacoes-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="botoes-acao-container no-print"> 
+                <button type="submit" id="btn-salvar-tudo-admin">Salvar Edição do Paciente</button>
+            </div>
+            
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+        </div>
+    </main>
+
+    <script src="js/admin-prontuario.js"></script>
+    <script src="js/logout-simples.js"></script>
+</body>
+</html>

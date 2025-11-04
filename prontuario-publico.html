@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prontuário - Dra. Aisha Wenzinger</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prontuario.css">
+
+    <style>
+        /* Estilos específicos para a página pública (leitura) */
+        .info-label {
+            margin-top: 15px;
+            font-weight: 600; 
+            font-size: 14px;
+            color: #333;
+        }
+        .info-value {
+            font-size: 16px;
+            color: #555;
+            padding: 10px;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            min-height: 20px;
+            white-space: pre-wrap; /* Preserva quebras de linha nas patologias */
+        }
+        .tabela-medicacoes th:last-child, 
+        .tabela-medicacoes td:last-child {
+            display: none; /* Esconde a coluna "Ação" */
+        }
+    </style>
+</head>
+<body>
+    <header class="novo-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo">
+            </a>
+            <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Prontuário de Visualização</h3>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
+            
+            <h2 id="titulo-prontuario">Carregando Prontuário...</h2>
+            
+            <div id="form-prontuario-principal">
+                <div class="info-label">Nome do Paciente</div>
+                <div class="info-value" id="nome-paciente">...</div>
+                
+                <div class="info-label">Idade</div>
+                <div class="info-value" id="idade">...</div>
+                
+                <div class="info-label">Patologias (Doenças)</div>
+                <div class="info-value" id="patologias">...</div>
+            </div>
+
+            <div class="gerenciador-medicos">
+                <h3>Médicos Assistentes</h3>
+                <ul id="lista-medicos-pills" class="lista-medicos-pills">
+                    <li style="font-size: 14px; color: #777;">...</li>
+                </ul>
+            </div>
+
+            <div class="gerenciador-medicacao">
+                <h3>Minhas Medicações</h3>
+                <div class="tabela-container">
+                    <table class="tabela-medicacoes">
+                        <thead>
+                            <tr>
+                                <th>Medicação</th>
+                                <th>Turno</th>
+                                <th>Horário</th>
+                                <th class="no-print">Ação</th> </tr>
+                        </thead>
+                        <tbody id="lista-medicacoes-body">
+                            <tr><td colspan="4" style="text-align: center;">...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="js/prontuario-publico.js"></script>
+</body>
+</html>

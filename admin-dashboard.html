@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Dra. Aisha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        .paciente-lista { width: 100%; border-collapse: collapse; }
+        .paciente-lista th, .paciente-lista td {
+            border: 1px solid #ddd; padding: 12px; text-align: left;
+        }
+        .paciente-lista th { background-color: #e0f5ef; color: #2c3e50; }
+        .btn-delete { 
+            background: #e74c3c; color: white; border: none; padding: 8px 12px;
+            border-radius: 5px; cursor: pointer;
+        }
+        #btn-logout { background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="novo-header">
+        <div class="header-container">
+            <a href="index.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha Logo"></a>
+            <h3 style="color: #2ADCA1;">Painel de Administração</h3>
+            <button id="btn-logout" class="btn-delete" style="padding: 8px 15px; margin-left: 20px;">Sair</button>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <h2>Lista de Pacientes Cadastrados</h2>
+            <table class="paciente-lista">
+                <thead>
+                    <tr>
+                        <th>Nome do Paciente</th>
+                        <th>Email</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="paciente-tbody">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+    <script src="js/admin-dashboard.js"></script>
+    <script src="js/logout-simples.js"></script> </body>
+</html>

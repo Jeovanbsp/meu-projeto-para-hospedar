@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Dra. Aisha Wenzinger</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prontuario.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <style>
+        /* --- RE-ADICIONANDO O CSS DO QR CODE --- */
+        .gerenciador-qrcode {
+            border: 1px solid #e0f5ef; border-radius: 12px;
+            margin-top: 25px; overflow: hidden;
+            background: #fdfdfd;
+            text-align: center;
+            padding: 20px 40px;
+        }
+        .gerenciador-qrcode h3 {
+            color: #2ADCA1;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .gerenciador-qrcode p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        #qrcode-container {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            border: 5px solid #e0f5ef;
+            border-radius: 8px;
+            padding: 10px;
+            display: none; /* Começa escondido */
+        }
+        #qrcode-container img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        #btn-gerar-qrcode {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        /* --- CORREÇÃO DO BUG 2: CSS DE IMPRESSÃO MAIS FORTE --- */
+        @media print {
+            /* Esconde tudo que não queremos */
+            .no-print {
+                display: none !important;
+            }
+            
+            /* Reseta o body para um fluxo simples */
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                background: #fff !important;
+            }
+
+            /* Esconde tudo no body, exceto o <main> */
+            body > *:not(main) {
+                display: none !important;
+            }
+            
+            /* Esconde tudo no <main>, exceto o card do prontuário */
+            main > *:not(#prontuario-card) {
+                display: none !important;
+            }
+            
+            /* RESETA O MAIN (Correção principal para o corte) */
+            main {
+                display: block !important; /* Remove o display: flex */
+                min-height: auto !important; /* Remove o min-height: 100vh */
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                align-items: initial !important; 
+                justify-content: initial !important;
+            }
+            
+            /* Formata o card para a impressão (o único item visível) */
+            .card-agendamento#prontuario-card {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0.5in !important; /* Adiciona margem de impressão */
+                width: 100% !important;
+                max-width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            
+            /* Garante que as pílulas de turno fiquem visíveis */
+            .pill-turno, .pill-medico {
+                background-color: #e0f5ef !important;
+                color: #229a73 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            
+            /* Garante que o cabeçalho da tabela fique visível */
+            .tabela-medicacoes th {
+                background-color: #2ADCA1 !important;
+                color: white !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Garante que a tabela use 100% da largura de impressão */
+            .tabela-container, .tabela-medicacoes {
+                width: 100% !important;
+                overflow: visible !important; /* Remove a barra de rolagem */
+            }
+            
+            /* Evita quebras de página ruins */
+            .gerenciador-medicos, .gerenciador-medicacao, .tabela-medicacoes tr {
+                page-break-inside: avoid;
+            }
+            h2, h3 {
+                page-break-after: avoid;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header class="novo-header no-print"> 
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo">
+            </a>
+            <nav class="main-nav" id="mobile-menu"> 
+                <ul>
+                    <li><a href="index.html#sobre-mim-section">Sobre Mim</a></li> 
+                    <li><a href="index.html#experiencia-section">Experiência</a></li> 
+                    <li><a href="index.html#locais">Onde Atende</a></li>
+                    <li><a href="index.html#contato">Contato</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="cadastro.html"><b>Cadastro Paciente</b></a></li>
+                </ul>
+            </nav>
+            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
+            
+            <h2>Minhas Informações (Prontuário)</h2>
+            <form id="form-prontuario-principal">
+                <label for="nome-paciente">Nome do Paciente</label>
+                <input type="text" id="nome-paciente" name="nome-paciente" placeholder="Seu nome completo" required>
+                <label for="idade">Idade</label>
+                <input type="number" id="idade" name="idade" placeholder="Sua idade" required>
+                <label for="patologias">Patologias (Doenças)</label>
+                <textarea id="patologias" name="patologias" placeholder="Ex: Hipertensão, Diabetes tipo 2..."></textarea>
+            </form>
+
+            <div class="gerenciador-medicos">
+                <h3>Médicos Assistentes</h3>
+                <form id="form-add-medico" class="form-add-medico no-print"> 
+                    <div class="input-group">
+                        <label for="nome-medico">Nome e Especialidade</label>
+                        <input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos (Cardiologista)" required>
+                    </div>
+                    <button type="submit" id="btn-add-medico">+ Adicionar Médico</button>
+                </form>
+                <ul id="lista-medicos-pills" class="lista-medicos-pills"></ul>
+            </div>
+
+            <div class="gerenciador-medicacao">
+                <h3>Minhas Medicações</h3>
+                <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
+                    <div class="form-linha-inputs">
+                        <div class="input-group">
+                            <label for="nome-medicacao">Nome da Medicação</label>
+                            <input type="text" id="nome-medicacao" placeholder="Nome e dosagem..." required>
+                        </div>
+                        <div class="input-group-pequeno">
+                            <label for="horario-especifico">Horário</label>
+                            <input type="time" id="horario-especifico">
+                        </div>
+                    </div>
+                    <div style="width: 100%;">
+                        <label>Turnos de Uso:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="horario" value="antes_cafe"><span class="checkbox-custom"></span> Antes Café</label>
+                            <label><input type="checkbox" name="horario" value="depois_cafe"><span class="checkbox-custom"></span> Depois Café</label>
+                            <label><input type="checkbox" name="horario" value="almoco"><span class="checkbox-custom"></span> Almoço</label>
+                            <label><input type="checkbox" name="horario" value="tarde"><span class="checkbox-custom"></span> Tarde</label>
+                            <label><input type="checkbox" name="horario" value="antes_jantar"><span class="checkbox-custom"></span> Antes Jantar</label>
+                            <label><input type="checkbox" name="horario" value="antes_dormir"><span class="checkbox-custom"></span> Antes Dormir</label>
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-add-medicacao">+ Adicionar</button>
+                </form>
+                <div class="tabela-container">
+                    <table class="tabela-medicacoes">
+                        <thead>
+                            <tr>
+                                <th>Medicação</th>
+                                <th>Turno</th>
+                                <th>Horário</th>
+                                <th class="no-print">Ação</th> 
+                            </tr>
+                        </thead>
+                        <tbody id="lista-medicacoes-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="gerenciador-qrcode no-print">
+                <h3>QR Code de Acesso Rápido</h3>
+                <p>Mostre este QR Code no hospital ou para outro médico para que acessem uma versão de leitura do seu prontuário.</p>
+                <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>
+                <div id="qrcode-container"></div>
+            </div>
+            
+            <div class="botoes-acao-container no-print"> 
+                <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
+                <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
+            </div>
+            
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+        </div>
+    </main>
+
+    <footer id="contato" class="no-print"> 
+        <p>Siga a Dra. Aisha nas redes sociais:</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank"><img src="img/instagram.png" alt="Instagram"></a>
+            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank"><img src="img/facebook.png" alt="Facebook"></a>
+            <a href="https://wa.me/5571981233912" target="_blank"><img src="img/whatsapp.png" alt="WhatsApp"></a>
+        </div>
+        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
+    </footer>
+    
+    <script>
+        // Script do Menu Hamburger
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        hamburgerButton.addEventListener('click', () => {
+            hamburgerButton.classList.toggle('is-active');
+            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
+            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('is-active');
+        });
+    </script>
+    <script src="js/perfil-paciente.js"></script>
+
+</body>
+</html>

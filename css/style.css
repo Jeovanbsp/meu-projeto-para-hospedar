@@ -11,7 +11,7 @@ body {
 }
 
 /* =========================
-   NOVO Cabeçalho (Topo Branco) - AJUSTADO
+    NOVO Cabeçalho (Topo Branco) - AJUSTADO
 ========================= */
 .novo-header {
     background: #ffffff;
@@ -92,7 +92,7 @@ body {
 /* FIM DOS AJUSTES */
 
 /* =========================
-   ESTILOS DO BOTÃO HAMBURGER
+    ESTILOS DO BOTÃO HAMBURGER
 ========================= */
 .hamburger {
     display: none; /* Escondido por padrão (aparece no mobile) */
@@ -105,8 +105,8 @@ body {
 }
 
 .hamburger-box {
-    width: 30px;
-    height: 24px;
+    width: 24px;
+    height: 18px;
     display: inline-block;
     position: relative;
 }
@@ -131,10 +131,10 @@ body {
     display: block;
 }
 .hamburger-inner::before {
-    top: -8px; /* Espaçamento entre as linhas */
+    top: -6px; /* Espaçamento entre as linhas */
 }
 .hamburger-inner::after {
-    bottom: -8px;
+    bottom: -6px;
 }
 
 /* Animação para o X quando ativo */
@@ -170,7 +170,7 @@ main {
 }
 
 /* =========================
-   Seção de boas-vindas (.sobre) - LAYOUT FINAL COM BONECA DENTRO (Texto Alinhado)
+    Seção de boas-vindas (.sobre) - LAYOUT FINAL COM BONECA DENTRO (Texto Alinhado)
 ========================= */
 .sobre {
     background: #e0f5ef;
@@ -261,7 +261,7 @@ main {
 }
 
 /* =========================
-   Seção de serviços delicados
+    Seção de serviços delicados
 ========================= */
 .servicos-destaque-delicado {
     display: flex;
@@ -301,7 +301,7 @@ main {
 }
 
 /* =========================
-   Nova Seção Sobre Mim (Layout Lado a Lado)
+    Nova Seção Sobre Mim (Layout Lado a Lado)
 ========================= */
 .sobre-mim {
     max-width: 1100px; 
@@ -385,7 +385,7 @@ main {
 }
 
 /* =========================
-   NOVA SEÇÃO Experiência Profissional (LAYOUT TEXTO COM IMAGEM)
+    NOVA SEÇÃO Experiência Profissional (LAYOUT TEXTO COM IMAGEM)
 ========================= */
 .experiencia-texto-com-imagem {
     max-width: 1100px; 
@@ -462,6 +462,59 @@ main {
     margin-bottom: 5px; /* Espaço entre os cargos */
     font-size: 15px; /* Fonte um pouco menor para sub-itens */
     color: #555; /* Cor mais suave */
+}
+
+/* =========================
+   Seção Condições Acompanhadas (Pills)
+========================= */
+.condicoes-acompanhadas {
+    max-width: 1100px; 
+    margin: 50px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.condicoes-acompanhadas h3 {
+    color: #2ADCA1; /* Cor verde do tema */
+    font-size: 28px;
+    margin-top: 0; 
+    margin-bottom: 20px; 
+}
+
+.condicoes-acompanhadas p {
+    font-size: 16px; 
+    line-height: 1.7; 
+    color: #555; /* Um pouco mais suave */
+    max-width: 800px; /* Limita a largura do parágrafo */
+    margin: 0 auto 30px auto; /* Centraliza o parágrafo */
+}
+
+.condicoes-lista-pills {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap; /* Isso faz as "pills" quebrarem a linha */
+    justify-content: center;
+    gap: 12px; /* Espaço entre as pills */
+}
+
+.condicoes-lista-pills li {
+    background: #e0f5ef; /* Verde claro do tema (do .sobre) */
+    color: #2c3e50; /* Texto escuro */
+    padding: 10px 20px;
+    border-radius: 25px; /* Pílula arredondada */
+    font-size: 15px;
+    font-weight: 600;
+    border: 1px solid #ccebe2; /* Borda sutil */
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Efeito hover sutil, combinando com o site */
+.condicoes-lista-pills li:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
 /* =========================

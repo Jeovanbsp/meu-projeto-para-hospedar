@@ -1,0 +1,170 @@
+/* Arquivo: /css/prontuario.css */
+
+textarea { min-height: 100px; resize: vertical; }
+
+/* --- CSS DO GERENCIADOR DE MÉDICOS --- */
+.gerenciador-medicos {
+    border: 1px solid #e0f5ef; border-radius: 12px;
+    margin-top: 25px; overflow: hidden;
+}
+.gerenciador-medicos h3 {
+    background: #e0f5ef; color: #2c3e50; padding: 15px 20px;
+    margin: 0; font-size: 18px;
+}
+.form-add-medico {
+    padding: 20px 40px; background: #fdfdfd; display: flex;
+    flex-direction: column; align-items: center; gap: 15px; 
+}
+.form-add-medico .input-group { 
+    width: 100%; max-width: 450px; 
+} 
+.form-add-medico label { font-size: 13px; margin-top: 0; }
+.form-add-medico input { margin-top: 5px; padding: 10px; }
+.form-add-medico button {
+    margin-top: 0; padding: 10px 15px; flex-shrink: 0;
+    background-color: #555; width: 100%; max-width: 450px;
+    box-sizing: border-box;
+}
+.lista-medicos-pills {
+    list-style: none; padding: 0 20px 20px 20px;
+    margin: 0; display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: flex-start; 
+}
+.pill-medico {
+    display: flex; align-items: center; gap: 8px;
+    background-color: #e0f5ef; color: #229a73;
+    border-radius: 15px; padding: 5px 12px;
+    font-size: 14px; font-weight: 600;
+}
+.btn-deletar-medico {
+    background: none; border: none; color: #e74c3c;
+    font-size: 14px; font-weight: bold; cursor: pointer;
+    padding: 0; line-height: 1;
+}
+
+/* --- CSS DO GERENCIADOR DE MEDICAÇÕES --- */
+.gerenciador-medicacao {
+    border: 1px solid #e0f5ef; border-radius: 12px;
+    margin-top: 30px; overflow: hidden;
+}
+.gerenciador-medicacao h3 {
+    background: #e0f5ef; color: #2c3e50; padding: 15px 20px;
+    margin: 0; font-size: 18px;
+}
+.form-add-medicacao {
+    padding: 20px; background: #fdfdfd; display: flex;
+    flex-direction: column; align-items: center; gap: 20px;
+}
+.form-linha-inputs {
+    display: flex; flex-wrap: wrap; justify-content: center;
+    align-items: flex-end; gap: 15px; width: 100%;
+}
+.form-add-medicacao .input-group { 
+    flex: 1 1 300px; max-width: 400px; 
+} 
+.form-add-medicacao .input-group-pequeno { 
+    flex: 0 0 120px; 
+} 
+.form-add-medicacao label { font-size: 13px; margin-top: 0; }
+.form-add-medicacao input { margin-top: 5px; padding: 10px; }
+.form-add-medicacao button {
+    margin-top: 0; padding: 10px 15px; flex-shrink: 0;
+    background-color: #555;
+}
+input[type="time"] {
+    font-family: 'Montserrat', sans-serif; font-weight: 500; cursor: pointer;
+}
+.checkbox-group { display: flex; flex-wrap: wrap; gap: 10px; padding: 10px 0; }
+.checkbox-group label {
+    font-size: 13px; font-weight: normal; display: flex;
+    align-items: center; gap: 5px; cursor: pointer;
+}
+.checkbox-group input { display: none; }
+.checkbox-custom {
+    width: 16px; height: 16px; border: 2px solid #ccc;
+    border-radius: 4px; display: inline-block; transition: background-color 0.2s;
+}
+.checkbox-group input:checked + .checkbox-custom {
+    background-color: #2ADCA1; border-color: #2ADCA1;
+}
+.tabela-container { width: 100%; overflow-x: auto; }
+.tabela-medicacoes { width: 100%; border-collapse: collapse; }
+.tabela-medicacoes th, .tabela-medicacoes td {
+    padding: 12px 10px; border: 1px solid #e0f5ef;
+    text-align: left; font-size: 14px; white-space: nowrap;
+}
+.tabela-medicacoes th {
+    background-color: #2ADCA1; color: white;
+    font-size: 12px; text-transform: uppercase;
+}
+.tabela-medicacoes .col-medicacao {
+    white-space: normal; font-weight: 600; color: #2c3e50;
+}
+.tabela-medicacoes .col-horario {
+    text-align: center; font-weight: 600; color: #333;
+}
+.tabela-medicacoes .col-acao {
+    text-align: center; white-space: nowrap;
+}
+.tabela-medicacoes .col-turnos { white-space: normal; }
+.pill-turno {
+    display: inline-block; padding: 4px 10px;
+    background-color: #e0f5ef; color: #229a73;
+    border-radius: 15px; font-size: 12px;
+    font-weight: 600; margin: 2px;
+}
+.btn-deletar-medicacao {
+    background: none; border: none; color: #e74c3c;
+    font-size: 16px; cursor: pointer; padding: 5px;
+}
+.btn-deletar-medicacao:hover { color: #c0392b; }
+
+@media (max-width: 768px) {
+    .tabela-medicacoes th, .tabela-medicacoes td {
+        padding: 8px 5px; white-space: normal;
+    }
+    .tabela-medicacoes .col-horario { white-space: nowrap; }
+}
+
+/* --- ESTILOS PARA O PDF / IMPRESSÃO --- */
+.botoes-acao-container {
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 15px;
+    margin-top: 30px;
+}
+.botoes-acao-container button {
+    flex-grow: 1; 
+    flex-basis: 200px;
+}
+#btn-download-pdf {
+    background: #7f8c8d; border: none; color: white;
+    cursor: pointer; padding: 12px; font-size: 15px;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 8px; transition: 0.3s; font-weight: bold;
+}
+#btn-download-pdf:hover { background: #5f6a6b; }
+
+@media print {
+    .no-print { display: none !important; }
+    body, main { margin: 0; padding: 0; width: 100%; }
+    .card-agendamento {
+        box-shadow: none !important; border: none !important;
+        margin: 0 !important; padding: 0 !important;
+        width: 100% !important; max-width: 100% !important;
+    }
+    .pill-turno {
+        background-color: #e0f5ef !important; color: #229a73 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .tabela-medicacoes th {
+        background-color: #2ADCA1 !important; color: white !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .gerenciador-medicos, .gerenciador-medicacao {
+        page-break-inside: avoid;
+    }
+    h2, h3 { page-break-after: avoid; }
+}

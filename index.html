@@ -22,6 +22,8 @@
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="cadastro.html"><b>Cadastro Paciente</b></a></li>
                 </ul>
             </nav>
 
@@ -91,7 +93,7 @@
         </section>
 
         
-<section class="experiencia-texto-com-imagem"> 
+        <section class="experiencia-texto-com-imagem"> 
             <div class="experiencia-container-novo">
                 <div class="experiencia-imagem-lateral">
                     <img src="img/atendimento.jpg" alt="Consultório Médico">
@@ -134,7 +136,27 @@
             </div>
         </section>
         
-</main>
+        <section class="condicoes-acompanhadas">
+            <h3>Principais condições acompanhadas em Geriatria</h3>
+            <p>Atendimento voltado ao cuidado integral da pessoa idosa, com foco na prevenção, diagnóstico e tratamento das principais condições que afetam essa fase da vida:</p>
+            
+            <ul class="condicoes-lista-pills">
+                <li>Síndromes demenciais (Alzheimer, Vascular)</li>
+                <li>Hipertensão arterial sistêmica</li>
+                <li>Diabetes mellitus</li>
+                <li>Dislipidemias (Colesterol e Triglicerlicerdeos)</li>
+                <li>Osteoporose</li>
+                <li>Transtornos depressivos e ansiosos</li>
+                <li>Insônia e distúrbios do sono</li>
+                <li>Prevenção de quedas e fragilidade</li>
+                <li>Doença de Parkinson</li>
+                <li>Polifarmácia (Revisão de medicações)</li>
+                <li>Síndromes geriátricas</li>
+                <li>Cuidados Paliativos</li>
+            </ul>
+        </section>
+
+    </main>
 
     <section class="localizacao" id="locais">
         <h2>Onde nos encontrar</h2>
@@ -194,18 +216,13 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         hamburgerButton.addEventListener('click', () => {
-            // Alterna a classe 'is-active' no botão
             hamburgerButton.classList.toggle('is-active');
-            // Alterna o atributo aria-expanded para acessibilidade
             const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
             hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            // Alterna a classe 'is-active' no menu
             mobileMenu.classList.toggle('is-active');
         });
 
-        // Opcional: Fechar o menu ao clicar em um link (útil para Single Page Applications)
-        const menuLinks = mobileMenu.querySelectorAll('a');
+        const menuLinks = mobileMenu.querySelectorAll('a[href^="#"]'); // Apenas links âncora
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
                 hamburgerButton.classList.remove('is-active');

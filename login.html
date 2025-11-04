@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Dra. Aisha Wenzinger</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <header class="novo-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo">
+            </a>
+            
+            <nav class="main-nav" id="mobile-menu"> 
+                <ul>
+                    <li><a href="index.html#sobre-mim-section">Sobre Mim</a></li> 
+                    <li><a href="index.html#experiencia-section">Experiência</a></li> 
+                    <li><a href="index.html#locais">Onde Atende</a></li>
+                    <li><a href="index.html#contato">Contato</a></li>
+                    <li><a href="login.html">Login</a></li>
+                    <li><a href="cadastro.html"><b>Cadastro Paciente</b></a></li>
+                </ul>
+            </nav>
+
+            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <div class="card-agendamento" style="margin-top: 60px; margin-bottom: 60px;">
+            
+            <h2>Acesse sua conta</h2>
+            <p style="text-align: center; margin-top: -15px; font-size: 15px; color: #555;">
+                Bem-vindo(a) de volta!
+            </p>
+
+            <form id="form-login">
+                
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu.email@gmail.com" required>
+                
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" name="senha" placeholder="Sua senha" required>
+
+                <div style="text-align: right; margin-top: 5px; font-size: 13px;">
+                    <a href="#" style="color: #555; text-decoration: none;">Esqueceu sua senha?</a>
+                </div>
+
+                <button type="submit" id="btn-login">Entrar</button>
+            </form>
+
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600; color: #e74c3c;"></div>
+
+            <p style="text-align: center; margin-top: 25px; font-size: 14px; color: #333;">
+                Não tem uma conta? 
+                <a href="cadastro.html" style="color: #2ADCA1; font-weight: 600; text-decoration: none;">
+                    Cadastre-se aqui
+                </a>
+            </p>
+
+        </div>
+    </main>
+
+    <footer id="contato">
+        <p>Siga a Dra. Aisha nas redes sociais:</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank">
+                <img src="img/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank">
+                <img src="img/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://wa.me/5571981233912" target="_blank">
+                <img src="img/whatsapp.png" alt="WhatsApp">
+            </a>
+        </div>
+        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
+    </footer>
+    
+    <script>
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        hamburgerButton.addEventListener('click', () => {
+            hamburgerButton.classList.toggle('is-active');
+            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
+            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('is-active');
+        });
+    </script>
+
+    <script src="js/login.js"></script>
+
+</body>
+</html>
