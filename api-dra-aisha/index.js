@@ -1,4 +1,4 @@
-// Arquivo: /index.js (Completo e Corrigido)
+// Arquivo: /index.js (Completo com Rota de Evolução)
 
 // 1. Importar as ferramentas
 const express = require('express');
@@ -52,7 +52,6 @@ if (!MONGODB_URI) {
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
-    // Inicia o servidor ouvindo na porta correta
     app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
     });
@@ -61,15 +60,11 @@ mongoose.connect(MONGODB_URI)
     console.error('❌ Erro ao conectar ao MongoDB:', err.message);
   });
 
-// 7. =============================================
-//    ROTAS DE AUTENTICAÇÃO (PÚBLICAS)
-//    =============================================
-
+// 7. ROTAS DE AUTENTICAÇÃO
 app.get('/', (req, res) => {
   res.json({ message: 'Bem-vindo à API do Prontuário da Dra. Aisha!' });
 });
 
-// Rota de Cadastro
 app.post('/auth/register', async (req, res) => {
   console.log('Recebida requisição de cadastro:', req.body);
   const { nome, email, senha } = req.body;
@@ -87,7 +82,6 @@ app.post('/auth/register', async (req, res) => {
   }
 });
 
-// Rota de Login
 app.post('/auth/login', async (req, res) => {
   console.log('Recebida requisição de login:', req.body);
   const { email, senha } = req.body;
@@ -113,7 +107,6 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
-// Rota Pública (QR Code)
 app.get('/api/public-prontuario/:userId', async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -131,10 +124,7 @@ app.get('/api/public-prontuario/:userId', async (req, res) => {
   }
 });
 
-// 8. =============================================
-//    ROTAS DO PRONTUÁRIO (PROTEGIDAS)
-//    =============================================
-
+// 8. ROTAS DO PRONTUÁRIO (PACIENTE)
 app.get('/api/prontuario', authMiddleware, async (req, res) => {
   console.log(`Buscando prontuário para o usuário: ${req.user.userId}`);
   try {
@@ -174,9 +164,7 @@ app.post('/api/prontuario', authMiddleware, async (req, res) => {
 });
 
 
-// 9. =============================================
-//    ROTAS DE ADMIN (PROTEGIDAS)
-//    =============================================
+// 9. ROTAS DE ADMIN (PROTEGIDAS)
 
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
   try {
@@ -195,7 +183,7 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
       const user = await User.findById(userId).select('nome');
       if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
       return res.status(200).json({
-        user: userId, nomePaciente: user.nome, idade: null, patologias: '', medicosAssistentes: [], medicacoes: []
+        user: userId, nomePaciente: user.nome, idade: null, patologias: '', medicosAssistentes: [], medicacoes: [], evolucoes: []
       });
     }
     res.status(200).json(prontuario);
@@ -216,6 +204,41 @@ app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async
   } catch (error) {
     console.error('Erro ao salvar prontuário (Admin):', error.message);
     res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
+  }
+});
+
+// *** NOVA ROTA: Adicionar Evolução (Admin) ***
+app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { texto } = req.body; 
+
+    if (!texto) {
+      return res.status(400).json({ message: 'O texto da evolução é obrigatório.' });
+    }
+
+    const prontuarioAtualizado = await Prontuario.findOneAndUpdate(
+      { user: userId },
+      { 
+        $push: { 
+          evolucoes: { 
+            texto: texto, 
+            data: new Date(),
+            autor: 'Dra. Aisha' 
+          } 
+        } 
+      },
+      { new: true, upsert: true } 
+    );
+
+    res.status(200).json({ 
+      message: 'Evolução registrada com sucesso!', 
+      prontuario: prontuarioAtualizado 
+    });
+
+  } catch (error) {
+    console.error('Erro ao salvar evolução:', error.message);
+    res.status(500).json({ message: 'Erro ao salvar evolução.' });
   }
 });
 
