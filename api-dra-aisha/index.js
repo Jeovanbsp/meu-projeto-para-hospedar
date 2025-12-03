@@ -1,4 +1,4 @@
-// Arquivo: /index.js (Completo e Finalizado para Admin/Paciente)
+// Arquivo: /index.js (CORREÇÃO DE BINDING PARA O RENDER)
 
 // 1. Importar as ferramentas
 const express = require('express');
@@ -18,30 +18,22 @@ const adminMiddleware = require('./middleware/adminMiddleware');
 const app = express();
 
 // 4. Configurar Middlewares
-// Arquivo: /index.js (NOVA CONFIGURAÇÃO CORS)
-// ...
-const cors = require('cors');
-// ...
-
-// 3. Configurar Middlewares
 const allowedOrigins = [
-  'http://localhost:3000', // Para seus testes locais (sempre bom manter)
-  'https://aishageriatria.onrender.com', // Sua própria API (para comunicação interna)
-  'https://meu-projeto-para-hospedar.vercel.app' // <--- A URL DO SEU VERCEL!
+  'http://localhost:3000', 
+  'https://aishageriatria.onrender.com', 
+  'https://meu-projeto-para-hospedar.vercel.app' 
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Permite requisições sem 'origin' (como o Postman ou scripts) ou se a origem for permitida
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
-            // Em produção, isso garante que NINGUÉM mais pode usar sua API
             callback(new Error('Not allowed by CORS'));
         }
     },
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE", // Permite todos os métodos que estamos usando
-    credentials: true, // Permite o envio de cookies/cabeçalhos de autenticação (importante para o Token)
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
 }));
 app.use(express.json());
 
@@ -55,7 +47,9 @@ mongoose.set('strictQuery', false);
 mongoose.connect(dbURI)
   .then(() => {
     console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
-    app.listen(PORT, () => {
+    
+    // *** CORREÇÃO AQUI: Forçamos a API a ouvir em '0.0.0.0' ***
+    app.listen(PORT, '0.0.0.0', () => { 
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
     });
   })
@@ -63,17 +57,14 @@ mongoose.connect(dbURI)
     console.error('❌ Erro ao conectar ao MongoDB:', err.message);
   });
 
-// 7. =============================================
-//    ROTAS DE AUTENTICAÇÃO (PÚBLICAS)
-//    =============================================
-
-// Rota de Teste
+// 7. ROTAS PÚBLICAS (Restante do código...)
+// (As rotas são idênticas ao que você já tem)
 app.get('/', (req, res) => {
   res.json({ message: 'Bem-vindo à API do Prontuário da Dra. Aisha!' });
 });
-
-// Rota de Cadastro
+// ... (ROTAS DE CADASTRO, LOGIN, PRONTUÁRIO E ADMIN) ...
 app.post('/auth/register', async (req, res) => {
+  // (Código de Cadastro)
   console.log('Recebida requisição de cadastro:', req.body);
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) return res.status(400).json({ message: 'Por favor, preencha todos os campos.' });
@@ -90,8 +81,8 @@ app.post('/auth/register', async (req, res) => {
   }
 });
 
-// Rota de Login
 app.post('/auth/login', async (req, res) => {
+  // (Código de Login)
   console.log('Recebida requisição de login:', req.body);
   const { email, senha } = req.body;
   if (!email || !senha) return res.status(400).json({ message: 'Por favor, forneça e-mail e senha.' });
@@ -103,7 +94,6 @@ app.post('/auth/login', async (req, res) => {
     const payload = { userId: user._id, nome: user.nome, role: user.role };
     const token = jwt.sign(payload, jwtSecret, { expiresIn: '1d' });
     
-    // CORREÇÃO: Envia o role para o frontend redirecionar
     res.status(200).json({
       message: 'Login bem-sucedido!',
       token: token,
@@ -116,8 +106,8 @@ app.post('/auth/login', async (req, res) => {
   }
 });
 
-// Rota Pública (QR Code)
 app.get('/api/public-prontuario/:userId', async (req, res) => {
+  // (Código de Prontuário Público)
   try {
     const userId = req.params.userId;
     if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -134,12 +124,8 @@ app.get('/api/public-prontuario/:userId', async (req, res) => {
   }
 });
 
-// 8. =============================================
-//    ROTAS DO PRONTUÁRIO (PACIENTE)
-//    =============================================
-
-// Rota para BUSCAR o prontuário do usuário logado
 app.get('/api/prontuario', authMiddleware, async (req, res) => {
+  // (Código de Buscar Prontuário)
   console.log(`Buscando prontuário para o usuário: ${req.user.userId}`);
   try {
     let prontuario = await Prontuario.findOne({ user: req.user.userId });
@@ -157,8 +143,8 @@ app.get('/api/prontuario', authMiddleware, async (req, res) => {
   }
 });
 
-// Rota para SALVAR (Atualizar ou Criar) o prontuário
 app.post('/api/prontuario', authMiddleware, async (req, res) => {
+  // (Código de Salvar Prontuário)
   console.log(`Salvando prontuário para o usuário: ${req.user.userId}`);
   const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
   try {
@@ -179,14 +165,10 @@ app.post('/api/prontuario', authMiddleware, async (req, res) => {
 });
 
 
-// 9. =============================================
-//    ROTAS DE ADMIN (PROTEGIDAS)
-//    =============================================
-
-// Rota 1: Admin ver TODOS os pacientes
+// 9. ROTAS DE ADMIN
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
+  // (Código de Admin - Ver Pacientes)
   try {
-    // Busca todos os usuários que têm o role "paciente"
     const pacientes = await User.find({ role: 'paciente' }).select('nome email createdAt');
     res.status(200).json(pacientes);
   } catch (error) {
@@ -194,69 +176,46 @@ app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res
   }
 });
 
-// Rota 2: Admin buscar o prontuário de UM paciente para EDIÇÃO
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  // (Código de Admin - Buscar Prontuário para Edição)
   try {
     const userId = req.params.userId;
     const prontuario = await Prontuario.findOne({ user: userId });
-
     if (!prontuario) {
       const user = await User.findById(userId).select('nome');
       if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
-
       return res.status(200).json({
-        user: userId,
-        nomePaciente: user.nome,
-        idade: null,
-        patologias: '',
-        medicosAssistentes: [],
-        medicacoes: []
+        user: userId, nomePaciente: user.nome, idade: null, patologias: '', medicosAssistentes: [], medicacoes: []
       });
     }
-
     res.status(200).json(prontuario);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao buscar prontuário para edição.' });
   }
 });
 
-// Rota 3: Admin SALVAR/ATUALIZAR o prontuário de UM paciente
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  // (Código de Admin - Salvar Edição)
   try {
     const userId = req.params.userId;
     const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
-
     const dadosProntuario = {
-      user: userId, // ID do paciente que está sendo editado 
-      nomePaciente,
-      idade,
-      patologias,
-      medicosAssistentes,
-      medicacoes
+      user: userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes
     };
-
-    const prontuarioAtualizado = await Prontuario.findOneAndUpdate(
-      { user: userId },
-      dadosProntuario,
-      { new: true, upsert: true }
-    );
-
-    res.status(200).json({
-      message: 'Prontuário atualizado com sucesso pela Admin!',
-      prontuario: prontuarioAtualizado
-    });
+    await Prontuario.findOneAndUpdate({ user: userId }, dadosProntuario, { new: true, upsert: true });
+    res.status(200).json({ message: 'Prontuário atualizado com sucesso pela Admin!' });
   } catch (error) {
     console.error('Erro ao salvar prontuário (Admin):', error.message);
     res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
   }
 });
 
-// Rota 4: Admin DELETAR um paciente (usuário)
 app.delete('/api/admin/paciente/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  // (Código de Admin - Deletar)
   try {
     const userId = req.params.userId;
-    await Prontuario.findOneAndDelete({ user: userId }); // Deleta o Prontuário
-    await User.findByIdAndDelete(userId); // Deleta o Usuário (login)
+    await Prontuario.findOneAndDelete({ user: userId });
+    await User.findByIdAndDelete(userId);
     res.status(200).json({ message: 'Paciente e seu prontuário foram deletados com sucesso.' });
   } catch (error) {
     console.error('Erro ao deletar paciente:', error.message);
