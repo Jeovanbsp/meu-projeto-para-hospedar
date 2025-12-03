@@ -98,6 +98,27 @@
                 </div>
             </div>
 
+            <div class="gerenciador-evolucoes" style="border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 30px; overflow: hidden;">
+                <h3 style="background: #e0f5ef; color: #2c3e50; padding: 15px 20px; margin: 0; font-size: 18px;">
+                    Evolução Clínica (Histórico)
+                </h3>
+                
+                <div style="padding: 20px;">
+                    <label style="font-size: 13px; font-weight: bold; color: #555;">Nova Anotação:</label>
+                    <textarea id="texto-evolucao" placeholder="Descreva o estado atual do paciente, observações e condutas..." style="width: 100%; height: 100px; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box;"></textarea>
+                    
+                    <button id="btn-add-evolucao" type="button" style="margin-top: 10px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        + Registrar Evolução
+                    </button>
+
+                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h4 style="margin-bottom: 15px; color: #2c3e50;">Histórico de Evoluções:</h4>
+                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 15px;">
+                        <p style="color: #777; font-size: 14px; font-style: italic;">Nenhuma evolução registrada.</p>
+                    </div>
+                </div>
+            </div>
             <div class="botoes-acao-container no-print"> 
                 <button type="submit" id="btn-salvar-tudo-admin">Salvar Edição do Paciente</button>
             </div>

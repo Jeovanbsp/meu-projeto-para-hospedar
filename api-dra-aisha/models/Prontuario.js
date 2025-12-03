@@ -1,8 +1,9 @@
-// Arquivo: /models/Prontuario.js (Correção do nome)
+// Arquivo: /models/Prontuario.js
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// Molde para UMA Medicação
 const MedicacaoSchema = new Schema({
   nome: { type: String, required: true },
   horarioEspecifico: { type: String, default: '' }, 
@@ -16,6 +17,14 @@ const MedicacaoSchema = new Schema({
   }
 });
 
+// *** NOVO: Molde para UMA Evolução ***
+const EvolucaoSchema = new Schema({
+  data: { type: Date, default: Date.now }, // Salva a data/hora automaticamente
+  texto: { type: String, required: true }, // O que a médica escreveu
+  autor: { type: String } // Nome de quem escreveu (opcional)
+});
+
+// Molde do Prontuário
 const ProntuarioSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -23,16 +32,18 @@ const ProntuarioSchema = new Schema({
     required: true,
     unique: true 
   },
+  
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
   
-  // *** CORREÇÃO AQUI ***
-  // De: medicosAssitentes
-  // Para: medicosAssistentes
   medicosAssistentes: [{ type: String }], 
 
-  medicacoes: [MedicacaoSchema] 
+  medicacoes: [MedicacaoSchema],
+
+  // *** NOVO CAMPO: Lista de Evoluções ***
+  evolucoes: [EvolucaoSchema] 
+
 }, {
   timestamps: true
 });
