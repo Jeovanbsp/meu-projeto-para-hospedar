@@ -1,10 +1,12 @@
-// Arquivo: /js/admin-dashboard.js (Atualizado com Busca)
+// Arquivo: /js/admin-dashboard.js
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
   const tbody = document.getElementById('paciente-tbody');
   const searchInput = document.getElementById('search-input'); // <-- NOVO SELETOR
+  
+  // URL da API no Render
   const API_ADMIN_BASE = 'https://aishageriatria.onrender.com/api/admin/';
 
   // Variável para guardar TODOS os pacientes carregados
@@ -102,7 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         alert('Paciente deletado com sucesso.');
-        fetchPacientes(); // Recarrega a lista completa
+        fetchPacientes(); // Recarrega a lista completa da API
       } catch (error) {
         alert(`Erro ao apagar: ${error.message}`);
       }
