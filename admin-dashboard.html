@@ -8,16 +8,44 @@
     <link rel="stylesheet" href="css/style.css">
     <style>
         .container { max-width: 1100px; margin: 40px auto; padding: 20px; }
-        .paciente-lista { width: 100%; border-collapse: collapse; }
+        
+        /* Estilos da Tabela */
+        .paciente-lista { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .paciente-lista th, .paciente-lista td {
             border: 1px solid #ddd; padding: 12px; text-align: left;
         }
         .paciente-lista th { background-color: #e0f5ef; color: #2c3e50; }
+        
+        /* Botões */
         .btn-delete { 
             background: #e74c3c; color: white; border: none; padding: 8px 12px;
             border-radius: 5px; cursor: pointer;
         }
         #btn-logout { background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; }
+
+        /* --- NOVO CSS DA BUSCA --- */
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        #search-input {
+            padding: 12px;
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+        }
+        #search-input:focus {
+            border-color: #2ADCA1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -30,7 +58,12 @@
     </header>
     <main>
         <div class="container">
-            <h2>Lista de Pacientes Cadastrados</h2>
+            
+            <div class="search-container">
+                <h2>Lista de Pacientes Cadastrados</h2>
+                <input type="text" id="search-input" placeholder="🔍 Buscar paciente por nome...">
+            </div>
+
             <table class="paciente-lista">
                 <thead>
                     <tr>
