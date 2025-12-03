@@ -1,10 +1,12 @@
-// Arquivo: /js/admin-dashboard.js (Corrigido para clique)
+// Arquivo: /js/admin-dashboard.js
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
   const tbody = document.getElementById('paciente-tbody');
-  const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
+  
+  // *** CORREÇÃO AQUI: Adicionado /api/admin/ ***
+  const API_ADMIN_BASE = 'https://aishageriatria.onrender.com/api/admin/';
 
   if (!token || role !== 'admin') {
     localStorage.clear();
@@ -12,32 +14,26 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- Carregar Pacientes ---
   const fetchPacientes = async () => {
     try {
       const response = await fetch(API_ADMIN_BASE + 'pacientes', {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
       });
-      
       if (!response.ok) { throw new Error('Não foi possível carregar os pacientes.'); }
-      
       const pacientes = await response.json();
       renderTabela(pacientes);
-
     } catch (error) {
       tbody.innerHTML = `<tr><td colspan="4" style="color: red;">Erro: ${error.message}</td></tr>`;
     }
   };
 
-  // --- Desenhar Tabela ---
   const renderTabela = (pacientes) => {
     tbody.innerHTML = '';
     if (pacientes.length === 0) {
       tbody.innerHTML = '<tr><td colspan="4">Nenhum paciente cadastrado.</td></tr>';
       return;
     }
-    
     pacientes.forEach(paciente => {
       const row = `
         <tr>
@@ -45,7 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${paciente.email}</td>
           <td>${new Date(paciente.createdAt).toLocaleDateString('pt-BR')}</td>
           <td>
-            <button class="btn-visualizar" data-id="${paciente._id}" style="background: #2ADCA1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
+            <button onclick="window.location.href='admin-prontuario.html?id=${paciente._id}'" 
+                    data-id="${paciente._id}" 
+                    style="background: #2ADCA1; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 10px;">
                 Visualizar/Editar
             </button>
             <button class="btn-delete" data-id="${paciente._id}">Apagar</button>
@@ -56,15 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   };
 
-  // --- Deletar e Visualizar (Ouvinte de Clique) ---
   tbody.addEventListener('click', async (event) => {
-    const clickedElement = event.target;
-    const userId = clickedElement.dataset.id; // Pega o ID do paciente
-    
-    if (!userId) return; 
-
-    // 1. Ação Deletar
-    if (clickedElement.classList.contains('btn-delete')) {
+    if (event.target.classList.contains('btn-delete')) {
+      const userId = event.target.dataset.id;
       if (!confirm('Tem certeza que deseja apagar este paciente? Esta ação é irreversível.')) {
         return;
       }
@@ -74,16 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         alert('Paciente deletado com sucesso.');
-        fetchPacientes(); // Recarrega a lista
+        fetchPacientes();
       } catch (error) {
         alert(`Erro ao apagar: ${error.message}`);
       }
-    }
-    
-    // 2. Ação Visualizar/Editar (Redirecionamento)
-    if (clickedElement.classList.contains('btn-visualizar')) {
-        // Redireciona para a nova página, passando o ID do paciente na URL
-        window.location.href = `admin-prontuario.html?id=${userId}`;
     }
   });
 

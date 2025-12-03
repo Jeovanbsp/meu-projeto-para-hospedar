@@ -1,25 +1,20 @@
 // Arquivo: /js/admin-prontuario.js
 
 document.addEventListener('DOMContentLoaded', () => {
-
-  // --- CONFIGURAÇÃO E SEGURANÇA ---
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
-  const API_URL_BASE = 'https://aishageriatria.onrender.com';
   
-  // O ID do paciente que está na URL: ?id=XXXXXXXX
+  // *** CORREÇÃO AQUI: Adicionado /api/admin/prontuario/ ***
+  const API_URL_BASE = 'https://aishageriatria.onrender.com/api/admin/prontuario/';
+  
   const pacienteId = new URLSearchParams(window.location.search).get('id');
 
-  // Segurança: Se não for Admin OU não tiver o ID do paciente, chuta.
   if (!token || role !== 'admin' || !pacienteId) {
     localStorage.clear();
     window.location.href = 'login.html';
     return;
   }
-  // --- FIM DA SEGURANÇA ---
 
-
-  // --- SELETORES ---
   const tituloEdicao = document.getElementById('titulo-edicao');
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
@@ -32,10 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
-  const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); // ID diferente!
+  const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); 
   const mensagemRetorno = document.getElementById('mensagem-retorno');
-
-  // --- ESTADO LOCAL ---
+  
   let currentMedicacoes = [];
   let currentMedicos = []; 
 
@@ -44,12 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
   };
 
-
-  // --- FUNÇÕES DE CARREGAMENTO E EDIÇÃO ---
-
   const fetchProntuario = async () => {
     try {
-      // Chama a rota de ADMIN, passando o ID do paciente na URL
       const response = await fetch(API_URL_BASE + pacienteId, {
         method: 'GET',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
@@ -61,10 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
       
       tituloEdicao.innerText = `Editando Prontuário: ${data.nomePaciente || 'Novo Paciente'}`;
       populateForm(data); 
-      
       currentMedicacoes = data.medicacoes || []; 
       renderTabelaMedicacoes();
-      
       currentMedicos = data.medicosAssistentes || []; 
       renderMedicosList(); 
       
@@ -77,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleSalvarTudo = async (event) => {
     event.preventDefault();
-    
     btnSalvarTudo.disabled = true;
     btnSalvarTudo.innerText = 'Salvando Edição...';
     mensagemRetorno.innerText = '';
@@ -91,7 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     try {
-      // Chama a rota de POST Admin para salvar a edição
       const response = await fetch(API_URL_BASE + pacienteId, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -114,8 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnSalvarTudo.disabled = false;
     btnSalvarTudo.innerText = 'Salvar Edição do Paciente';
   };
-
-  // --- FUNÇÕES DE SUPORTE (IDÊNTICAS AO PERFIL-PACIENTE.JS) ---
 
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || '';
@@ -199,8 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-
-  // --- INICIALIZAÇÃO E OUVINTES ---
   formAddMedico.addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);
   formAddMedicacao.addEventListener('submit', handleAddMedicacao);
