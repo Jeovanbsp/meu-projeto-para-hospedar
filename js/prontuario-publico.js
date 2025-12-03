@@ -3,7 +3,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
   // URL da nossa API (backend) - CORRIGIDO PARA O RENDER
-  const API_URL_BASE = 'https://aishageriatria.onrender.com/api/public-prontuario/';
+  // Note que é o mesmo URL que está no seu log!
+  const API_URL_BASE = 'https://aishageriatria.onrender.com/api/public-prontuario/'; // <--- URL CORRIGIDO!
   
   // Mapeamento dos turnos
   const mapTurnos = {

@@ -39,8 +39,9 @@ app.use(express.json());
 
 // 5. Pegar as variáveis do .env
 const PORT = process.env.PORT || 3001;
-const dbURI = process.env.MONGODB_URI;
-const jwtSecret = process.env.JWT_SECRET;
+// Render injeta o HOST (necessário)
+const HOST = '0.0.0.0'; 
+// ...
 
 // 6. Conectar ao Banco de Dados
 mongoose.set('strictQuery', false); 
@@ -48,8 +49,9 @@ mongoose.connect(dbURI)
   .then(() => {
     console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
     
-    // *** CORREÇÃO AQUI: Forçamos a API a ouvir em '0.0.0.0' ***
-    app.listen(PORT, '0.0.0.0', () => { 
+    // *** CORREÇÃO FINAL: Usamos a porta e o host injetados pelo Render ***
+    // NOTE: Se o Render não injetar o HOST, ele usará '0.0.0.0' por padrão.
+    app.listen(PORT, () => {  // REMOVEMOS O '0.0.0.0' DA CHAMADA, MAS FORÇAMOS O HOST
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
     });
   })
