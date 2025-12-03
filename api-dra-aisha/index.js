@@ -1,10 +1,10 @@
-// Arquivo: /index.js (Completo e Corrigido para Render)
+// Arquivo: /index.js (Completo e Corrigido)
 
 // 1. Importar as ferramentas
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); // Carrega variáveis locais (se existirem)
+require('dotenv').config();
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
 
@@ -26,7 +26,6 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Permite requisições sem 'origin' (como Postman) ou se a origem estiver na lista
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -38,16 +37,14 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// 5. Pegar as variáveis do .env (Definidas no topo para evitar erros)
+// 5. Pegar as variáveis do .env
 const PORT = process.env.PORT || 3001;
-// Usamos diretamente os nomes que estão no Render
 const MONGODB_URI = process.env.MONGODB_URI; 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // 6. Conectar ao Banco de Dados
 mongoose.set('strictQuery', false); 
 
-// Verifica se a string do banco existe antes de tentar conectar
 if (!MONGODB_URI) {
   console.error("❌ ERRO CRÍTICO: A variável MONGODB_URI não foi encontrada.");
 }
@@ -55,9 +52,8 @@ if (!MONGODB_URI) {
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
-    
-    // Inicia o servidor ouvindo em 0.0.0.0 (Necessário para o Render)
-    app.listen(PORT, '0.0.0.0', () => {
+    // Inicia o servidor ouvindo na porta correta
+    app.listen(PORT, () => {
       console.log(`🚀 Servidor rodando na porta ${PORT}`);
     });
   })
@@ -84,4 +80,153 @@ app.post('/auth/register', async (req, res) => {
     if (userExists) return res.status(400).json({ message: 'Este e-mail já está cadastrado.' });
     const newUser = new User({ nome, email, password: senha });
     await newUser.save();
-    res.status(201).json({ message: 'Usuário cadastrado com sucesso!', user: { id: newUser._id, nome: newUser.nome, email: newUser.
+    res.status(201).json({ message: 'Usuário cadastrado com sucesso!', user: { id: newUser._id, nome: newUser.nome, email: newUser.email }});
+  } catch (error) {
+    console.error('Erro no cadastro:', error.message);
+    res.status(500).json({ message: 'Erro interno no servidor. Tente novamente.' });
+  }
+});
+
+// Rota de Login
+app.post('/auth/login', async (req, res) => {
+  console.log('Recebida requisição de login:', req.body);
+  const { email, senha } = req.body;
+  if (!email || !senha) return res.status(400).json({ message: 'Por favor, forneça e-mail e senha.' });
+  try {
+    const user = await User.findOne({ email: email }).select('+password');
+    if (!user) return res.status(400).json({ message: 'E-mail ou senha inválidos.' });
+    const isMatch = await bcrypt.compare(senha, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'E-mail ou senha inválidos.' });
+    
+    const payload = { userId: user._id, nome: user.nome, role: user.role };
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
+    
+    res.status(200).json({
+      message: 'Login bem-sucedido!',
+      token: token,
+      userName: user.nome,
+      role: user.role
+    });
+  } catch (error) {
+    console.error('Erro no login:', error.message);
+    res.status(500).json({ message: 'Erro interno no servidor. Tente novamente.' });
+  }
+});
+
+// Rota Pública (QR Code)
+app.get('/api/public-prontuario/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'ID de usuário inválido.' });
+    }
+    const prontuario = await Prontuario.findOne({ user: userId });
+    if (!prontuario) {
+      return res.status(404).json({ message: 'Prontuário não encontrado.' });
+    }
+    res.status(200).json(prontuario);
+  } catch (error) {
+    console.error('Erro ao buscar prontuário público:', error.message);
+    res.status(500).json({ message: 'Erro interno no servidor.' });
+  }
+});
+
+// 8. =============================================
+//    ROTAS DO PRONTUÁRIO (PROTEGIDAS)
+//    =============================================
+
+app.get('/api/prontuario', authMiddleware, async (req, res) => {
+  console.log(`Buscando prontuário para o usuário: ${req.user.userId}`);
+  try {
+    let prontuario = await Prontuario.findOne({ user: req.user.userId });
+    if (!prontuario) {
+      console.log('Nenhum prontuário encontrado. Criando um novo...');
+      prontuario = new Prontuario({
+        user: req.user.userId, nomePaciente: req.user.nome, medicacoes: [], medicosAssistentes: []
+      });
+      await prontuario.save();
+    }
+    res.status(200).json(prontuario);
+  } catch (error) {
+    console.error('Erro ao buscar prontuário:', error.message);
+    res.status(500).json({ message: 'Erro ao buscar dados do prontuário.' });
+  }
+});
+
+app.post('/api/prontuario', authMiddleware, async (req, res) => {
+  console.log(`Salvando prontuário para o usuário: ${req.user.userId}`);
+  const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
+  try {
+    const dadosProntuario = {
+      user: req.user.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes 
+    };
+
+    const prontuarioAtualizado = await Prontuario.findOneAndUpdate(
+      { user: req.user.userId }, 
+      dadosProntuario,          
+      { new: true, upsert: true } 
+    );
+    res.status(200).json({ message: 'Prontuário salvo com sucesso!', prontuario: prontuarioAtualizado });
+  } catch (error) {
+    console.error('Erro ao salvar prontuário:', error.message);
+    res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
+  }
+});
+
+
+// 9. =============================================
+//    ROTAS DE ADMIN (PROTEGIDAS)
+//    =============================================
+
+app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const pacientes = await User.find({ role: 'paciente' }).select('nome email createdAt');
+    res.status(200).json(pacientes);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar pacientes.' });
+  }
+});
+
+app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const prontuario = await Prontuario.findOne({ user: userId });
+    if (!prontuario) {
+      const user = await User.findById(userId).select('nome');
+      if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
+      return res.status(200).json({
+        user: userId, nomePaciente: user.nome, idade: null, patologias: '', medicosAssistentes: [], medicacoes: []
+      });
+    }
+    res.status(200).json(prontuario);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao buscar prontuário para edição.' });
+  }
+});
+
+app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
+    const dadosProntuario = {
+      user: userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes
+    };
+    await Prontuario.findOneAndUpdate({ user: userId }, dadosProntuario, { new: true, upsert: true });
+    res.status(200).json({ message: 'Prontuário atualizado com sucesso pela Admin!' });
+  } catch (error) {
+    console.error('Erro ao salvar prontuário (Admin):', error.message);
+    res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
+  }
+});
+
+app.delete('/api/admin/paciente/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    await Prontuario.findOneAndDelete({ user: userId });
+    await User.findByIdAndDelete(userId);
+    res.status(200).json({ message: 'Paciente e seu prontuário foram deletados com sucesso.' });
+  } catch (error) {
+    console.error('Erro ao deletar paciente:', error.message);
+    res.status(500).json({ message: 'Erro ao deletar paciente.' });
+  }
+});
