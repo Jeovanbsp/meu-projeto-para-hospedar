@@ -87,3 +87,93 @@
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }
+/* --- ADICIONE ISTO NO FIM DO SEU CSS ORIGINAL --- */
+/* Estilo Exclusivo para o Histórico de Evolução (Acordeão) */
+
+.evolucao-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+/* Cabeçalho (Clicável) */
+.evo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-left: 5px solid #2ADCA1; /* Verde da identidade visual */
+    cursor: default;
+}
+
+.evo-info {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer; /* Mãozinha para indicar clique */
+}
+
+.evo-date {
+    font-size: 0.85rem;
+    color: #888;
+    min-width: 130px; /* Garante alinhamento */
+}
+
+.evo-title {
+    font-size: 1rem;
+    color: #333;
+    font-weight: 600;
+}
+
+/* Seta Animada */
+.evo-icon {
+    font-size: 0.8rem;
+    color: #aaa;
+    transition: transform 0.3s ease;
+    display: inline-block;
+    margin-left: auto; /* Empurra a seta para a direita antes dos botões */
+    margin-right: 15px;
+}
+
+.evo-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 5px;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+.btn-icon:hover { opacity: 1; transform: scale(1.1); }
+.btn-icon.edit { color: #f39c12; }
+.btn-icon.delete { color: #e74c3c; }
+
+/* Corpo Oculto */
+.evo-body {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    background: #fff;
+    animation: fadeIn 0.3s;
+}
+
+/* CLASSE IMPORTANTE PARA ESCONDER */
+.evo-body.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
