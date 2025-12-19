@@ -3,7 +3,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// 1. Este é o "molde" para UMA medicação
+// 1. Molde para UMA medicação
 const MedicacaoSchema = new Schema({
   nome: { type: String, required: true },
   horarioEspecifico: { type: String, default: '' }, 
@@ -17,7 +17,15 @@ const MedicacaoSchema = new Schema({
   }
 });
 
-// 2. Este é o "molde" para o Prontuário INTEIRO
+// 2. Molde para UMA evolução (NOVO)
+// Isso faltava no seu código original
+const EvolucaoSchema = new Schema({
+  texto: { type: String, required: true },
+  data: { type: Date, default: Date.now },
+  autor: { type: String, default: 'Dra. Aisha' }
+});
+
+// 3. Molde para o Prontuário INTEIRO
 const ProntuarioSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -30,10 +38,14 @@ const ProntuarioSchema = new Schema({
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
 
-  // Campo correto: medicosAssistentes
   medicosAssistentes: [{ type: String }], 
 
-  medicacoes: [MedicacaoSchema] 
+  medicacoes: [MedicacaoSchema],
+
+  // --- A CORREÇÃO PRINCIPAL ESTÁ AQUI ---
+  // Adicionamos o campo evolucoes ao Schema
+  evolucoes: [EvolucaoSchema] 
+  // -------------------------------------
 
 }, {
   timestamps: true

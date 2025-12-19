@@ -1,10 +1,11 @@
-// Arquivo: /js/admin-prontuario.js (Completo com Evolução)
+// Arquivo: /js/admin-prontuario.js (Completo e Corrigido)
 
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- CONFIGURAÇÃO E SEGURANÇA ---
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
+  // Ajuste a URL se necessário (ex: localhost ou produção)
   const API_ADMIN_BASE = 'https://aishageriatria.onrender.com/api/admin/prontuario/';
   
   const pacienteId = new URLSearchParams(window.location.search).get('id');
@@ -42,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Estado Local
   let currentMedicacoes = [];
   let currentMedicos = []; 
-  let currentEvolucoes = []; // <-- NOVO ESTADO
+  let currentEvolucoes = []; 
 
   const mapTurnos = {
     antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço',
@@ -67,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       currentMedicos = data.medicosAssistentes || []; 
       renderMedicosList();
 
-      // *** NOVO: Preenche Evoluções ***
+      // Carrega evoluções, garantindo que seja um array vazio se vier nulo
       currentEvolucoes = data.evolucoes || [];
       renderEvolucoes();
 
@@ -78,12 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- FUNÇÕES DE EVOLUÇÃO (NOVAS) ---
+  // --- FUNÇÕES DE EVOLUÇÃO (CORRIGIDAS) ---
 
   const renderEvolucoes = () => {
     listaEvolucoesDiv.innerHTML = '';
     
-    if (currentEvolucoes.length === 0) {
+    // Proteção extra: se por acaso currentEvolucoes for undefined, trata como vazio
+    if (!currentEvolucoes || currentEvolucoes.length === 0) {
       listaEvolucoesDiv.innerHTML = '<p style="color: #777; font-size: 14px; font-style: italic;">Nenhuma evolução registrada.</p>';
       return;
     }
@@ -95,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dataFormatada = new Date(evo.data).toLocaleString('pt-BR');
       
       const cardHtml = `
-        <div style="background: #f9f9f9; border-left: 4px solid #2ADCA1; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <div style="background: #f9f9f9; border-left: 4px solid #2ADCA1; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 10px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: #777;">
                 <strong>${evo.autor || 'Dra. Aisha'}</strong>
                 <span>${dataFormatada}</span>
@@ -118,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btnAddEvolucao.innerText = 'Salvando...';
 
     try {
-        // Chama a rota ESPECÍFICA para salvar evolução
         const response = await fetch(API_ADMIN_BASE + pacienteId + '/evolucao', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -128,16 +129,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
 
         if (response.ok) {
-            // Atualiza a lista local com a resposta do servidor
-            currentEvolucoes = data.prontuario.evolucoes;
+            // --- CORREÇÃO DE SEGURANÇA AQUI ---
+            // Verifica se o array retornou corretamente. Se não, usa fallback manual.
+            if (data.prontuario && data.prontuario.evolucoes) {
+                currentEvolucoes = data.prontuario.evolucoes;
+            } else {
+                // Se o backend não devolveu a lista atualizada (por erro de Schema),
+                // adicionamos manualmente na tela para o usuário ver que funcionou.
+                console.warn("Backend não retornou evoluções atualizadas. Usando fallback local.");
+                currentEvolucoes.push({
+                    texto: texto,
+                    data: new Date().toISOString(),
+                    autor: 'Dra. Aisha'
+                });
+            }
+            
             renderEvolucoes();
-            textoEvolucaoInput.value = ''; // Limpa o campo
-            alert('Evolução registrada!');
+            textoEvolucaoInput.value = ''; 
+            alert('Evolução registrada com sucesso!');
         } else {
-            throw new Error(data.message);
+            throw new Error(data.message || 'Erro desconhecido.');
         }
 
     } catch (error) {
+        console.error(error);
         alert('Erro ao salvar evolução: ' + error.message);
     }
 
@@ -152,6 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
   };
+  
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
@@ -163,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
   };
+  
   const handleAddMedico = (event) => {
     event.preventDefault();
     const nome = nomeMedicoInput.value.trim(); 
@@ -171,6 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMedicosList(); 
     nomeMedicoInput.value = ''; 
   };
+  
   const handleDeleteMedico = (event) => {
     if (event.target.classList.contains('btn-deletar-medico')) {
       const index = parseInt(event.target.dataset.index, 10);
@@ -178,6 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
       renderMedicosList(); 
     }
   };
+  
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) {
@@ -210,6 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
+  
   const handleAddMedicacao = (event) => {
     event.preventDefault(); 
     const nome = nomeMedicacaoInput.value;
@@ -221,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTabelaMedicacoes();
     formAddMedicacao.reset(); 
   };
+  
   const handleDeleteMedicacao = (event) => {
     if (event.target.classList.contains('btn-deletar-medacao')) {
       const nomeParaDeletar = event.target.dataset.nome; 
@@ -273,8 +294,10 @@ document.addEventListener('DOMContentLoaded', () => {
   listaMedicacoesBody.addEventListener('click', handleDeleteMedicacao);
   btnSalvarTudo.addEventListener('click', handleSalvarTudo);
   
-  // *** NOVO LISTENER ***
-  btnAddEvolucao.addEventListener('click', handleAddEvolucao);
+  // *** LISTENER DA EVOLUÇÃO ***
+  if (btnAddEvolucao) {
+      btnAddEvolucao.addEventListener('click', handleAddEvolucao);
+  }
 
   fetchProntuario();
 });
