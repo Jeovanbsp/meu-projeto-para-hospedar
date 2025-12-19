@@ -19,11 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
   
   const nomeMedicacaoInput = document.getElementById('nome-medicacao');
-  const qtdMedicacaoInput = document.getElementById('qtd-medicacao'); // NOVO
+  const qtdMedicacaoInput = document.getElementById('qtd-medicacao');
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
-  const secaoTurnos = document.getElementById('secao-turnos'); // NOVO
+  const secaoTurnos = document.getElementById('secao-turnos');
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
+  
+  const checkTermoAceite = document.getElementById('check-termo-aceite');
   
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo');
   const btnDownloadPDF = document.getElementById('btn-download-pdf'); 
@@ -61,6 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
+    
+    // Checkbox Termo
+    if (data.termoAceite) checkTermoAceite.checked = true;
+
     if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
     else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
     toggleAlergiaInput();
@@ -87,7 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; }
     
-    // ORDENAÇÃO
     const list = [...currentMedicacoes].sort((a, b) => {
         const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59';
         const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59';
@@ -101,8 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
       const qtdDisplay = med.quantidade ? med.quantidade : '-';
 
-      const row = `
-      <tr>
+      const row = `<tr>
         <td style="font-weight:500;">${med.nome}</td>
         <td class="col-qtd">${qtdDisplay}</td>
         <td>${turnosHtml}</td>
@@ -127,12 +131,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
   const handleSalvarTudo = async (e) => {
-    e.preventDefault(); btnSalvarTudo.innerText = 'Salvando...';
+    e.preventDefault();
+    
+    // VALIDAÇÃO DO TERMO
+    if (!checkTermoAceite.checked) {
+        alert("⚠️ É necessário aceitar o Termo de Responsabilidade no topo da página para salvar.");
+        return;
+    }
+
+    btnSalvarTudo.innerText = 'Salvando...';
     const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
     try {
       const response = await fetch(API_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ nomePaciente: nomePacienteInput.value, idade: idadeInput.value, patologias: patologiasInput.value, alergias: dadosAlergia, medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes })
+        body: JSON.stringify({ 
+            nomePaciente: nomePacienteInput.value, 
+            idade: idadeInput.value, 
+            patologias: patologiasInput.value, 
+            alergias: dadosAlergia, 
+            medicosAssistentes: currentMedicos, 
+            medicacoes: currentMedicacoes,
+            termoAceite: true // Confirmação
+        })
       });
       if (response.ok) { mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1'; } else { throw new Error('Erro ao salvar'); }
     } catch (error) { mensagemRetorno.innerText = 'Erro ao salvar.'; mensagemRetorno.style.color = '#e74c3c'; }

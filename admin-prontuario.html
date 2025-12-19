@@ -21,7 +21,12 @@
     <main>
         <div class="card-agendamento" id="prontuario-card">
             <button onclick="window.location.href='admin-dashboard.html';" style="background: #ccc; color: #333; margin-bottom: 20px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; display: block; width: 100%; max-width: 250px; margin: 0 auto 20px auto;">&larr; Voltar</button>
-            <h2 id="titulo-edicao">Editando Prontuário</h2>
+            
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                <h2 id="titulo-edicao" style="margin: 0;">Editando Prontuário</h2>
+                <span id="badge-termo-status" class="badge-termo pendente">AGUARDANDO ACEITE</span>
+            </div>
+
             <form id="form-prontuario-principal">
                 <label for="nome-paciente">Nome do Paciente</label>
                 <input type="text" id="nome-paciente" required>

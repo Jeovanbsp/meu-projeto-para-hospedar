@@ -22,6 +22,14 @@
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
             <h2>Minhas Informações (Prontuário)</h2>
+
+            <div class="box-termo-responsabilidade">
+                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. Ao marcar a opção abaixo, você <strong>assume total responsabilidade</strong> pela veracidade das informações.</p>
+                <label class="check-termo-container">
+                    <input type="checkbox" id="check-termo-aceite"> Declaro que li e aceito os termos de responsabilidade.
+                </label>
+            </div>
+
             <form id="form-prontuario-principal">
                 <label for="nome-paciente">Nome do Paciente</label>
                 <input type="text" id="nome-paciente" required>

@@ -1,236 +1,147 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>"Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório"</title>
-    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+require('dotenv').config();
+const bcrypt = require('bcryptjs'); 
+const jwt = require('jsonwebtoken'); 
 
-    <header class="novo-header">
-        <div class="header-container">
-            <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo">
-            </a>
-            
-            <nav class="main-nav" id="mobile-menu"> 
-                <ul>
-                    <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
-                    <li><a href="#experiencia-section">Experiência</a></li> 
-                    <li><a href="#locais">Onde Atende</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="cadastro.html"><b>Cadastro Paciente</b></a></li>
-                </ul>
-            </nav>
+const User = require('./models/User');
+const Prontuario = require('./models/Prontuario');
+const authMiddleware = require('./middleware/authMiddleware');
+const adminMiddleware = require('./middleware/adminMiddleware'); 
 
-            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
-                <span class="hamburger-box">
-                    <span class="hamburger-inner"></span>
-                </span>
-            </button>
-        </div>
-    </header>
+const app = express();
 
-    <main>
-        
-        <section class="sobre">
-            <div class="sobre-container">
-                <div class="sobre-imagem-boneca">
-                    <img src="img/perfil.png" alt="Dra. Aisha Wenzinger - Ilustração"> 
-                </div>
-                <div class="sobre-texto">
-                    <h2>Atenção Especializada para Idosos</h2>
-                    <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
-                    <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                        Agende sua consulta
-                    </a>
-                </div>
-            </div>
-        </section> 
-        
-        <section class="servicos-destaque-delicado">
-            <div class="servico-delicado">
-                <h3>Telemedicina</h3>
-                <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
-            </div>
-            <div class="servico-delicado">
-                <h3>Atendimento Domiciliar</h3>
-                <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
-            </div>
-            <div class="servico-delicado">
-                <h3>Atendimento Presencial</h3>
-                <p>Consultas realizadas em consultório com infraestrutura completa para seu conforto.</p> 
-            </div>
-        </section>
+const allowedOrigins = [
+  'http://localhost:3000', 
+  'https://aishageriatria.onrender.com', 
+  'https://meu-projeto-para-hospedar.vercel.app'
+];
 
-        <section class="sobre-mim"> 
-            <div class="sobre-mim-container">
-                <div class="sobre-mim-imagem">
-                    <img src="img/aisha_perfil.jpg" alt="Dra. Aisha Wenzinger" class="profile-img">
-                    <p class="profile-caption">
-                        <span class="name">Dra. Aishá Wenzinger</span>
-                        CRM: 20473 <br> 
-                        RQE: 19692
-                    </p>
-                </div>
-                <div class="sobre-mim-texto">
-                    <h3 id="sobre-mim-section">Sobre Mim</h3> 
-                    <ul class="historia">
-                        <li>Dra. Aishá Wenzinger: Clínica Médica, Geriatria e Cuidados Paliativos.</li>
-                        <li>Médica graduada pela Escola Bahiana de Medicina e Saúde Pública, com 17 anos de formação. Iniciou sua trajetória profissional atuando em atendimentos de emergência e no Programa de Saúde da Família em Esplanada (BA), entre 2009 e início de 2010.</li>
-                        <li>Devido à sólida experiência na área de urgência, assumiu precocemente a função de Coordenadora Médica do Serviço de Ambulância MedSalva, cargo que exerceu por cerca de quatro anos. Em seguida, iniciou formação em Clínica Médica no Hospital São Rafael (2011–2013).</li>
-                        <li>Após esse período, manteve atuação em Clínica Médica e Emergência até 2015, quando iniciou sua formação em Geriatria no Hospital Santo Antônio – Obras Sociais Irmã Dulce, concluída em 2017. Permaneceu na instituição até 2022, período marcado por intensa dedicação, especialmente durante a pandemia de COVID-19, que demandou cuidado e compaixão frente à vulnerabilidade dos idosos assistidos.</li>
-                        <li>Em novembro de 2022, assumiu o desafio de estruturar o serviço de Geriatria do Hospital Português, onde permanece até o presente momento, consolidando uma equipe voltada ao cuidado integral da pessoa idosa, com foco em desospitalização segura, manejo clínico de idosos frágeis e atenção centrada na pessoa.</li>
-                        <li>Possui especialização em Cuidados Paliativos pelo Instituto Paliar e ampla experiência em ambientes hospitalares, ambulatórios e atendimentos domiciliares, com atuação também em telemedicina e consultório próprio. Oferece assistência personalizada a idosos com limitações funcionais ou acamados, prezando pelo cuidado integral, humanizado e contínuo.</li>
-                        <li>É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências, aliando conhecimento técnico à sensibilidade humana em todas as fases do envelhecimento.</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) { callback(null, true); } 
+        else { callback(new Error('Not allowed by CORS')); }
+    },
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+}));
+app.use(express.json());
 
-        
-        <section class="experiencia-texto-com-imagem"> 
-            <div class="experiencia-container-novo">
-                <div class="experiencia-imagem-lateral">
-                    <img src="img/atendimento.jpg" alt="Consultório Médico">
-                </div>
-                <div class="experiencia-conteudo-texto">
-                    <h3 id="experiencia-section">Experiência Profissional</h3> 
-                    <ul class="experiencia-lista-formatada">
-                        <li>
-                            <strong>Formação Médica:</strong> Escola Bahiana de Medicina e Saúde Pública – Conclusão em 2008
-                        </li>
-                        <li>
-                            <strong>Hospital Geral do Estado (HGE 2) – Salvador:</strong>
-                            <ul>
-                                <li>Médica Clínica (Unidade Intermediária 2): 2022 - presente</li>
-                                <li>Médica Emergencista: 2013 – 2023</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Hospital Português – Salvador:</strong>
-                            <ul>
-                                <li>Coordenadora da Geriatria: Nov 2021 - presente</li>
-                                <li>Médica da Equipe de Desospitalização: Desde 2022</li>
-                                <li>Médica Emergencista: 2014 – 2024</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Clínica NewLife – Salvador:</strong>
-                            <ul>
-                                <li>Médica Geriatra (Consultório): 2016 - presente</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Atendimento Domiciliar em Geriatria:</strong>
-                            <ul>
-                                <li>Cuidados a idosos com limitações e acamados: 2017 - presente</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-        
-        <section class="condicoes-acompanhadas">
-            <h3>Principais condições acompanhadas em Geriatria</h3>
-            <p>Atendimento voltado ao cuidado integral da pessoa idosa, com foco na prevenção, diagnóstico e tratamento das principais condições que afetam essa fase da vida:</p>
-            
-            <ul class="condicoes-lista-pills">
-                <li>Síndromes demenciais (Alzheimer, Vascular)</li>
-                <li>Hipertensão arterial sistêmica</li>
-                <li>Diabetes mellitus</li>
-                <li>Dislipidemias (Colesterol e Triglicerlicerdeos)</li>
-                <li>Osteoporose</li>
-                <li>Transtornos depressivos e ansiosos</li>
-                <li>Insônia e distúrbios do sono</li>
-                <li>Prevenção de quedas e fragilidade</li>
-                <li>Doença de Parkinson</li>
-                <li>Polifarmácia (Revisão de medicações)</li>
-                <li>Síndromes geriátricas</li>
-                <li>Cuidados Paliativos</li>
-            </ul>
-        </section>
+const PORT = process.env.PORT || 3001;
+const MONGODB_URI = process.env.MONGODB_URI; 
+const JWT_SECRET = process.env.JWT_SECRET;
 
-    </main>
+mongoose.set('strictQuery', false); 
+if (!MONGODB_URI) console.error("❌ ERRO: MONGODB_URI ausente.");
 
-    <section class="localizacao" id="locais">
-        <h2>Onde nos encontrar</h2>
-        <p>Confira nossas unidades e escolha a mais próxima de você:</p>
+mongoose.connect(MONGODB_URI)
+  .then(() => { console.log('✅ MongoDB Conectado!'); app.listen(PORT, () => console.log(`🚀 Porta ${PORT}`)); })
+  .catch((err) => console.error('❌ Erro Mongo:', err.message));
 
-        <div class="locais">
-            <div class="local">
-                <h3>Unidade 1 - Estrada do Coco</h3>
-                <p>
-                    Localizado em: Shopping Estrada do Coco <br>
-                    Endereço: Av. Santos Dumont, Est do Coco, 6216 - loja 102 -
-                    Pitangueiras, Lauro de Freitas - BA, 42701-260
-                </p>
-                <a href="https://www.google.com/maps/place/CL%C3%8DNICA+NEWLIFE/@-12.8753177,-38.3061968,17z/data=!3m1!4b1!4m6!3m5!1s0x7163fe91f42daa5:0xc0e707ebb4383169!8m2!3d-12.8753177!4d-38.3061968!16s%2Fg%2F11mtjn_gww?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
-                   target="_blank" class="btn-maps">
-                    Ver no Google Maps
-                </a>
-            </div>
+app.get('/', (req, res) => res.json({ message: 'API Online' }));
 
-            <div class="local">
-                <h3>Unidade 2 - Salvador</h3>
-                <p>
-                    Localizado em: International Trade Center - Salvador <br>
-                    Endereço: Rua Arthur de Azevedo Machado, 1459 <br>
-                    Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA, 41770-790
-                </p>
-                <a href="https://www.google.com/maps/place/SALUTE+COWORKING/@-12.9870998,-38.4487191,17z/data=!3m1!4b1!4m6!3m5!1s0x7161b64dc24a075:0x7d8d414872c6bcf3!8m2!3d-12.9870998!4d-38.4487191!16s%2Fg%2F11s0t99lhf?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
-                   target="_blank" class="btn-maps">
-                    Ver no Google Maps
-                </a>
-            </div>
-        </div>
-    </section>
+// Auth
+app.post('/auth/register', async (req, res) => {
+  const { nome, email, senha } = req.body;
+  if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
+  if (senha.length < 6) return res.status(400).json({ message: 'Senha curta.' });
+  try {
+    if (await User.findOne({ email })) return res.status(400).json({ message: 'E-mail existe.' });
+    const newUser = new User({ nome, email, password: senha });
+    await newUser.save();
+    res.status(201).json({ message: 'Criado!', user: { id: newUser._id, nome: newUser.nome }});
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
+app.post('/auth/login', async (req, res) => {
+  const { email, senha } = req.body;
+  try {
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !(await bcrypt.compare(senha, user.password))) return res.status(400).json({ message: 'Inválido.' });
+    const token = jwt.sign({ userId: user._id, nome: user.nome, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    res.status(200).json({ message: 'OK', token, userName: user.nome, role: user.role });
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
-    <footer id="contato">
-        <p>Siga a Dra. Aisha nas redes sociais:</p>
-        <div class="social-icons">
-            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank">
-                <img src="img/instagram.png" alt="Instagram">
-            </a>
-            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank">
-                <img src="img/facebook.png" alt="Facebook">
-            </a>
-            <a href="https://wa.me/5571981233912" target="_blank">
-                <img src="img/whatsapp.png" alt="WhatsApp">
-            </a>
-        </div>
-        
-        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+// Rota Pública
+app.get('/api/public-prontuario/:userId', async (req, res) => {
+  try {
+    const prontuario = await Prontuario.findOne({ user: req.params.userId });
+    if (!prontuario) return res.status(404).json({ message: 'Não encontrado.' });
+    res.status(200).json(prontuario);
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
-        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
-    </footer>
+// --- ROTAS PACIENTE (SALVANDO TERMO) ---
+app.get('/api/prontuario', authMiddleware, async (req, res) => {
+  try {
+    let prontuario = await Prontuario.findOne({ user: req.user.userId });
+    if (!prontuario) { prontuario = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await prontuario.save(); }
+    res.status(200).json(prontuario);
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
-    <script>
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+app.post('/api/prontuario', authMiddleware, async (req, res) => {
+  const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
+  try {
+    const dados = { 
+        user: req.user.userId, 
+        termoAceite, // <--- SALVANDO
+        nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes 
+    };
+    const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
+    res.status(200).json({ message: 'Salvo!', prontuario: p });
+  } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
+});
 
-        hamburgerButton.addEventListener('click', () => {
-            hamburgerButton.classList.toggle('is-active');
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            mobileMenu.classList.toggle('is-active');
-        });
+// --- ROTAS ADMIN (PRESERVANDO TERMO) ---
+app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const p = await Prontuario.findOne({ user: req.params.userId });
+    if (!p) {
+        const u = await User.findById(req.params.userId);
+        if(!u) return res.status(404).json({message:'User nulo'});
+        return res.status(200).json({ user: req.params.userId, nomePaciente: u.nome, evolucoes: [] });
+    }
+    res.status(200).json(p);
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
-        const menuLinks = mobileMenu.querySelectorAll('a[href^="#"]'); // Apenas links âncora
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerButton.classList.remove('is-active');
-                hamburgerButton.setAttribute('aria-expanded', 'false');
-                mobileMenu.classList.remove('is-active');
-            });
-        });
-    </script>
+app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
+    const dados = { 
+        user: req.params.userId, 
+        termoAceite, // <--- SALVANDO O QUE O ADMIN ENVIOU (OU PRESERVANDO)
+        nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes 
+    };
+    await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
+    res.status(200).json({ message: 'Atualizado!' });
+  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
 
-</body>
-</html>
+// Evoluções
+app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const { titulo, texto } = req.body;
+        const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true });
+        res.status(200).json({ message: 'Salvo', prontuario: p });
+    } catch(e) { res.status(500).json({message: 'Erro'}); }
+});
+app.delete('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req,res)=>{
+    try {
+        await Prontuario.findOneAndUpdate({user: req.params.userId}, {$pull: {evolucoes: {_id: req.params.evoId}}});
+        res.status(200).json({message: 'Deletado'});
+    } catch(e){ res.status(500).json({message:'Erro'}); }
+});
+app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req, res) => {
+    try {
+        const {titulo, texto} = req.body;
+        const p = await Prontuario.findOne({user: req.params.userId});
+        const evo = p.evolucoes.id(req.params.evoId);
+        evo.titulo = titulo; evo.texto = texto;
+        await p.save();
+        res.status(200).json({message: 'Editado', prontuario: p});
+    } catch(e){ res.status(500).json({message: 'Erro'}); }
+});

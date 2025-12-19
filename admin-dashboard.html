@@ -4,80 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Dra. Aisha</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
     <style>
-        .container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        /* Estilos específicos do Dashboard */
+        body { background-color: #f4f6f8; }
         
-        /* Estilos da Tabela */
-        .paciente-lista { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .paciente-lista th, .paciente-lista td {
-            border: 1px solid #ddd; padding: 12px; text-align: left;
+        .dashboard-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
         }
-        .paciente-lista th { background-color: #e0f5ef; color: #2c3e50; }
-        
-        /* Botões */
-        .btn-delete { 
-            background: #e74c3c; color: white; border: none; padding: 8px 12px;
-            border-radius: 5px; cursor: pointer;
-        }
-        #btn-logout { background: #e74c3c; color: white; border: none; border-radius: 5px; cursor: pointer; }
 
-        /* --- NOVO CSS DA BUSCA --- */
-        .search-container {
-            margin-bottom: 20px;
+        .card-painel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+
+        .painel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 15px;
         }
-        #search-input {
-            padding: 12px;
+
+        .painel-header h2 { color: #2c3e50; margin: 0; }
+
+        /* Tabela de Pacientes */
+        .tabela-pacientes {
             width: 100%;
-            max-width: 400px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 15px;
+            border-collapse: collapse;
+            margin-top: 10px;
         }
-        #search-input:focus {
-            border-color: #2ADCA1;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.2);
+
+        .tabela-pacientes th {
+            background-color: #2ADCA1;
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+            font-weight: 600;
+            border-radius: 4px 4px 0 0;
         }
+
+        .tabela-pacientes td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            color: #555;
+        }
+
+        .tabela-pacientes tr:hover { background-color: #f9f9f9; }
+
+        /* Botões de Ação */
+        .btn-acao {
+            padding: 6px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-right: 5px;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .btn-ver { background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
+        .btn-ver:hover { background-color: #BBDEFB; }
+
+        .btn-excluir { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+        .btn-excluir:hover { background-color: #FFCDD2; }
+
+        .loading-text { text-align: center; color: #888; padding: 20px; }
     </style>
 </head>
 <body>
+
     <header class="novo-header">
-        <div class="header-container">
-            <a href="index.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha Logo"></a>
-            <h3 style="color: #2ADCA1;">Painel de Administração</h3>
-            <button id="btn-logout" class="btn-delete" style="padding: 8px 15px; margin-left: 20px;">Sair</button>
+        <div class="header-container" style="justify-content: space-between;">
+            <a href="admin-dashboard.html" class="logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 40px;">
+            </a>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-weight: 600; color: #2ADCA1;">Área Administrativa</span>
+                <button id="btn-logout" class="btn-agendar" style="padding: 8px 15px; background: #e74c3c;">Sair</button>
+            </div>
         </div>
     </header>
-    <main>
-        <div class="container">
-            
-            <div class="search-container">
-                <h2>Lista de Pacientes Cadastrados</h2>
-                <input type="text" id="search-input" placeholder="🔍 Buscar paciente por nome...">
+
+    <main class="dashboard-container">
+        <div class="card-painel">
+            <div class="painel-header">
+                <h2>Pacientes Cadastrados</h2>
+                <div style="font-size: 0.9rem; color: #777;">
+                    Total: <span id="total-pacientes">0</span>
+                </div>
             </div>
 
-            <table class="paciente-lista">
-                <thead>
-                    <tr>
-                        <th>Nome do Paciente</th>
-                        <th>Email</th>
-                        <th>Data de Cadastro</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="paciente-tbody">
+            <div style="overflow-x: auto;">
+                <table class="tabela-pacientes">
+                    <thead>
+                        <tr>
+                            <th>Nome do Paciente</th>
+                            <th>E-mail</th>
+                            <th>Data Cadastro</th>
+                            <th style="text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-pacientes-body">
+                        <tr><td colspan="4" class="loading-text">Carregando pacientes...</td></tr>
                     </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     </main>
+
     <script src="js/admin-dashboard.js"></script>
-    <script src="js/logout-simples.js"></script> </body>
+    
+    <script>
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
 </html>
