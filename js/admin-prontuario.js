@@ -1,3 +1,5 @@
+// Arquivo: /js/admin-prontuario.js (Atualizado)
+
 document.addEventListener('DOMContentLoaded', () => {
 
   const token = localStorage.getItem('authToken');
@@ -12,18 +14,18 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- SELETORES GERAIS ---
+  // Elementos
   const tituloEdicao = document.getElementById('titulo-edicao');
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
   
-  // SELETORES ALERGIA
+  // ALERGIAS E SINALIZADOR
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
   const inputAlergiasQuais = document.getElementById('alergias-quais');
+  const sinalizadorAlergia = document.getElementById('sinalizador-alergia'); // NOVO
 
-  // Médicos e Medicações
   const formAddMedico = document.getElementById('form-add-medico');
   const nomeMedicoInput = document.getElementById('nome-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
@@ -34,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
   
-  // Evolução (Admin)
   const tituloEvolucaoInput = document.getElementById('titulo-evolucao') || createTempTitleInput(); 
   const textoEvolucaoInput = document.getElementById('texto-evolucao');
   const btnAddEvolucao = document.getElementById('btn-add-evolucao');
@@ -49,34 +50,31 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentEvolucoes = []; 
   let editingEvolucaoId = null; 
 
-  const mapTurnos = {
-    antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço',
-    tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
-  };
+  const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() {
     const input = document.createElement('input');
     input.id = 'titulo-evolucao';
     input.className = 'form-control';
-    input.placeholder = 'Assunto (ex: Visita de Rotina)';
-    input.style.marginBottom = '6px';
+    input.placeholder = 'Assunto';
+    input.style.marginBottom = '5px';
     const textArea = document.getElementById('texto-evolucao');
     if(textArea) textArea.parentNode.insertBefore(input, textArea);
     return input;
   }
 
-  // Lógica Visual Alergia
+  // --- LÓGICA DO SINALIZADOR ---
   function toggleAlergiaInput() {
     if (radioAlergiaSim.checked) {
         inputAlergiasQuais.style.display = 'block';
-        inputAlergiasQuais.focus();
+        if(sinalizadorAlergia) sinalizadorAlergia.style.display = 'flex'; // MOSTRA ALERTA
     } else {
         inputAlergiasQuais.style.display = 'none';
         inputAlergiasQuais.value = ''; 
+        if(sinalizadorAlergia) sinalizadorAlergia.style.display = 'none'; // ESCONDE ALERTA
     }
   }
 
-  // --- CARREGAMENTO ---
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_ADMIN_BASE + pacienteId, {
@@ -86,13 +84,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
       
       tituloEdicao.innerText = `Editando: ${data.nomePaciente || 'Novo Paciente'}`;
-      
       populateForm(data); 
       
       currentMedicacoes = data.medicacoes || []; renderTabelaMedicacoes(); 
       currentMedicos = data.medicosAssistentes || []; renderMedicosList(); 
       currentEvolucoes = data.evolucoes || []; renderEvolucoes();
-
     } catch (error) { console.error(error); }
   };
 
@@ -101,29 +97,30 @@ document.addEventListener('DOMContentLoaded', () => {
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
 
-    // Alergias
+    // Alergias e Sinalizador
     if (data.alergias && data.alergias.temAlergia) {
         radioAlergiaSim.checked = true;
         inputAlergiasQuais.value = data.alergias.quais || '';
-        inputAlergiasQuais.style.display = 'block';
     } else {
         radioAlergiaNao.checked = true;
-        inputAlergiasQuais.style.display = 'none';
     }
+    // Chama a função para ajustar a visibilidade visualmente
+    toggleAlergiaInput();
   };
 
-  // --- 1. MÉDICOS (PILLS + DELETE) ---
+  // --- MÉDICOS (COMPACTOS) ---
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
-      listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#aaa; font-size:0.85rem; padding:10px;">Nenhum médico registrado.</li>';
+      listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>';
       return;
     }
     currentMedicos.forEach((medico, index) => {
+      // VISUAL COMPACTO
       const pill = `
-        <li class="pill-medico" title="Médico Assistente">
+        <li class="pill-medico">
             <span>${medico}</span>
-            <button class="btn-deletar-medico no-print" data-index="${index}" title="Remover">✕</button>
+            <button class="btn-deletar-medico no-print" data-index="${index}">✕</button>
         </li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
@@ -133,11 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
-  // --- 2. MEDICAÇÕES ---
+  // --- MEDICAÇÕES ---
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) {
-      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">Nenhuma medicação.</td></tr>';
+      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>';
       return;
     }
     const list = [...currentMedicacoes].sort((a, b) => a.nome.localeCompare(b.nome));
@@ -166,11 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
-  // --- 3. EVOLUÇÃO (ADMIN ONLY) ---
+  // --- EVOLUÇÃO ---
   const renderEvolucoes = () => {
     listaEvolucoesDiv.innerHTML = '';
     if (!currentEvolucoes || currentEvolucoes.length === 0) {
-      listaEvolucoesDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.85rem;">Nenhum registro.</p>';
+      listaEvolucoesDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</p>';
       return;
     }
     const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
@@ -190,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="evo-right">
                     <span class="evo-arrow" id="icon-${evo._id}">▼</span>
                     <div class="evo-btns" onclick="event.stopPropagation()">
-                        <button class="btn-mini edit" onclick="startEditEvolucao('${evo._id}')" title="Editar">✏️</button>
-                        <button class="btn-mini delete" onclick="deleteEvolucao('${evo._id}')" title="Excluir">✕</button>
+                        <button class="btn-mini edit" onclick="startEditEvolucao('${evo._id}')">✎</button>
+                        <button class="btn-mini delete" onclick="deleteEvolucao('${evo._id}')">✕</button>
                     </div>
                 </div>
             </div>
@@ -207,13 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleEvolucao = (id) => {
     const body = document.getElementById(`body-${id}`);
     const icon = document.getElementById(`icon-${id}`);
-    if (body.classList.contains('hidden')) {
-        body.classList.remove('hidden');
-        icon.style.transform = 'rotate(180deg)';
-    } else {
-        body.classList.add('hidden');
-        icon.style.transform = 'rotate(0deg)';
-    }
+    if (body.classList.contains('hidden')) { body.classList.remove('hidden'); icon.style.transform = 'rotate(180deg)'; } 
+    else { body.classList.add('hidden'); icon.style.transform = 'rotate(0deg)'; }
   };
 
   window.startEditEvolucao = (id) => {
@@ -230,15 +222,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.deleteEvolucao = async (id) => {
     if (!confirm('Excluir?')) return;
     try {
-        const response = await fetch(`${API_ADMIN_BASE}${pacienteId}/evolucao/${id}`, {
-            method: 'DELETE',
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (response.ok) {
-            const data = await response.json();
-            currentEvolucoes = data.prontuario.evolucoes;
-            renderEvolucoes();
-        }
+        const response = await fetch(`${API_ADMIN_BASE}${pacienteId}/evolucao/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (response.ok) { const data = await response.json(); currentEvolucoes = data.prontuario.evolucoes; renderEvolucoes(); }
     } catch (err) { alert('Erro.'); }
   };
 
@@ -247,52 +232,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const texto = textoEvolucaoInput.value.trim();
     if (!titulo || !texto) { alert('Preencha Assunto e Texto.'); return; }
     btnAddEvolucao.disabled = true;
-
     try {
-        let url = `${API_ADMIN_BASE}${pacienteId}/evolucao`;
-        let method = 'POST';
+        let url = `${API_ADMIN_BASE}${pacienteId}/evolucao`; let method = 'POST';
         if (editingEvolucaoId) { url += `/${editingEvolucaoId}`; method = 'PUT'; }
-
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ titulo, texto })
-        });
-
+        const response = await fetch(url, { method: method, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ titulo, texto }) });
         const data = await response.json();
         if (response.ok) {
-            currentEvolucoes = data.prontuario.evolucoes;
-            renderEvolucoes();
+            currentEvolucoes = data.prontuario.evolucoes; renderEvolucoes();
             tituloEvolucaoInput.value = ''; textoEvolucaoInput.value = ''; editingEvolucaoId = null;
-            btnAddEvolucao.innerText = '+ Registrar';
-            btnAddEvolucao.style.backgroundColor = '#2ADCA1'; 
+            btnAddEvolucao.innerText = '+ Registrar'; btnAddEvolucao.style.backgroundColor = '#2ADCA1'; 
         }
     } catch (error) { alert('Erro: ' + error.message); }
     btnAddEvolucao.disabled = false;
   };
 
-  // --- SALVAR TUDO ---
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
     btnSalvarTudo.innerText = 'Salvando...';
-
-    const dadosAlergia = {
-        temAlergia: radioAlergiaSim.checked,
-        quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : ''
-    };
-
+    const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
     try {
       await fetch(API_ADMIN_BASE + pacienteId, {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ 
-            nomePaciente: nomePacienteInput.value, 
-            idade: idadeInput.value, 
-            patologias: patologiasInput.value, 
-            alergias: dadosAlergia, 
-            medicosAssistentes: currentMedicos, 
-            medicacoes: currentMedicacoes 
-        })
+        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ nomePaciente: nomePacienteInput.value, idade: idadeInput.value, patologias: patologiasInput.value, alergias: dadosAlergia, medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes })
       });
       alert('Dados salvos!');
     } catch(err) { console.error(err); }
@@ -301,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
   radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
-
   formAddMedico.addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);
   formAddMedicacao.addEventListener('submit', handleAddMedicacao);

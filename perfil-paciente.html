@@ -105,16 +105,21 @@
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+                        
                         <div style="display: flex; gap: 20px; align-items: center;">
                             <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
                                 <input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> 
                                 <span style="color: #2E7D32; font-weight: 500;">Não</span>
                             </label>
+                            
                             <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
                                 <input type="radio" name="temAlergia" id="alergia-sim" value="sim"> 
                                 <span style="color: #C62828; font-weight: 500;">Sim</span>
                             </label>
+
+                            <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
                         </div>
+
                         <input type="text" id="alergias-quais" class="form-control" 
                                placeholder="Quais? (Ex: Dipirona, Iodo, Frutos do Mar...)" 
                                style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">

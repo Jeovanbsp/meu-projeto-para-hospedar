@@ -1,147 +1,110 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Final: Limpa e Sóbria)   */
+/* ARQUIVO: css/prontuario.css (Versão Final: Compacta)         */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS (SEM EMOJI) --- */
+/* --- 1. LISTA DE MÉDICOS (ESTILO "TAG" MINIMALISTA) --- */
 
-/* O Container (Caixa onde ficam os médicos) */
 #lista-medicos-pills {
     display: flex;
-    flex-wrap: wrap;       /* Permite quebra de linha */
-    gap: 8px;              /* Espaço uniforme */
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    
-    /* Otimização de Espaço: Cria scroll se crescer muito */
-    min-height: 45px;
-    max-height: 120px;     
-    overflow-y: auto;      
-    
+    flex-wrap: wrap;
+    gap: 5px;               /* Espaço mínimo entre itens */
+    padding: 8px;
+    background-color: #fff; /* Fundo branco para limpar */
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-height: 35px;
+    max-height: 100px;      /* Altura reduzida */
+    overflow-y: auto;
     list-style: none;
     margin-top: 5px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
-/* Scrollbar fina para ficar elegante */
-#lista-medicos-pills::-webkit-scrollbar { width: 5px; }
-#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+#lista-medicos-pills::-webkit-scrollbar { width: 4px; }
+#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
 
-/* A Etiqueta do Médico (Pill) */
+/* A TAG DO MÉDICO (SUPER COMPACTA) */
 .pill-medico {
     display: inline-flex;
     align-items: center;
-    background-color: #E3F2FD; /* Azul suave */
-    color: #1565C0;            /* Texto legível */
-    padding: 6px 14px;         /* Ajustado para ficar bom sem o ícone */
-    border-radius: 20px;       /* Redondinho */
-    font-size: 0.9rem;
-    font-weight: 600;
-    border: 1px solid #BBDEFB;
-    transition: background 0.2s;
+    background-color: #f0f8ff; /* Azul quase branco */
+    color: #0277bd;            /* Texto escuro para contraste */
+    padding: 2px 8px;          /* Padding mínimo */
+    border-radius: 4px;        /* Cantos levemente arredondados (visual de lista) */
+    font-size: 0.8rem;         /* Fonte menor */
+    font-weight: 500;
+    border: 1px solid #e1f5fe;
     user-select: none;
 }
 
 .pill-medico:hover {
-    background-color: #BBDEFB;
+    border-color: #b3e5fc;
 }
 
-/* (REMOVIDO: O código do emoji ::before foi apagado aqui) */
-
-/* Botão de Excluir Médico (Redondo e Discreto) */
+/* Botão de Excluir (X) simples e sem borda */
 .btn-deletar-medico {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    border: 1px solid #ffcdd2;
+    background: none;
+    border: none;
     color: #e53935;
-    margin-left: 10px; /* Um pouco mais de espaço */
-    font-size: 0.65rem;
+    margin-left: 6px;
+    font-size: 0.75rem;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
+    padding: 0;
+    line-height: 1;
+}
+.btn-deletar-medico:hover { color: #b71c1c; transform: scale(1.2); }
+
+
+/* --- 2. SINALIZADOR DE ALERGIA (NOVO) --- */
+.alerta-alergia {
+    display: none; /* Começa escondido */
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-left: 15px;
+    align-items: center;
+    gap: 5px;
+    animation: pulse 2s infinite;
 }
 
-.btn-deletar-medico:hover {
-    background-color: #e53935;
-    color: #fff;
-    border-color: #e53935;
-    transform: scale(1.1);
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); }
+    70% { box-shadow: 0 0 0 6px rgba(229, 57, 53, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
 }
 
-/* --- 2. MEDICAÇÕES (PILLS DE TURNOS) --- */
+
+/* --- 3. DEMAIS ESTILOS (MANTIDOS) --- */
 .pill-turno {
     display: inline-block;
-    background-color: #E8F5E9; /* Verde suave */
+    background-color: #E8F5E9;
     color: #2E7D32;
-    padding: 3px 8px;
-    border-radius: 12px;
+    padding: 2px 6px;
+    border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 600;
     margin-right: 3px;
     border: 1px solid #C8E6C9;
 }
 
-.btn-deletar-medacao {
-    background: none;
-    border: none;
-    color: #ef5350;
-    font-weight: bold;
-    cursor: pointer;
-}
-.btn-deletar-medacao:hover { color: #d32f2f; }
+.btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; }
 
-
-/* --- 3. HISTÓRICO DE EVOLUÇÃO (MINIMALISTA ADMIN) --- */
-
-.evolucao-item {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-    margin-bottom: 8px;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-}
-.evolucao-item:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-
-.evo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background-color: #FAFAFA;
-    border-left: 4px solid #2ADCA1;
-    cursor: pointer;
-}
-.evo-header:hover { background-color: #f0f0f0; }
-
-.evo-left { display: flex; align-items: center; gap: 10px; }
-.evo-date { font-size: 0.8rem; color: #888; font-family: monospace; }
-.evo-title { font-size: 0.95rem; color: #333; font-weight: 600; }
-
-.evo-right { display: flex; align-items: center; gap: 12px; }
-.evo-arrow { font-size: 0.7rem; color: #aaa; transition: transform 0.2s; }
-
-.evo-btns { display: flex; gap: 5px; }
-.btn-mini {
-    border: none; background: none; cursor: pointer;
-    font-size: 1rem; padding: 0 4px; opacity: 0.5;
-}
-.btn-mini:hover { opacity: 1; transform: scale(1.1); }
-.btn-mini.edit { color: #FFA726; }
-.btn-mini.delete { color: #EF5350; }
-
-.evo-body {
-    padding: 12px 15px;
-    border-top: 1px solid #eee;
-    background: #fff;
-    font-size: 0.9rem;
-    color: #444;
-    line-height: 1.5;
-}
+/* Evolução */
+.evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
+.evo-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
+.evo-left { display: flex; align-items: center; gap: 8px; }
+.evo-date { font-size: 0.75rem; color: #888; font-family: monospace; }
+.evo-title { font-size: 0.9rem; color: #333; font-weight: 600; }
+.evo-right { display: flex; align-items: center; gap: 10px; }
+.evo-btns { display: flex; gap: 4px; }
+.btn-mini { border: none; background: none; cursor: pointer; font-size: 0.9rem; padding: 0 3px; opacity: 0.6; }
+.evo-body { padding: 10px 12px; border-top: 1px solid #eee; background: #fff; font-size: 0.85rem; color: #444; line-height: 1.4; }
 .evo-body.hidden { display: none; }
