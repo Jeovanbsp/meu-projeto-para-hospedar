@@ -1,179 +1,160 @@
-/* --- ESTILO DAS EVOLUÇÕES (ACORDEÃO / MINIMIZÁVEL) --- */
+/* ============================================================ */
+/* ARQUIVO: css/prontuario.css (Restaurado + Minimalista)       */
+/* ============================================================ */
 
-.evolucao-item {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-}
+/* --- 1. RESTAURAÇÃO DAS "PILLS" (MÉDICOS E REMÉDIOS) --- */
 
-/* Cabeçalho que clica para abrir/fechar */
-.evo-header {
-    display: flex;
-    justify-content: space-between;
+.pill-medico {
+    display: inline-flex;
     align-items: center;
-    padding: 12px 15px;
-    background: #f8f9fa;
-    border-left: 5px solid #2ADCA1;
-    cursor: default;
+    background-color: #e3f2fd; /* Azul bem clarinho */
+    color: #1565c0;            /* Azul escuro */
+    padding: 4px 12px;
+    border-radius: 20px;       /* Borda arredondada */
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-right: 6px;
+    margin-bottom: 6px;
+    border: 1px solid #bbdefb;
 }
 
-/* Área clicável do título/seta */
-.evo-info {
-    flex-grow: 1;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    /* Cursor pointer para indicar que clica */
-    cursor: pointer; 
-}
-
-.evo-date {
+.pill-turno {
+    display: inline-block;
+    background-color: #e8f5e9; /* Verde bem clarinho */
+    color: #2e7d32;            /* Verde escuro */
+    padding: 3px 10px;
+    border-radius: 15px;
     font-size: 0.85rem;
-    color: #888;
-    min-width: 130px;
+    font-weight: 500;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    border: 1px solid #c8e6c9;
 }
 
-.evo-title {
-    font-size: 1rem;
-    color: #333;
-    font-weight: 600;
-}
-
-/* A setinha */
-.evo-icon {
-    font-size: 0.8rem;
-    color: #aaa;
-    transition: transform 0.3s ease;
-    /* Garante que ela exista */
-    display: inline-block; 
-}
-
-.evo-actions {
-    display: flex;
-    gap: 10px;
-}
-
-.btn-icon {
+.btn-deletar-medico {
     background: none;
     border: none;
+    color: #ef5350;
+    font-weight: bold;
+    margin-left: 8px;
     cursor: pointer;
-    font-size: 1.1rem;
-    padding: 5px;
-    opacity: 0.6;
-    transition: 0.2s;
-}
-.btn-icon:hover { opacity: 1; transform: scale(1.1); }
-.btn-icon.edit { color: #f39c12; }
-.btn-icon.delete { color: #e74c3c; }
-
-/* Corpo Oculto */
-.evo-body {
-    padding: 20px;
-    border-top: 1px solid #eee;
-    background: #fff;
-    animation: fadeIn 0.3s;
+    font-size: 1rem;
+    line-height: 1;
 }
 
-/* Classe essencial para esconder */
-.evo-body.hidden {
-    display: none;
+.btn-deletar-medico:hover {
+    color: #d32f2f;
+    transform: scale(1.1);
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-5px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-/* --- ADICIONE ISTO NO FIM DO SEU CSS ORIGINAL --- */
-/* Estilo Exclusivo para o Histórico de Evolução (Acordeão) */
+/* --- 2. HISTÓRICO DE EVOLUÇÃO (DESIGN MINIMALISTA) --- */
 
 .evolucao-item {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px; /* Cantos levemente arredondados */
+    margin-bottom: 10px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03); /* Sombra muito suave */
+    transition: all 0.2s ease;
     overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
 }
 
-/* Cabeçalho (Clicável) */
+.evolucao-item:hover {
+    border-color: #b0bec5;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Cabeçalho Compacto */
 .evo-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 15px;
-    background: #f8f9fa;
-    border-left: 5px solid #2ADCA1; /* Verde da identidade visual */
-    cursor: default;
+    padding: 8px 12px; /* Padding reduzido para ser "não muito grande" */
+    background-color: #fcfcfc;
+    border-left: 4px solid #2ADCA1; /* Identidade visual discreta */
+    cursor: pointer;
+    user-select: none;
 }
 
+/* Área de Informação (Data e Título) */
 .evo-info {
-    flex-grow: 1;
     display: flex;
     align-items: center;
     gap: 15px;
-    cursor: pointer; /* Mãozinha para indicar clique */
+    flex-grow: 1;
 }
 
 .evo-date {
     font-size: 0.85rem;
-    color: #888;
-    min-width: 130px; /* Garante alinhamento */
+    color: #78909c; /* Cinza azulado discreto */
+    font-family: monospace; /* Fonte mono para alinhar números */
+    white-space: nowrap;
 }
 
 .evo-title {
-    font-size: 1rem;
-    color: #333;
+    font-size: 0.95rem;
+    color: #37474f;
     font-weight: 600;
 }
 
-/* Seta Animada */
+/* Ícone da Seta */
 .evo-icon {
-    font-size: 0.8rem;
-    color: #aaa;
-    transition: transform 0.3s ease;
-    display: inline-block;
-    margin-left: auto; /* Empurra a seta para a direita antes dos botões */
+    font-size: 0.75rem;
+    color: #90a4ae;
+    transition: transform 0.2s ease;
     margin-right: 15px;
 }
 
+/* Botões de Ação (Editar/Excluir) */
 .evo-actions {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.evolucao-item:hover .evo-actions {
+    opacity: 1;
 }
 
 .btn-icon {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.1rem;
-    padding: 5px;
-    opacity: 0.6;
-    transition: 0.2s;
+    font-size: 1rem;
+    padding: 2px;
+    color: #78909c;
+    transition: color 0.2s;
 }
 
-.btn-icon:hover { opacity: 1; transform: scale(1.1); }
-.btn-icon.edit { color: #f39c12; }
-.btn-icon.delete { color: #e74c3c; }
+.btn-icon:hover { color: #2ADCA1; transform: scale(1.1); }
+.btn-icon.delete:hover { color: #e53935; }
 
-/* Corpo Oculto */
+/* Corpo do Texto (Conteúdo) */
 .evo-body {
-    padding: 20px;
-    border-top: 1px solid #eee;
-    background: #fff;
-    animation: fadeIn 0.3s;
+    padding: 15px;
+    font-size: 0.95rem;
+    color: #455a64;
+    line-height: 1.5;
+    background-color: #fff;
+    border-top: 1px solid #f0f0f0;
+    animation: slideDown 0.2s ease-out;
 }
 
-/* CLASSE IMPORTANTE PARA ESCONDER */
 .evo-body.hidden {
     display: none;
 }
 
-@keyframes fadeIn {
+.evo-author {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: #b0bec5;
+    text-align: right;
+    font-style: italic;
+}
+
+@keyframes slideDown {
     from { opacity: 0; transform: translateY(-5px); }
     to { opacity: 1; transform: translateY(0); }
 }

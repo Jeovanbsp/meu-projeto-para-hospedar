@@ -1,3 +1,5 @@
+// Arquivo: /js/admin-prontuario.js (Versão Final: Restaurada e Minimalista)
+
 document.addEventListener('DOMContentLoaded', () => {
 
   // --- CONFIGURAÇÃO E SEGURANÇA ---
@@ -13,12 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- SELETORES ---
+  // --- SELETORES GERAIS ---
   const tituloEdicao = document.getElementById('titulo-edicao');
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
   
+  // Seletores de Médicos e Medicações
   const formAddMedico = document.getElementById('form-add-medico');
   const nomeMedicoInput = document.getElementById('nome-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
@@ -32,13 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); 
   const mensagemRetorno = document.getElementById('mensagem-retorno');
 
-  // --- SELETORES DA EVOLUÇÃO (NOVO) ---
+  // --- SELETORES DA EVOLUÇÃO ---
+  // Cria o input de Título se ele não existir no HTML
   const tituloEvolucaoInput = document.getElementById('titulo-evolucao') || createTempTitleInput(); 
   const textoEvolucaoInput = document.getElementById('texto-evolucao');
   const btnAddEvolucao = document.getElementById('btn-add-evolucao');
   const listaEvolucoesDiv = document.getElementById('lista-evolucoes');
   
-  // Estado Local
+  // Estado Local dos Dados
   let currentMedicacoes = [];
   let currentMedicos = []; 
   let currentEvolucoes = []; 
@@ -49,20 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
     tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
   };
 
-  // Função auxiliar para criar input de Título se não existir no HTML
+  // Função auxiliar para injetar o campo de Título (caso não tenha no HTML)
   function createTempTitleInput() {
     const input = document.createElement('input');
     input.id = 'titulo-evolucao';
     input.className = 'form-control';
-    input.placeholder = 'Assunto / Tópico (ex: Visita de Rotina)';
-    input.style.marginBottom = '10px';
-    input.style.fontWeight = 'bold';
+    input.placeholder = 'Assunto (ex: Rotina)'; // Placeholder curto
+    input.style.marginBottom = '8px';
+    input.style.fontWeight = '600';
     const textArea = document.getElementById('texto-evolucao');
     if(textArea) textArea.parentNode.insertBefore(input, textArea);
     return input;
   }
 
-  // --- CARREGAMENTO ---
+  // --- CARREGAMENTO INICIAL ---
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_ADMIN_BASE + pacienteId, {
@@ -72,18 +76,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!response.ok) { throw new Error('Falha ao buscar dados.'); }
       const data = await response.json();
       
-      tituloEdicao.innerText = `Editando Prontuário: ${data.nomePaciente || 'Novo Paciente'}`;
+      tituloEdicao.innerText = `Prontuário: ${data.nomePaciente || 'Novo Paciente'}`;
       
       populateForm(data); 
       
-      // Carrega mantendo o visual original
+      // RESTAURAÇÃO: Carrega as tabelas com o visual correto
       currentMedicacoes = data.medicacoes || []; 
       renderTabelaMedicacoes(); 
       
       currentMedicos = data.medicosAssistentes || []; 
       renderMedicosList(); 
 
-      // Evoluções (Nova Lógica com Acordeão)
+      // CARREGA A EVOLUÇÃO MINIMALISTA
       currentEvolucoes = data.evolucoes || [];
       renderEvolucoes();
 
@@ -94,26 +98,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ============================================================
-  // FUNÇÕES ORIGINAIS (VISUAL RESTAURADO)
-  // ============================================================
-
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
   };
 
-  // 1. Médicos (CÓDIGO ORIGINAL COM PILLS)
+  // ============================================================
+  // 1. MÉDICOS (VISUAL DE "PILLS" RESTAURADO)
+  // ============================================================
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
-      listaMedicosPills.innerHTML = '<li style="font-size: 14px; color: #777;">Nenhum médico assistente adicionado.</li>';
+      listaMedicosPills.innerHTML = '<li style="font-size: 13px; color: #999;">Nenhum médico adicionado.</li>';
       return;
     }
     currentMedicos.forEach((medico, index) => {
-      // Estrutura original com a classe "pill-medico"
-      const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✖</button></li>`;
+      // Gera o HTML da etiqueta azul
+      const pill = `<li class="pill-medico">
+        <span>${medico}</span>
+        <button class="btn-deletar-medico no-print" data-index="${index}" title="Remover">✖</button>
+      </li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
   };
@@ -121,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleAddMedico = (event) => {
     event.preventDefault();
     const nome = nomeMedicoInput.value.trim(); 
-    if (!nome) { alert('Por favor, digite o nome do médico.'); return; }
+    if (!nome) { alert('Digite o nome do médico.'); return; }
     currentMedicos.push(nome); 
     renderMedicosList(); 
     nomeMedicoInput.value = ''; 
@@ -135,11 +140,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // 2. Medicações (CÓDIGO ORIGINAL COM PILLS DE TURNOS)
+  // ============================================================
+  // 2. MEDICAÇÕES (VISUAL DE TURNOS RESTAURADO)
+  // ============================================================
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) {
-      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhuma medicação adicionada.</td></tr>';
+      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999; font-size: 13px;">Nenhuma medicação.</td></tr>';
       return;
     }
     const medicoesOrdenadas = [...currentMedicacoes]; 
@@ -153,18 +160,20 @@ document.addEventListener('DOMContentLoaded', () => {
     
     medicoesOrdenadas.forEach((med) => { 
       let turnosHtml = '';
-      // Lógica original para gerar os spans com classe "pill-turno"
+      // Gera as etiquetas verdes para os turnos
       for (const [key, value] of Object.entries(med.horarios)) {
         if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; }
       }
-      if (turnosHtml === '') { turnosHtml = 'N/A'; }
-      const horarioTxt = med.horarioEspecifico || 'N/A';
+      if (turnosHtml === '') { turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>'; }
+      
+      const horarioTxt = med.horarioEspecifico || '<span style="color:#ccc;">-</span>';
+      
       const row = `
         <tr>
-          <td class="col-medicacao">${med.nome}</td>
+          <td class="col-medicacao" style="font-weight: 500;">${med.nome}</td>
           <td class="col-turnos">${turnosHtml}</td>
-          <td class="col-horario">${horarioTxt}</td>
-          <td class="col-acao no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td>
+          <td class="col-horario" style="font-family: monospace;">${horarioTxt}</td>
+          <td class="col-acao no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}" style="color: #ef5350; border:none; background:none; cursor:pointer;">✖</button></td>
         </tr>
       `;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
@@ -175,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault(); 
     const nome = nomeMedicacaoInput.value;
     const horarioEspecifico = horarioEspecificoInput.value; 
-    if (!nome) { alert('Por favor, digite o nome da medicação.'); return; }
+    if (!nome) { alert('Digite o nome da medicação.'); return; }
     const horarios = {};
     checkboxesHorarios.forEach(cb => { horarios[cb.value] = cb.checked; });
     currentMedicacoes.push({ nome: nome, horarioEspecifico: horarioEspecifico, horarios: horarios });
@@ -191,79 +200,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  const handleSalvarTudo = async (event) => {
-    event.preventDefault();
-    btnSalvarTudo.disabled = true;
-    btnSalvarTudo.innerText = 'Salvando Edição...';
-    mensagemRetorno.innerText = '';
-
-    const dadosProntuario = {
-      nomePaciente: nomePacienteInput.value,
-      idade: idadeInput.value,
-      patologias: patologiasInput.value,
-      medicosAssistentes: currentMedicos, 
-      medicacoes: currentMedicacoes
-    };
-
-    try {
-      const response = await fetch(API_ADMIN_BASE + pacienteId, {
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(dadosProntuario)
-      });
-      const data = await response.json();
-      if (response.ok) {
-        mensagemRetorno.innerText = data.message;
-        mensagemRetorno.style.color = '#2ADCA1';
-        tituloEdicao.innerText = `Editando Prontuário: ${nomePacienteInput.value}`; 
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-      mensagemRetorno.innerText = `Erro: ${error.message}`;
-      mensagemRetorno.style.color = '#e74c3c';
-    }
-    btnSalvarTudo.disabled = false;
-    btnSalvarTudo.innerText = 'Salvar Edição do Paciente';
-  };
-
   // ============================================================
-  // LÓGICA DE EVOLUÇÃO (NOVA E COM ACORDEÃO)
+  // 3. EVOLUÇÃO (NOVO LAYOUT MINIMALISTA)
   // ============================================================
-
   const renderEvolucoes = () => {
     listaEvolucoesDiv.innerHTML = '';
     
     if (!currentEvolucoes || currentEvolucoes.length === 0) {
-      listaEvolucoesDiv.innerHTML = '<p style="color: #777; font-style: italic;">Nenhuma evolução registrada.</p>';
+      listaEvolucoesDiv.innerHTML = '<p style="color: #bbb; font-style: italic; font-size: 0.9rem; text-align: center; margin-top: 10px;">Nenhum registro de evolução.</p>';
       return;
     }
 
     const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
 
     list.forEach(evo => {
-      const dataFormatada = new Date(evo.data).toLocaleDateString('pt-BR');
-      const horaFormatada = new Date(evo.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-      const titulo = evo.titulo || 'Sem Tópico';
+      // Data formatada curta (ex: 20/10 14:30)
+      const dateObj = new Date(evo.data);
+      const dataFormatada = dateObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+      const horaFormatada = dateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+      const titulo = evo.titulo || 'Evolução';
 
-      // Estrutura do Acordeão
+      // HTML Minimalista
       const itemHtml = `
         <div class="evolucao-item" id="evo-${evo._id}">
-            <div class="evo-header">
-                <div class="evo-info" onclick="toggleEvolucao('${evo._id}')">
+            <div class="evo-header" onclick="toggleEvolucao('${evo._id}')">
+                <div class="evo-info">
                     <span class="evo-date">${dataFormatada} ${horaFormatada}</span>
-                    <strong class="evo-title" style="margin-left: 10px;">${titulo}</strong>
-                    <span class="evo-icon">▼</span>
+                    <strong class="evo-title">${titulo}</strong>
                 </div>
-                <div class="evo-actions">
-                    <button class="btn-icon edit" onclick="startEditEvolucao('${evo._id}')" title="Editar">✏️</button>
+                <span class="evo-icon" id="icon-${evo._id}">▼</span>
+                <div class="evo-actions" onclick="event.stopPropagation()"> <button class="btn-icon" onclick="startEditEvolucao('${evo._id}')" title="Editar">✏️</button>
                     <button class="btn-icon delete" onclick="deleteEvolucao('${evo._id}')" title="Excluir">🗑️</button>
                 </div>
             </div>
+            
             <div class="evo-body hidden" id="body-${evo._id}">
                 <p>${evo.texto.replace(/\n/g, '<br>')}</p>
-                <small style="display:block; margin-top:10px; color:#999;">Autor: ${evo.autor || 'Dra. Aisha'}</small>
+                <small class="evo-author">Por: ${evo.autor || 'Dra. Aisha'}</small>
             </div>
         </div>
       `;
@@ -273,7 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.toggleEvolucao = (id) => {
     const body = document.getElementById(`body-${id}`);
-    const icon = document.querySelector(`#evo-${id} .evo-icon`);
+    const icon = document.getElementById(`icon-${id}`);
+    
     if (body.classList.contains('hidden')) {
         body.classList.remove('hidden');
         if(icon) icon.style.transform = 'rotate(180deg)';
@@ -286,19 +260,18 @@ document.addEventListener('DOMContentLoaded', () => {
   window.startEditEvolucao = (id) => {
     const evo = currentEvolucoes.find(e => e._id === id);
     if (!evo) return;
-
     tituloEvolucaoInput.value = evo.titulo || '';
     textoEvolucaoInput.value = evo.texto;
     editingEvolucaoId = id;
     
-    btnAddEvolucao.innerText = '💾 Salvar Alteração';
-    btnAddEvolucao.style.backgroundColor = '#f39c12';
+    btnAddEvolucao.innerText = 'Salvar Alteração';
+    btnAddEvolucao.style.backgroundColor = '#FFB74D'; // Laranja suave
     tituloEvolucaoInput.focus();
-    tituloEvolucaoInput.scrollIntoView({ behavior: 'smooth' });
+    tituloEvolucaoInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
 
   window.deleteEvolucao = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir esta evolução?')) return;
+    if (!confirm('Excluir este registro?')) return;
     try {
         const response = await fetch(`${API_ADMIN_BASE}${pacienteId}/evolucao/${id}`, {
             method: 'DELETE',
@@ -317,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const texto = textoEvolucaoInput.value.trim();
 
     if (!titulo || !texto) {
-        alert('Por favor, preencha o Tópico e o Conteúdo.');
+        alert('Preencha o Assunto e o Texto.');
         return;
     }
     btnAddEvolucao.disabled = true;
@@ -344,12 +317,40 @@ document.addEventListener('DOMContentLoaded', () => {
             tituloEvolucaoInput.value = '';
             textoEvolucaoInput.value = '';
             editingEvolucaoId = null;
-            btnAddEvolucao.innerText = '+ Registrar Evolução';
+            btnAddEvolucao.innerText = '+ Registrar';
             btnAddEvolucao.style.backgroundColor = '#2ADCA1'; 
-            alert('Salvo com sucesso!');
         } else { throw new Error(data.message); }
     } catch (error) { alert('Erro: ' + error.message); }
     btnAddEvolucao.disabled = false;
+  };
+
+  const handleSalvarTudo = async (event) => {
+    event.preventDefault();
+    btnSalvarTudo.disabled = true;
+    btnSalvarTudo.innerText = 'Salvando...';
+    try {
+      const response = await fetch(API_ADMIN_BASE + pacienteId, {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({
+            nomePaciente: nomePacienteInput.value,
+            idade: idadeInput.value,
+            patologias: patologiasInput.value,
+            medicosAssistentes: currentMedicos, 
+            medicacoes: currentMedicacoes
+        })
+      });
+      const data = await response.json();
+      if (response.ok) {
+        tituloEdicao.innerText = `Prontuário: ${nomePacienteInput.value}`; 
+        alert("Dados salvos com sucesso!");
+      } else { throw new Error(data.message); }
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      alert('Erro ao salvar.');
+    }
+    btnSalvarTudo.disabled = false;
+    btnSalvarTudo.innerText = 'Salvar Dados Gerais';
   };
 
   // --- LISTENERS ---
