@@ -1,5 +1,3 @@
-// Arquivo: /api-dra-aisha/models/Prontuario.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -24,31 +22,23 @@ const EvolucaoSchema = new Schema({
 });
 
 const ProntuarioSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-    unique: true 
-  },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
 
-  // --- O CAMPO ESSENCIAL ---
+  // --- CAMPO ALERGIAS ---
   alergias: {
     temAlergia: { type: Boolean, default: false },
     quais: { type: String, default: '' }
   },
-  // ------------------------
+  // ---------------------
 
   medicosAssistentes: [{ type: String }], 
   medicacoes: [MedicacaoSchema],
   evolucoes: [EvolucaoSchema] 
 
-}, {
-  timestamps: true
-});
+}, { timestamps: true });
 
-const Prontuario = mongoose.model('Prontuario', ProntuarioSchema);
-module.exports = Prontuario;
+module.exports = mongoose.model('Prontuario', ProntuarioSchema);
