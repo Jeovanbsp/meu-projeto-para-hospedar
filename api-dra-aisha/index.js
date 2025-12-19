@@ -1,6 +1,5 @@
-// Arquivo: /index.js (Completo com Rota de Evolução)
+// Arquivo: /api-dra-aisha/index.js
 
-// 1. Importar as ferramentas
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -8,20 +7,17 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken'); 
 
-// 2. IMPORTAR NOSSOS MODELOS E O MIDDLEWARE
 const User = require('./models/User');
 const Prontuario = require('./models/Prontuario');
 const authMiddleware = require('./middleware/authMiddleware');
 const adminMiddleware = require('./middleware/adminMiddleware'); 
 
-// 3. Inicializar o Express
 const app = express();
 
-// 4. Configurar Middlewares (CORS)
 const allowedOrigins = [
   'http://localhost:3000', 
   'https://aishageriatria.onrender.com', 
-  'https://meu-projeto-para-hospedar.vercel.app' // Sua URL do Vercel
+  'https://meu-projeto-para-hospedar.vercel.app'
 ];
 
 app.use(cors({
@@ -37,134 +33,90 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// 5. Pegar as variáveis do .env
 const PORT = process.env.PORT || 3001;
 const MONGODB_URI = process.env.MONGODB_URI; 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// 6. Conectar ao Banco de Dados
 mongoose.set('strictQuery', false); 
 
-if (!MONGODB_URI) {
-  console.error("❌ ERRO CRÍTICO: A variável MONGODB_URI não foi encontrada.");
-}
+if (!MONGODB_URI) console.error("❌ ERRO CRÍTICO: MONGODB_URI ausente.");
 
 mongoose.connect(MONGODB_URI)
   .then(() => {
-    console.log('✅ Conectado ao MongoDB Atlas com sucesso!');
-    app.listen(PORT, () => {
-      console.log(`🚀 Servidor rodando na porta ${PORT}`);
-    });
+    console.log('✅ Conectado ao MongoDB Atlas!');
+    app.listen(PORT, () => console.log(`🚀 Servidor na porta ${PORT}`));
   })
-  .catch((err) => {
-    console.error('❌ Erro ao conectar ao MongoDB:', err.message);
-  });
+  .catch((err) => console.error('❌ Erro no MongoDB:', err.message));
 
-// 7. ROTAS DE AUTENTICAÇÃO
-app.get('/', (req, res) => {
-  res.json({ message: 'Bem-vindo à API do Prontuário da Dra. Aisha!' });
-});
+// --- ROTAS DE AUTH ---
+app.get('/', (req, res) => res.json({ message: 'API Prontuário Dra. Aisha Online' }));
 
 app.post('/auth/register', async (req, res) => {
-  console.log('Recebida requisição de cadastro:', req.body);
   const { nome, email, senha } = req.body;
-  if (!nome || !email || !senha) return res.status(400).json({ message: 'Por favor, preencha todos os campos.' });
-  if (senha.length < 6) return res.status(400).json({ message: 'A senha precisa ter no mínimo 6 caracteres.' });
+  if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha todos os campos.' });
+  if (senha.length < 6) return res.status(400).json({ message: 'Senha deve ter min 6 caracteres.' });
   try {
-    const userExists = await User.findOne({ email: email });
-    if (userExists) return res.status(400).json({ message: 'Este e-mail já está cadastrado.' });
+    const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).json({ message: 'E-mail já cadastrado.' });
     const newUser = new User({ nome, email, password: senha });
     await newUser.save();
-    res.status(201).json({ message: 'Usuário cadastrado com sucesso!', user: { id: newUser._id, nome: newUser.nome, email: newUser.email }});
+    res.status(201).json({ message: 'Usuário criado!', user: { id: newUser._id, nome: newUser.nome }});
   } catch (error) {
-    console.error('Erro no cadastro:', error.message);
-    res.status(500).json({ message: 'Erro interno no servidor. Tente novamente.' });
+    res.status(500).json({ message: 'Erro interno.' });
   }
 });
 
 app.post('/auth/login', async (req, res) => {
-  console.log('Recebida requisição de login:', req.body);
   const { email, senha } = req.body;
-  if (!email || !senha) return res.status(400).json({ message: 'Por favor, forneça e-mail e senha.' });
   try {
-    const user = await User.findOne({ email: email }).select('+password');
-    if (!user) return res.status(400).json({ message: 'E-mail ou senha inválidos.' });
-    const isMatch = await bcrypt.compare(senha, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'E-mail ou senha inválidos.' });
-    
-    const payload = { userId: user._id, nome: user.nome, role: user.role };
-    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
-    
-    res.status(200).json({
-      message: 'Login bem-sucedido!',
-      token: token,
-      userName: user.nome,
-      role: user.role
-    });
+    const user = await User.findOne({ email }).select('+password');
+    if (!user || !(await bcrypt.compare(senha, user.password))) {
+        return res.status(400).json({ message: 'Credenciais inválidas.' });
+    }
+    const token = jwt.sign({ userId: user._id, nome: user.nome, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
+    res.status(200).json({ message: 'Login OK!', token, userName: user.nome, role: user.role });
   } catch (error) {
-    console.error('Erro no login:', error.message);
-    res.status(500).json({ message: 'Erro interno no servidor. Tente novamente.' });
+    res.status(500).json({ message: 'Erro no login.' });
   }
 });
 
+// --- ROTA PÚBLICA (QR Code) ---
 app.get('/api/public-prontuario/:userId', async (req, res) => {
   try {
-    const userId = req.params.userId;
-    if (!mongoose.Types.ObjectId.isValid(userId)) {
-      return res.status(400).json({ message: 'ID de usuário inválido.' });
-    }
-    const prontuario = await Prontuario.findOne({ user: userId });
-    if (!prontuario) {
-      return res.status(404).json({ message: 'Prontuário não encontrado.' });
-    }
+    const prontuario = await Prontuario.findOne({ user: req.params.userId });
+    if (!prontuario) return res.status(404).json({ message: 'Prontuário não encontrado.' });
     res.status(200).json(prontuario);
   } catch (error) {
-    console.error('Erro ao buscar prontuário público:', error.message);
-    res.status(500).json({ message: 'Erro interno no servidor.' });
+    res.status(500).json({ message: 'Erro interno.' });
   }
 });
 
-// 8. ROTAS DO PRONTUÁRIO (PACIENTE)
+// --- ROTAS DO PACIENTE (Leitura Própria) ---
 app.get('/api/prontuario', authMiddleware, async (req, res) => {
-  console.log(`Buscando prontuário para o usuário: ${req.user.userId}`);
   try {
     let prontuario = await Prontuario.findOne({ user: req.user.userId });
     if (!prontuario) {
-      console.log('Nenhum prontuário encontrado. Criando um novo...');
-      prontuario = new Prontuario({
-        user: req.user.userId, nomePaciente: req.user.nome, medicacoes: [], medicosAssistentes: []
-      });
+      prontuario = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome });
       await prontuario.save();
     }
     res.status(200).json(prontuario);
   } catch (error) {
-    console.error('Erro ao buscar prontuário:', error.message);
-    res.status(500).json({ message: 'Erro ao buscar dados do prontuário.' });
+    res.status(500).json({ message: 'Erro ao buscar prontuário.' });
   }
 });
 
 app.post('/api/prontuario', authMiddleware, async (req, res) => {
-  console.log(`Salvando prontuário para o usuário: ${req.user.userId}`);
   const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
   try {
-    const dadosProntuario = {
-      user: req.user.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes 
-    };
-
-    const prontuarioAtualizado = await Prontuario.findOneAndUpdate(
-      { user: req.user.userId }, 
-      dadosProntuario,          
-      { new: true, upsert: true } 
-    );
-    res.status(200).json({ message: 'Prontuário salvo com sucesso!', prontuario: prontuarioAtualizado });
+    const dados = { user: req.user.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes };
+    const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
+    res.status(200).json({ message: 'Salvo com sucesso!', prontuario: p });
   } catch (error) {
-    console.error('Erro ao salvar prontuário:', error.message);
-    res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
+    res.status(500).json({ message: 'Erro ao salvar.' });
   }
 });
 
-
-// 9. ROTAS DE ADMIN (PROTEGIDAS)
+// --- ROTAS DE ADMIN ---
 
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
   try {
@@ -180,76 +132,90 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
     const userId = req.params.userId;
     const prontuario = await Prontuario.findOne({ user: userId });
     if (!prontuario) {
-      const user = await User.findById(userId).select('nome');
-      if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
-      return res.status(200).json({
-        user: userId, nomePaciente: user.nome, idade: null, patologias: '', medicosAssistentes: [], medicacoes: [], evolucoes: []
-      });
+      const user = await User.findById(userId);
+      if (!user) return res.status(404).json({ message: 'Usuário não existe.' });
+      return res.status(200).json({ user: userId, nomePaciente: user.nome, evolucoes: [] });
     }
     res.status(200).json(prontuario);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar prontuário para edição.' });
+    res.status(500).json({ message: 'Erro ao buscar prontuário.' });
   }
 });
 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const userId = req.params.userId;
     const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
-    const dadosProntuario = {
-      user: userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes
-    };
-    await Prontuario.findOneAndUpdate({ user: userId }, dadosProntuario, { new: true, upsert: true });
-    res.status(200).json({ message: 'Prontuário atualizado com sucesso pela Admin!' });
+    const dados = { user: req.params.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes };
+    await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
+    res.status(200).json({ message: 'Prontuário atualizado!' });
   } catch (error) {
-    console.error('Erro ao salvar prontuário (Admin):', error.message);
-    res.status(500).json({ message: 'Erro ao salvar dados do prontuário.' });
-  }
-});
-
-// *** NOVA ROTA: Adicionar Evolução (Admin) ***
-app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const userId = req.params.userId;
-    const { texto } = req.body; 
-
-    if (!texto) {
-      return res.status(400).json({ message: 'O texto da evolução é obrigatório.' });
-    }
-
-    const prontuarioAtualizado = await Prontuario.findOneAndUpdate(
-      { user: userId },
-      { 
-        $push: { 
-          evolucoes: { 
-            texto: texto, 
-            data: new Date(),
-            autor: 'Dra. Aisha' 
-          } 
-        } 
-      },
-      { new: true, upsert: true } 
-    );
-
-    res.status(200).json({ 
-      message: 'Evolução registrada com sucesso!', 
-      prontuario: prontuarioAtualizado 
-    });
-
-  } catch (error) {
-    console.error('Erro ao salvar evolução:', error.message);
-    res.status(500).json({ message: 'Erro ao salvar evolução.' });
+    res.status(500).json({ message: 'Erro ao salvar.' });
   }
 });
 
 app.delete('/api/admin/paciente/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const userId = req.params.userId;
-    await Prontuario.findOneAndDelete({ user: userId });
-    await User.findByIdAndDelete(userId);
-    res.status(200).json({ message: 'Paciente e seu prontuário foram deletados com sucesso.' });
+    await Prontuario.findOneAndDelete({ user: req.params.userId });
+    await User.findByIdAndDelete(req.params.userId);
+    res.status(200).json({ message: 'Paciente deletado.' });
   } catch (error) {
-    console.error('Erro ao deletar paciente:', error.message);
-    res.status(500).json({ message: 'Erro ao deletar paciente.' });
+    res.status(500).json({ message: 'Erro ao deletar.' });
+  }
+});
+
+// ==========================================
+// NOVAS ROTAS DE EVOLUÇÃO (CRIAR, EDITAR, DELETAR)
+// ==========================================
+
+// 1. CRIAR EVOLUÇÃO (POST)
+app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { titulo, texto } = req.body;
+    if (!texto || !titulo) return res.status(400).json({ message: 'Título e texto são obrigatórios.' });
+
+    const p = await Prontuario.findOneAndUpdate(
+      { user: req.params.userId },
+      { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } },
+      { new: true, upsert: true }
+    );
+    res.status(200).json({ message: 'Evolução salva!', prontuario: p });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao salvar evolução.' });
+  }
+});
+
+// 2. EDITAR EVOLUÇÃO (PUT)
+app.put('/api/admin/prontuario/:userId/evolucao/:evolucaoId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const { userId, evolucaoId } = req.params;
+    const { titulo, texto } = req.body;
+
+    const prontuario = await Prontuario.findOne({ user: userId });
+    if (!prontuario) return res.status(404).json({ message: 'Prontuário não encontrado.' });
+
+    const evolucao = prontuario.evolucoes.id(evolucaoId);
+    if (!evolucao) return res.status(404).json({ message: 'Evolução não encontrada.' });
+
+    evolucao.titulo = titulo;
+    evolucao.texto = texto;
+    
+    await prontuario.save();
+    res.status(200).json({ message: 'Evolução atualizada!', prontuario });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao editar.' });
+  }
+});
+
+// 3. EXCLUIR EVOLUÇÃO (DELETE)
+app.delete('/api/admin/prontuario/:userId/evolucao/:evolucaoId', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const prontuario = await Prontuario.findOneAndUpdate(
+      { user: req.params.userId },
+      { $pull: { evolucoes: { _id: req.params.evolucaoId } } },
+      { new: true }
+    );
+    res.status(200).json({ message: 'Evolução removida.', prontuario });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao excluir.' });
   }
 });

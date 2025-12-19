@@ -1,11 +1,9 @@
-// Arquivo: /js/admin-prontuario.js (Completo e Corrigido)
+// Arquivo: /js/admin-prontuario.js
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // --- CONFIGURAÇÃO E SEGURANÇA ---
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
-  // Ajuste a URL se necessário (ex: localhost ou produção)
   const API_ADMIN_BASE = 'https://aishageriatria.onrender.com/api/admin/prontuario/';
   
   const pacienteId = new URLSearchParams(window.location.search).get('id');
@@ -16,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- SELETORES ---
+  // Elementos do DOM
   const tituloEdicao = document.getElementById('titulo-edicao');
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
@@ -32,7 +30,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
   
-  // *** NOVOS SELETORES (EVOLUÇÃO) ***
+  // --- ELEMENTOS DA EVOLUÇÃO ---
+  // Tenta pegar o input do HTML, senão cria via JS para garantir que funcione
+  const tituloEvolucaoInput = document.getElementById('titulo-evolucao') || createTempTitleInput(); 
   const textoEvolucaoInput = document.getElementById('texto-evolucao');
   const btnAddEvolucao = document.getElementById('btn-add-evolucao');
   const listaEvolucoesDiv = document.getElementById('lista-evolucoes');
@@ -40,264 +40,233 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); 
   const mensagemRetorno = document.getElementById('mensagem-retorno');
   
-  // Estado Local
+  // Variáveis de Estado
   let currentMedicacoes = [];
   let currentMedicos = []; 
   let currentEvolucoes = []; 
+  let editingEvolucaoId = null; // Se estiver preenchido, estamos editando
 
-  const mapTurnos = {
-    antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço',
-    tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
-  };
+  const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
-  // --- CARREGAMENTO ---
+  // Função para criar o input de Título dinamicamente se não existir no HTML
+  function createTempTitleInput() {
+    const input = document.createElement('input');
+    input.id = 'titulo-evolucao';
+    input.className = 'form-control';
+    input.placeholder = 'Assunto / Tópico (ex: Visita de Rotina)';
+    input.style.marginBottom = '10px';
+    input.style.fontWeight = 'bold';
+    const textArea = document.getElementById('texto-evolucao');
+    if(textArea) textArea.parentNode.insertBefore(input, textArea);
+    return input;
+  }
+
+  // Carregar Dados
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_ADMIN_BASE + pacienteId, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!response.ok) { throw new Error('Falha ao buscar dados.'); }
+      if (!response.ok) throw new Error('Falha ao buscar dados.');
       const data = await response.json();
       
-      tituloEdicao.innerText = `Editando Prontuário: ${data.nomePaciente || 'Novo Paciente'}`;
-      
+      tituloEdicao.innerText = `Editando: ${data.nomePaciente || 'Novo Paciente'}`;
       populateForm(data); 
-      currentMedicacoes = data.medicacoes || []; 
-      renderTabelaMedicacoes();
-      currentMedicos = data.medicosAssistentes || []; 
-      renderMedicosList();
-
-      // Carrega evoluções, garantindo que seja um array vazio se vier nulo
-      currentEvolucoes = data.evolucoes || [];
-      renderEvolucoes();
+      
+      currentMedicacoes = data.medicacoes || []; renderTabelaMedicacoes();
+      currentMedicos = data.medicosAssistentes || []; renderMedicosList();
+      currentEvolucoes = data.evolucoes || []; renderEvolucoes();
 
     } catch (error) {
       console.error(error);
-      mensagemRetorno.innerText = `Erro: ${error.message}`;
-      mensagemRetorno.style.color = '#e74c3c';
     }
   };
 
-  // --- FUNÇÕES DE EVOLUÇÃO (CORRIGIDAS) ---
+  // --- LÓGICA DE EVOLUÇÃO (ACORDEÃO + CRUD) ---
 
   const renderEvolucoes = () => {
     listaEvolucoesDiv.innerHTML = '';
     
-    // Proteção extra: se por acaso currentEvolucoes for undefined, trata como vazio
     if (!currentEvolucoes || currentEvolucoes.length === 0) {
-      listaEvolucoesDiv.innerHTML = '<p style="color: #777; font-size: 14px; font-style: italic;">Nenhuma evolução registrada.</p>';
+      listaEvolucoesDiv.innerHTML = '<p class="text-muted">Nenhuma evolução registrada.</p>';
       return;
     }
 
-    // Ordena para mostrar a mais recente primeiro
-    const evolucoesOrdenadas = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
+    // Ordenar (Mais recente no topo)
+    const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
 
-    evolucoesOrdenadas.forEach(evo => {
-      const dataFormatada = new Date(evo.data).toLocaleString('pt-BR');
-      
-      const cardHtml = `
-        <div style="background: #f9f9f9; border-left: 4px solid #2ADCA1; padding: 15px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 10px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: #777;">
-                <strong>${evo.autor || 'Dra. Aisha'}</strong>
-                <span>${dataFormatada}</span>
+    list.forEach(evo => {
+      const dataFormatada = new Date(evo.data).toLocaleDateString('pt-BR') + ' ' + new Date(evo.data).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+      const titulo = evo.titulo || 'Sem Tópico';
+
+      const itemHtml = `
+        <div class="evolucao-item" id="evo-${evo._id}">
+            <div class="evo-header">
+                <div class="evo-info" onclick="toggleEvolucao('${evo._id}')">
+                    <span class="evo-date">${dataFormatada}</span>
+                    <strong class="evo-title">${titulo}</strong>
+                    <span class="evo-icon">▼</span>
+                </div>
+                <div class="evo-actions">
+                    <button class="btn-icon edit" onclick="startEditEvolucao('${evo._id}')" title="Editar">✎</button>
+                    <button class="btn-icon delete" onclick="deleteEvolucao('${evo._id}')" title="Excluir">🗑️</button>
+                </div>
             </div>
-            <div style="font-size: 15px; color: #333; white-space: pre-wrap;">${evo.texto}</div>
+            <div class="evo-body hidden" id="body-${evo._id}">
+                <p>${evo.texto.replace(/\n/g, '<br>')}</p>
+                <small>Autor: ${evo.autor || 'Dra. Aisha'}</small>
+            </div>
         </div>
       `;
-      listaEvolucoesDiv.insertAdjacentHTML('beforeend', cardHtml);
+      listaEvolucoesDiv.insertAdjacentHTML('beforeend', itemHtml);
     });
   };
 
-  const handleAddEvolucao = async () => {
+  // Funções Globais para o HTML acessar
+  window.toggleEvolucao = (id) => {
+    const body = document.getElementById(`body-${id}`);
+    const icon = document.querySelector(`#evo-${id} .evo-icon`);
+    if (body.classList.contains('hidden')) {
+        body.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+    } else {
+        body.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+    }
+  };
+
+  window.startEditEvolucao = (id) => {
+    const evo = currentEvolucoes.find(e => e._id === id);
+    if (!evo) return;
+
+    tituloEvolucaoInput.value = evo.titulo || '';
+    textoEvolucaoInput.value = evo.texto;
+    editingEvolucaoId = id;
+    
+    btnAddEvolucao.innerText = '💾 Salvar Alteração';
+    btnAddEvolucao.style.backgroundColor = '#f39c12'; 
+    tituloEvolucaoInput.focus();
+  };
+
+  window.deleteEvolucao = async (id) => {
+    if (!confirm('Excluir esta evolução permanentemente?')) return;
+
+    try {
+        const response = await fetch(`${API_ADMIN_BASE}${pacienteId}/evolucao/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            currentEvolucoes = data.prontuario.evolucoes;
+            renderEvolucoes();
+        } else {
+            alert('Erro ao excluir.');
+        }
+    } catch (err) { alert('Erro de conexão.'); }
+  };
+
+  const handleSaveEvolucao = async () => {
+    const titulo = tituloEvolucaoInput.value.trim();
     const texto = textoEvolucaoInput.value.trim();
-    if (!texto) {
-        alert('Por favor, escreva algo na evolução.');
+
+    if (!titulo || !texto) {
+        alert('Por favor, preencha o Tópico e o Conteúdo.');
         return;
     }
 
     btnAddEvolucao.disabled = true;
-    btnAddEvolucao.innerText = 'Salvando...';
 
     try {
-        const response = await fetch(API_ADMIN_BASE + pacienteId + '/evolucao', {
-            method: 'POST',
+        let url = `${API_ADMIN_BASE}${pacienteId}/evolucao`;
+        let method = 'POST';
+
+        // Se estiver editando, muda URL e Método
+        if (editingEvolucaoId) {
+            url += `/${editingEvolucaoId}`;
+            method = 'PUT';
+        }
+
+        const response = await fetch(url, {
+            method: method,
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ texto: texto })
+            body: JSON.stringify({ titulo, texto })
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            // --- CORREÇÃO DE SEGURANÇA AQUI ---
-            // Verifica se o array retornou corretamente. Se não, usa fallback manual.
-            if (data.prontuario && data.prontuario.evolucoes) {
-                currentEvolucoes = data.prontuario.evolucoes;
-            } else {
-                // Se o backend não devolveu a lista atualizada (por erro de Schema),
-                // adicionamos manualmente na tela para o usuário ver que funcionou.
-                console.warn("Backend não retornou evoluções atualizadas. Usando fallback local.");
-                currentEvolucoes.push({
-                    texto: texto,
-                    data: new Date().toISOString(),
-                    autor: 'Dra. Aisha'
-                });
-            }
-            
+            currentEvolucoes = data.prontuario.evolucoes;
             renderEvolucoes();
-            textoEvolucaoInput.value = ''; 
-            alert('Evolução registrada com sucesso!');
+            
+            // Resetar formulário
+            tituloEvolucaoInput.value = '';
+            textoEvolucaoInput.value = '';
+            editingEvolucaoId = null;
+            btnAddEvolucao.innerText = '+ Registrar Evolução';
+            btnAddEvolucao.style.backgroundColor = '#2ADCA1'; 
+            
+            alert('Salvo com sucesso!');
         } else {
-            throw new Error(data.message || 'Erro desconhecido.');
+            throw new Error(data.message);
         }
 
     } catch (error) {
-        console.error(error);
-        alert('Erro ao salvar evolução: ' + error.message);
+        alert('Erro: ' + error.message);
     }
-
     btnAddEvolucao.disabled = false;
-    btnAddEvolucao.innerText = '+ Registrar Evolução';
   };
 
-
-  // --- FUNÇÕES DE SUPORTE (EXISTENTES) ---
+  // --- FUNÇÕES DE APOIO (MÉDICO/MEDICAÇÃO) ---
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
   };
-  
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
-    if (currentMedicos.length === 0) {
-      listaMedicosPills.innerHTML = '<li style="font-size: 14px; color: #777;">Nenhum médico assistente adicionado.</li>';
-      return;
-    }
     currentMedicos.forEach((medico, index) => {
-      const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✖</button></li>`;
-      listaMedicosPills.insertAdjacentHTML('beforeend', pill);
+      listaMedicosPills.insertAdjacentHTML('beforeend', `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico" data-index="${index}">✖</button></li>`);
     });
   };
-  
-  const handleAddMedico = (event) => {
-    event.preventDefault();
-    const nome = nomeMedicoInput.value.trim(); 
-    if (!nome) { alert('Por favor, digite o nome do médico.'); return; }
-    currentMedicos.push(nome); 
-    renderMedicosList(); 
-    nomeMedicoInput.value = ''; 
-  };
-  
-  const handleDeleteMedico = (event) => {
-    if (event.target.classList.contains('btn-deletar-medico')) {
-      const index = parseInt(event.target.dataset.index, 10);
-      currentMedicos.splice(index, 1); 
-      renderMedicosList(); 
-    }
-  };
+  const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
+  const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
   
   const renderTabelaMedicacoes = () => {
-    listaMedicacoesBody.innerHTML = ''; 
-    if (currentMedicacoes.length === 0) {
-      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhuma medicação adicionada.</td></tr>';
-      return;
-    }
-    const medicoesOrdenadas = [...currentMedicacoes]; 
-    medicoesOrdenadas.sort((a, b) => {
-      const horarioA = a.horarioEspecifico || '99:99';
-      const horarioB = b.horarioEspecifico || '99:99';
-      if (horarioA < horarioB) return -1;
-      if (horarioA > horarioB) return 1;
-      return a.nome.localeCompare(b.nome);
-    });
-    medicoesOrdenadas.forEach((med) => { 
-      let turnosHtml = '';
-      for (const [key, value] of Object.entries(med.horarios)) {
-        if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; }
-      }
-      if (turnosHtml === '') { turnosHtml = 'N/A'; }
-      const horarioTxt = med.horarioEspecifico || 'N/A';
-      const row = `
-        <tr>
-          <td class="col-medicacao">${med.nome}</td>
-          <td class="col-turnos">${turnosHtml}</td>
-          <td class="col-horario">${horarioTxt}</td>
-          <td class="col-acao no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td>
-        </tr>
-      `;
-      listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
+    listaMedicacoesBody.innerHTML = '';
+    currentMedicacoes.forEach(med => {
+         listaMedicacoesBody.insertAdjacentHTML('beforeend', `<tr><td>${med.nome}</td><td>${med.horarioEspecifico}</td><td class="no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td></tr>`);
     });
   };
-  
-  const handleAddMedicacao = (event) => {
-    event.preventDefault(); 
-    const nome = nomeMedicacaoInput.value;
-    const horarioEspecifico = horarioEspecificoInput.value; 
-    if (!nome) { alert('Por favor, digite o nome da medicação.'); return; }
-    const horarios = {};
-    checkboxesHorarios.forEach(cb => { horarios[cb.value] = cb.checked; });
-    currentMedicacoes.push({ nome: nome, horarioEspecifico: horarioEspecifico, horarios: horarios });
-    renderTabelaMedicacoes();
-    formAddMedicacao.reset(); 
+  const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
+    const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked);
+    currentMedicacoes.push({ nome: nomeMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios });
+    renderTabelaMedicacoes(); formAddMedicacao.reset();
   };
-  
-  const handleDeleteMedicacao = (event) => {
-    if (event.target.classList.contains('btn-deletar-medacao')) {
-      const nomeParaDeletar = event.target.dataset.nome; 
-      currentMedicacoes = currentMedicacoes.filter(med => med.nome !== nomeParaDeletar);
-      renderTabelaMedicacoes();
-    }
-  };
+  const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
-  const handleSalvarTudo = async (event) => {
-    event.preventDefault();
-    btnSalvarTudo.disabled = true;
-    btnSalvarTudo.innerText = 'Salvando Edição...';
-    mensagemRetorno.innerText = '';
-
-    const dadosProntuario = {
-      nomePaciente: nomePacienteInput.value,
-      idade: idadeInput.value,
-      patologias: patologiasInput.value,
-      medicosAssistentes: currentMedicos, 
-      medicacoes: currentMedicacoes
-    };
-
+  const handleSalvarTudo = async (e) => {
+    e.preventDefault();
+    btnSalvarTudo.innerText = 'Salvando...';
     try {
-      const response = await fetch(API_ADMIN_BASE + pacienteId, {
+      await fetch(API_ADMIN_BASE + pacienteId, {
         method: 'POST', 
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify(dadosProntuario)
+        body: JSON.stringify({ nomePaciente: nomePacienteInput.value, idade: idadeInput.value, patologias: patologiasInput.value, medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes })
       });
-      const data = await response.json();
-      if (response.ok) {
-        mensagemRetorno.innerText = data.message;
-        mensagemRetorno.style.color = '#2ADCA1';
-        tituloEdicao.innerText = `Editando Prontuário: ${nomePacienteInput.value}`; 
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.error('Erro ao salvar:', error);
-      mensagemRetorno.innerText = `Erro: ${error.message}`;
-      mensagemRetorno.style.color = '#e74c3c';
-    }
-    btnSalvarTudo.disabled = false;
+      alert('Dados do Paciente Salvos!');
+    } catch(e) { alert('Erro ao salvar dados gerais.'); }
     btnSalvarTudo.innerText = 'Salvar Edição do Paciente';
   };
 
-  // --- INICIALIZAÇÃO ---
+  // Listeners
   formAddMedico.addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);
   formAddMedicacao.addEventListener('submit', handleAddMedicacao);
   listaMedicacoesBody.addEventListener('click', handleDeleteMedicacao);
   btnSalvarTudo.addEventListener('click', handleSalvarTudo);
-  
-  // *** LISTENER DA EVOLUÇÃO ***
-  if (btnAddEvolucao) {
-      btnAddEvolucao.addEventListener('click', handleAddEvolucao);
-  }
+  if (btnAddEvolucao) btnAddEvolucao.addEventListener('click', handleSaveEvolucao);
 
   fetchProntuario();
 });

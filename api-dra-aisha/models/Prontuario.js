@@ -1,4 +1,4 @@
-// Arquivo: /models/Prontuario.js
+// Arquivo: /api-dra-aisha/models/Prontuario.js
 
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
@@ -17,9 +17,9 @@ const MedicacaoSchema = new Schema({
   }
 });
 
-// 2. Molde para UMA evolução (NOVO)
-// Isso faltava no seu código original
+// 2. Molde para UMA evolução (ATUALIZADO COM TÍTULO)
 const EvolucaoSchema = new Schema({
+  titulo: { type: String, required: true }, // Novo campo
   texto: { type: String, required: true },
   data: { type: Date, default: Date.now },
   autor: { type: String, default: 'Dra. Aisha' }
@@ -42,10 +42,7 @@ const ProntuarioSchema = new Schema({
 
   medicacoes: [MedicacaoSchema],
 
-  // --- A CORREÇÃO PRINCIPAL ESTÁ AQUI ---
-  // Adicionamos o campo evolucoes ao Schema
-  evolucoes: [EvolucaoSchema] 
-  // -------------------------------------
+  evolucoes: [EvolucaoSchema] // Lista de evoluções
 
 }, {
   timestamps: true
