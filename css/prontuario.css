@@ -1,13 +1,13 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Final: Organizada)       */
+/* ARQUIVO: css/prontuario.css (Versão Final: Limpa e Sóbria)   */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS (ORGANIZADA, VERSÁTIL E COMPACTA) --- */
+/* --- 1. LISTA DE MÉDICOS (SEM EMOJI) --- */
 
 /* O Container (Caixa onde ficam os médicos) */
 #lista-medicos-pills {
     display: flex;
-    flex-wrap: wrap;       /* Permite quebre de linha */
+    flex-wrap: wrap;       /* Permite quebra de linha */
     gap: 8px;              /* Espaço uniforme */
     padding: 10px;
     background-color: #f9f9f9;
@@ -34,12 +34,12 @@
     align-items: center;
     background-color: #E3F2FD; /* Azul suave */
     color: #1565C0;            /* Texto legível */
-    padding: 5px 12px;
+    padding: 6px 14px;         /* Ajustado para ficar bom sem o ícone */
     border-radius: 20px;       /* Redondinho */
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
     border: 1px solid #BBDEFB;
-    transition: transform 0.2s;
+    transition: background 0.2s;
     user-select: none;
 }
 
@@ -47,12 +47,7 @@
     background-color: #BBDEFB;
 }
 
-/* Ícone automático antes do nome */
-.pill-medico::before {
-    content: "👨‍⚕️"; 
-    margin-right: 6px;
-    font-size: 0.9rem;
-}
+/* (REMOVIDO: O código do emoji ::before foi apagado aqui) */
 
 /* Botão de Excluir Médico (Redondo e Discreto) */
 .btn-deletar-medico {
@@ -65,7 +60,7 @@
     border-radius: 50%;
     border: 1px solid #ffcdd2;
     color: #e53935;
-    margin-left: 8px;
+    margin-left: 10px; /* Um pouco mais de espaço */
     font-size: 0.65rem;
     font-weight: bold;
     cursor: pointer;

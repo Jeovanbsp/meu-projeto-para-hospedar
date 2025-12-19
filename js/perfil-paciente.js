@@ -1,3 +1,5 @@
+// Arquivo: /js/perfil-paciente.js (Completo - Com Adicionar/Excluir Médicos)
+
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
@@ -18,10 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const radioAlergiaSim = document.getElementById('alergia-sim');
   const inputAlergiasQuais = document.getElementById('alergias-quais');
   
+  // SELETORES MÉDICOS
   const formAddMedico = document.getElementById('form-add-medico');
   const nomeMedicoInput = document.getElementById('nome-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
   
+  // SELETORES MEDICAÇÕES
   const formAddMedicacao = document.getElementById('form-add-medicacao');
   const nomeMedicacaoInput = document.getElementById('nome-medicacao');
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
@@ -92,24 +96,41 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- 1. MÉDICOS (LEITURA) ---
+  // --- 1. MÉDICOS (AGORA COM BOTÃO DE EXCLUIR) ---
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
       listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#aaa; font-size:0.85rem; padding:10px;">Nenhum médico registrado.</li>';
       return;
     }
-    currentMedicos.forEach((medico) => {
+    currentMedicos.forEach((medico, index) => {
+      // Adicionei o botão de deletar igual ao do Admin
       const pill = `
         <li class="pill-medico" title="Médico Assistente">
             <span>${medico}</span>
+            <button class="btn-deletar-medico no-print" data-index="${index}" title="Remover">✕</button>
         </li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
+    // Scroll automático para ver o último adicionado
+    listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight;
   };
 
-  const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
-  const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
+  const handleAddMedico = (e) => { 
+      e.preventDefault(); 
+      if(!nomeMedicoInput.value) return; 
+      currentMedicos.push(nomeMedicoInput.value); 
+      renderMedicosList(); 
+      nomeMedicoInput.value=''; 
+  };
+
+  // Função reativada para excluir médico
+  const handleDeleteMedico = (e) => { 
+      if(e.target.classList.contains('btn-deletar-medico')) { 
+          currentMedicos.splice(e.target.dataset.index, 1); 
+          renderMedicosList(); 
+      }
+  };
 
   // --- 2. MEDICAÇÕES ---
   const renderTabelaMedicacoes = () => {
@@ -196,8 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
   radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
   radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
 
+  // Listeners de Médicos Ativados
   formAddMedico.addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);
+  
   formAddMedicacao.addEventListener('submit', handleAddMedicacao);
   listaMedicacoesBody.addEventListener('click', handleDeleteMedicacao);
   btnSalvarTudo.addEventListener('click', handleSalvarTudo);

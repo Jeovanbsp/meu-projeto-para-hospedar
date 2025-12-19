@@ -106,9 +106,10 @@ app.get('/api/prontuario', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/prontuario', authMiddleware, async (req, res) => {
-  const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
+  // CORREÇÃO AQUI: Adicionado 'alergias'
+  const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes } = req.body;
   try {
-    const dados = { user: req.user.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes };
+    const dados = { user: req.user.userId, nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes };
     const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
     res.status(200).json({ message: 'Salvo com sucesso!', prontuario: p });
   } catch (error) {
@@ -144,8 +145,12 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
-    const { nomePaciente, idade, patologias, medicosAssistentes, medicacoes } = req.body;
-    const dados = { user: req.params.userId, nomePaciente, idade, patologias, medicosAssistentes, medicacoes };
+    // CORREÇÃO CRUCIAL AQUI: Adicionado 'alergias' na extração
+    const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes } = req.body;
+    
+    // Inclui alergias no objeto de dados
+    const dados = { user: req.params.userId, nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes };
+    
     await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
     res.status(200).json({ message: 'Prontuário atualizado!' });
   } catch (error) {
@@ -163,11 +168,7 @@ app.delete('/api/admin/paciente/:userId', authMiddleware, adminMiddleware, async
   }
 });
 
-// ==========================================
-// NOVAS ROTAS DE EVOLUÇÃO (CRIAR, EDITAR, DELETAR)
-// ==========================================
-
-// 1. CRIAR EVOLUÇÃO (POST)
+// --- ROTAS DE EVOLUÇÃO ---
 app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { titulo, texto } = req.body;
@@ -184,7 +185,6 @@ app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddlewa
   }
 });
 
-// 2. EDITAR EVOLUÇÃO (PUT)
 app.put('/api/admin/prontuario/:userId/evolucao/:evolucaoId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { userId, evolucaoId } = req.params;
@@ -206,7 +206,6 @@ app.put('/api/admin/prontuario/:userId/evolucao/:evolucaoId', authMiddleware, ad
   }
 });
 
-// 3. EXCLUIR EVOLUÇÃO (DELETE)
 app.delete('/api/admin/prontuario/:userId/evolucao/:evolucaoId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const prontuario = await Prontuario.findOneAndUpdate(

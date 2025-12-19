@@ -1,7 +1,8 @@
+// Arquivo: /api-dra-aisha/models/Prontuario.js
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// 1. Molde para UMA medicação
 const MedicacaoSchema = new Schema({
   nome: { type: String, required: true },
   horarioEspecifico: { type: String, default: '' }, 
@@ -15,7 +16,6 @@ const MedicacaoSchema = new Schema({
   }
 });
 
-// 2. Molde para UMA evolução
 const EvolucaoSchema = new Schema({
   titulo: { type: String, required: true },
   texto: { type: String, required: true },
@@ -23,7 +23,6 @@ const EvolucaoSchema = new Schema({
   autor: { type: String, default: 'Dra. Aisha' }
 });
 
-// 3. Molde para o Prontuário INTEIRO
 const ProntuarioSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
@@ -36,11 +35,12 @@ const ProntuarioSchema = new Schema({
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
 
-  // --- CAMPO DE ALERGIAS ---
+  // --- O CAMPO ESSENCIAL ---
   alergias: {
-    temAlergia: { type: Boolean, default: false }, // true = Sim, false = Não
+    temAlergia: { type: Boolean, default: false },
     quais: { type: String, default: '' }
   },
+  // ------------------------
 
   medicosAssistentes: [{ type: String }], 
   medicacoes: [MedicacaoSchema],
