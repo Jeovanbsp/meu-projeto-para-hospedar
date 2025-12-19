@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// ATUALIZADO: Com campo 'quantidade'
 const MedicacaoSchema = new Schema({
   nome: { type: String, required: true },
+  quantidade: { type: String, default: '' }, // <--- NOVO CAMPO
   horarioEspecifico: { type: String, default: '' }, 
   horarios: {
     antes_cafe: { type: Boolean, default: false },
@@ -28,7 +30,6 @@ const ProntuarioSchema = new Schema({
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
 
-  // --- ALERGIAS ---
   alergias: {
     temAlergia: { type: Boolean, default: false },
     quais: { type: String, default: '' }
