@@ -28,14 +28,13 @@ const ProntuarioSchema = new Schema({
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
 
-  // --- CAMPO ALERGIAS ---
+  // --- ALERGIAS ---
   alergias: {
     temAlergia: { type: Boolean, default: false },
     quais: { type: String, default: '' }
   },
-  // ---------------------
 
-  medicosAssistentes: [{ type: String }], 
+  medicosAssistentes: [{ type: String }], // Lista de strings (Nome + Telefone)
   medicacoes: [MedicacaoSchema],
   evolucoes: [EvolucaoSchema] 
 

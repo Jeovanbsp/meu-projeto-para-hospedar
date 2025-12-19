@@ -14,8 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputAlergiasQuais = document.getElementById('alergias-quais');
   const sinalizadorAlergia = document.getElementById('sinalizador-alergia'); 
 
+  // MEDICOS
   const nomeMedicoInput = document.getElementById('nome-medico');
+  const telefoneMedicoInput = document.getElementById('telefone-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
+  
   const nomeMedicacaoInput = document.getElementById('nome-medicacao');
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
@@ -60,13 +63,25 @@ document.addEventListener('DOMContentLoaded', () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; }
     currentMedicos.forEach((medico, index) => {
-      // PACIENTE AGORA TEM BOTÃO EXCLUIR (✕)
+      // LISTA VERTICAL + DELETE (PACIENTE)
       const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
     listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight;
   };
-  const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
+
+  // ADD MEDICO COM TELEFONE
+  const handleAddMedico = (e) => { 
+      e.preventDefault(); 
+      const nome = nomeMedicoInput.value.trim();
+      const tel = telefoneMedicoInput.value.trim();
+      if(!nome) return; 
+      const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`;
+      currentMedicos.push(textoFinal); 
+      renderMedicosList(); 
+      nomeMedicoInput.value=''; telefoneMedicoInput.value='';
+  };
+
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
   const renderTabelaMedicacoes = () => {

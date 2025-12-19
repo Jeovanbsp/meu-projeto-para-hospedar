@@ -1,42 +1,44 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Final: Compacto e Sem Emojis)   */
+/* ARQUIVO: css/prontuario.css (Final: Vertical e Completo)     */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS (COMPACTA) --- */
+/* --- 1. LISTA DE MÉDICOS (VERTICAL E LARGA) --- */
 #lista-medicos-pills {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 8px;
+    flex-direction: column; /* Um abaixo do outro */
+    gap: 8px;
+    padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
-    border-radius: 4px;
-    min-height: 35px;
-    max-height: 100px;
+    border-radius: 6px;
+    min-height: 50px;
+    max-height: 250px;      /* Altura boa para lista */
     overflow-y: auto;
     list-style: none;
-    margin-top: 5px;
-    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
-#lista-medicos-pills::-webkit-scrollbar { width: 4px; }
-#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+#lista-medicos-pills::-webkit-scrollbar { width: 5px; }
+#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
-/* A Etiqueta do Médico (Sem Emoji) */
+/* Item da Lista (Estilo Linha Inteira) */
 .pill-medico {
-    display: inline-flex;
+    display: flex;
+    justify-content: space-between; /* Texto na ponta esquerda, X na direita */
     align-items: center;
-    background-color: #f0f8ff; /* Azul bem claro */
-    color: #0277bd;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 0.85rem;
+    background-color: #f8f9fa;      /* Fundo clean */
+    color: #333;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 0.9rem;
     font-weight: 500;
-    border: 1px solid #e1f5fe;
-    user-select: none;
+    border-left: 5px solid #2ADCA1; /* Identidade visual na borda */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    width: 100%;
+    box-sizing: border-box;
 }
-.pill-medico:hover { border-color: #81d4fa; }
 
-/* Botão de Excluir Médico (X) */
+/* Botão de Excluir (X) */
 .btn-deletar-medico {
     display: flex;
     align-items: center;
@@ -44,18 +46,18 @@
     background: none;
     border: none;
     color: #e53935;
-    margin-left: 8px;
-    font-size: 0.8rem;
+    margin-left: 10px;
+    font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
-    padding: 0;
-    line-height: 1;
+    padding: 5px;
+    transition: transform 0.2s;
 }
 .btn-deletar-medico:hover { color: #b71c1c; transform: scale(1.2); }
 
-/* --- 2. SINALIZADOR DE ALERGIA (VERMELHO) --- */
+/* --- 2. SINALIZADOR DE ALERGIA --- */
 .alerta-alergia {
-    display: none; /* JS controla isso */
+    display: none;
     background-color: #ffebee;
     color: #c62828;
     border: 1px solid #ffcdd2;
@@ -74,7 +76,7 @@
     100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
 }
 
-/* --- 3. GERAIS --- */
+/* --- DEMAIS ESTILOS --- */
 .pill-turno {
     display: inline-block;
     background-color: #E8F5E9;
@@ -88,14 +90,14 @@
 }
 .btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; }
 
-/* Evolução */
+/* Evolução Minimalista */
 .evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
-.evo-header { display: flex; justify-content: space-between; align-items: center; padding: 6px 10px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
-.evo-left { display: flex; align-items: center; gap: 8px; }
-.evo-date { font-size: 0.75rem; color: #888; font-family: monospace; }
-.evo-title { font-size: 0.9rem; color: #333; font-weight: 600; }
-.evo-right { display: flex; align-items: center; gap: 10px; }
-.evo-btns { display: flex; gap: 4px; }
-.btn-mini { border: none; background: none; cursor: pointer; font-size: 0.9rem; padding: 0 3px; opacity: 0.6; }
-.evo-body { padding: 10px 12px; border-top: 1px solid #eee; background: #fff; font-size: 0.85rem; color: #444; line-height: 1.4; }
+.evo-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
+.evo-left { display: flex; align-items: center; gap: 10px; }
+.evo-date { font-size: 0.8rem; color: #888; font-family: monospace; }
+.evo-title { font-size: 0.95rem; color: #333; font-weight: 600; }
+.evo-right { display: flex; align-items: center; gap: 12px; }
+.evo-btns { display: flex; gap: 5px; }
+.btn-mini { border: none; background: none; cursor: pointer; font-size: 1rem; padding: 0 4px; opacity: 0.5; }
+.evo-body { padding: 12px 15px; border-top: 1px solid #eee; background: #fff; font-size: 0.9rem; color: #444; line-height: 1.5; }
 .evo-body.hidden { display: none; }

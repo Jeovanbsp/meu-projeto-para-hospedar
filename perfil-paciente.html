@@ -9,22 +9,14 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <style>
-        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
-        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
-        #qrcode-container img { width: 100% !important; height: 100% !important; }
-        @media print { .no-print { display: none !important; } }
-    </style>
+    <style>.gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; } #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; } #qrcode-container img { width: 100% !important; height: 100% !important; } @media print { .no-print { display: none !important; } }</style>
 </head>
 <body>
     <header class="novo-header no-print"> 
         <div class="header-container">
             <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo"></a>
             <nav class="main-nav" id="mobile-menu"> 
-                <ul>
-                    <li><a href="index.html#contato">Contato</a></li>
-                    <li><a href="login.html">Login</a></li>
-                </ul>
+                <ul><li><a href="index.html#contato">Contato</a></li><li><a href="login.html">Login</a></li></ul>
             </nav>
             <button class="hamburger" id="hamburger-button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>
         </div>
@@ -44,12 +36,8 @@
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
                         <div style="display: flex; gap: 20px; align-items: center;">
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
-                                <input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span>
-                            </label>
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
-                                <input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span>
-                            </label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span></label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span></label>
                             <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
                         </div>
                         <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
@@ -60,8 +48,17 @@
             <div class="gerenciador-medicos">
                 <h3>Médicos Assistentes</h3>
                 <form id="form-add-medico" class="form-add-medico no-print"> 
-                    <div class="input-group"><label>Nome e Especialidade</label><input type="text" id="nome-medico" required></div>
-                    <button type="submit" id="btn-add-medico">+ Adicionar Médico</button>
+                    <div class="form-linha-inputs" style="display: flex; gap: 10px;">
+                        <div class="input-group" style="flex: 2;">
+                            <label for="nome-medico">Nome e Especialidade</label>
+                            <input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos - Cardiologista" required>
+                        </div>
+                        <div class="input-group" style="flex: 1;">
+                            <label for="telefone-medico">Telefone</label>
+                            <input type="text" id="telefone-medico" placeholder="(71) 9999-9999">
+                        </div>
+                    </div>
+                    <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
                 </form>
                 <ul id="lista-medicos-pills"></ul>
             </div>
@@ -106,9 +103,7 @@
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
-    <footer id="contato" class="no-print"> 
-        <p>Dra Aishá Wenzinger | CRM/BA: 20473</p>
-    </footer>
+    <footer id="contato" class="no-print"><p>Dra Aishá Wenzinger | CRM/BA: 20473</p></footer>
     <script>
         const hamburgerButton = document.getElementById('hamburger-button');
         const mobileMenu = document.getElementById('mobile-menu');
