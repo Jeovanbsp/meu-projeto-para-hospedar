@@ -1,10 +1,10 @@
-// Arquivo: /js/perfil-paciente.js
+// Arquivo: /js/perfil-paciente.js (Versão Final: Sem Evolução)
 
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
   
-  // *** CORREÇÃO AQUI: Adicionado /api/prontuario ***
+  // URL da API do Prontuário
   const API_URL = 'https://aishageriatria.onrender.com/api/prontuario';
 
   if (!token) {
@@ -12,17 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
+  // --- SELETORES ---
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
+  
   const formAddMedico = document.getElementById('form-add-medico');
   const nomeMedicoInput = document.getElementById('nome-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
+  
   const formAddMedicacao = document.getElementById('form-add-medicacao');
   const nomeMedicacaoInput = document.getElementById('nome-medicacao');
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
+  
   const btnGerarQRCode = document.getElementById('btn-gerar-qrcode');
   const qrCodeContainer = document.getElementById('qrcode-container');
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo');
@@ -38,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
   };
 
+  // --- CARREGAMENTO ---
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_URL, {
@@ -51,12 +56,18 @@ document.addEventListener('DOMContentLoaded', () => {
         throw new Error('Falha ao buscar dados.');
       }
       const data = await response.json();
+      
       populateForm(data); 
+      
+      // Carrega Médicos e Medicações com o visual "arrumadinho" (Pills)
       currentMedicacoes = data.medicacoes || []; 
       renderTabelaMedicacoes();
+      
       currentMedicos = data.medicosAssistentes || []; 
       renderMedicosList(); 
+      
       currentUserId = data.user; 
+
     } catch (error) {
       console.error('Erro ao carregar prontuário:', error);
       mensagemRetorno.innerText = 'Não foi possível carregar seus dados.';
@@ -70,90 +81,64 @@ document.addEventListener('DOMContentLoaded', () => {
     patologiasInput.value = data.patologias || '';
   };
 
+  // --- 1. MÉDICOS (VISUAL PILLS / ETIQUETAS) ---
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
-      listaMedicosPills.innerHTML = '<li style="font-size: 14px; color: #777;">Nenhum médico assistente adicionado.</li>';
+      listaMedicosPills.innerHTML = '<li style="font-size: 13px; color: #999;">Nenhum médico assistente adicionado.</li>';
       return;
     }
     currentMedicos.forEach((medico, index) => {
+      // Usa a classe pill-medico para ficar igual ao admin
       const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✖</button></li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
   };
-  const handleAddMedico = (event) => {
-    event.preventDefault();
-    const nome = nomeMedicoInput.value.trim(); 
-    if (!nome) { alert('Por favor, digite o nome do médico.'); return; }
-    currentMedicos.push(nome); 
-    renderMedicosList(); 
-    nomeMedicoInput.value = ''; 
-  };
-  const handleDeleteMedico = (event) => {
-    if (event.target.classList.contains('btn-deletar-medico')) {
-      const index = parseInt(event.target.dataset.index, 10);
-      currentMedicos.splice(index, 1); 
-      renderMedicosList(); 
-    }
-  };
 
+  const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
+  const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
+
+  // --- 2. MEDICAÇÕES (VISUAL TURNOS COLORIDOS) ---
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) {
-      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Nenhuma medicação adicionada.</td></tr>';
+      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color:#999;">Nenhuma medicação adicionada.</td></tr>';
       return;
     }
-    const medicoesOrdenadas = [...currentMedicacoes]; 
-    medicoesOrdenadas.sort((a, b) => {
-      const horarioA = a.horarioEspecifico || '99:99';
-      const horarioB = b.horarioEspecifico || '99:99';
-      if (horarioA < horarioB) return -1;
-      if (horarioA > horarioB) return 1;
-      return a.nome.localeCompare(b.nome);
-    });
-    medicoesOrdenadas.forEach((med) => { 
+    const list = [...currentMedicacoes].sort((a, b) => a.nome.localeCompare(b.nome));
+    
+    list.forEach((med) => { 
       let turnosHtml = '';
       for (const [key, value] of Object.entries(med.horarios)) {
         if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; }
       }
-      if (turnosHtml === '') { turnosHtml = 'N/A'; }
-      const horarioTxt = med.horarioEspecifico || 'N/A';
+      if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>';
+      
       const row = `
         <tr>
-          <td class="col-medicacao">${med.nome}</td>
-          <td class="col-turnos">${turnosHtml}</td>
-          <td class="col-horario">${horarioTxt}</td>
-          <td class="col-acao no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td>
+          <td style="font-weight:500;">${med.nome}</td>
+          <td>${turnosHtml}</td>
+          <td style="font-family:monospace;">${med.horarioEspecifico || '-'}</td>
+          <td class="no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}" style="color:#ef5350; border:none; background:none; cursor:pointer;">✖</button></td>
         </tr>
       `;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
-  const handleAddMedicacao = (event) => {
-    event.preventDefault(); 
-    const nome = nomeMedicacaoInput.value;
-    const horarioEspecifico = horarioEspecificoInput.value; 
-    if (!nome) { alert('Por favor, digite o nome da medicação.'); return; }
-    const horarios = {};
-    checkboxesHorarios.forEach(cb => { horarios[cb.value] = cb.checked; });
-    currentMedicacoes.push({ nome: nome, horarioEspecifico: horarioEspecifico, horarios: horarios });
-    renderTabelaMedicacoes();
-    formAddMedicacao.reset(); 
-  };
-  const handleDeleteMedicacao = (event) => {
-    if (event.target.classList.contains('btn-deletar-medacao')) {
-      const nomeParaDeletar = event.target.dataset.nome; 
-      currentMedicacoes = currentMedicacoes.filter(med => med.nome !== nomeParaDeletar);
-      renderTabelaMedicacoes();
-    }
-  };
 
-  const handleSalvarTudo = async (event) => {
-    event.preventDefault();
+  const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
+    const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked);
+    currentMedicacoes.push({ nome: nomeMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios });
+    renderTabelaMedicacoes(); formAddMedicacao.reset(); 
+  };
+  const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
+
+  // --- SALVAR (SEM EVOLUÇÃO) ---
+  const handleSalvarTudo = async (e) => {
+    e.preventDefault();
     btnSalvarTudo.disabled = true;
     btnSalvarTudo.innerText = 'Salvando...';
-    mensagemRetorno.innerText = '';
-
+    
     const dadosProntuario = {
       nomePaciente: nomePacienteInput.value,
       idade: idadeInput.value,
@@ -170,43 +155,27 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await response.json();
       if (response.ok) {
-        mensagemRetorno.innerText = data.message;
+        mensagemRetorno.innerText = 'Dados atualizados com sucesso!';
         mensagemRetorno.style.color = '#2ADCA1';
-      } else {
-        throw new Error(data.message);
-      }
+      } else { throw new Error(data.message); }
     } catch (error) {
-      console.error('Erro ao salvar prontuário:', error);
-      mensagemRetorno.innerText = `Erro: ${error.message || 'Não foi possível salvar.'}`;
+      mensagemRetorno.innerText = 'Erro ao salvar.';
       mensagemRetorno.style.color = '#e74c3c';
     }
     btnSalvarTudo.disabled = false;
     btnSalvarTudo.innerText = 'Salvar Prontuário Completo';
   };
 
-  const handleDownloadPDF = () => {
-    window.print();
-  };
+  const handleDownloadPDF = () => { window.print(); };
   
   const handleGerarQRCode = () => {
-    if (!currentUserId) {
-      alert('Erro: Não foi possível encontrar o ID do usuário. Tente recarregar a página.');
-      return;
-    }
-    const currentUrl = new URL(window.location.href);
-    currentUrl.pathname = currentUrl.pathname.substring(0, currentUrl.pathname.lastIndexOf('/'));
-    currentUrl.pathname += '/prontuario-publico.html';
-    currentUrl.search = `?id=${currentUserId}`;
-    const publicUrl = currentUrl.href;
-    console.log('Gerando QR Code para:', publicUrl);
+    if (!currentUserId) { alert('Erro: ID do usuário não encontrado.'); return; }
+    // Ajusta URL para apontar para a página pública
+    const url = window.location.href.replace('perfil-paciente.html', 'prontuario-publico.html').replace('admin-dashboard.html', 'prontuario-publico.html') + `?id=${currentUserId}`;
     qrCodeContainer.innerHTML = '';
-    new QRCode(qrCodeContainer, {
-      text: publicUrl, width: 200, height: 200,
-      colorDark : "#000000", colorLight : "#ffffff",
-      correctLevel : QRCode.CorrectLevel.H
-    });
+    new QRCode(qrCodeContainer, { text: url, width: 200, height: 200, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
     qrCodeContainer.style.display = 'block';
-    btnGerarQRCode.innerText = 'QR Code Gerado! (Clique para gerar novamente)';
+    btnGerarQRCode.innerText = 'QR Code Gerado!';
   };
 
   formAddMedico.addEventListener('submit', handleAddMedico);
