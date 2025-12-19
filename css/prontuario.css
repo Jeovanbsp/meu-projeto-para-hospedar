@@ -1,114 +1,143 @@
-/* --- RESTAURAÇÃO DAS PILLS (SIMÉTRICO E BONITO) --- */
+/* ============================================================ */
+/* ARQUIVO: css/prontuario.css (Versão Final: Organizada)       */
+/* ============================================================ */
 
+/* --- 1. LISTA DE MÉDICOS (ORGANIZADA, VERSÁTIL E COMPACTA) --- */
+
+/* O Container (Caixa onde ficam os médicos) */
+#lista-medicos-pills {
+    display: flex;
+    flex-wrap: wrap;       /* Permite quebre de linha */
+    gap: 8px;              /* Espaço uniforme */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    
+    /* Otimização de Espaço: Cria scroll se crescer muito */
+    min-height: 45px;
+    max-height: 120px;     
+    overflow-y: auto;      
+    
+    list-style: none;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+/* Scrollbar fina para ficar elegante */
+#lista-medicos-pills::-webkit-scrollbar { width: 5px; }
+#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+/* A Etiqueta do Médico (Pill) */
 .pill-medico {
     display: inline-flex;
     align-items: center;
     background-color: #E3F2FD; /* Azul suave */
-    color: #1565C0;
-    padding: 4px 10px; /* Mais compacto */
-    border-radius: 15px;
+    color: #1565C0;            /* Texto legível */
+    padding: 5px 12px;
+    border-radius: 20px;       /* Redondinho */
     font-size: 0.85rem;
-    font-weight: 500;
-    margin-right: 5px;
-    margin-bottom: 5px;
+    font-weight: 600;
     border: 1px solid #BBDEFB;
+    transition: transform 0.2s;
+    user-select: none;
 }
 
+.pill-medico:hover {
+    background-color: #BBDEFB;
+}
+
+/* Ícone automático antes do nome */
+.pill-medico::before {
+    content: "👨‍⚕️"; 
+    margin-right: 6px;
+    font-size: 0.9rem;
+}
+
+/* Botão de Excluir Médico (Redondo e Discreto) */
+.btn-deletar-medico {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid #ffcdd2;
+    color: #e53935;
+    margin-left: 8px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-deletar-medico:hover {
+    background-color: #e53935;
+    color: #fff;
+    border-color: #e53935;
+    transform: scale(1.1);
+}
+
+/* --- 2. MEDICAÇÕES (PILLS DE TURNOS) --- */
 .pill-turno {
     display: inline-block;
     background-color: #E8F5E9; /* Verde suave */
     color: #2E7D32;
-    padding: 3px 8px; /* Mais compacto */
+    padding: 3px 8px;
     border-radius: 12px;
-    font-size: 0.8rem;
-    font-weight: 500;
+    font-size: 0.75rem;
+    font-weight: 600;
     margin-right: 3px;
-    margin-bottom: 3px;
     border: 1px solid #C8E6C9;
 }
 
-/* Botões de deletar pequenos e alinhados */
-.btn-deletar-medico {
+.btn-deletar-medacao {
     background: none;
     border: none;
     color: #ef5350;
     font-weight: bold;
-    margin-left: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
 }
+.btn-deletar-medacao:hover { color: #d32f2f; }
 
-/* --- HISTÓRICO MINIMALISTA E ALINHADO --- */
+
+/* --- 3. HISTÓRICO DE EVOLUÇÃO (MINIMALISTA ADMIN) --- */
 
 .evolucao-item {
     background-color: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 4px;
-    margin-bottom: 8px; /* Espaço reduzido entre itens */
+    margin-bottom: 8px;
     overflow: hidden;
+    transition: box-shadow 0.2s;
 }
+.evolucao-item:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
 .evo-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 12px; /* Padding compacto */
+    padding: 8px 12px;
     background-color: #FAFAFA;
     border-left: 4px solid #2ADCA1;
     cursor: pointer;
-    transition: background 0.2s;
 }
+.evo-header:hover { background-color: #f0f0f0; }
 
-.evo-header:hover {
-    background-color: #F0F0F0;
-}
+.evo-left { display: flex; align-items: center; gap: 10px; }
+.evo-date { font-size: 0.8rem; color: #888; font-family: monospace; }
+.evo-title { font-size: 0.95rem; color: #333; font-weight: 600; }
 
-.evo-left {
-    display: flex;
-    align-items: center;
-    gap: 12px; /* Espaço uniforme entre data e título */
-}
+.evo-right { display: flex; align-items: center; gap: 12px; }
+.evo-arrow { font-size: 0.7rem; color: #aaa; transition: transform 0.2s; }
 
-.evo-date {
-    font-size: 0.8rem;
-    color: #888;
-    font-family: monospace; /* Alinha os números perfeitamente */
-    white-space: nowrap;
-}
-
-.evo-title {
-    font-size: 0.95rem;
-    color: #333;
-    font-weight: 600;
-}
-
-.evo-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.evo-arrow {
-    font-size: 0.7rem;
-    color: #aaa;
-    transition: transform 0.2s;
-}
-
-.evo-btns {
-    display: flex;
-    gap: 5px;
-}
-
+.evo-btns { display: flex; gap: 5px; }
 .btn-mini {
-    border: none;
-    background: none;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0 4px;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    border: none; background: none; cursor: pointer;
+    font-size: 1rem; padding: 0 4px; opacity: 0.5;
 }
-.btn-mini:hover { opacity: 1; }
+.btn-mini:hover { opacity: 1; transform: scale(1.1); }
 .btn-mini.edit { color: #FFA726; }
 .btn-mini.delete { color: #EF5350; }
 
@@ -116,11 +145,8 @@
     padding: 12px 15px;
     border-top: 1px solid #eee;
     background: #fff;
-    font-size: 0.95rem;
-    line-height: 1.5;
+    font-size: 0.9rem;
     color: #444;
+    line-height: 1.5;
 }
-
-.evo-body.hidden {
-    display: none;
-}
+.evo-body.hidden { display: none; }

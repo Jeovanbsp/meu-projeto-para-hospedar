@@ -1,10 +1,6 @@
-// Arquivo: /js/perfil-paciente.js (Versão Final: Sem Evolução)
-
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
-  
-  // URL da API do Prontuário
   const API_URL = 'https://aishageriatria.onrender.com/api/prontuario';
 
   if (!token) {
@@ -12,10 +8,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // --- SELETORES ---
+  // Seletores
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
+  
+  // SELETORES ALERGIA
+  const radioAlergiaNao = document.getElementById('alergia-nao');
+  const radioAlergiaSim = document.getElementById('alergia-sim');
+  const inputAlergiasQuais = document.getElementById('alergias-quais');
   
   const formAddMedico = document.getElementById('form-add-medico');
   const nomeMedicoInput = document.getElementById('nome-medico');
@@ -42,7 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
     tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir'
   };
 
-  // --- CARREGAMENTO ---
+  function toggleAlergiaInput() {
+    if (radioAlergiaSim.checked) {
+        inputAlergiasQuais.style.display = 'block';
+    } else {
+        inputAlergiasQuais.style.display = 'none';
+        inputAlergiasQuais.value = '';
+    }
+  }
+
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_URL, {
@@ -50,27 +59,19 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
       });
       if (!response.ok) {
-        if (response.status === 401) {
-          localStorage.clear(); window.location.href = 'login.html';
-        }
+        if (response.status === 401) { localStorage.clear(); window.location.href = 'login.html'; }
         throw new Error('Falha ao buscar dados.');
       }
       const data = await response.json();
       
       populateForm(data); 
-      
-      // Carrega Médicos e Medicações com o visual "arrumadinho" (Pills)
-      currentMedicacoes = data.medicacoes || []; 
-      renderTabelaMedicacoes();
-      
-      currentMedicos = data.medicosAssistentes || []; 
-      renderMedicosList(); 
-      
+      currentMedicacoes = data.medicacoes || []; renderTabelaMedicacoes();
+      currentMedicos = data.medicosAssistentes || []; renderMedicosList(); 
       currentUserId = data.user; 
 
     } catch (error) {
-      console.error('Erro ao carregar prontuário:', error);
-      mensagemRetorno.innerText = 'Não foi possível carregar seus dados.';
+      console.error(error);
+      mensagemRetorno.innerText = 'Erro ao carregar dados.';
       mensagemRetorno.style.color = '#e74c3c';
     }
   };
@@ -79,18 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
+
+    // Alergias
+    if (data.alergias && data.alergias.temAlergia) {
+        radioAlergiaSim.checked = true;
+        inputAlergiasQuais.value = data.alergias.quais || '';
+        inputAlergiasQuais.style.display = 'block';
+    } else {
+        radioAlergiaNao.checked = true;
+        inputAlergiasQuais.style.display = 'none';
+    }
   };
 
-  // --- 1. MÉDICOS (VISUAL PILLS / ETIQUETAS) ---
+  // --- 1. MÉDICOS (LEITURA) ---
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) {
-      listaMedicosPills.innerHTML = '<li style="font-size: 13px; color: #999;">Nenhum médico assistente adicionado.</li>';
+      listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#aaa; font-size:0.85rem; padding:10px;">Nenhum médico registrado.</li>';
       return;
     }
-    currentMedicos.forEach((medico, index) => {
-      // Usa a classe pill-medico para ficar igual ao admin
-      const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✖</button></li>`;
+    currentMedicos.forEach((medico) => {
+      const pill = `
+        <li class="pill-medico" title="Médico Assistente">
+            <span>${medico}</span>
+        </li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
   };
@@ -98,15 +111,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleAddMedico = (e) => { e.preventDefault(); if(!nomeMedicoInput.value) return; currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; };
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
-  // --- 2. MEDICAÇÕES (VISUAL TURNOS COLORIDOS) ---
+  // --- 2. MEDICAÇÕES ---
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) {
-      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color:#999;">Nenhuma medicação adicionada.</td></tr>';
+      listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999;">Nenhuma medicação.</td></tr>';
       return;
     }
     const list = [...currentMedicacoes].sort((a, b) => a.nome.localeCompare(b.nome));
-    
     list.forEach((med) => { 
       let turnosHtml = '';
       for (const [key, value] of Object.entries(med.horarios)) {
@@ -116,12 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const row = `
         <tr>
-          <td style="font-weight:500;">${med.nome}</td>
+          <td>${med.nome}</td>
           <td>${turnosHtml}</td>
-          <td style="font-family:monospace;">${med.horarioEspecifico || '-'}</td>
-          <td class="no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}" style="color:#ef5350; border:none; background:none; cursor:pointer;">✖</button></td>
-        </tr>
-      `;
+          <td>${med.horarioEspecifico || '-'}</td>
+          <td class="no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td>
+        </tr>`;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
@@ -133,16 +144,22 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
-  // --- SALVAR (SEM EVOLUÇÃO) ---
+  // --- SALVAR TUDO ---
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
-    btnSalvarTudo.disabled = true;
     btnSalvarTudo.innerText = 'Salvando...';
     
+    // Alergias
+    const dadosAlergia = {
+        temAlergia: radioAlergiaSim.checked,
+        quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : ''
+    };
+
     const dadosProntuario = {
       nomePaciente: nomePacienteInput.value,
       idade: idadeInput.value,
       patologias: patologiasInput.value,
+      alergias: dadosAlergia, 
       medicosAssistentes: currentMedicos, 
       medicacoes: currentMedicacoes 
     };
@@ -155,28 +172,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       const data = await response.json();
       if (response.ok) {
-        mensagemRetorno.innerText = 'Dados atualizados com sucesso!';
+        mensagemRetorno.innerText = 'Sucesso!';
         mensagemRetorno.style.color = '#2ADCA1';
       } else { throw new Error(data.message); }
     } catch (error) {
       mensagemRetorno.innerText = 'Erro ao salvar.';
       mensagemRetorno.style.color = '#e74c3c';
     }
-    btnSalvarTudo.disabled = false;
-    btnSalvarTudo.innerText = 'Salvar Prontuário Completo';
+    btnSalvarTudo.innerText = 'Salvar Prontuário';
   };
 
   const handleDownloadPDF = () => { window.print(); };
   
   const handleGerarQRCode = () => {
-    if (!currentUserId) { alert('Erro: ID do usuário não encontrado.'); return; }
-    // Ajusta URL para apontar para a página pública
+    if (!currentUserId) { alert('Erro: ID não encontrado.'); return; }
     const url = window.location.href.replace('perfil-paciente.html', 'prontuario-publico.html').replace('admin-dashboard.html', 'prontuario-publico.html') + `?id=${currentUserId}`;
     qrCodeContainer.innerHTML = '';
     new QRCode(qrCodeContainer, { text: url, width: 200, height: 200, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
     qrCodeContainer.style.display = 'block';
     btnGerarQRCode.innerText = 'QR Code Gerado!';
   };
+
+  radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
+  radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
 
   formAddMedico.addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);

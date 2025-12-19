@@ -39,11 +39,32 @@
             <form id="form-prontuario-principal">
                 <label for="nome-paciente">Nome do Paciente</label>
                 <input type="text" id="nome-paciente" name="nome-paciente" placeholder="Seu nome completo" required>
+                
                 <label for="idade">Idade</label>
                 <input type="number" id="idade" name="idade" placeholder="Sua idade" required>
+                
                 <label for="patologias">Patologias (Doenças)</label>
                 <textarea id="patologias" name="patologias" placeholder="Ex: Hipertensão, Diabetes tipo 2..."></textarea>
-            </form>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> 
+                                <span style="color: #2E7D32; font-weight: 500;">Não</span>
+                            </label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-sim" value="sim"> 
+                                <span style="color: #C62828; font-weight: 500;">Sim</span>
+                            </label>
+                        </div>
+                        <input type="text" id="alergias-quais" class="form-control" 
+                               placeholder="Quais? (Ex: Dipirona, Iodo, Frutos do Mar...)" 
+                               style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+                </form>
 
             <div class="gerenciador-medicos">
                 <h3>Médicos Assistentes</h3>
@@ -114,11 +135,12 @@
                     <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
 
                     <h4 style="margin-bottom: 15px; color: #2c3e50;">Histórico de Evoluções:</h4>
-                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 15px;">
+                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 10px;">
                         <p style="color: #777; font-size: 14px; font-style: italic;">Nenhuma evolução registrada.</p>
                     </div>
                 </div>
             </div>
+            
             <div class="botoes-acao-container no-print"> 
                 <button type="submit" id="btn-salvar-tudo-admin">Salvar Edição do Paciente</button>
             </div>

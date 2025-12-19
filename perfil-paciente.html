@@ -13,7 +13,6 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* --- RE-ADICIONANDO O CSS DO QR CODE --- */
         .gerenciador-qrcode {
             border: 1px solid #e0f5ef; border-radius: 12px;
             margin-top: 25px; overflow: hidden;
@@ -38,7 +37,7 @@
             border: 5px solid #e0f5ef;
             border-radius: 8px;
             padding: 10px;
-            display: none; /* Começa escondido */
+            display: none;
         }
         #qrcode-container img {
             width: 100% !important;
@@ -49,84 +48,19 @@
             max-width: 450px;
         }
         
-        /* --- CORREÇÃO DO BUG 2: CSS DE IMPRESSÃO MAIS FORTE --- */
         @media print {
-            /* Esconde tudo que não queremos */
-            .no-print {
-                display: none !important;
-            }
-            
-            /* Reseta o body para um fluxo simples */
-            body {
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                background: #fff !important;
-            }
-
-            /* Esconde tudo no body, exceto o <main> */
-            body > *:not(main) {
-                display: none !important;
-            }
-            
-            /* Esconde tudo no <main>, exceto o card do prontuário */
-            main > *:not(#prontuario-card) {
-                display: none !important;
-            }
-            
-            /* RESETA O MAIN (Correção principal para o corte) */
-            main {
-                display: block !important; /* Remove o display: flex */
-                min-height: auto !important; /* Remove o min-height: 100vh */
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 100% !important;
-                align-items: initial !important; 
-                justify-content: initial !important;
-            }
-            
-            /* Formata o card para a impressão (o único item visível) */
-            .card-agendamento#prontuario-card {
-                box-shadow: none !important;
-                border: none !important;
-                margin: 0 !important;
-                padding: 0.5in !important; /* Adiciona margem de impressão */
-                width: 100% !important;
-                max-width: 100% !important;
-                box-sizing: border-box !important;
-            }
-            
-            /* Garante que as pílulas de turno fiquem visíveis */
-            .pill-turno, .pill-medico {
-                background-color: #e0f5ef !important;
-                color: #229a73 !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            
-            /* Garante que o cabeçalho da tabela fique visível */
-            .tabela-medicacoes th {
-                background-color: #2ADCA1 !important;
-                color: white !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            /* Garante que a tabela use 100% da largura de impressão */
-            .tabela-container, .tabela-medicacoes {
-                width: 100% !important;
-                overflow: visible !important; /* Remove a barra de rolagem */
-            }
-            
-            /* Evita quebras de página ruins */
-            .gerenciador-medicos, .gerenciador-medicacao, .tabela-medicacoes tr {
-                page-break-inside: avoid;
-            }
-            h2, h3 {
-                page-break-after: avoid;
-            }
+            .no-print { display: none !important; }
+            body { margin: 0 !important; padding: 0 !important; width: 100% !important; background: #fff !important; }
+            body > *:not(main) { display: none !important; }
+            main > *:not(#prontuario-card) { display: none !important; }
+            main { display: block !important; min-height: auto !important; margin: 0 !important; padding: 0 !important; width: 100% !important; align-items: initial !important; justify-content: initial !important; }
+            .card-agendamento#prontuario-card { box-shadow: none !important; border: none !important; margin: 0 !important; padding: 0.5in !important; width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; }
+            .pill-turno, .pill-medico { background-color: #e0f5ef !important; color: #229a73 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .tabela-medicacoes th { background-color: #2ADCA1 !important; color: white !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            .tabela-container, .tabela-medicacoes { width: 100% !important; overflow: visible !important; }
+            .gerenciador-medicos, .gerenciador-medicacao, .tabela-medicacoes tr { page-break-inside: avoid; }
+            h2, h3 { page-break-after: avoid; }
         }
-
     </style>
 </head>
 <body>
@@ -161,11 +95,32 @@
             <form id="form-prontuario-principal">
                 <label for="nome-paciente">Nome do Paciente</label>
                 <input type="text" id="nome-paciente" name="nome-paciente" placeholder="Seu nome completo" required>
+                
                 <label for="idade">Idade</label>
                 <input type="number" id="idade" name="idade" placeholder="Sua idade" required>
+                
                 <label for="patologias">Patologias (Doenças)</label>
                 <textarea id="patologias" name="patologias" placeholder="Ex: Hipertensão, Diabetes tipo 2..."></textarea>
-            </form>
+
+                <div class="form-group" style="margin-top: 15px;">
+                    <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> 
+                                <span style="color: #2E7D32; font-weight: 500;">Não</span>
+                            </label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-sim" value="sim"> 
+                                <span style="color: #C62828; font-weight: 500;">Sim</span>
+                            </label>
+                        </div>
+                        <input type="text" id="alergias-quais" class="form-control" 
+                               placeholder="Quais? (Ex: Dipirona, Iodo, Frutos do Mar...)" 
+                               style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+                </form>
 
             <div class="gerenciador-medicos">
                 <h3>Médicos Assistentes</h3>
@@ -248,7 +203,6 @@
     </footer>
     
     <script>
-        // Script do Menu Hamburger
         const hamburgerButton = document.getElementById('hamburger-button');
         const mobileMenu = document.getElementById('mobile-menu');
         hamburgerButton.addEventListener('click', () => {
