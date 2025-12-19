@@ -4,43 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Dra. Aisha Wenzinger</title>
+    
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
+
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <style>.gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; } #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; } #qrcode-container img { width: 100% !important; height: 100% !important; } @media print { .no-print { display: none !important; } }</style>
+
+    <style>
+        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
+        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
+        #qrcode-container img { width: 100% !important; height: 100% !important; }
+        @media print { .no-print { display: none !important; } }
+    </style>
 </head>
 <body>
+    
     <header class="novo-header no-print"> 
         <div class="header-container">
-            <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo"></a>
+            <a href="index.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha Logo"></a>
             <nav class="main-nav" id="mobile-menu"> 
-                <ul><li><a href="index.html#contato">Contato</a></li><li><a href="login.html">Login</a></li></ul>
+                <ul>
+                    <li><a href="index.html#contato">Contato</a></li>
+                    <li><a href="login.html">Login</a></li>
+                </ul>
             </nav>
             <button class="hamburger" id="hamburger-button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>
         </div>
     </header>
+
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
+            
             <h2>Minhas Informações (Prontuário)</h2>
             <form id="form-prontuario-principal">
                 <label for="nome-paciente">Nome do Paciente</label>
-                <input type="text" id="nome-paciente" required>
+                <input type="text" id="nome-paciente" name="nome-paciente" required>
+                
                 <label for="idade">Idade</label>
-                <input type="number" id="idade" required>
+                <input type="number" id="idade" name="idade" required>
+                
                 <label for="patologias">Patologias (Doenças)</label>
-                <textarea id="patologias" placeholder="Ex: Hipertensão..."></textarea>
+                <textarea id="patologias" name="patologias" placeholder="Ex: Hipertensão..."></textarea>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
                         <div style="display: flex; gap: 20px; align-items: center;">
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span></label>
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span></label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> 
+                                <span style="color: #2E7D32; font-weight: 500;">Não</span>
+                            </label>
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;">
+                                <input type="radio" name="temAlergia" id="alergia-sim" value="sim"> 
+                                <span style="color: #C62828; font-weight: 500;">Sim</span>
+                            </label>
                             <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
                         </div>
-                        <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
+                        <input type="text" id="alergias-quais" class="form-control" 
+                               placeholder="Quais?" 
+                               style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
                     </div>
                 </div>
             </form>
@@ -51,7 +75,7 @@
                     <div class="form-linha-inputs" style="display: flex; gap: 10px;">
                         <div class="input-group" style="flex: 2;">
                             <label for="nome-medico">Nome e Especialidade</label>
-                            <input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos - Cardiologista" required>
+                            <input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos (Cardiologista)" required>
                         </div>
                         <div class="input-group" style="flex: 1;">
                             <label for="telefone-medico">Telefone</label>
@@ -67,24 +91,39 @@
                 <h3>Minhas Medicações</h3>
                 <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
                     <div class="form-linha-inputs">
-                        <div class="input-group"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                        <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
+                        <div class="input-group">
+                            <label for="nome-medicacao">Nome da Medicação</label>
+                            <input type="text" id="nome-medicacao" placeholder="Nome e dosagem..." required>
+                        </div>
+                        <div class="input-group-pequeno">
+                            <label for="horario-especifico">Horário</label>
+                            <input type="time" id="horario-especifico">
+                        </div>
                     </div>
-                    <div style="width: 100%;"><label>Turnos:</label>
+                    <div style="width: 100%;">
+                        <label>Turnos de Uso:</label>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
-                            <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
-                            <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
-                            <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
-                            <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
-                            <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
+                            <label><input type="checkbox" name="horario" value="antes_cafe"><span class="checkbox-custom"></span> Antes Café</label>
+                            <label><input type="checkbox" name="horario" value="depois_cafe"><span class="checkbox-custom"></span> Depois Café</label>
+                            <label><input type="checkbox" name="horario" value="almoco"><span class="checkbox-custom"></span> Almoço</label>
+                            <label><input type="checkbox" name="horario" value="tarde"><span class="checkbox-custom"></span> Tarde</label>
+                            <label><input type="checkbox" name="horario" value="antes_jantar"><span class="checkbox-custom"></span> Antes Jantar</label>
+                            <label><input type="checkbox" name="horario" value="antes_dormir"><span class="checkbox-custom"></span> Antes Dormir</label>
                         </div>
                     </div>
                     <button type="submit" id="btn-add-medicacao">+ Adicionar</button>
                 </form>
+                
                 <div class="tabela-container">
                     <table class="tabela-medicacoes">
-                        <thead><tr><th>Medicação</th><th>Turno</th><th>Horário</th><th class="no-print">Ação</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th>Medicação</th>
+                                <th>Turno</th>
+                                <th>Horário</th>
+                                <th class="no-print" style="text-align: center;">Ação</th> 
+                            </tr>
+                        </thead>
                         <tbody id="lista-medicacoes-body"></tbody>
                     </table>
                 </div>
@@ -100,15 +139,24 @@
                 <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
                 <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
             </div>
+            
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
-    <footer id="contato" class="no-print"><p>Dra Aishá Wenzinger | CRM/BA: 20473</p></footer>
+
+    <footer id="contato" class="no-print"> 
+        <p>Siga a Dra. Aisha nas redes sociais:</p>
+        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p>
+    </footer>
+    
     <script>
         const hamburgerButton = document.getElementById('hamburger-button');
         const mobileMenu = document.getElementById('mobile-menu');
-        hamburgerButton.addEventListener('click', () => { mobileMenu.classList.toggle('is-active'); });
+        hamburgerButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('is-active');
+        });
     </script>
     <script src="js/perfil-paciente.js"></script>
+
 </body>
 </html>

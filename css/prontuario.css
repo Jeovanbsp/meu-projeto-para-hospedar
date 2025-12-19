@@ -1,18 +1,18 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Final: Vertical e Completo)     */
+/* ARQUIVO: css/prontuario.css (Final: Tabela Moderna)          */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS (VERTICAL E LARGA) --- */
+/* --- 1. LISTA DE MÉDICOS (VERTICAL E COMPACTA) --- */
 #lista-medicos-pills {
     display: flex;
-    flex-direction: column; /* Um abaixo do outro */
+    flex-direction: column;
     gap: 8px;
     padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
     min-height: 50px;
-    max-height: 250px;      /* Altura boa para lista */
+    max-height: 250px;
     overflow-y: auto;
     list-style: none;
     margin-top: 10px;
@@ -21,24 +21,22 @@
 #lista-medicos-pills::-webkit-scrollbar { width: 5px; }
 #lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 
-/* Item da Lista (Estilo Linha Inteira) */
 .pill-medico {
     display: flex;
-    justify-content: space-between; /* Texto na ponta esquerda, X na direita */
+    justify-content: space-between;
     align-items: center;
-    background-color: #f8f9fa;      /* Fundo clean */
+    background-color: #f8f9fa;
     color: #333;
     padding: 12px 15px;
     border-radius: 6px;
     font-size: 0.9rem;
     font-weight: 500;
-    border-left: 5px solid #2ADCA1; /* Identidade visual na borda */
+    border-left: 5px solid #2ADCA1;
     box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     width: 100%;
     box-sizing: border-box;
 }
 
-/* Botão de Excluir (X) */
 .btn-deletar-medico {
     display: flex;
     align-items: center;
@@ -76,7 +74,61 @@
     100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
 }
 
-/* --- DEMAIS ESTILOS --- */
+/* --- 3. TABELA DE MEDICAÇÕES (MODERNA) --- */
+.tabela-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    border: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.tabela-medicacoes {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #fff;
+    font-size: 0.9rem;
+}
+
+.tabela-medicacoes thead {
+    background-color: #2ADCA1; /* Verde Bonito */
+    color: #fff;
+}
+
+.tabela-medicacoes th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.tabela-medicacoes td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #444;
+}
+
+.tabela-medicacoes tbody tr:nth-child(even) {
+    background-color: #fcfcfc;
+}
+
+.tabela-medicacoes tbody tr:hover {
+    background-color: #f0fdf9;
+}
+
+/* Coluna de Horário Destacada */
+.col-horario {
+    font-family: 'Courier New', monospace;
+    font-weight: 700;
+    color: #333;
+    background-color: #fafafa;
+    text-align: center;
+    border-left: 1px solid #eee;
+    width: 80px;
+}
+
 .pill-turno {
     display: inline-block;
     background-color: #E8F5E9;
@@ -88,9 +140,13 @@
     margin-right: 3px;
     border: 1px solid #C8E6C9;
 }
-.btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; }
 
-/* Evolução Minimalista */
+.btn-deletar-medacao { 
+    background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; font-size: 1rem;
+}
+.btn-deletar-medacao:hover { color: #d32f2f; transform: scale(1.2); }
+
+/* --- 4. EVOLUÇÃO --- */
 .evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
 .evo-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
 .evo-left { display: flex; align-items: center; gap: 10px; }

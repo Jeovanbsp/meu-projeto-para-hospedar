@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputAlergiasQuais = document.getElementById('alergias-quais');
   const sinalizadorAlergia = document.getElementById('sinalizador-alergia'); 
 
-  // MÉDICOS
   const nomeMedicoInput = document.getElementById('nome-medico');
   const telefoneMedicoInput = document.getElementById('telefone-medico');
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
@@ -72,38 +71,40 @@ document.addEventListener('DOMContentLoaded', () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; }
     currentMedicos.forEach((medico, index) => {
-      // LISTA VERTICAL + DELETE
       const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`;
       listaMedicosPills.insertAdjacentHTML('beforeend', pill);
     });
     listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight;
   };
 
-  // ADD MEDICO COM TELEFONE
   const handleAddMedico = (e) => { 
-      e.preventDefault(); 
-      const nome = nomeMedicoInput.value.trim();
-      const tel = telefoneMedicoInput.value.trim();
-      if(!nome) return; 
-      const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`;
-      currentMedicos.push(textoFinal); 
-      renderMedicosList(); 
-      nomeMedicoInput.value=''; telefoneMedicoInput.value='';
+      e.preventDefault(); const nome = nomeMedicoInput.value.trim(); const tel = telefoneMedicoInput.value.trim();
+      if(!nome) return; const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`;
+      currentMedicos.push(textoFinal); renderMedicosList(); nomeMedicoInput.value=''; telefoneMedicoInput.value='';
   };
-
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
+  // --- TABELA MEDICAÇÕES COM ORDENAÇÃO AUTOMÁTICA ---
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
-    if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; }
-    const list = [...currentMedicacoes].sort((a, b) => a.nome.localeCompare(b.nome));
+    if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação adicionada.</td></tr>'; return; }
+
+    const list = [...currentMedicacoes].sort((a, b) => {
+        const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59';
+        const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59';
+        return horaA.localeCompare(horaB);
+    });
+
     list.forEach((med) => { 
       let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } }
-      if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>';
-      const row = `<tr><td>${med.nome}</td><td>${turnosHtml}</td><td>${med.horarioEspecifico || '-'}</td><td class="no-print"><button class="btn-deletar-medacao" data-nome="${med.nome}">✖</button></td></tr>`;
+      if (!turnosHtml) turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>';
+      const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
+      
+      const row = `<tr><td style="font-weight:500;">${med.nome}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
+
   const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); currentMedicacoes.push({ nome: nomeMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 

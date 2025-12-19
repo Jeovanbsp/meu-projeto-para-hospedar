@@ -41,7 +41,7 @@ mongoose.connect(MONGODB_URI)
 
 app.get('/', (req, res) => res.json({ message: 'API Online' }));
 
-// Auth (Login/Register) - Mantenha igual ao seu original
+// Auth
 app.post('/auth/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
@@ -64,7 +64,6 @@ app.post('/auth/login', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// --- ROTA PÚBLICA ---
 app.get('/api/public-prontuario/:userId', async (req, res) => {
   try {
     const prontuario = await Prontuario.findOne({ user: req.params.userId });
@@ -73,7 +72,7 @@ app.get('/api/public-prontuario/:userId', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// --- ROTAS PACIENTE ---
+// PACIENTE
 app.get('/api/prontuario', authMiddleware, async (req, res) => {
   try {
     let prontuario = await Prontuario.findOne({ user: req.user.userId });
@@ -91,7 +90,7 @@ app.post('/api/prontuario', authMiddleware, async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
 });
 
-// --- ROTAS ADMIN ---
+// ADMIN
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const p = await Prontuario.findOne({ user: req.params.userId });
@@ -113,7 +112,6 @@ app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// Evoluções e Delete (Mantenha o código padrão de evolução e delete user aqui...)
 app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { titulo, texto } = req.body;

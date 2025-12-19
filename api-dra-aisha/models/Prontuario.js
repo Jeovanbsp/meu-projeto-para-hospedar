@@ -34,7 +34,7 @@ const ProntuarioSchema = new Schema({
     quais: { type: String, default: '' }
   },
 
-  medicosAssistentes: [{ type: String }], // Lista de strings (Nome + Telefone)
+  medicosAssistentes: [{ type: String }], 
   medicacoes: [MedicacaoSchema],
   evolucoes: [EvolucaoSchema] 
 
