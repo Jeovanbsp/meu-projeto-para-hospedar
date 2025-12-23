@@ -3,25 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>"Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório"</title>
+    <title>Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* CSS EXTRA PARA ORGANIZAR A NAV E DAR DESTAQUE SIMPLES */
+        /* --- ESTILOS DA NAV (Mantidos) --- */
         .main-nav ul {
             display: flex;
             align-items: center;
-            gap: 20px; /* Espaço entre os links */
+            gap: 20px;
             list-style: none;
             margin: 0;
             padding: 0;
         }
 
-        /* Destaque Simples para a Ficha */
         .ficha-link {
-            color: #2ADCA1; /* Verde da marca */
+            color: #2ADCA1;
             font-weight: 700;
             text-decoration: none;
             border: 1px solid #2ADCA1;
@@ -30,15 +29,48 @@
             transition: background 0.3s;
         }
         
-        /* HOVER SUAVE (CORREÇÃO SOLICITADA) */
         .ficha-link:hover {
-            background-color: rgba(42, 220, 161, 0.1); /* Fundo BEM CLARINHO */
-            /* A cor do texto e borda continua verde */
+            background-color: rgba(42, 220, 161, 0.1);
         }
 
-        /* Ajuste para não quebrar no celular */
+        /* --- NOVO ESTILO PARA OS BOTÕES DE AGENDAMENTO --- */
+        .botoes-container {
+            display: flex;
+            gap: 15px; /* Espaço entre os botões */
+            flex-wrap: wrap; /* Permite quebrar linha no celular */
+            margin-top: 20px;
+        }
+
+        .btn-agendar {
+            text-align: center;
+            padding: 12px 20px;
+            background-color: #2ADCA1; /* Verde padrão */
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .btn-agendar:hover {
+            transform: scale(1.05);
+            background-color: #24b685;
+        }
+
+        /* Diferenciar levemente o botão de Salvador (opcional, mas ajuda visualmente) */
+        .btn-salvador {
+            background-color: #2c3e50; /* Um tom azul escuro para diferenciar */
+        }
+        .btn-salvador:hover {
+            background-color: #34495e;
+        }
+
         @media (max-width: 900px) {
             .main-nav ul { flex-direction: column; gap: 15px; }
+            .botoes-container { flex-direction: column; } /* Um embaixo do outro no mobile */
+            .btn-agendar { width: 100%; } /* Botão ocupa largura total no mobile */
         }
     </style>
 </head>
@@ -54,7 +86,7 @@
                 <ul>
                     <li>
                         <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link">
-                            Ficha Pré-Atendimento
+                            📋 Ficha Pré-Atendimento
                         </a>
                     </li>
 
@@ -86,9 +118,17 @@
                 <div class="sobre-texto">
                     <h2>Atenção Especializada para Idosos</h2>
                     <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
-                    <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                        Agende sua consulta
-                    </a>
+                    
+                    <div class="botoes-container">
+                        <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
+                            Agende em Lauro de Freitas
+                        </a>
+
+                        <a href="https://wa.me/5571983943153" target="_blank" class="btn-agendar btn-salvador">
+                            Agende em Salvador
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </section> 
@@ -237,17 +277,12 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         hamburgerButton.addEventListener('click', () => {
-            // Alterna a classe 'is-active' no botão
             hamburgerButton.classList.toggle('is-active');
-            // Alterna o atributo aria-expanded para acessibilidade
             const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
             hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            // Alterna a classe 'is-active' no menu
             mobileMenu.classList.toggle('is-active');
         });
 
-        // Opcional: Fechar o menu ao clicar em um link (útil para Single Page Applications)
         const menuLinks = mobileMenu.querySelectorAll('a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
