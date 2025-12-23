@@ -30,27 +30,41 @@
             transition: background 0.3s;
         }
         
-        /* HOVER SUAVE (CORREÇÃO SOLICITADA) */
+        /* HOVER SUAVE */
         .ficha-link:hover {
-            background-color: rgba(42, 220, 161, 0.1); /* Fundo BEM CLARINHO */
-            /* A cor do texto e borda continua verde */
+            background-color: rgba(42, 220, 161, 0.1);
         }
 
-        /* CSS PARA OS DOIS BOTÕES DA HOME FICAREM LADO A LADO */
+        /* --- ALTERAÇÃO SOLICITADA: BOTÕES DA HOME PEQUENOS E LADO A LADO --- */
+        
+        /* Container para alinhar lado a lado */
         .botoes-hero {
             display: flex;
-            gap: 15px; /* Espaço entre eles */
-            flex-wrap: wrap; /* Se a tela for pequena, um desce */
-            margin-top: 20px;
+            gap: 10px; /* Espaço pequeno entre eles */
+            align-items: center;
+            margin-top: 15px;
+            flex-wrap: wrap; /* Permite quebrar linha em telas muito pequenas para não vazar */
         }
 
-        /* Ajuste para não quebrar no celular */
+        /* Estilo específico para deixar ESTES botões menores e minimalistas */
+        .botoes-hero .btn-agendar {
+            padding: 8px 15px; /* Padding reduzido para ficar menor */
+            font-size: 0.85rem; /* Fonte menor */
+            font-weight: 600; /* Peso um pouco menor */
+            white-space: nowrap; /* Tenta manter em uma linha */
+            /* As outras propriedades (cor de fundo, raio da borda) são herdadas do css/style.css original */
+        }
+
+        /* Ajuste para não quebrar no celular a navegação */
         @media (max-width: 900px) {
             .main-nav ul { flex-direction: column; gap: 15px; }
-            
-            /* No celular, os botões ficam um embaixo do outro e centralizados */
-            .botoes-hero { flex-direction: column; width: 100%; }
-            .btn-agendar { display: block; text-align: center; width: 100%; box-sizing: border-box; }
+        }
+        
+        /* Ajuste opcional para centralizar os botões pequenos no celular */
+        @media (max-width: 600px) {
+             .botoes-hero {
+                 justify-content: center;
+            }
         }
     </style>
 </head>
@@ -101,11 +115,11 @@
                     
                     <div class="botoes-hero">
                         <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                            Agende sua Consulta em Lauro de Freitas
+                            Agende em Lauro de Freitas
                         </a>
 
                         <a href="https://wa.me/5571983943153" target="_blank" class="btn-agendar">
-                            Agende sua Consulta em Salvador
+                            Agende em Salvador
                         </a>
                     </div>
                     </div>
