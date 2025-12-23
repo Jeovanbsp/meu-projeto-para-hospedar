@@ -3,57 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dra. Aisha Wenzinger - Geriatria e Clínica Médica</title>
-    
+    <title>"Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório"</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
-    <style>
-        /* CSS APENAS PARA O BOTÃO DA FICHA (Para não quebrar o resto) */
-        .btn-ficha-nav {
-            border: 1px solid #333;
-            padding: 8px 15px;
-            border-radius: 4px;
-            color: #333;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-        .btn-ficha-nav:hover {
-            background-color: #f0f0f0;
-            border-color: #333;
-        }
-    </style>
 </head>
 <body>
-    
+
     <header class="novo-header">
         <div class="header-container">
             <a href="index.html" class="logo">
                 <img src="img/layout.png" alt="Dra. Aisha Logo">
             </a>
             
-            <nav class="main-nav" id="mobile-menu">
-                <ul style="align-items: center; gap: 20px;">
-                    <li><a href="#sobre-mim-section">Minha História</a></li>
-                    <li><a href="#experiencia-section">Experiência</a></li>
-                    <li><a href="#locais">Locais</a></li>
+            <nav class="main-nav" id="mobile-menu"> 
+                <ul>
+                    <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
+                    <li><a href="#experiencia-section">Experiência</a></li> 
+                    <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
-
-                    <li>
-                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha-nav">
-                            📄 Ficha Pré-Atendimento
-                        </a>
-                    </li>
-
-                    <li><a href="cadastro.html">Cadastro</a></li>
-                    <li><a href="login.html" class="btn-agendar">Login</a></li>
                 </ul>
             </nav>
 
-            <button class="hamburger" id="hamburger-button">
+            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
                 <span class="hamburger-box">
                     <span class="hamburger-inner"></span>
                 </span>
@@ -63,81 +35,158 @@
 
     <main>
         
-        <section class="hero-section">
-            <div class="hero-content">
-                <h1>Atenção Especializada para Idosos</h1>
-                <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
-                <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">Agendar Consulta</a>
-            
-                <div class="servicos-hero" style="margin-top: 40px;">
-                    <div style="margin-bottom: 10px;"><strong>Telemedicina</strong><br><small>Consultas online com segurança e comodidade, sem sair de casa.</small></div>
-                    <div><strong>Atendimento Domiciliar</strong><br><small>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</small></div>
+        <section class="sobre">
+            <div class="sobre-container">
+                <div class="sobre-imagem-boneca">
+                    <img src="img/perfil.png" alt="Dra. Aisha Wenzinger - Ilustração"> 
+                </div>
+                <div class="sobre-texto">
+                    <h2>Atenção Especializada para Idosos</h2>
+                    <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
+                    <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
+                        Agende sua consulta
+                    </a>
+                </div>
+            </div>
+        </section> 
+        
+        <section class="servicos-destaque-delicado">
+            <div class="servico-delicado">
+                <h3>Telemedicina</h3>
+                <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
+            </div>
+            <div class="servico-delicado">
+                <h3>Atendimento Domiciliar</h3>
+                <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
+            </div>
+            <div class="servico-delicado">
+                <h3>Atendimento Presencial</h3>
+                <p>Consultas realizadas em consultório com infraestrutura completa para seu conforto.</p> 
+            </div>
+        </section>
+
+        <section class="sobre-mim"> 
+            <div class="sobre-mim-container">
+                <div class="sobre-mim-imagem">
+                    <img src="img/aisha_perfil.jpg" alt="Dra. Aisha Wenzinger" class="profile-img">
+                    <p class="profile-caption">
+                        <span class="name">Dra. Aishá Wenzinger</span>
+                        CRM: 20473 <br> 
+                        RQE: 19692
+                    </p>
+                </div>
+                <div class="sobre-mim-texto">
+                    <h3 id="sobre-mim-section">Sobre Mim</h3> 
+                    <ul class="historia">
+                        <li>Dra. Aishá Wenzinger: Clínica Médica, Geriatria e Cuidados Paliativos.</li>
+                        <li>Médica graduada pela Escola Bahiana de Medicina e Saúde Pública, com 17 anos de formação. Iniciou sua trajetória profissional atuando em atendimentos de emergência e no Programa de Saúde da Família em Esplanada (BA), entre 2009 e início de 2010.</li>
+                        <li>Devido à sólida experiência na área de urgência, assumiu precocemente a função de Coordenadora Médica do Serviço de Ambulância MedSalva, cargo que exerceu por cerca de quatro anos. Em seguida, iniciou formação em Clínica Médica no Hospital São Rafael (2011–2013).</li>
+                        <li>Após esse período, manteve atuação em Clínica Médica e Emergência até 2015, quando iniciou sua formação em Geriatria no Hospital Santo Antônio – Obras Sociais Irmã Dulce, concluída em 2017. Permaneceu na instituição até 2022, período marcado por intensa dedicação, especialmente durante a pandemia de COVID-19, que demandou cuidado e compaixão frente à vulnerabilidade dos idosos assistidos.</li>
+                        <li>Em novembro de 2022, assumiu o desafio de estruturar o serviço de Geriatria do Hospital Português, onde permanece até o presente momento, consolidando uma equipe voltada ao cuidado integral da pessoa idosa, com foco em desospitalização segura, manejo clínico de idosos frágeis e atenção centrada na pessoa.</li>
+                        <li>Possui especialização em Cuidados Paliativos pelo Instituto Paliar e ampla experiência em ambientes hospitalares, ambulatórios e atendimentos domiciliares, com atuação também em telemedicina e consultório próprio. Oferece assistência personalizada a idosos com limitações funcionais ou acamados, prezando pelo cuidado integral, humanizado e contínuo.</li>
+                        <li>É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências, aliando conhecimento técnico à sensibilidade humana em todas as fases do envelhecimento.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
-        <section id="sobre-mim-section" class="about-section">
-            <div class="about-container">
-                <div class="about-text">
-                    <h2>Minha História</h2>
-                    <p>Médica com sólida experiência em Clínica Médica, Geriatria e Cuidados Paliativos, com mais de 14 anos de atuação em ambientes hospitalares de urgência, ambulatórios e atendimento domiciliar.</p>
-                    <p>Possui formação pela Escola Bahiana de Medicina e Saúde Pública e especialização em Cuidados Paliativos pelo Instituto Paliar. Coordenava o setor de Geriatria do Hospital Português, com foco em desospitalização segura, manejo clínico de idosos frágeis e atenção centrada na pessoa.</p>
-                    <p>Atua também em consultório próprio, telemedicina e realiza atendimentos domiciliares voltados para idosos com dificuldade de locomoção e/ou em estado de acamamento, oferecendo cuidado integral, humanizado e contínuo. É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências.</p>
+        
+<section class="experiencia-texto-com-imagem"> 
+            <div class="experiencia-container-novo">
+                <div class="experiencia-imagem-lateral">
+                    <img src="img/atendimento.jpg" alt="Consultório Médico">
                 </div>
-                <div class="about-image">
-                    <img src="img/foto-aisha.jpg" alt="Foto Dra. Aisha">
+                <div class="experiencia-conteudo-texto">
+                    <h3 id="experiencia-section">Experiência Profissional</h3> 
+                    <ul class="experiencia-lista-formatada">
+                        <li>
+                            <strong>Formação Médica:</strong> Escola Bahiana de Medicina e Saúde Pública – Conclusão em 2008
+                        </li>
+                        <li>
+                            <strong>Hospital Geral do Estado (HGE 2) – Salvador:</strong>
+                            <ul>
+                                <li>Médica Clínica (Unidade Intermediária 2): 2022 - presente</li>
+                                <li>Médica Emergencista: 2013 – 2023</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Hospital Português – Salvador:</strong>
+                            <ul>
+                                <li>Coordenadora da Geriatria: Nov 2021 - presente</li>
+                                <li>Médica da Equipe de Desospitalização: Desde 2022</li>
+                                <li>Médica Emergencista: 2014 – 2024</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Clínica NewLife – Salvador:</strong>
+                            <ul>
+                                <li>Médica Geriatra (Consultório): 2016 - presente</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <strong>Atendimento Domiciliar em Geriatria:</strong>
+                            <ul>
+                                <li>Cuidados a idosos com limitações e acamados: 2017 - presente</li>
+                            </ul>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </section>
+        
+</main>
 
-        <section id="experiencia-section" class="experience-section">
-            <div class="experience-container">
-                <h2>Experiência Profissional</h2>
-                <ul class="experience-list">
-                    <li><strong>Médica Clínica</strong> – Unidade Intermediária 2, Hospital Geral do Estado (HGE 2) – Desde 2023</li>
-                    <li><strong>Coordenadora da Geriatria</strong> – Hospital Português – Desde Novembro de 2021</li>
-                    <li><strong>Médica da Equipe de Desospitalização</strong> – Hospital Português – Desde 2022</li>
-                    <li><strong>Consultório de Geriatria</strong> – Clínica Newlife – Desde 2017</li>
-                    <li><strong>Atendimentos Domiciliares em Geriatria</strong> – Desde 2017</li>
-                    <li><strong>Médica Emergencista</strong> – Hospital Português – 2014 a 2024</li>
-                    <li><strong>Médica Emergencista</strong> – Hospital Geral do Estado (HGE) – 2013 a 2023</li>
-                </ul>
-                <p class="experience-summary"><strong>Experiência acumulada:</strong> 14 anos em Serviços de Urgência e Emergência.</p>
+    <section class="localizacao" id="locais">
+        <h2>Onde nos encontrar</h2>
+        <p>Confira nossas unidades e escolha a mais próxima de você:</p>
+
+        <div class="locais">
+            <div class="local">
+                <h3>Unidade 1 - Estrada do Coco</h3>
+                <p>
+                    Localizado em: Shopping Estrada do Coco <br>
+                    Endereço: Av. Santos Dumont, Est do Coco, 6216 - loja 102 -
+                    Pitangueiras, Lauro de Freitas - BA, 42701-260
+                </p>
+                <a href="https://www.google.com/maps/place/CL%C3%8DNICA+NEWLIFE/@-12.8753177,-38.3061968,17z/data=!3m1!4b1!4m6!3m5!1s0x7163fe91f42daa5:0xc0e707ebb4383169!8m2!3d-12.8753177!4d-38.3061968!16s%2Fg%2F11mtjn_gww?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
+                   target="_blank" class="btn-maps">
+                    Ver no Google Maps
+                </a>
             </div>
-        </section>
 
-        <section id="locais" class="locations-section">
-            <h2>Onde nos encontrar</h2>
-            <p>Confira nossas unidades e escolha a mais próxima de você:</p>
-            
-            <div class="locations-grid">
-                <div class="location-card">
-                    <h3>Unidade 1 - Estrada do Coco</h3>
-                    <p><strong>Localizado em:</strong> Shopping Estrada do Coco</p>
-                    <p><strong>Endereço:</strong> Av. Santos Dumont, Est do Coco, 6216 - loja 102 - Pitangueiras, Lauro de Freitas - BA, 42701-260</p>
-                    <a href="https://goo.gl/maps/seuLinkAqui" target="_blank" style="color: #2ADCA1; text-decoration: underline;">Ver no Google Maps</a>
-                </div>
+            <div class="local">
+                <h3>Unidade 2 - Salvador</h3>
+                <p>
+                    Localizado em: International Trade Center - Salvador <br>
+                    Endereço: Rua Arthur de Azevedo Machado, 1459 <br>
+                    Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA, 41770-790
+                </p>
+                <a href="https://www.google.com/maps/place/SALUTE+COWORKING/@-12.9870998,-38.4487191,17z/data=!3m1!4b1!4m6!3m5!1s0x7161b64dc24a075:0x7d8d414872c6bcf3!8m2!3d-12.9870998!4d-38.4487191!16s%2Fg%2F11s0t99lhf?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
+                   target="_blank" class="btn-maps">
+                    Ver no Google Maps
+                </a>
             </div>
-        </section>
+        </div>
+    </section>
 
-    </main>
 
     <footer id="contato">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <img src="img/layout.png" alt="Dra Aisha Logo" style="height: 40px; filter: brightness(0) invert(1);">
-            </div>
-            <div class="social-icons">
-                <a href="https://instagram.com" target="_blank"><img src="img/instagram.png" alt="Instagram"></a>
-                <a href="https://facebook.com" target="_blank"><img src="img/facebook.png" alt="Facebook"></a>
-                <a href="https://wa.me/5571981233912" target="_blank"><img src="img/whatsapp.png" alt="WhatsApp"></a>
-            </div>
-            <p>Email: contato@draaisha.com.br</p>
-            <p>Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+        <p>Siga a Dra. Aisha nas redes sociais:</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank">
+                <img src="img/instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank">
+                <img src="img/facebook.png" alt="Facebook">
+            </a>
+            <a href="https://wa.me/5571981233912" target="_blank">
+                <img src="img/whatsapp.png" alt="WhatsApp">
+            </a>
         </div>
-        <div class="footer-bottom">
-            <p>Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
-        </div>
+        
+        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+
+        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
     </footer>
 
     <script>
@@ -145,9 +194,26 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         hamburgerButton.addEventListener('click', () => {
+            // Alterna a classe 'is-active' no botão
             hamburgerButton.classList.toggle('is-active');
+            // Alterna o atributo aria-expanded para acessibilidade
+            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
+            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            
+            // Alterna a classe 'is-active' no menu
             mobileMenu.classList.toggle('is-active');
         });
+
+        // Opcional: Fechar o menu ao clicar em um link (útil para Single Page Applications)
+        const menuLinks = mobileMenu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburgerButton.classList.remove('is-active');
+                hamburgerButton.setAttribute('aria-expanded', 'false');
+                mobileMenu.classList.remove('is-active');
+            });
+        });
     </script>
+
 </body>
 </html>
