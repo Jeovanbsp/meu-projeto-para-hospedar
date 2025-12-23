@@ -30,10 +30,15 @@ const ProntuarioSchema = new Schema({
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
-  
-  // --- NOVO CAMPO ADICIONADO ---
-  exames: { type: String, default: '' },
-  // -----------------------------
+  exames: { type: String, default: '' }, // Campo de Exames
+
+  // --- NOVO: COMORBIDADES ---
+  comorbidades: {
+    temComorbidade: { type: Boolean, default: false },
+    lista: [{ type: String }], // Array com os nomes das doenças selecionadas
+    outras: { type: String, default: '' }
+  },
+  // --------------------------
 
   alergias: {
     temAlergia: { type: Boolean, default: false },

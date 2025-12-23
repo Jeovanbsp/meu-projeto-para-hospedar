@@ -11,8 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
-  const examesInput = document.getElementById('exames'); // NOVO
+  const examesInput = document.getElementById('exames'); // EXAMES
   
+  // COMORBIDADES
+  const radioComorbidadeNao = document.getElementById('comorbidade-nao');
+  const radioComorbidadeSim = document.getElementById('comorbidade-sim');
+  const listaComorbidades = document.getElementById('lista-comorbidades');
+  const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
+  const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
+
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
   const inputAlergiasQuais = document.getElementById('alergias-quais');
@@ -45,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
+  function toggleComorbidades() { if (radioComorbidadeSim.checked) { listaComorbidades.style.display = 'block'; } else { listaComorbidades.style.display = 'none'; } }
 
   horarioEspecificoInput.addEventListener('input', () => { if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block'; else secaoTurnos.style.display = 'none'; });
 
@@ -64,7 +72,23 @@ document.addEventListener('DOMContentLoaded', () => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
-    examesInput.value = data.exames || ''; // PREENCHE EXAMES
+    examesInput.value = data.exames || '';
+
+    // COMORBIDADES
+    if (data.comorbidades && data.comorbidades.temComorbidade) {
+        radioComorbidadeSim.checked = true;
+        inputOutrasComorbidades.value = data.comorbidades.outras || '';
+        if (data.comorbidades.lista) {
+            checkboxesComorbidades.forEach(cb => {
+                if (data.comorbidades.lista.includes(cb.value)) cb.checked = true;
+            });
+        }
+    } else {
+        radioComorbidadeNao.checked = true;
+        inputOutrasComorbidades.value = '';
+        checkboxesComorbidades.forEach(cb => cb.checked = false);
+    }
+    toggleComorbidades();
     
     if (data.termoAceite) { checkTermoAceite.checked = true; }
     toggleConteudoProntuario();
@@ -74,58 +98,37 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleAlergiaInput();
   };
 
-  const renderMedicosList = () => {
-    listaMedicosPills.innerHTML = ''; 
-    if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; }
-    currentMedicos.forEach((medico, index) => {
-      const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`;
-      listaMedicosPills.insertAdjacentHTML('beforeend', pill);
-    });
-    listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight;
-  };
-
-  const handleAddMedico = (e) => { 
-      e.preventDefault(); const nome = nomeMedicoInput.value.trim(); const tel = telefoneMedicoInput.value.trim();
-      if(!nome) return; const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`;
-      currentMedicos.push(textoFinal); renderMedicosList(); nomeMedicoInput.value=''; telefoneMedicoInput.value='';
-  };
+  const renderMedicosList = () => { listaMedicosPills.innerHTML = ''; if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; } currentMedicos.forEach((medico, index) => { const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`; listaMedicosPills.insertAdjacentHTML('beforeend', pill); }); listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight; };
+  const handleAddMedico = (e) => { e.preventDefault(); const nome = nomeMedicoInput.value.trim(); const tel = telefoneMedicoInput.value.trim(); if(!nome) return; const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`; currentMedicos.push(textoFinal); renderMedicosList(); nomeMedicoInput.value=''; telefoneMedicoInput.value=''; };
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
-  const renderTabelaMedicacoes = () => {
-    listaMedicacoesBody.innerHTML = ''; 
-    if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; }
-    const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); });
-    list.forEach((med) => { 
-      let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } }
-      if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>';
-      const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
-      const qtdDisplay = med.quantidade ? med.quantidade : '-';
-      const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`;
-      listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
-    });
-  };
-
-  const handleAddMedicacao = (e) => { 
-      e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
-      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
-      renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none';
-  };
+  const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; } const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); }); list.forEach((med) => { let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } } if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>'; const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; const qtdDisplay = med.quantidade ? med.quantidade : '-'; const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; listaMedicacoesBody.insertAdjacentHTML('beforeend', row); }); };
+  const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
     if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
     btnSalvarTudo.innerText = 'Salvando...';
+    
+    // COLETA COMORBIDADES
+    const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
+    const comorbidadesDados = {
+        temComorbidade: radioComorbidadeSim.checked,
+        lista: radioComorbidadeSim.checked ? comorbidadesSelecionadas : [],
+        outras: radioComorbidadeSim.checked ? inputOutrasComorbidades.value : ''
+    };
+
     const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
     try {
       await fetch(API_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        // SALVA EXAMES AQUI
         body: JSON.stringify({ 
             nomePaciente: nomePacienteInput.value, 
             idade: idadeInput.value, 
             patologias: patologiasInput.value, 
-            exames: examesInput.value, // CAMPO NOVO
+            exames: examesInput.value,
+            comorbidades: comorbidadesDados,
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
             medicacoes: currentMedicacoes, 
@@ -142,6 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
   radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
+  radioComorbidadeNao.addEventListener('change', toggleComorbidades);
+  radioComorbidadeSim.addEventListener('change', toggleComorbidades);
+
   document.getElementById('form-add-medico').addEventListener('submit', handleAddMedico);
   listaMedicosPills.addEventListener('click', handleDeleteMedico);
   document.getElementById('form-add-medicacao').addEventListener('submit', handleAddMedicacao);

@@ -71,10 +71,10 @@ app.get('/api/prontuario', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/prontuario', authMiddleware, async (req, res) => {
-  // ADICIONADO 'exames' AQUI
-  const { nomePaciente, idade, patologias, exames, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
+  // ADICIONADO 'comorbidades'
+  const { nomePaciente, idade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
   try {
-    const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, patologias, exames, alergias, medicosAssistentes, medicacoes };
+    const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes };
     const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
     res.status(200).json({ message: 'Salvo!', prontuario: p });
   } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
@@ -112,10 +112,9 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
 });
 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
-  // ADICIONADO 'exames' AQUI TAMBÉM
   try {
-    const { nomePaciente, idade, patologias, exames, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
-    const dados = { user: req.params.userId, termoAceite, nomePaciente, idade, patologias, exames, alergias, medicosAssistentes, medicacoes };
+    const { nomePaciente, idade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
+    const dados = { user: req.params.userId, termoAceite, nomePaciente, idade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes };
     await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
     res.status(200).json({ message: 'Atualizado!' });
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }

@@ -1,8 +1,42 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Final: Ícones Visíveis)  */
+/* ARQUIVO: css/prontuario.css (Versão Final + Comorbidades)    */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS --- */
+/* --- COMORBIDADES (NOVO) --- */
+.grid-comorbidades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.item-comorbidade {
+    display: flex;
+    flex-direction: column;
+}
+
+.label-comorbidade {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    cursor: pointer;
+}
+
+.desc-comorbidade {
+    font-size: 0.75rem;
+    color: #777;
+    margin-left: 24px; /* Alinha com o texto, ignorando o checkbox */
+    margin-top: 2px;
+}
+
+/* --- RESTANTE DO CSS (MANTIDO) --- */
 #lista-medicos-pills {
     display: flex; flex-direction: column; gap: 8px; padding: 10px;
     background-color: #fff; border: 1px solid #ddd; border-radius: 6px;
@@ -26,7 +60,6 @@
 }
 .btn-deletar-medico:hover { color: #b71c1c; transform: scale(1.2); }
 
-/* --- 2. SINALIZADOR DE ALERGIA --- */
 .alerta-alergia {
     display: none; background-color: #ffebee; color: #c62828;
     border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 4px;
@@ -38,7 +71,6 @@
     100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); }
 }
 
-/* --- 3. TABELA DE MEDICAÇÕES --- */
 .tabela-container {
     border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     border: 1px solid #eee; margin-top: 15px;
@@ -57,13 +89,11 @@
 .btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
 .btn-deletar-medacao:hover { color: #d32f2f; transform: scale(1.2); }
 
-/* --- 4. ÁREA DE TURNOS (ANIMADA) --- */
 #secao-turnos {
     display: none; margin-top: 10px; padding: 10px; background-color: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; animation: fadeIn 0.3s ease-in;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- 5. TERMO DE RESPONSABILIDADE (PACIENTE) --- */
 .box-termo-responsabilidade {
     background-color: #fff8e1; border: 1px solid #ffe0b2; border-left: 5px solid #ffb74d; padding: 15px; margin-bottom: 20px; border-radius: 6px;
 }
@@ -71,12 +101,10 @@
 .check-termo-container { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #333; cursor: pointer; }
 .check-termo-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2ADCA1; }
 
-/* --- 6. BADGE TERMO (ADMIN) --- */
 .badge-termo { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 10px; vertical-align: middle; }
 .badge-termo.aceito { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 .badge-termo.pendente { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
-/* --- 7. EVOLUÇÃO (CORREÇÃO DE ÍCONES) --- */
 .evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
 .evo-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
 .evo-left { display: flex; align-items: center; gap: 10px; }
@@ -84,7 +112,6 @@
 .evo-title { font-size: 0.95rem; color: #333; font-weight: 600; }
 .evo-right { display: flex; align-items: center; gap: 15px; }
 
-/* CORREÇÃO DOS BOTÕES */
 .evo-btns { display: flex; gap: 8px; }
 .btn-mini { 
     border: none; background: none; cursor: pointer; 
