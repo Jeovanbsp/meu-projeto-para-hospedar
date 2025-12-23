@@ -12,51 +12,141 @@
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* Ajustes rápidos para a Home se necessário */
+        /* --- ESTILOS GERAIS DA HOME --- */
         .hero-section {
-            padding: 100px 20px;
+            padding: 120px 20px;
             text-align: center;
             background-color: #f9fbfd;
         }
         .hero-title {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: #2c3e50;
             margin-bottom: 20px;
+            font-weight: 700;
         }
         .hero-subtitle {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             color: #7f8c8d;
             margin-bottom: 40px;
+            font-weight: 400;
         }
         section {
-            padding: 60px 20px;
+            padding: 80px 20px;
             max-width: 1100px;
             margin: 0 auto;
         }
-        h2 { color: #2ADCA1; margin-bottom: 20px; }
+        h2 { color: #2ADCA1; margin-bottom: 30px; font-size: 2rem; }
+        
+        /* --- NAV OTIMIZADA --- */
+        .main-nav ul {
+            display: flex;
+            align-items: center;
+            gap: 25px; /* Espaço entre os itens */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-nav a {
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        /* 1. Links de Texto (Informação) */
+        .nav-link {
+            color: #555;
+            font-weight: 500;
+            position: relative;
+        }
+        .nav-link:hover {
+            color: #2ADCA1;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: #2ADCA1;
+            transition: width 0.3s;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        /* 2. Botão Ficha (Outline - Secundário) */
+        .btn-ficha {
+            color: #2ADCA1;
+            font-weight: 600;
+            border: 2px solid #2ADCA1;
+            padding: 8px 18px;
+            border-radius: 50px;
+        }
+        .btn-ficha:hover {
+            background-color: #2ADCA1;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.2);
+        }
+
+        /* 3. Botão Login (Sólido - Primário) */
+        .btn-login {
+            background-color: #2ADCA1;
+            color: #fff;
+            font-weight: 600;
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 2px solid #2ADCA1; /* Para manter o tamanho igual */
+        }
+        .btn-login:hover {
+            background-color: #24b685;
+            border-color: #24b685;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.3);
+        }
+
+        /* Ajuste Mobile */
+        @media (max-width: 768px) {
+            .main-nav ul {
+                flex-direction: column;
+                gap: 20px;
+                padding-top: 20px;
+            }
+            .btn-ficha, .btn-login {
+                width: 100%;
+                text-align: center;
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
     
     <header class="novo-header">
-        <div class="header-container">
+        <div class="header-container" style="justify-content: space-between;">
+            
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 45px;">
             </a>
             
             <nav class="main-nav" id="mobile-menu">
                 <ul>
-                    <li><a href="#sobre-mim">Sobre Mim</a></li>
-                    <li><a href="#locais">Onde Atende</a></li>
-                    <li><a href="#contato">Contato</a></li>
+                    <li><a href="#sobre-mim" class="nav-link">Sobre Mim</a></li>
+                    <li><a href="#locais" class="nav-link">Onde Atende</a></li>
+                    <li><a href="#contato" class="nav-link">Contato</a></li>
 
                     <li>
-                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" style="color: #2ADCA1; font-weight: 700; border: 2px solid #2ADCA1; padding: 8px 15px; border-radius: 20px; transition: 0.3s;">
+                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha">
                             📋 Ficha Pré-Atendimento
                         </a>
                     </li>
-                    <li><a href="cadastro.html">Cadastro</a></li>
-                    <li><a href="login.html" class="btn-agendar">Login</a></li>
+                    
+                    <li><a href="cadastro.html" class="nav-link" style="font-size: 0.9rem;">Cadastro</a></li>
+                    
+                    <li><a href="login.html" class="btn-login">Login</a></li>
                 </ul>
             </nav>
 
@@ -71,51 +161,48 @@
     <main>
         <div class="hero-section">
             <h1 class="hero-title">Dra. Aisha Wenzinger</h1>
-            <p class="hero-subtitle">Geriatria e Clínica Médica com atendimento humanizado.</p>
-            <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar" style="font-size: 1.1rem; padding: 15px 30px;">
-                Agendar Consulta
-            </a>
+            <p class="hero-subtitle">Geriatria e Clínica Médica com cuidado integral e humanizado.</p>
+            
+            <div style="margin-top: 30px;">
+                <a href="https://wa.me/5571981233912" target="_blank" class="btn-login" style="font-size: 1.1rem; padding: 15px 35px; text-decoration: none;">
+                    Agendar Consulta via WhatsApp
+                </a>
+            </div>
         </div>
 
         <section id="sobre-mim">
             <h2>Sobre Mim</h2>
-            <p>Olá! Sou a Dra. Aisha, médica apaixonada pelo cuidado integral do paciente. Minha missão é promover saúde e qualidade de vida através de um atendimento acolhedor e especializado.</p>
-            </section>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #555;">
+                Olá! Sou a Dra. Aisha, médica dedicada a proporcionar qualidade de vida e bem-estar. Minha prática é pautada na escuta ativa e no entendimento do paciente como um todo, focando especialmente no envelhecimento saudável e na prevenção.
+            </p>
+        </section>
 
         <section id="locais">
             <h2>Locais de Atendimento</h2>
-            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                <div style="background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px; flex: 1; min-width: 250px;">
-                    <h3 style="color:#333;">Clínica Salvador</h3>
-                    <p>Av. Tancredo Neves, 1234</p>
+            <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 30px;">
+                <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-radius: 12px; flex: 1; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s;">
+                    <h3 style="color:#2c3e50; margin-top: 0;">Clínica Salvador</h3>
+                    <p style="color:#666; margin-bottom: 5px;">Atendimento ambulatorial.</p>
+                    <small style="color:#999;">Segunda a Sexta, 08h às 18h</small>
                 </div>
-                <div style="background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px; flex: 1; min-width: 250px;">
-                    <h3 style="color:#333;">Atendimento Domiciliar</h3>
-                    <p>Agende sua visita no conforto do lar.</p>
+                <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-radius: 12px; flex: 1; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s;">
+                    <h3 style="color:#2c3e50; margin-top: 0;">Atendimento Domiciliar</h3>
+                    <p style="color:#666; margin-bottom: 5px;">Conforto e comodidade na sua casa.</p>
+                    <small style="color:#999;">Agendamento prévio necessário</small>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer id="contato" style="background: #2c3e50; color: white; padding: 40px 20px; text-align: center;">
-        <h3 style="color: #2ADCA1;">Contato</h3>
-        <p>Email: contato@draaisha.com.br</p>
-        <div class="social-icons" style="margin: 20px 0;">
-            <a href="https://instagram.com" target="_blank" style="color: white; margin: 0 10px;">Instagram</a>
-            <a href="https://facebook.com" target="_blank" style="color: white; margin: 0 10px;">Facebook</a>
+    <footer id="contato" style="background: #2c3e50; color: white; padding: 60px 20px; text-align: center; margin-top: 50px;">
+        <h3 style="color: #2ADCA1; margin-bottom: 20px;">Entre em Contato</h3>
+        <p style="margin: 5px 0;">Email: contato@draaisha.com.br</p>
+        <p style="margin: 5px 0;">WhatsApp: (71) 98123-3912</p>
+        
+        <div class="social-icons" style="margin: 30px 0;">
+            <a href="https://instagram.com" target="_blank" style="color: white; margin: 0 15px; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: 0.3s;">Instagram</a>
+            <a href="https://facebook.com" target="_blank" style="color: white; margin: 0 15px; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: 0.3s;">Facebook</a>
         </div>
-        <p class="crm-info" style="font-size: 0.8rem; opacity: 0.7;">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
-        <p class="copyright" style="font-size: 0.8rem; opacity: 0.7; margin-top: 10px;">© 2024 Todos os direitos reservados.</p>
-    </footer>
-
-    <script>
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-
-        hamburgerButton.addEventListener('click', () => {
-            hamburgerButton.classList.toggle('is-active');
-            mobileMenu.classList.toggle('is-active');
-        });
-    </script>
-</body>
-</html>
+        
+        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px;">
+            <p class="crm-info" style="font-size: 0.85rem; opacity: 0.7;">Dra. Aishá Wenzinger | CRM/BA:
