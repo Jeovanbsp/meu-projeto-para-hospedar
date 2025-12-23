@@ -7,6 +7,50 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        /* Ajuste para alinhar os itens do menu */
+        .main-nav ul {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* Espaço entre os links */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Estilo do botão da Ficha Pré-Atendimento */
+        .btn-ficha-nav {
+            border: 2px solid #2ADCA1; /* Cor da identidade visual */
+            padding: 8px 15px;
+            border-radius: 20px;
+            color: #2ADCA1;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-ficha-nav:hover {
+            background-color: #2ADCA1;
+            color: #fff;
+        }
+
+        /* Ajuste para Mobile para não quebrar */
+        @media (max-width: 900px) {
+            .main-nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .btn-ficha-nav {
+                width: 100%;
+                text-align: center;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -22,6 +66,12 @@
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
+                    
+                    <li>
+                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha-nav">
+                            📋 Ficha Pré-Atendimento
+                        </a>
+                    </li>
                 </ul>
             </nav>
 
