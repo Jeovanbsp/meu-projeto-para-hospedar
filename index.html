@@ -1,147 +1,121 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
-const bcrypt = require('bcryptjs'); 
-const jwt = require('jsonwebtoken'); 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dra. Aisha Wenzinger - Geriatria e Clínica Médica</title>
+    
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Ajustes rápidos para a Home se necessário */
+        .hero-section {
+            padding: 100px 20px;
+            text-align: center;
+            background-color: #f9fbfd;
+        }
+        .hero-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+        section {
+            padding: 60px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h2 { color: #2ADCA1; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    
+    <header class="novo-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Dra. Aisha Logo">
+            </a>
+            
+            <nav class="main-nav" id="mobile-menu">
+                <ul>
+                    <li><a href="#sobre-mim">Sobre Mim</a></li>
+                    <li><a href="#locais">Onde Atende</a></li>
+                    <li><a href="#contato">Contato</a></li>
 
-const User = require('./models/User');
-const Prontuario = require('./models/Prontuario');
-const authMiddleware = require('./middleware/authMiddleware');
-const adminMiddleware = require('./middleware/adminMiddleware'); 
+                    <li>
+                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" style="color: #2ADCA1; font-weight: 700; border: 2px solid #2ADCA1; padding: 8px 15px; border-radius: 20px; transition: 0.3s;">
+                            📋 Ficha Pré-Atendimento
+                        </a>
+                    </li>
+                    <li><a href="cadastro.html">Cadastro</a></li>
+                    <li><a href="login.html" class="btn-agendar">Login</a></li>
+                </ul>
+            </nav>
 
-const app = express();
+            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu">
+                <span class="hamburger-box">
+                    <span class="hamburger-inner"></span>
+                </span>
+            </button>
+        </div>
+    </header>
 
-const allowedOrigins = [
-  'http://localhost:3000', 
-  'https://aishageriatria.onrender.com', 
-  'https://meu-projeto-para-hospedar.vercel.app'
-];
+    <main>
+        <div class="hero-section">
+            <h1 class="hero-title">Dra. Aisha Wenzinger</h1>
+            <p class="hero-subtitle">Geriatria e Clínica Médica com atendimento humanizado.</p>
+            <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar" style="font-size: 1.1rem; padding: 15px 30px;">
+                Agendar Consulta
+            </a>
+        </div>
 
-app.use(cors({
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) { callback(null, true); } 
-        else { callback(new Error('Not allowed by CORS')); }
-    },
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-}));
-app.use(express.json());
+        <section id="sobre-mim">
+            <h2>Sobre Mim</h2>
+            <p>Olá! Sou a Dra. Aisha, médica apaixonada pelo cuidado integral do paciente. Minha missão é promover saúde e qualidade de vida através de um atendimento acolhedor e especializado.</p>
+            </section>
 
-const PORT = process.env.PORT || 3001;
-const MONGODB_URI = process.env.MONGODB_URI; 
-const JWT_SECRET = process.env.JWT_SECRET;
+        <section id="locais">
+            <h2>Locais de Atendimento</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px; flex: 1; min-width: 250px;">
+                    <h3 style="color:#333;">Clínica Salvador</h3>
+                    <p>Av. Tancredo Neves, 1234</p>
+                </div>
+                <div style="background: #fff; padding: 20px; border: 1px solid #eee; border-radius: 8px; flex: 1; min-width: 250px;">
+                    <h3 style="color:#333;">Atendimento Domiciliar</h3>
+                    <p>Agende sua visita no conforto do lar.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 
-mongoose.set('strictQuery', false); 
-if (!MONGODB_URI) console.error("❌ ERRO: MONGODB_URI ausente.");
+    <footer id="contato" style="background: #2c3e50; color: white; padding: 40px 20px; text-align: center;">
+        <h3 style="color: #2ADCA1;">Contato</h3>
+        <p>Email: contato@draaisha.com.br</p>
+        <div class="social-icons" style="margin: 20px 0;">
+            <a href="https://instagram.com" target="_blank" style="color: white; margin: 0 10px;">Instagram</a>
+            <a href="https://facebook.com" target="_blank" style="color: white; margin: 0 10px;">Facebook</a>
+        </div>
+        <p class="crm-info" style="font-size: 0.8rem; opacity: 0.7;">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
+        <p class="copyright" style="font-size: 0.8rem; opacity: 0.7; margin-top: 10px;">© 2024 Todos os direitos reservados.</p>
+    </footer>
 
-mongoose.connect(MONGODB_URI)
-  .then(() => { console.log('✅ MongoDB Conectado!'); app.listen(PORT, () => console.log(`🚀 Porta ${PORT}`)); })
-  .catch((err) => console.error('❌ Erro Mongo:', err.message));
+    <script>
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-app.get('/', (req, res) => res.json({ message: 'API Online' }));
-
-// Auth
-app.post('/auth/register', async (req, res) => {
-  const { nome, email, senha } = req.body;
-  if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
-  if (senha.length < 6) return res.status(400).json({ message: 'Senha curta.' });
-  try {
-    if (await User.findOne({ email })) return res.status(400).json({ message: 'E-mail existe.' });
-    const newUser = new User({ nome, email, password: senha });
-    await newUser.save();
-    res.status(201).json({ message: 'Criado!', user: { id: newUser._id, nome: newUser.nome }});
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-app.post('/auth/login', async (req, res) => {
-  const { email, senha } = req.body;
-  try {
-    const user = await User.findOne({ email }).select('+password');
-    if (!user || !(await bcrypt.compare(senha, user.password))) return res.status(400).json({ message: 'Inválido.' });
-    const token = jwt.sign({ userId: user._id, nome: user.nome, role: user.role }, JWT_SECRET, { expiresIn: '1d' });
-    res.status(200).json({ message: 'OK', token, userName: user.nome, role: user.role });
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-// Rota Pública
-app.get('/api/public-prontuario/:userId', async (req, res) => {
-  try {
-    const prontuario = await Prontuario.findOne({ user: req.params.userId });
-    if (!prontuario) return res.status(404).json({ message: 'Não encontrado.' });
-    res.status(200).json(prontuario);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-// --- ROTAS PACIENTE (SALVANDO TERMO) ---
-app.get('/api/prontuario', authMiddleware, async (req, res) => {
-  try {
-    let prontuario = await Prontuario.findOne({ user: req.user.userId });
-    if (!prontuario) { prontuario = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await prontuario.save(); }
-    res.status(200).json(prontuario);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-app.post('/api/prontuario', authMiddleware, async (req, res) => {
-  const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
-  try {
-    const dados = { 
-        user: req.user.userId, 
-        termoAceite, // <--- SALVANDO
-        nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes 
-    };
-    const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
-    res.status(200).json({ message: 'Salvo!', prontuario: p });
-  } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
-});
-
-// --- ROTAS ADMIN (PRESERVANDO TERMO) ---
-app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const p = await Prontuario.findOne({ user: req.params.userId });
-    if (!p) {
-        const u = await User.findById(req.params.userId);
-        if(!u) return res.status(404).json({message:'User nulo'});
-        return res.status(200).json({ user: req.params.userId, nomePaciente: u.nome, evolucoes: [] });
-    }
-    res.status(200).json(p);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
-    const dados = { 
-        user: req.params.userId, 
-        termoAceite, // <--- SALVANDO O QUE O ADMIN ENVIOU (OU PRESERVANDO)
-        nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes 
-    };
-    await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
-    res.status(200).json({ message: 'Atualizado!' });
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-// Evoluções
-app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
-    try {
-        const { titulo, texto } = req.body;
-        const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true });
-        res.status(200).json({ message: 'Salvo', prontuario: p });
-    } catch(e) { res.status(500).json({message: 'Erro'}); }
-});
-app.delete('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req,res)=>{
-    try {
-        await Prontuario.findOneAndUpdate({user: req.params.userId}, {$pull: {evolucoes: {_id: req.params.evoId}}});
-        res.status(200).json({message: 'Deletado'});
-    } catch(e){ res.status(500).json({message:'Erro'}); }
-});
-app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req, res) => {
-    try {
-        const {titulo, texto} = req.body;
-        const p = await Prontuario.findOne({user: req.params.userId});
-        const evo = p.evolucoes.id(req.params.evoId);
-        evo.titulo = titulo; evo.texto = texto;
-        await p.save();
-        res.status(200).json({message: 'Editado', prontuario: p});
-    } catch(e){ res.status(500).json({message: 'Erro'}); }
-});
+        hamburgerButton.addEventListener('click', () => {
+            hamburgerButton.classList.toggle('is-active');
+            mobileMenu.classList.toggle('is-active');
+        });
+    </script>
+</body>
+</html>

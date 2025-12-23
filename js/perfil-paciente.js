@@ -1,5 +1,3 @@
-// Arquivo: js/perfil-paciente.js (Completo com Lógica de Bloqueio)
-
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
@@ -7,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!token) { window.location.href = 'login.html'; return; }
 
-  // Seletores do Termo e Conteúdo
   const checkTermoAceite = document.getElementById('check-termo-aceite');
   const conteudoProntuario = document.getElementById('conteudo-prontuario');
 
@@ -40,7 +37,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMedicacoes = []; let currentMedicos = []; let currentUserId = null; 
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
-  // --- NOVA LÓGICA: MOSTRAR/ESCONDER FORMULÁRIO ---
+  // --- LOGOUT ---
+  const btnLogout = document.getElementById('btn-logout-paciente');
+  if(btnLogout) {
+      btnLogout.addEventListener('click', () => {
+          localStorage.clear();
+          window.location.href = 'index.html'; // Ou login.html
+      });
+  }
+
   function toggleConteudoProntuario() {
       if (checkTermoAceite.checked) {
           conteudoProntuario.style.display = 'block';
@@ -48,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
           conteudoProntuario.style.display = 'none';
       }
   }
-
-  // Listener para o clique no checkbox
   checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
 
   function toggleAlergiaInput() {
@@ -57,7 +60,6 @@ document.addEventListener('DOMContentLoaded', () => {
     else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; }
   }
 
-  // Lógica Turnos
   horarioEspecificoInput.addEventListener('input', () => {
       if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block';
       else secaoTurnos.style.display = 'none';
@@ -80,11 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
     
-    // Checkbox Termo (Se já estava aceito, marca e mostra o form)
-    if (data.termoAceite) {
-        checkTermoAceite.checked = true;
-    }
-    toggleConteudoProntuario(); // Chama para atualizar o visual
+    if (data.termoAceite) { checkTermoAceite.checked = true; }
+    toggleConteudoProntuario();
 
     if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
     else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
@@ -121,17 +120,10 @@ document.addEventListener('DOMContentLoaded', () => {
     list.forEach((med) => { 
       let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } }
       if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>';
-      
       const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
       const qtdDisplay = med.quantidade ? med.quantidade : '-';
 
-      const row = `<tr>
-        <td style="font-weight:500;">${med.nome}</td>
-        <td class="col-qtd">${qtdDisplay}</td>
-        <td>${turnosHtml}</td>
-        <td class="col-horario">${horarioDisplay}</td>
-        <td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td>
-      </tr>`;
+      const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
@@ -139,24 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleAddMedicacao = (e) => { 
       e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
       const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
-      currentMedicacoes.push({ 
-          nome: nomeMedicacaoInput.value, 
-          quantidade: qtdMedicacaoInput.value, 
-          horarioEspecifico: horarioEspecificoInput.value, 
-          horarios: horarios 
-      }); 
+      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
       renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none';
   };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
-    
-    // Verificação de Segurança Extra (caso o usuário tente forçar)
-    if (!checkTermoAceite.checked) {
-        alert("Você deve aceitar o termo de responsabilidade.");
-        return;
-    }
+    if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
 
     btnSalvarTudo.innerText = 'Salvando...';
     const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
@@ -170,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
             medicacoes: currentMedicacoes,
-            termoAceite: true // Envia confirmação
+            termoAceite: true 
         })
       });
       if (response.ok) { mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1'; } else { throw new Error('Erro ao salvar'); }

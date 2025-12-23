@@ -4,31 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Dra. Aisha Wenzinger</title>
+    
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
+
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
     <style>
         .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
         #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
         #qrcode-container img { width: 100% !important; height: 100% !important; }
+        @media print { .no-print { display: none !important; } }
         
-        /* Animação suave ao aparecer o formulário */
+        /* Animação suave */
         #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-        
-        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
+    
     <header class="novo-header no-print"> 
-        <div class="header-container">
-            <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo"></a>
-            <nav class="main-nav" id="mobile-menu"><ul><li><a href="index.html#contato">Contato</a></li><li><a href="login.html">Login</a></li></ul></nav>
-            <button class="hamburger" id="hamburger-button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></button>
+        <div class="header-container" style="justify-content: space-between; align-items: center;">
+            
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 40px;">
+            </a>
+
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9rem;">
+                    &larr; Voltar para o Início
+                </a>
+                <button id="btn-logout-paciente" class="btn-agendar" style="padding: 8px 20px; background-color: #ff6b6b; border: none;">
+                    Sair
+                </button>
+            </div>
+
         </div>
     </header>
+
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
             <h2>Minhas Informações (Prontuário)</h2>
@@ -117,15 +132,16 @@
                     <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
                     <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
                 </div>
-            </div> <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+            </div>
+
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
-    <footer id="contato" class="no-print"><p>Dra Aishá Wenzinger | CRM/BA: 20473</p></footer>
-    <script>
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        hamburgerButton.addEventListener('click', () => { mobileMenu.classList.toggle('is-active'); });
-    </script>
+
+    <footer id="contato" class="no-print"> 
+        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p>
+    </footer>
+    
     <script src="js/perfil-paciente.js"></script>
 </body>
 </html>
