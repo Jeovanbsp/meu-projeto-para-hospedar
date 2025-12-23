@@ -36,9 +36,21 @@
             /* A cor do texto e borda continua verde */
         }
 
+        /* CSS PARA OS DOIS BOTÕES DA HOME FICAREM LADO A LADO */
+        .botoes-hero {
+            display: flex;
+            gap: 15px; /* Espaço entre eles */
+            flex-wrap: wrap; /* Se a tela for pequena, um desce */
+            margin-top: 20px;
+        }
+
         /* Ajuste para não quebrar no celular */
         @media (max-width: 900px) {
             .main-nav ul { flex-direction: column; gap: 15px; }
+            
+            /* No celular, os botões ficam um embaixo do outro e centralizados */
+            .botoes-hero { flex-direction: column; width: 100%; }
+            .btn-agendar { display: block; text-align: center; width: 100%; box-sizing: border-box; }
         }
     </style>
 </head>
@@ -86,10 +98,17 @@
                 <div class="sobre-texto">
                     <h2>Atenção Especializada para Idosos</h2>
                     <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
-                    <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                        Agende sua consulta
-                    </a>
-                </div>
+                    
+                    <div class="botoes-hero">
+                        <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
+                            Agende sua Consulta em Lauro de Freitas
+                        </a>
+
+                        <a href="https://wa.me/5571983943153" target="_blank" class="btn-agendar">
+                            Agende sua Consulta em Salvador
+                        </a>
+                    </div>
+                    </div>
             </div>
         </section> 
         
