@@ -10,77 +10,27 @@
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* Estilos específicos do Dashboard */
         body { background-color: #f4f6f8; }
-        
-        .dashboard-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-
-        .card-painel {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            padding: 30px;
-        }
-
-        .painel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #f0f0f0;
-            padding-bottom: 15px;
-        }
-
+        .dashboard-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
+        .card-painel { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 30px; }
+        .painel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
         .painel-header h2 { color: #2c3e50; margin: 0; }
-
-        /* Tabela de Pacientes */
-        .tabela-pacientes {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        .tabela-pacientes th {
-            background-color: #2ADCA1;
-            color: white;
-            text-align: left;
-            padding: 12px 15px;
-            font-weight: 600;
-            border-radius: 4px 4px 0 0;
-        }
-
-        .tabela-pacientes td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eee;
-            color: #555;
-        }
-
+        
+        .tabela-pacientes { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabela-pacientes th { background-color: #2ADCA1; color: white; text-align: left; padding: 12px 15px; font-weight: 600; border-radius: 4px 4px 0 0; }
+        .tabela-pacientes td { padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; vertical-align: middle; }
         .tabela-pacientes tr:hover { background-color: #f9f9f9; }
 
-        /* Botões de Ação */
-        .btn-acao {
-            padding: 6px 12px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-right: 5px;
-            border: none;
-            cursor: pointer;
-            display: inline-block;
-        }
-
+        .btn-acao { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-right: 5px; border: none; cursor: pointer; display: inline-block; }
         .btn-ver { background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
         .btn-ver:hover { background-color: #BBDEFB; }
-
         .btn-excluir { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
         .btn-excluir:hover { background-color: #FFCDD2; }
 
-        .loading-text { text-align: center; color: #888; padding: 20px; }
+        /* Status do Termo */
+        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
+        .status-ok { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .status-pendente { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
     </style>
 </head>
 <body>
@@ -112,12 +62,12 @@
                         <tr>
                             <th>Nome do Paciente</th>
                             <th>E-mail</th>
-                            <th>Data Cadastro</th>
+                            <th>Status Termo</th> <th>Data Cadastro</th>
                             <th style="text-align: center;">Ações</th>
                         </tr>
                     </thead>
                     <tbody id="lista-pacientes-body">
-                        <tr><td colspan="4" class="loading-text">Carregando pacientes...</td></tr>
+                        <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Carregando pacientes...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -125,7 +75,6 @@
     </main>
 
     <script src="js/admin-dashboard.js"></script>
-    
     <script>
         document.getElementById('btn-logout').addEventListener('click', () => {
             localStorage.clear();

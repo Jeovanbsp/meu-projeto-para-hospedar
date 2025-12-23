@@ -9,7 +9,17 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <style>.gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; } #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; } #qrcode-container img { width: 100% !important; height: 100% !important; } @media print { .no-print { display: none !important; } }</style>
+    <style>
+        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
+        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
+        #qrcode-container img { width: 100% !important; height: 100% !important; }
+        
+        /* Animação suave ao aparecer o formulário */
+        #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media print { .no-print { display: none !important; } }
+    </style>
 </head>
 <body>
     <header class="novo-header no-print"> 
@@ -24,86 +34,90 @@
             <h2>Minhas Informações (Prontuário)</h2>
 
             <div class="box-termo-responsabilidade">
-                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. Ao marcar a opção abaixo, você <strong>assume total responsabilidade</strong> pela veracidade das informações.</p>
+                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. Para visualizar e preencher o formulário, você deve concordar abaixo.</p>
                 <label class="check-termo-container">
-                    <input type="checkbox" id="check-termo-aceite"> Declaro que li e aceito os termos de responsabilidade.
+                    <input type="checkbox" id="check-termo-aceite"> 
+                    <span>Declaro que li e <strong>aceito</strong> os termos de responsabilidade.</span>
                 </label>
             </div>
 
-            <form id="form-prontuario-principal">
-                <label for="nome-paciente">Nome do Paciente</label>
-                <input type="text" id="nome-paciente" required>
-                <label for="idade">Idade</label>
-                <input type="number" id="idade" required>
-                <label for="patologias">Patologias</label>
-                <textarea id="patologias"></textarea>
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
-                    <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
-                        <div style="display: flex; gap: 20px; align-items: center;">
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span></label>
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span></label>
-                            <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
-                        </div>
-                        <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
-                    </div>
-                </div>
-            </form>
-
-            <div class="gerenciador-medicos">
-                <h3>Médicos Assistentes</h3>
-                <form id="form-add-medico" class="form-add-medico no-print"> 
-                    <div class="form-linha-inputs" style="display: flex; gap: 10px;">
-                        <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico" placeholder="(71) 9999-9999"></div>
-                    </div>
-                    <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
-                </form>
-                <ul id="lista-medicos-pills"></ul>
-            </div>
-
-            <div class="gerenciador-medicacao">
-                <h3>Minhas Medicações</h3>
-                <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
-                    <div class="form-linha-inputs">
-                        <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
-                        <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
-                    </div>
+            <div id="conteudo-prontuario" style="display: none;">
+                
+                <form id="form-prontuario-principal">
+                    <label for="nome-paciente">Nome do Paciente</label>
+                    <input type="text" id="nome-paciente" required>
+                    <label for="idade">Idade</label>
+                    <input type="number" id="idade" required>
+                    <label for="patologias">Patologias</label>
+                    <textarea id="patologias"></textarea>
                     
-                    <div id="secao-turnos">
-                        <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
-                            <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
-                            <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
-                            <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
-                            <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
-                            <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
+                        <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span></label>
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span></label>
+                                <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
+                            </div>
+                            <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
                         </div>
                     </div>
-
-                    <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar</button>
                 </form>
-                <div class="tabela-container">
-                    <table class="tabela-medicacoes">
-                        <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
-                        <tbody id="lista-medicacoes-body"></tbody>
-                    </table>
-                </div>
-            </div>
 
-            <div class="gerenciador-qrcode no-print">
-                <h3>QR Code de Acesso Rápido</h3>
-                <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>
-                <div id="qrcode-container"></div>
-            </div>
-            
-            <div class="botoes-acao-container no-print"> 
-                <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
-                <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
-            </div>
-            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+                <div class="gerenciador-medicos">
+                    <h3>Médicos Assistentes</h3>
+                    <form id="form-add-medico" class="form-add-medico no-print"> 
+                        <div class="form-linha-inputs" style="display: flex; gap: 10px;">
+                            <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
+                            <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico" placeholder="(71) 9999-9999"></div>
+                        </div>
+                        <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
+                    </form>
+                    <ul id="lista-medicos-pills"></ul>
+                </div>
+
+                <div class="gerenciador-medicacao">
+                    <h3>Minhas Medicações</h3>
+                    <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
+                        <div class="form-linha-inputs">
+                            <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
+                            <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
+                            <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
+                        </div>
+                        
+                        <div id="secao-turnos">
+                            <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
+                                <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
+                                <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
+                                <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
+                                <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
+                                <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar</button>
+                    </form>
+                    <div class="tabela-container">
+                        <table class="tabela-medicacoes">
+                            <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
+                            <tbody id="lista-medicacoes-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="gerenciador-qrcode no-print">
+                    <h3>QR Code de Acesso Rápido</h3>
+                    <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>
+                    <div id="qrcode-container"></div>
+                </div>
+                
+                <div class="botoes-acao-container no-print"> 
+                    <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
+                    <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
+                </div>
+            </div> <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
     <footer id="contato" class="no-print"><p>Dra Aishá Wenzinger | CRM/BA: 20473</p></footer>

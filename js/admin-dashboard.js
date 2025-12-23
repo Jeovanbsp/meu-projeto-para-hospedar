@@ -4,11 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    // URL da API (Ajuste se necessário)
+    // Rotas da API
     const API_URL = 'https://aishageriatria.onrender.com/api/admin/pacientes';
     const API_DELETE_URL = 'https://aishageriatria.onrender.com/api/admin/paciente/';
 
-    // 1. Verificação de Segurança
     if (!token || role !== 'admin') {
         localStorage.clear();
         window.location.href = 'login.html';
@@ -18,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaBody = document.getElementById('lista-pacientes-body');
     const totalSpan = document.getElementById('total-pacientes');
 
-    // 2. Função para Carregar Pacientes
+    // Função de Busca
     const fetchPacientes = async () => {
         try {
             const response = await fetch(API_URL, {
@@ -31,11 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 if (response.status === 401) {
-                    alert('Sessão expirada.');
+                    alert('Sessão expirada. Faça login novamente.');
                     window.location.href = 'login.html';
                     return;
                 }
-                throw new Error('Erro ao buscar lista.');
+                throw new Error('Falha na comunicação com o servidor.');
             }
 
             const pacientes = await response.json();
@@ -43,35 +42,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error(error);
-            listaBody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red; padding:20px;">Erro ao carregar pacientes. Verifique sua conexão.</td></tr>';
+            if (listaBody) {
+                listaBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#e74c3c; padding:20px; font-weight:bold;">
+                    Erro ao carregar pacientes.<br>Verifique se o servidor foi reiniciado.
+                </td></tr>`;
+            }
         }
     };
 
-    // 3. Função para Desenhar a Tabela
+    // Função de Renderização
     const renderTabela = (pacientes) => {
-        listaBody.innerHTML = ''; // Limpa loading
-        totalSpan.innerText = pacientes.length;
+        if (!listaBody) return;
+        
+        listaBody.innerHTML = ''; 
+        if (totalSpan) totalSpan.innerText = pacientes.length;
 
         if (pacientes.length === 0) {
-            listaBody.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:20px; color:#777;">Nenhum paciente encontrado.</td></tr>';
+            listaBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#777;">Nenhum paciente cadastrado.</td></tr>';
             return;
         }
 
         pacientes.forEach(p => {
-            // Formatar data
-            const dataCriacao = new Date(p.createdAt).toLocaleDateString('pt-BR');
+            const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
             
-            // Criar linha
+            // LÓGICA DO BADGE VERDE/AMARELO
+            let statusHtml = '';
+            if (p.termoAceite === true) {
+                statusHtml = '<span class="status-badge status-ok">✅ Aceito</span>';
+            } else {
+                statusHtml = '<span class="status-badge status-pendente">⚠️ Pendente</span>';
+            }
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td><strong>${p.nome}</strong></td>
+                <td style="font-weight:600; color:#2c3e50;">${p.nome}</td>
                 <td>${p.email}</td>
+                <td>${statusHtml}</td>
                 <td>${dataCriacao}</td>
                 <td style="text-align: center;">
-                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
+                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Editar Prontuário">
                         📋 Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')">
+                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir Paciente">
                         🗑️
                     </button>
                 </td>
@@ -80,39 +92,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // 4. Funções Globais (para funcionar no onclick do HTML)
-    
-    // Redireciona para a página de edição (admin-prontuario.html)
+    // Funções Globais
     window.irParaProntuario = (id) => {
         window.location.href = `admin-prontuario.html?id=${id}`;
     };
 
-    // Deleta o paciente
     window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`Tem certeza que deseja excluir o paciente ${nome}? Todos os dados do prontuário serão perdidos.`)) {
+        if (!confirm(`ATENÇÃO:\nTem certeza que deseja excluir o paciente "${nome}"?\n\nIsso apagará o login e todos os dados do prontuário permanentemente.`)) {
             return;
         }
 
         try {
             const response = await fetch(API_DELETE_URL + id, {
                 method: 'DELETE',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
 
             if (response.ok) {
                 alert('Paciente excluído com sucesso!');
-                fetchPacientes(); // Recarrega a lista
+                fetchPacientes(); 
             } else {
                 alert('Erro ao excluir.');
             }
         } catch (error) {
             console.error(error);
-            alert('Erro de conexão.');
+            alert('Erro de conexão ao tentar excluir.');
         }
     };
 
-    // Inicia o carregamento
     fetchPacientes();
 });

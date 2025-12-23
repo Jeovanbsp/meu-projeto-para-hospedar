@@ -1,9 +1,15 @@
+// Arquivo: js/perfil-paciente.js (Completo com Lógica de Bloqueio)
+
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
   const API_URL = 'https://aishageriatria.onrender.com/api/prontuario';
 
   if (!token) { window.location.href = 'login.html'; return; }
+
+  // Seletores do Termo e Conteúdo
+  const checkTermoAceite = document.getElementById('check-termo-aceite');
+  const conteudoProntuario = document.getElementById('conteudo-prontuario');
 
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
@@ -25,8 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
   
-  const checkTermoAceite = document.getElementById('check-termo-aceite');
-  
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo');
   const btnDownloadPDF = document.getElementById('btn-download-pdf'); 
   const btnGerarQRCode = document.getElementById('btn-gerar-qrcode');
@@ -36,12 +40,24 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMedicacoes = []; let currentMedicos = []; let currentUserId = null; 
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
+  // --- NOVA LÓGICA: MOSTRAR/ESCONDER FORMULÁRIO ---
+  function toggleConteudoProntuario() {
+      if (checkTermoAceite.checked) {
+          conteudoProntuario.style.display = 'block';
+      } else {
+          conteudoProntuario.style.display = 'none';
+      }
+  }
+
+  // Listener para o clique no checkbox
+  checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
+
   function toggleAlergiaInput() {
     if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } 
     else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; }
   }
 
-  // LOGICA TURNOS
+  // Lógica Turnos
   horarioEspecificoInput.addEventListener('input', () => {
       if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block';
       else secaoTurnos.style.display = 'none';
@@ -64,8 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
     
-    // Checkbox Termo
-    if (data.termoAceite) checkTermoAceite.checked = true;
+    // Checkbox Termo (Se já estava aceito, marca e mostra o form)
+    if (data.termoAceite) {
+        checkTermoAceite.checked = true;
+    }
+    toggleConteudoProntuario(); // Chama para atualizar o visual
 
     if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
     else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
@@ -133,9 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
     
-    // VALIDAÇÃO DO TERMO
+    // Verificação de Segurança Extra (caso o usuário tente forçar)
     if (!checkTermoAceite.checked) {
-        alert("⚠️ É necessário aceitar o Termo de Responsabilidade no topo da página para salvar.");
+        alert("Você deve aceitar o termo de responsabilidade.");
         return;
     }
 
@@ -151,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
             medicacoes: currentMedicacoes,
-            termoAceite: true // Confirmação
+            termoAceite: true // Envia confirmação
         })
       });
       if (response.ok) { mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1'; } else { throw new Error('Erro ao salvar'); }
