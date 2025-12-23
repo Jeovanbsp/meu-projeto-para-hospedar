@@ -7,40 +7,38 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
-    <style>
-        /* ESTILO DO NOVO BOTÃO DA FICHA */
-        .btn-ficha {
-            color: #2ADCA1; /* Cor Verde da Marca */
-            font-weight: 600;
-            border: 2px solid #2ADCA1; /* Borda Verde */
-            padding: 8px 15px;
-            border-radius: 20px; /* Bordas arredondadas (Natural) */
-            text-decoration: none;
-            transition: all 0.3s ease; /* Transição suave */
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
-        }
 
-        /* EFEITO AO PASSAR O MOUSE (HOVER) - SUAVE */
-        .btn-ficha:hover {
-            background-color: rgba(42, 220, 161, 0.1); /* Fundo verde bem clarinho (Transparente) */
-            color: #25b985; /* Texto um pouco mais escuro para leitura */
-            border-color: #25b985;
-            transform: translateY(-2px); /* Leve subida para dar destaque natural */
-        }
-        
-        /* Ajuste para alinhar o menu com o botão novo */
+    <style>
+        /* CSS EXTRA PARA ORGANIZAR A NAV E DAR DESTAQUE SIMPLES */
         .main-nav ul {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 20px; /* Espaço entre os links */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Destaque Simples para a Ficha */
+        .ficha-link {
+            color: #2ADCA1; /* Verde da marca */
+            font-weight: 700;
+            text-decoration: none;
+            border: 1px solid #2ADCA1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s;
         }
         
+        /* HOVER SUAVE (CORREÇÃO SOLICITADA) */
+        .ficha-link:hover {
+            background-color: rgba(42, 220, 161, 0.1); /* Fundo BEM CLARINHO */
+            /* A cor do texto e borda continua verde */
+        }
+
+        /* Ajuste para não quebrar no celular */
         @media (max-width: 900px) {
-            .main-nav ul { flex-direction: column; }
+            .main-nav ul { flex-direction: column; gap: 15px; }
         }
     </style>
 </head>
@@ -55,8 +53,8 @@
             <nav class="main-nav" id="mobile-menu"> 
                 <ul>
                     <li>
-                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha">
-                            📋 Ficha Pré-Atendimento
+                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link">
+                            Ficha Pré-Atendimento
                         </a>
                     </li>
 
@@ -64,6 +62,9 @@
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
+
+                    <li><a href="cadastro.html">Cadastro</a></li>
+                    <li><a href="login.html" style="font-weight: bold; color: #2ADCA1;">Login</a></li>
                 </ul>
             </nav>
 
