@@ -43,21 +43,21 @@
                     <input type="number" id="idade" required>
                     
                     <label for="patologias">Patologias</label>
-                    <textarea id="patologias" style="min-height: 100px; resize: vertical;"></textarea>
+                    <textarea id="patologias"></textarea>
 
                     <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares Relevantes (Recentes)</label>
-                    <textarea id="exames" placeholder="Liste aqui os exames importantes..." style="min-height: 100px; resize: vertical;"></textarea>
+                    <textarea id="exames" placeholder="Liste aqui os exames importantes..."></textarea>
 
                     <div class="form-group" style="margin-top: 15px;">
                         <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Comorbidades?</label>
                         <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                 <div class="radio-group-container">
-                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span class="text-nao">Não</span></label>
-                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span class="text-sim">Sim</span></label>
+                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span class="text-nao">Não Existe</span></label>
+                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span class="text-sim">Existe</span></label>
                                 </div>
                                 <button type="button" id="btn-minimizar-comorbidades" class="btn-toggle-lista">
-                                    <span id="texto-btn-toggle">Minimizar Lista</span>
+                                    <span id="texto-btn-toggle">Minimizar</span>
                                     <span class="seta-toggle"></span>
                                 </button>
                             </div>

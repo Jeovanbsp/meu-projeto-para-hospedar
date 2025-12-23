@@ -59,11 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function toggleComorbidades() { 
       if (radioComorbidadeSim.checked) { 
           listaComorbidades.style.display = 'block'; 
-          btnMinimizarComorbidades.style.display = 'flex'; // Exibe o botão
-          // Resetar
+          btnMinimizarComorbidades.style.display = 'flex'; 
+          // Reset
           listaComorbidades.style.display = 'block';
           btnMinimizarComorbidades.classList.add('aberto');
-          if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
+          if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
       } else { 
           listaComorbidades.style.display = 'none'; 
           btnMinimizarComorbidades.style.display = 'none';
@@ -76,11 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
           if (listaComorbidades.style.display === 'none') {
               listaComorbidades.style.display = 'block';
               btnMinimizarComorbidades.classList.add('aberto');
-              if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
           } else {
               listaComorbidades.style.display = 'none';
               btnMinimizarComorbidades.classList.remove('aberto');
-              if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir Lista';
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir';
           }
       });
   }
