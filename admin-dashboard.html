@@ -4,65 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - Dra. Aisha</title>
-    
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
     <style>
         body { background-color: #f4f6f8; }
         .dashboard-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
         .card-painel { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 30px; }
         .painel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
         .painel-header h2 { color: #2c3e50; margin: 0; }
-        
         .tabela-pacientes { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .tabela-pacientes th { background-color: #2ADCA1; color: white; text-align: left; padding: 12px 15px; font-weight: 600; border-radius: 4px 4px 0 0; }
         .tabela-pacientes td { padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; vertical-align: middle; }
         .tabela-pacientes tr:hover { background-color: #f9f9f9; }
-
         .btn-acao { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-right: 5px; border: none; cursor: pointer; display: inline-block; }
         .btn-ver { background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
         .btn-ver:hover { background-color: #BBDEFB; }
         .btn-excluir { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
         .btn-excluir:hover { background-color: #FFCDD2; }
-
-        /* Status do Termo */
         .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
         .status-ok { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
         .status-pendente { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
     </style>
 </head>
 <body>
-
     <header class="novo-header">
         <div class="header-container" style="justify-content: space-between;">
-            <a href="admin-dashboard.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 40px;">
-            </a>
+            <a href="admin-dashboard.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 40px;"></a>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span style="font-weight: 600; color: #2ADCA1;">Área Administrativa</span>
                 <button id="btn-logout" class="btn-agendar" style="padding: 8px 15px; background: #e74c3c;">Sair</button>
             </div>
         </div>
     </header>
-
     <main class="dashboard-container">
         <div class="card-painel">
             <div class="painel-header">
                 <h2>Pacientes Cadastrados</h2>
-                <div style="font-size: 0.9rem; color: #777;">
-                    Total: <span id="total-pacientes">0</span>
-                </div>
+                <div style="font-size: 0.9rem; color: #777;">Total: <span id="total-pacientes">0</span></div>
             </div>
-
             <div style="overflow-x: auto;">
                 <table class="tabela-pacientes">
                     <thead>
                         <tr>
                             <th>Nome do Paciente</th>
                             <th>E-mail</th>
-                            <th>Status Termo</th> <th>Data Cadastro</th>
+                            <th style="text-align:center;">Status Termo</th>
+                            <th>Data Cadastro</th>
                             <th style="text-align: center;">Ações</th>
                         </tr>
                     </thead>
@@ -73,7 +61,6 @@
             </div>
         </div>
     </main>
-
     <script src="js/admin-dashboard.js"></script>
     <script>
         document.getElementById('btn-logout').addEventListener('click', () => {

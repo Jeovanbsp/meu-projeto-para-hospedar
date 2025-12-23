@@ -1,10 +1,10 @@
-// Arquivo: js/admin-dashboard.js
+// Arquivo: js/admin-dashboard.js (Completo)
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    // Rotas da API
+    // URL da API (Verifique se está usando a URL correta do Render)
     const API_URL = 'https://aishageriatria.onrender.com/api/admin/pacientes';
     const API_DELETE_URL = 'https://aishageriatria.onrender.com/api/admin/paciente/';
 
@@ -34,17 +34,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = 'login.html';
                     return;
                 }
-                throw new Error('Falha na comunicação com o servidor.');
+                throw new Error(`Erro do servidor: ${response.status}`);
             }
 
             const pacientes = await response.json();
             renderTabela(pacientes);
 
         } catch (error) {
-            console.error(error);
+            console.error("Erro no fetch:", error);
             if (listaBody) {
                 listaBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#e74c3c; padding:20px; font-weight:bold;">
-                    Erro ao carregar pacientes.<br>Verifique se o servidor foi reiniciado.
+                    Erro ao conectar com o servidor.<br>
+                    <small style="color:#555; font-weight:normal;">Verifique se o backend no Render foi atualizado e reiniciado.</small>
                 </td></tr>`;
             }
         }
@@ -65,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pacientes.forEach(p => {
             const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
             
-            // LÓGICA DO BADGE VERDE/AMARELO
+            // Badge Status Termo
             let statusHtml = '';
             if (p.termoAceite === true) {
                 statusHtml = '<span class="status-badge status-ok">✅ Aceito</span>';
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tr.innerHTML = `
                 <td style="font-weight:600; color:#2c3e50;">${p.nome}</td>
                 <td>${p.email}</td>
-                <td>${statusHtml}</td>
+                <td style="text-align:center;">${statusHtml}</td>
                 <td>${dataCriacao}</td>
                 <td style="text-align: center;">
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Editar Prontuário">
