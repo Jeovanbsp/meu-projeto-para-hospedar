@@ -4,68 +4,49 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Dra. Aisha Wenzinger</title>
-    
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
-
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-
     <style>
         .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
         #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
         #qrcode-container img { width: 100% !important; height: 100% !important; }
-        @media print { .no-print { display: none !important; } }
-        
-        /* Animação suave */
         #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        @media print { .no-print { display: none !important; } }
     </style>
 </head>
 <body>
-    
     <header class="novo-header no-print"> 
         <div class="header-container" style="justify-content: space-between; align-items: center;">
-            
-            <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 40px;">
-            </a>
-
+            <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 40px;"></a>
             <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="index.html" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9rem;">
-                    &larr; Voltar para o Início
-                </a>
-                <button id="btn-logout-paciente" class="btn-agendar" style="padding: 8px 20px; background-color: #ff6b6b; border: none;">
-                    Sair
-                </button>
+                <a href="index.html" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9rem;">&larr; Voltar para o Início</a>
+                <button id="btn-logout-paciente" class="btn-agendar" style="padding: 8px 20px; background-color: #ff6b6b; border: none;">Sair</button>
             </div>
-
         </div>
     </header>
-
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
             <h2>Minhas Informações (Prontuário)</h2>
-
             <div class="box-termo-responsabilidade">
                 <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. Para visualizar e preencher o formulário, você deve concordar abaixo.</p>
-                <label class="check-termo-container">
-                    <input type="checkbox" id="check-termo-aceite"> 
-                    <span>Declaro que li e <strong>aceito</strong> os termos de responsabilidade.</span>
-                </label>
+                <label class="check-termo-container"><input type="checkbox" id="check-termo-aceite"> <span>Declaro que li e <strong>aceito</strong> os termos de responsabilidade.</span></label>
             </div>
-
             <div id="conteudo-prontuario" style="display: none;">
-                
                 <form id="form-prontuario-principal">
                     <label for="nome-paciente">Nome do Paciente</label>
                     <input type="text" id="nome-paciente" required>
                     <label for="idade">Idade</label>
                     <input type="number" id="idade" required>
+                    
                     <label for="patologias">Patologias</label>
                     <textarea id="patologias"></textarea>
-                    
+
+                    <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares Relevantes (Recentes)</label>
+                    <textarea id="exames" placeholder="Liste aqui os exames importantes..."></textarea>
                     <div class="form-group" style="margin-top: 15px;">
                         <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
                         <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
@@ -78,7 +59,6 @@
                         </div>
                     </div>
                 </form>
-
                 <div class="gerenciador-medicos">
                     <h3>Médicos Assistentes</h3>
                     <form id="form-add-medico" class="form-add-medico no-print"> 
@@ -90,7 +70,6 @@
                     </form>
                     <ul id="lista-medicos-pills"></ul>
                 </div>
-
                 <div class="gerenciador-medicacao">
                     <h3>Minhas Medicações</h3>
                     <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
@@ -99,7 +78,6 @@
                             <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
                             <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                         </div>
-                        
                         <div id="secao-turnos">
                             <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
                             <div class="checkbox-group">
@@ -111,7 +89,6 @@
                                 <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
                             </div>
                         </div>
-
                         <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar</button>
                     </form>
                     <div class="tabela-container">
@@ -121,27 +98,20 @@
                         </table>
                     </div>
                 </div>
-
                 <div class="gerenciador-qrcode no-print">
                     <h3>QR Code de Acesso Rápido</h3>
                     <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>
                     <div id="qrcode-container"></div>
                 </div>
-                
                 <div class="botoes-acao-container no-print"> 
                     <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
                     <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
                 </div>
             </div>
-
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
-
-    <footer id="contato" class="no-print"> 
-        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p>
-    </footer>
-    
+    <footer id="contato" class="no-print"><p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p></footer>
     <script src="js/perfil-paciente.js"></script>
 </body>
 </html>

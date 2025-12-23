@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
+  const examesInput = document.getElementById('exames'); // NOVO
   
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -37,33 +38,15 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentMedicacoes = []; let currentMedicos = []; let currentUserId = null; 
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
-  // --- LOGOUT ---
   const btnLogout = document.getElementById('btn-logout-paciente');
-  if(btnLogout) {
-      btnLogout.addEventListener('click', () => {
-          localStorage.clear();
-          window.location.href = 'index.html'; // Ou login.html
-      });
-  }
+  if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
 
-  function toggleConteudoProntuario() {
-      if (checkTermoAceite.checked) {
-          conteudoProntuario.style.display = 'block';
-      } else {
-          conteudoProntuario.style.display = 'none';
-      }
-  }
+  function toggleConteudoProntuario() { if (checkTermoAceite.checked) { conteudoProntuario.style.display = 'block'; } else { conteudoProntuario.style.display = 'none'; } }
   checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
 
-  function toggleAlergiaInput() {
-    if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } 
-    else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; }
-  }
+  function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
 
-  horarioEspecificoInput.addEventListener('input', () => {
-      if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block';
-      else secaoTurnos.style.display = 'none';
-  });
+  horarioEspecificoInput.addEventListener('input', () => { if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block'; else secaoTurnos.style.display = 'none'; });
 
   const fetchProntuario = async () => {
     try {
@@ -81,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
+    examesInput.value = data.exames || ''; // PREENCHE EXAMES
     
     if (data.termoAceite) { checkTermoAceite.checked = true; }
     toggleConteudoProntuario();
@@ -110,27 +94,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; }
-    
-    const list = [...currentMedicacoes].sort((a, b) => {
-        const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59';
-        const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59';
-        return horaA.localeCompare(horaB);
-    });
-
+    const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); });
     list.forEach((med) => { 
       let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } }
       if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>';
       const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
       const qtdDisplay = med.quantidade ? med.quantidade : '-';
-
       const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
 
   const handleAddMedicacao = (e) => { 
-      e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
-      const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
+      e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
       currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
       renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none';
   };
@@ -139,23 +115,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleSalvarTudo = async (e) => {
     e.preventDefault();
     if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
-
     btnSalvarTudo.innerText = 'Salvando...';
     const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
     try {
-      const response = await fetch(API_URL, {
+      await fetch(API_URL, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        // SALVA EXAMES AQUI
         body: JSON.stringify({ 
             nomePaciente: nomePacienteInput.value, 
             idade: idadeInput.value, 
             patologias: patologiasInput.value, 
+            exames: examesInput.value, // CAMPO NOVO
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
-            medicacoes: currentMedicacoes,
+            medicacoes: currentMedicacoes, 
             termoAceite: true 
         })
       });
-      if (response.ok) { mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1'; } else { throw new Error('Erro ao salvar'); }
+      mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1';
     } catch (error) { mensagemRetorno.innerText = 'Erro ao salvar.'; mensagemRetorno.style.color = '#e74c3c'; }
     btnSalvarTudo.innerText = 'Salvar Prontuário';
   };

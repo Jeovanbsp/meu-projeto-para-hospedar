@@ -25,13 +25,15 @@ const EvolucaoSchema = new Schema({
 const ProntuarioSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   
-  // --- TERMO DE ACEITE ---
   termoAceite: { type: Boolean, default: false },
-  // ----------------------
 
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
   patologias: { type: String, default: '' },
+  
+  // --- NOVO CAMPO ADICIONADO ---
+  exames: { type: String, default: '' },
+  // -----------------------------
 
   alergias: {
     temAlergia: { type: Boolean, default: false },

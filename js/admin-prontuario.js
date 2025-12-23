@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
+  const examesInput = document.getElementById('exames'); // NOVO
   
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -35,8 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tituloEdicao = document.getElementById('titulo-edicao');
   const badgeTermo = document.getElementById('badge-termo-status');
 
-  let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; 
-  let currentTermoAceite = false; 
+  let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; let currentTermoAceite = false; 
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() {
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       const response = await fetch(API_ADMIN_BASE + pacienteId, { headers: { 'Authorization': `Bearer ${token}` } });
       if (!response.ok) throw new Error('Erro ao buscar dados.');
-      
       const data = await response.json();
       tituloEdicao.innerText = `Editando: ${data.nomePaciente || 'Novo Paciente'}`;
       populateForm(data); 
@@ -72,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     nomePacienteInput.value = data.nomePaciente || '';
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
+    examesInput.value = data.exames || ''; // PREENCHER EXAMES
     
     currentTermoAceite = data.termoAceite || false;
     if (currentTermoAceite) {
@@ -150,7 +150,17 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await fetch(API_ADMIN_BASE + pacienteId, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ nomePaciente: nomePacienteInput.value, idade: idadeInput.value, patologias: patologiasInput.value, alergias: dadosAlergia, medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes, termoAceite: currentTermoAceite })
+        // SALVANDO EXAMES
+        body: JSON.stringify({ 
+            nomePaciente: nomePacienteInput.value, 
+            idade: idadeInput.value, 
+            patologias: patologiasInput.value, 
+            exames: examesInput.value, // CAMPO NOVO
+            alergias: dadosAlergia, 
+            medicosAssistentes: currentMedicos, 
+            medicacoes: currentMedicacoes, 
+            termoAceite: currentTermoAceite 
+        })
       });
       alert('Dados salvos!');
     } catch(err) { console.error(err); }
