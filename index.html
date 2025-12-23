@@ -3,66 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dra. Aisha Wenzinger – Geriatria e Clínica Médica</title>
+    <title>Dra. Aisha Wenzinger - Geriatria e Clínica Médica</title>
     
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* --- ESTILOS DA NAV ORGANIZADA --- */
-        .main-nav ul {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .main-nav a {
+        /* CSS APENAS PARA O BOTÃO DA FICHA (Para não quebrar o resto) */
+        .btn-ficha-nav {
+            border: 1px solid #333;
+            padding: 8px 15px;
+            border-radius: 4px;
+            color: #333;
+            font-weight: 500;
             text-decoration: none;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-        }
-
-        /* Links de Texto */
-        .nav-link { color: #555; font-weight: 500; position: relative; }
-        .nav-link:hover { color: #2ADCA1; }
-
-        /* Botão Ficha (Borda Colorida) */
-        .btn-ficha {
-            color: #2ADCA1;
-            font-weight: 600;
-            border: 2px solid #2ADCA1;
-            padding: 6px 15px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-        }
-        .btn-ficha:hover {
-            background-color: #2ADCA1;
-            color: #fff;
-        }
-
-        /* Botão Login (Fundo Colorido) */
-        .btn-login-nav {
-            background-color: #2ADCA1;
-            color: #fff !important;
-            font-weight: 600;
-            padding: 8px 25px;
-            border-radius: 50px;
+            transition: all 0.3s;
             font-size: 0.9rem;
-            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.2);
         }
-        .btn-login-nav:hover { background-color: #24b685; transform: translateY(-2px); }
-
-        /* Ajuste Mobile */
-        @media (max-width: 900px) {
-            .main-nav ul { flex-direction: column; gap: 15px; padding: 20px; }
-            .btn-ficha, .btn-login-nav { width: 100%; text-align: center; display: block; }
+        .btn-ficha-nav:hover {
+            background-color: #f0f0f0;
+            border-color: #333;
         }
     </style>
 </head>
@@ -75,22 +36,24 @@
             </a>
             
             <nav class="main-nav" id="mobile-menu">
-                <ul>
-                    <li><a href="#sobre-mim-section" class="nav-link">Minha História</a></li>
-                    <li><a href="#experiencia-section" class="nav-link">Experiência</a></li>
-                    <li><a href="#locais" class="nav-link">Locais</a></li>
-                    <li><a href="#contato" class="nav-link">Contato</a></li>
+                <ul style="align-items: center; gap: 20px;">
+                    <li><a href="#sobre-mim-section">Minha História</a></li>
+                    <li><a href="#experiencia-section">Experiência</a></li>
+                    <li><a href="#locais">Locais</a></li>
+                    <li><a href="#contato">Contato</a></li>
 
                     <li>
-                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha">
-                            📋 Ficha Pré-Atendimento
+                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="btn-ficha-nav">
+                            📄 Ficha Pré-Atendimento
                         </a>
                     </li>
-                    <li><a href="login.html" class="btn-login-nav">Login</a></li>
+
+                    <li><a href="cadastro.html">Cadastro</a></li>
+                    <li><a href="login.html" class="btn-agendar">Login</a></li>
                 </ul>
             </nav>
 
-            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu">
+            <button class="hamburger" id="hamburger-button">
                 <span class="hamburger-box">
                     <span class="hamburger-inner"></span>
                 </span>
@@ -105,19 +68,11 @@
                 <h1>Atenção Especializada para Idosos</h1>
                 <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
                 <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">Agendar Consulta</a>
-            </div>
-        </section>
-
-        <section class="services-section">
-            <div class="service-card">
-                <img src="img/icone-telemedicina.png" alt="Telemedicina" class="service-icon" onerror="this.style.display='none'">
-                <h3>Telemedicina</h3>
-                <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
-            </div>
-            <div class="service-card">
-                <img src="img/icone-domiciliar.png" alt="Atendimento Domiciliar" class="service-icon" onerror="this.style.display='none'">
-                <h3>Atendimento Domiciliar</h3>
-                <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
+            
+                <div class="servicos-hero" style="margin-top: 40px;">
+                    <div style="margin-bottom: 10px;"><strong>Telemedicina</strong><br><small>Consultas online com segurança e comodidade, sem sair de casa.</small></div>
+                    <div><strong>Atendimento Domiciliar</strong><br><small>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</small></div>
+                </div>
             </div>
         </section>
 
@@ -130,7 +85,7 @@
                     <p>Atua também em consultório próprio, telemedicina e realiza atendimentos domiciliares voltados para idosos com dificuldade de locomoção e/ou em estado de acamamento, oferecendo cuidado integral, humanizado e contínuo. É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências.</p>
                 </div>
                 <div class="about-image">
-                    <img src="img/foto-aisha.jpg" alt="Dra. Aisha Wenzinger" onerror="this.src='https://via.placeholder.com/400x500?text=Foto+Dra.+Aisha'">
+                    <img src="img/foto-aisha.jpg" alt="Foto Dra. Aisha">
                 </div>
             </div>
         </section>
@@ -153,35 +108,32 @@
 
         <section id="locais" class="locations-section">
             <h2>Onde nos encontrar</h2>
-            <p class="locations-intro">Confira nossas unidades e escolha a mais próxima de você:</p>
+            <p>Confira nossas unidades e escolha a mais próxima de você:</p>
             
             <div class="locations-grid">
                 <div class="location-card">
                     <h3>Unidade 1 - Estrada do Coco</h3>
                     <p><strong>Localizado em:</strong> Shopping Estrada do Coco</p>
                     <p><strong>Endereço:</strong> Av. Santos Dumont, Est do Coco, 6216 - loja 102 - Pitangueiras, Lauro de Freitas - BA, 42701-260</p>
-                    <a href="https://www.google.com/maps/search/?api=1&query=Shopping+Estrada+do+Coco" target="_blank" class="btn-location">Ver no Google Maps</a>
+                    <a href="https://goo.gl/maps/seuLinkAqui" target="_blank" style="color: #2ADCA1; text-decoration: underline;">Ver no Google Maps</a>
                 </div>
-                </div>
+            </div>
         </section>
 
     </main>
 
     <footer id="contato">
         <div class="footer-content">
-            <h3>Dra. Aisha Wenzinger</h3>
-            <p>Geriatria e Clínica Médica</p>
-            
+            <div class="footer-logo">
+                <img src="img/layout.png" alt="Dra Aisha Logo" style="height: 40px; filter: brightness(0) invert(1);">
+            </div>
             <div class="social-icons">
-                <a href="https://www.instagram.com/aisha_wenzinger" target="_blank"><img src="img/instagram.png" alt="Instagram"></a>
-                <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank"><img src="img/facebook.png" alt="Facebook"></a>
+                <a href="https://instagram.com" target="_blank"><img src="img/instagram.png" alt="Instagram"></a>
+                <a href="https://facebook.com" target="_blank"><img src="img/facebook.png" alt="Facebook"></a>
                 <a href="https://wa.me/5571981233912" target="_blank"><img src="img/whatsapp.png" alt="WhatsApp"></a>
             </div>
-            
-            <div class="contact-info">
-                <p>Email: contato@draaisha.com.br</p>
-                <p class="crm-info">CRM/BA: 20473 | RQE: 19692</p>
-            </div>
+            <p>Email: contato@draaisha.com.br</p>
+            <p>Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
         </div>
         <div class="footer-bottom">
             <p>Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
@@ -194,8 +146,6 @@
 
         hamburgerButton.addEventListener('click', () => {
             hamburgerButton.classList.toggle('is-active');
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
             mobileMenu.classList.toggle('is-active');
         });
     </script>
