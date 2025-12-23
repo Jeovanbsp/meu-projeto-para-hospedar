@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
   const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
   const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
+  const textoBtnToggle = document.getElementById('texto-btn-toggle');
 
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -58,8 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function toggleComorbidades() { 
       if (radioComorbidadeSim.checked) { 
           listaComorbidades.style.display = 'block'; 
-          btnMinimizarComorbidades.style.display = 'block';
-          btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+          btnMinimizarComorbidades.style.display = 'flex'; // Exibe o botão
+          // Resetar
+          listaComorbidades.style.display = 'block';
+          btnMinimizarComorbidades.classList.add('aberto');
+          if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
       } else { 
           listaComorbidades.style.display = 'none'; 
           btnMinimizarComorbidades.style.display = 'none';
@@ -71,10 +75,12 @@ document.addEventListener('DOMContentLoaded', () => {
       btnMinimizarComorbidades.addEventListener('click', () => {
           if (listaComorbidades.style.display === 'none') {
               listaComorbidades.style.display = 'block';
-              btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+              btnMinimizarComorbidades.classList.add('aberto');
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
           } else {
               listaComorbidades.style.display = 'none';
-              btnMinimizarComorbidades.innerText = '🔽 Expandir Lista';
+              btnMinimizarComorbidades.classList.remove('aberto');
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir Lista';
           }
       });
   }

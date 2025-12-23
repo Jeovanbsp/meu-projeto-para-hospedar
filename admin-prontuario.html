@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
-    <style>.card-agendamento { margin: 40px auto; } textarea { min-height: 100px; resize: vertical; }</style>
 </head>
 <body>
     <header class="novo-header">
@@ -34,25 +33,33 @@
                 <input type="number" id="idade" required>
                 
                 <label for="patologias">Patologias</label>
-                <textarea id="patologias"></textarea>
+                <textarea id="patologias" style="min-height: 100px; resize: vertical;"></textarea>
 
                 <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares relevantes (Recentes)</label>
-                <textarea id="exames" placeholder="Liste aqui os exames importantes..."></textarea>
+                <textarea id="exames" placeholder="Liste aqui os exames importantes..." style="min-height: 100px; resize: vertical;"></textarea>
 
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Comorbidades?</label>
-                    <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
                         
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                            <div style="display: flex; gap: 20px; align-items: center;">
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não Existe</span></label>
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Existe</span></label>
+                            <div class="radio-group-container">
+                                <label class="radio-label">
+                                    <input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> 
+                                    <span class="text-nao">Não Existe</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> 
+                                    <span class="text-sim">Existe</span>
+                                </label>
                             </div>
-                            <button type="button" id="btn-minimizar-comorbidades" style="display:none; font-size: 0.8rem; background: #eee; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">🔽 Minimizar Lista</button>
+                            <button type="button" id="btn-minimizar-comorbidades" class="btn-toggle-lista">
+                                <span id="texto-btn-toggle">Minimizar Lista</span>
+                                <span class="seta-toggle"></span>
+                            </button>
                         </div>
 
                         <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 15px;">
-                            <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">Selecione as condições:</p>
                             <div class="grid-comorbidades">
                                 <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão Arterial</label><span class="desc-comorbidade">Pressão alta</span></div>
                                 <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes Mellitus</label><span class="desc-comorbidade">Açúcar no sangue</span></div>
@@ -70,12 +77,13 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
-                    <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
-                        <div style="display: flex; gap: 20px; align-items: center;">
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não</span></label>
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Sim</span></label>
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
+                        <div class="radio-group-container">
+                            <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span class="text-nao">Não</span></label>
+                            <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span class="text-sim">Sim</span></label>
                             <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
                         </div>
                         <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
@@ -103,7 +111,7 @@
                         <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
                         <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                     </div>
-                    <div id="secao-turnos">
+                    <div id="secao-turnos" style="display: none;">
                         <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
                         <div class="checkbox-group">
                             <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>

@@ -11,13 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames');
   
-  // COMORBIDADES (ADMIN)
+  // COMORBIDADES
   const radioComorbidadeNao = document.getElementById('comorbidade-nao');
   const radioComorbidadeSim = document.getElementById('comorbidade-sim');
   const listaComorbidades = document.getElementById('lista-comorbidades');
   const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
   const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
   const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
+  const textoBtnToggle = document.getElementById('texto-btn-toggle');
 
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -49,27 +50,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
 
-  // LOGICA TOGGLE COMORBIDADES
+  // --- LÓGICA TOGGLE COMORBIDADES ---
   function toggleComorbidades() { 
       if (radioComorbidadeSim.checked) { 
           listaComorbidades.style.display = 'block'; 
-          btnMinimizarComorbidades.style.display = 'block';
-          btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+          btnMinimizarComorbidades.style.display = 'flex'; // Exibe o botão
+          // Resetar botão para estado 'Aberto' (Minimizar)
+          listaComorbidades.style.display = 'block';
+          btnMinimizarComorbidades.classList.add('aberto');
+          if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
       } else { 
           listaComorbidades.style.display = 'none'; 
           btnMinimizarComorbidades.style.display = 'none';
       } 
   }
   
-  // LOGICA MINIMIZAR
   if(btnMinimizarComorbidades) {
       btnMinimizarComorbidades.addEventListener('click', () => {
           if (listaComorbidades.style.display === 'none') {
+              // ABRIR
               listaComorbidades.style.display = 'block';
-              btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+              btnMinimizarComorbidades.classList.add('aberto');
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar Lista';
           } else {
+              // FECHAR
               listaComorbidades.style.display = 'none';
-              btnMinimizarComorbidades.innerText = '🔽 Expandir Lista';
+              btnMinimizarComorbidades.classList.remove('aberto');
+              if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir Lista';
           }
       });
   }
@@ -96,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     patologiasInput.value = data.patologias || '';
     examesInput.value = data.exames || '';
     
-    // POPULAR COMORBIDADES (AQUI ESTAVA O ERRO DE SYNC ANTES)
+    // POPULAR COMORBIDADES
     if (data.comorbidades && data.comorbidades.temComorbidade) {
         radioComorbidadeSim.checked = true;
         inputOutrasComorbidades.value = data.comorbidades.outras || '';
@@ -136,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleSalvarTudo = async (e) => {
     e.preventDefault(); btnSalvarTudo.innerText = 'Salvando...';
     
-    // COLETA DADOS COMORBIDADES (ADMIN SALVANDO)
+    // COLETA DADOS COMORBIDADES
     const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
     const comorbidadesDados = {
         temComorbidade: radioComorbidadeSim.checked,
@@ -153,7 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
             idade: idadeInput.value, 
             patologias: patologiasInput.value, 
             exames: examesInput.value,
-            comorbidades: comorbidadesDados, // ENVIA COMORBIDADES
+            comorbidades: comorbidadesDados,
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
             medicacoes: currentMedicacoes,
