@@ -42,58 +42,29 @@
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Comorbidades?</label>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 12px; border-radius: 6px;">
-                        <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 10px;">
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não Existe</span></label>
-                            <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Existe</span></label>
+                        
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div style="display: flex; gap: 20px; align-items: center;">
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span style="color: #2E7D32; font-weight: 500;">Não Existe</span></label>
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; margin: 0;"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span style="color: #C62828; font-weight: 500;">Existe</span></label>
+                            </div>
+                            <button type="button" id="btn-minimizar-comorbidades" style="display:none; font-size: 0.8rem; background: #eee; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">🔽 Minimizar Lista</button>
                         </div>
 
                         <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 15px;">
                             <p style="font-size: 0.9rem; color: #555; margin-bottom: 10px;">Selecione as condições:</p>
                             <div class="grid-comorbidades">
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão Arterial</label>
-                                    <span class="desc-comorbidade">Pressão alta</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes Mellitus</label>
-                                    <span class="desc-comorbidade">Açúcar no sangue</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label>
-                                    <span class="desc-comorbidade">Coração fraco</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Osteoporose"> Osteoporose</label>
-                                    <span class="desc-comorbidade">Ossos fracos</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Artrose/Artrite"> Artrose / Artrite</label>
-                                    <span class="desc-comorbidade">Desgaste nas juntas</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="DPOC"> DPOC</label>
-                                    <span class="desc-comorbidade">Doença pulmonar</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Depressão/Ansiedade"> Depressão / Ansiedade</label>
-                                    <span class="desc-comorbidade">Saúde mental</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Demência"> Demência</label>
-                                    <span class="desc-comorbidade">Alzheimer e outros</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Parkinson"> Parkinson</label>
-                                    <span class="desc-comorbidade">Tremores/Rigidez</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Dislipidemia"> Dislipidemia</label>
-                                    <span class="desc-comorbidade">Colesterol alto</span>
-                                </div>
-                                <div class="item-comorbidade">
-                                    <label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label>
-                                    <span class="desc-comorbidade">Derrame</span>
-                                </div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão Arterial</label><span class="desc-comorbidade">Pressão alta</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes Mellitus</label><span class="desc-comorbidade">Açúcar no sangue</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label><span class="desc-comorbidade">Coração fraco</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Osteoporose"> Osteoporose</label><span class="desc-comorbidade">Ossos fracos</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Artrose/Artrite"> Artrose / Artrite</label><span class="desc-comorbidade">Desgaste nas juntas</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="DPOC"> DPOC</label><span class="desc-comorbidade">Doença pulmonar</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Depressão/Ansiedade"> Depressão / Ansiedade</label><span class="desc-comorbidade">Saúde mental</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Demência"> Demência</label><span class="desc-comorbidade">Alzheimer e outros</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Parkinson"> Parkinson</label><span class="desc-comorbidade">Tremores/Rigidez</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Dislipidemia"> Dislipidemia</label><span class="desc-comorbidade">Colesterol alto</span></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label><span class="desc-comorbidade">Derrame</span></div>
                             </div>
                             <input type="text" id="comorbidades-outras" class="form-control" placeholder="Outras (escreva aqui)" style="margin-top: 15px; width: 100%; box-sizing: border-box;">
                         </div>
@@ -132,7 +103,6 @@
                         <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
                         <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                     </div>
-                    
                     <div id="secao-turnos">
                         <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
                         <div class="checkbox-group">
@@ -144,7 +114,6 @@
                             <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
                         </div>
                     </div>
-
                     <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar</button>
                 </form>
                 <div class="tabela-container">

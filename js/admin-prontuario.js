@@ -11,12 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames');
   
-  // COMORBIDADES
+  // COMORBIDADES (ADMIN)
   const radioComorbidadeNao = document.getElementById('comorbidade-nao');
   const radioComorbidadeSim = document.getElementById('comorbidade-sim');
   const listaComorbidades = document.getElementById('lista-comorbidades');
   const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
   const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
+  const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
 
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -48,10 +49,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
 
-  // TOGGLES
-  function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
-  function toggleComorbidades() { if (radioComorbidadeSim.checked) { listaComorbidades.style.display = 'block'; } else { listaComorbidades.style.display = 'none'; } }
+  // LOGICA TOGGLE COMORBIDADES
+  function toggleComorbidades() { 
+      if (radioComorbidadeSim.checked) { 
+          listaComorbidades.style.display = 'block'; 
+          btnMinimizarComorbidades.style.display = 'block';
+          btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+      } else { 
+          listaComorbidades.style.display = 'none'; 
+          btnMinimizarComorbidades.style.display = 'none';
+      } 
+  }
+  
+  // LOGICA MINIMIZAR
+  if(btnMinimizarComorbidades) {
+      btnMinimizarComorbidades.addEventListener('click', () => {
+          if (listaComorbidades.style.display === 'none') {
+              listaComorbidades.style.display = 'block';
+              btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+          } else {
+              listaComorbidades.style.display = 'none';
+              btnMinimizarComorbidades.innerText = '🔽 Expandir Lista';
+          }
+      });
+  }
 
+  function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
   horarioEspecificoInput.addEventListener('input', () => { if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block'; else secaoTurnos.style.display = 'none'; });
 
   const fetchProntuario = async () => {
@@ -73,11 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
     patologiasInput.value = data.patologias || '';
     examesInput.value = data.exames || '';
     
-    // COMORBIDADES
+    // POPULAR COMORBIDADES (AQUI ESTAVA O ERRO DE SYNC ANTES)
     if (data.comorbidades && data.comorbidades.temComorbidade) {
         radioComorbidadeSim.checked = true;
         inputOutrasComorbidades.value = data.comorbidades.outras || '';
-        // Marcar checkboxes
         if (data.comorbidades.lista) {
             checkboxesComorbidades.forEach(cb => {
                 if (data.comorbidades.lista.includes(cb.value)) cb.checked = true;
@@ -114,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleSalvarTudo = async (e) => {
     e.preventDefault(); btnSalvarTudo.innerText = 'Salvando...';
     
-    // COLETA DADOS COMORBIDADES
+    // COLETA DADOS COMORBIDADES (ADMIN SALVANDO)
     const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
     const comorbidadesDados = {
         temComorbidade: radioComorbidadeSim.checked,
@@ -134,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             comorbidades: comorbidadesDados, // ENVIA COMORBIDADES
             alergias: dadosAlergia, 
             medicosAssistentes: currentMedicos, 
-            medicacoes: currentMedicacoes, 
+            medicacoes: currentMedicacoes,
             termoAceite: currentTermoAceite 
         })
       });

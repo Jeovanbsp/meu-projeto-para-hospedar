@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const listaComorbidades = document.getElementById('lista-comorbidades');
   const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
   const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
+  const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
 
   const radioAlergiaNao = document.getElementById('alergia-nao');
   const radioAlergiaSim = document.getElementById('alergia-sim');
@@ -52,7 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
   checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
-  function toggleComorbidades() { if (radioComorbidadeSim.checked) { listaComorbidades.style.display = 'block'; } else { listaComorbidades.style.display = 'none'; } }
+  
+  // TOGGLE COMORBIDADES
+  function toggleComorbidades() { 
+      if (radioComorbidadeSim.checked) { 
+          listaComorbidades.style.display = 'block'; 
+          btnMinimizarComorbidades.style.display = 'block';
+          btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+      } else { 
+          listaComorbidades.style.display = 'none'; 
+          btnMinimizarComorbidades.style.display = 'none';
+      } 
+  }
+  
+  // MINIMIZAR
+  if(btnMinimizarComorbidades) {
+      btnMinimizarComorbidades.addEventListener('click', () => {
+          if (listaComorbidades.style.display === 'none') {
+              listaComorbidades.style.display = 'block';
+              btnMinimizarComorbidades.innerText = '🔼 Minimizar Lista';
+          } else {
+              listaComorbidades.style.display = 'none';
+              btnMinimizarComorbidades.innerText = '🔽 Expandir Lista';
+          }
+      });
+  }
 
   horarioEspecificoInput.addEventListener('input', () => { if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block'; else secaoTurnos.style.display = 'none'; });
 
