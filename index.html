@@ -3,45 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dra. Aisha Wenzinger - Geriatria e Clínica Médica</title>
+    <title>Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório</title>
     
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="css/style.css">
     
     <style>
-        /* --- ESTILOS GERAIS DA HOME --- */
-        .hero-section {
-            padding: 120px 20px;
-            text-align: center;
-            background-color: #f9fbfd;
-        }
-        .hero-title {
-            font-size: 2.8rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: #7f8c8d;
-            margin-bottom: 40px;
-            font-weight: 400;
-        }
-        section {
-            padding: 80px 20px;
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-        h2 { color: #2ADCA1; margin-bottom: 30px; font-size: 2rem; }
-        
-        /* --- NAV OTIMIZADA --- */
+        /* --- ESTILOS DA NAV ORGANIZADA (ÚNICA MUDANÇA) --- */
         .main-nav ul {
             display: flex;
             align-items: center;
-            gap: 25px; /* Espaço entre os itens */
+            gap: 20px;
             list-style: none;
             margin: 0;
             padding: 0;
@@ -54,88 +29,55 @@
             transition: all 0.3s ease;
         }
 
-        /* 1. Links de Texto (Informação) */
-        .nav-link {
-            color: #555;
-            font-weight: 500;
-            position: relative;
-        }
-        .nav-link:hover {
-            color: #2ADCA1;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -5px;
-            left: 0;
-            background-color: #2ADCA1;
-            transition: width 0.3s;
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
+        /* Links Normais */
+        .nav-link { color: #555; font-weight: 500; position: relative; }
+        .nav-link:hover { color: #2ADCA1; }
 
-        /* 2. Botão Ficha (Outline - Secundário) */
+        /* Botão Ficha (Outline) */
         .btn-ficha {
             color: #2ADCA1;
             font-weight: 600;
             border: 2px solid #2ADCA1;
-            padding: 8px 18px;
+            padding: 6px 15px;
             border-radius: 50px;
+            font-size: 0.85rem;
         }
         .btn-ficha:hover {
             background-color: #2ADCA1;
             color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.2);
         }
 
-        /* 3. Botão Login (Sólido - Primário) */
-        .btn-login {
+        /* Botão Login (Sólido) */
+        .btn-login-nav {
             background-color: #2ADCA1;
-            color: #fff;
+            color: #fff !important;
             font-weight: 600;
-            padding: 10px 25px;
+            padding: 8px 20px;
             border-radius: 50px;
-            border: 2px solid #2ADCA1; /* Para manter o tamanho igual */
+            font-size: 0.9rem;
         }
-        .btn-login:hover {
-            background-color: #24b685;
-            border-color: #24b685;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.3);
-        }
+        .btn-login-nav:hover { background-color: #24b685; }
 
         /* Ajuste Mobile */
-        @media (max-width: 768px) {
-            .main-nav ul {
-                flex-direction: column;
-                gap: 20px;
-                padding-top: 20px;
-            }
-            .btn-ficha, .btn-login {
-                width: 100%;
-                text-align: center;
-                display: block;
-            }
+        @media (max-width: 900px) {
+            .main-nav ul { flex-direction: column; gap: 15px; padding: 20px; }
+            .btn-ficha, .btn-login-nav { width: 100%; text-align: center; display: block; }
         }
     </style>
 </head>
 <body>
     
     <header class="novo-header">
-        <div class="header-container" style="justify-content: space-between;">
-            
+        <div class="header-container">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 45px;">
+                <img src="img/layout.png" alt="Dra. Aisha Logo">
             </a>
             
             <nav class="main-nav" id="mobile-menu">
                 <ul>
-                    <li><a href="#sobre-mim" class="nav-link">Sobre Mim</a></li>
-                    <li><a href="#locais" class="nav-link">Onde Atende</a></li>
+                    <li><a href="#sobre-mim-section" class="nav-link">Minha História</a></li>
+                    <li><a href="#experiencia-section" class="nav-link">Experiência</a></li>
+                    <li><a href="#locais" class="nav-link">Locais</a></li>
                     <li><a href="#contato" class="nav-link">Contato</a></li>
 
                     <li>
@@ -143,10 +85,8 @@
                             📋 Ficha Pré-Atendimento
                         </a>
                     </li>
-                    
-                    <li><a href="cadastro.html" class="nav-link" style="font-size: 0.9rem;">Cadastro</a></li>
-                    
-                    <li><a href="login.html" class="btn-login">Login</a></li>
+                    <li><a href="cadastro.html" class="nav-link">Cadastro</a></li>
+                    <li><a href="login.html" class="btn-login-nav">Login</a></li>
                 </ul>
             </nav>
 
@@ -159,50 +99,105 @@
     </header>
 
     <main>
-        <div class="hero-section">
-            <h1 class="hero-title">Dra. Aisha Wenzinger</h1>
-            <p class="hero-subtitle">Geriatria e Clínica Médica com cuidado integral e humanizado.</p>
+        
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Atenção Especializada para Idosos</h1>
+                <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
+                <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">Agendar Consulta</a>
+            </div>
+        </section>
+
+        <section class="services-section">
+            <div class="service-card">
+                <img src="img/icone-telemedicina.png" alt="Telemedicina" class="service-icon" onerror="this.style.display='none'">
+                <h3>Telemedicina</h3>
+                <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
+            </div>
+            <div class="service-card">
+                <img src="img/icone-domiciliar.png" alt="Atendimento Domiciliar" class="service-icon" onerror="this.style.display='none'">
+                <h3>Atendimento Domiciliar</h3>
+                <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
+            </div>
+        </section>
+
+        <section id="sobre-mim-section" class="about-section">
+            <div class="about-container">
+                <div class="about-text">
+                    <h2>Minha História</h2>
+                    <p>Médica com sólida experiência em Clínica Médica, Geriatria e Cuidados Paliativos, com mais de 14 anos de atuação em ambientes hospitalares de urgência, ambulatórios e atendimento domiciliar.</p>
+                    <p>Possui formação pela Escola Bahiana de Medicina e Saúde Pública e especialização em Cuidados Paliativos pelo Instituto Paliar. Coordenava o setor de Geriatria do Hospital Português, com foco em desospitalização segura, manejo clínico de idosos frágeis e atenção centrada na pessoa.</p>
+                    <p>Atua também em consultório próprio, telemedicina e realiza atendimentos domiciliares voltados para idosos com dificuldade de locomoção e/ou em estado de acamamento, oferecendo cuidado integral, humanizado e contínuo. É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências.</p>
+                </div>
+                <div class="about-image">
+                    <img src="img/foto-aisha.jpg" alt="Dra. Aisha Wenzinger" onerror="this.src='https://via.placeholder.com/400x500?text=Foto+Dra.+Aisha'">
+                </div>
+            </div>
+        </section>
+
+        <section id="experiencia-section" class="experience-section">
+            <div class="experience-container">
+                <h2>Experiência Profissional</h2>
+                <ul class="experience-list">
+                    <li><strong>Médica Clínica</strong> – Unidade Intermediária 2, Hospital Geral do Estado (HGE 2) – Desde 2023</li>
+                    <li><strong>Coordenadora da Geriatria</strong> – Hospital Português – Desde Novembro de 2021</li>
+                    <li><strong>Médica da Equipe de Desospitalização</strong> – Hospital Português – Desde 2022</li>
+                    <li><strong>Consultório de Geriatria</strong> – Clínica Newlife – Desde 2017</li>
+                    <li><strong>Atendimentos Domiciliares em Geriatria</strong> – Desde 2017</li>
+                    <li><strong>Médica Emergencista</strong> – Hospital Português – 2014 a 2024</li>
+                    <li><strong>Médica Emergencista</strong> – Hospital Geral do Estado (HGE) – 2013 a 2023</li>
+                </ul>
+                <p class="experience-summary"><strong>Experiência acumulada:</strong> 14 anos em Serviços de Urgência e Emergência.</p>
+            </div>
+        </section>
+
+        <section id="locais" class="locations-section">
+            <h2>Onde nos encontrar</h2>
+            <p class="locations-intro">Confira nossas unidades e escolha a mais próxima de você:</p>
             
-            <div style="margin-top: 30px;">
-                <a href="https://wa.me/5571981233912" target="_blank" class="btn-login" style="font-size: 1.1rem; padding: 15px 35px; text-decoration: none;">
-                    Agendar Consulta via WhatsApp
-                </a>
-            </div>
-        </div>
-
-        <section id="sobre-mim">
-            <h2>Sobre Mim</h2>
-            <p style="font-size: 1.1rem; line-height: 1.6; color: #555;">
-                Olá! Sou a Dra. Aisha, médica dedicada a proporcionar qualidade de vida e bem-estar. Minha prática é pautada na escuta ativa e no entendimento do paciente como um todo, focando especialmente no envelhecimento saudável e na prevenção.
-            </p>
+            <div class="locations-grid">
+                <div class="location-card">
+                    <h3>Unidade 1 - Estrada do Coco</h3>
+                    <p><strong>Localizado em:</strong> Shopping Estrada do Coco</p>
+                    <p><strong>Endereço:</strong> Av. Santos Dumont, Est do Coco, 6216 - loja 102 - Pitangueiras, Lauro de Freitas - BA, 42701-260</p>
+                    <a href="https://maps.google.com/?q=Shopping+Estrada+do+Coco" target="_blank" class="btn-location">Ver no Google Maps</a>
+                </div>
+                </div>
         </section>
 
-        <section id="locais">
-            <h2>Locais de Atendimento</h2>
-            <div style="display: flex; gap: 30px; flex-wrap: wrap; margin-top: 30px;">
-                <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-radius: 12px; flex: 1; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s;">
-                    <h3 style="color:#2c3e50; margin-top: 0;">Clínica Salvador</h3>
-                    <p style="color:#666; margin-bottom: 5px;">Atendimento ambulatorial.</p>
-                    <small style="color:#999;">Segunda a Sexta, 08h às 18h</small>
-                </div>
-                <div style="background: #fff; padding: 30px; border: 1px solid #eee; border-radius: 12px; flex: 1; min-width: 280px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.3s;">
-                    <h3 style="color:#2c3e50; margin-top: 0;">Atendimento Domiciliar</h3>
-                    <p style="color:#666; margin-bottom: 5px;">Conforto e comodidade na sua casa.</p>
-                    <small style="color:#999;">Agendamento prévio necessário</small>
-                </div>
-            </div>
-        </section>
     </main>
 
-    <footer id="contato" style="background: #2c3e50; color: white; padding: 60px 20px; text-align: center; margin-top: 50px;">
-        <h3 style="color: #2ADCA1; margin-bottom: 20px;">Entre em Contato</h3>
-        <p style="margin: 5px 0;">Email: contato@draaisha.com.br</p>
-        <p style="margin: 5px 0;">WhatsApp: (71) 98123-3912</p>
-        
-        <div class="social-icons" style="margin: 30px 0;">
-            <a href="https://instagram.com" target="_blank" style="color: white; margin: 0 15px; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: 0.3s;">Instagram</a>
-            <a href="https://facebook.com" target="_blank" style="color: white; margin: 0 15px; text-decoration: none; font-weight: 500; border-bottom: 1px solid transparent; transition: 0.3s;">Facebook</a>
+    <footer id="contato">
+        <div class="footer-content">
+            <h3>Dra. Aisha Wenzinger</h3>
+            <p>Geriatria e Clínica Médica</p>
+            
+            <div class="social-icons">
+                <a href="https://www.instagram.com/aisha_wenzinger" target="_blank"><img src="img/instagram.png" alt="Instagram"></a>
+                <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank"><img src="img/facebook.png" alt="Facebook"></a>
+                <a href="https://wa.me/5571981233912" target="_blank"><img src="img/whatsapp.png" alt="WhatsApp"></a>
+            </div>
+            
+            <div class="contact-info">
+                <p>Email: contato@draaisha.com.br</p>
+                <p class="crm-info">CRM/BA: 20473 | RQE: 19692</p>
+            </div>
         </div>
-        
-        <div style="border-top: 1px solid rgba(255,255,255,0.1); margin-top: 30px; padding-top: 20px;">
-            <p class="crm-info" style="font-size: 0.85rem; opacity: 0.7;">Dra. Aishá Wenzinger | CRM/BA:
+        <div class="footer-bottom">
+            <p>Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
+        </div>
+    </footer>
+
+    <script>
+        const hamburgerButton = document.getElementById('hamburger-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        hamburgerButton.addEventListener('click', () => {
+            hamburgerButton.classList.toggle('is-active');
+            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
+            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
+            mobileMenu.classList.toggle('is-active');
+        });
+    </script>
+</body>
+</html>
