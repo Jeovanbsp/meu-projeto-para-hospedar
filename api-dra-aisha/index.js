@@ -1,5 +1,3 @@
-// Arquivo: api-dra-aisha/index.js (Versão Corrigida para Conexão)
-
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -17,8 +15,7 @@ const adminMiddleware = require('./middleware/adminMiddleware');
 
 const app = express();
 
-// --- CORREÇÃO DO CORS (LIBERANDO ACESSO) ---
-// Isso permite que seu site na Vercel acesse o Render sem bloqueio
+// CORREÇÃO CORS (Libera acesso total)
 app.use(cors()); 
 app.use(express.json());
 
@@ -31,12 +28,12 @@ mongoose.set('strictQuery', false);
 if (!MONGODB_URI) console.error("❌ ERRO: MONGODB_URI ausente no .env");
 
 mongoose.connect(MONGODB_URI)
-  .then(() => { console.log('✅ MongoDB Conectado!'); app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`)); })
+  .then(() => { console.log('✅ MongoDB Conectado!'); app.listen(PORT, () => console.log(`🚀 Servidor na porta ${PORT}`)); })
   .catch((err) => console.error('❌ Erro Mongo:', err.message));
 
-app.get('/', (req, res) => res.json({ message: 'API Online e Funcionando!' }));
+app.get('/', (req, res) => res.json({ message: 'API Online' }));
 
-// --- ROTAS DE AUTENTICAÇÃO ---
+// --- AUTH ---
 app.post('/auth/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
@@ -68,7 +65,7 @@ app.get('/api/public-prontuario/:userId', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// --- ROTAS PACIENTE ---
+// --- PACIENTE ---
 app.get('/api/prontuario', authMiddleware, async (req, res) => {
   try {
     let prontuario = await Prontuario.findOne({ user: req.user.userId });
@@ -80,24 +77,18 @@ app.get('/api/prontuario', authMiddleware, async (req, res) => {
 app.post('/api/prontuario', authMiddleware, async (req, res) => {
   const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
   try {
-    const dados = { 
-        user: req.user.userId, 
-        termoAceite,
-        nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes 
-    };
+    const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes };
     const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
     res.status(200).json({ message: 'Salvo!', prontuario: p });
   } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
 });
 
-// --- ROTAS ADMIN (ESSENCIAIS PARA A LISTA) ---
+// --- ADMIN ---
 
-// 1. LISTAR PACIENTES (A ROTA QUE ESTAVA FALTANDO OU BLOQUEADA)
+// LISTAR
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
-        
-        // Cruzamento de dados para ver o Termo
         const listaCompleta = await Promise.all(usuarios.map(async (u) => {
             const prontuario = await Prontuario.findOne({ user: u._id }).select('termoAceite');
             return {
@@ -108,37 +99,43 @@ app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res
                 termoAceite: prontuario ? prontuario.termoAceite : false
             };
         }));
-
         res.status(200).json(listaCompleta);
-    } catch (error) {
-        console.error("Erro na rota admin/pacientes:", error);
-        res.status(500).json({ message: 'Erro ao listar pacientes.' });
-    }
+    } catch (error) { res.status(500).json({ message: 'Erro ao listar.' }); }
 });
 
-// 2. DELETAR PACIENTE
+// DELETAR
 app.delete('/api/admin/paciente/:id', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         await User.findByIdAndDelete(id);
         await Prontuario.findOneAndDelete({ user: id });
-        res.status(200).json({ message: 'Paciente deletado.' });
+        res.status(200).json({ message: 'Deletado.' });
     } catch (error) { res.status(500).json({ message: 'Erro ao deletar.' }); }
 });
 
-// 3. GET/POST PRONTUÁRIO PELO ADMIN
+// LER PRONTUÁRIO (SYNC)
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
+    // Busca pelo ID DO USUÁRIO (que vem da lista) e não ID do prontuário
     const p = await Prontuario.findOne({ user: req.params.userId });
+    
     if (!p) {
+        // Se não existir, retorna vazio mas com o nome do user
         const u = await User.findById(req.params.userId);
-        if(!u) return res.status(404).json({message:'User nulo'});
-        return res.status(200).json({ user: req.params.userId, nomePaciente: u.nome, evolucoes: [] });
+        if(!u) return res.status(404).json({message:'Usuário não encontrado'});
+        return res.status(200).json({ 
+            user: req.params.userId, 
+            nomePaciente: u.nome, 
+            medicosAssistentes: [], 
+            medicacoes: [], 
+            evolucoes: [] 
+        });
     }
     res.status(200).json(p);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+  } catch (error) { res.status(500).json({ message: 'Erro ao ler.' }); }
 });
 
+// SALVAR PRONTUÁRIO (ADMIN)
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { nomePaciente, idade, patologias, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
