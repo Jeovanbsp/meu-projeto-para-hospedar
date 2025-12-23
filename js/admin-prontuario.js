@@ -1,16 +1,11 @@
-// Arquivo: js/admin-prontuario.js (Versão Sincronizada)
-
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
   const API_ADMIN_BASE = 'https://aishageriatria.onrender.com/api/admin/prontuario/';
-  
-  // Pega o ID da URL (Ex: admin-prontuario.html?id=12345)
   const pacienteId = new URLSearchParams(window.location.search).get('id');
 
   if (!token || role !== 'admin' || !pacienteId) { localStorage.clear(); window.location.href = 'login.html'; return; }
 
-  // Seletores
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const patologiasInput = document.getElementById('patologias');
@@ -40,13 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const tituloEdicao = document.getElementById('titulo-edicao');
   const badgeTermo = document.getElementById('badge-termo-status');
 
-  // Variáveis Globais de Estado
-  let currentMedicacoes = []; 
-  let currentMedicos = []; 
-  let currentEvolucoes = []; 
+  let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; 
   let currentTermoAceite = false; 
-  let editingEvolucaoId = null; 
-  
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() {
@@ -64,34 +54,18 @@ document.addEventListener('DOMContentLoaded', () => {
       else secaoTurnos.style.display = 'none';
   });
 
-  // --- BUSCAR DADOS DO BACKEND ---
   const fetchProntuario = async () => {
     try {
       const response = await fetch(API_ADMIN_BASE + pacienteId, { headers: { 'Authorization': `Bearer ${token}` } });
       if (!response.ok) throw new Error('Erro ao buscar dados.');
       
       const data = await response.json();
-      
-      // 1. Atualizar Título
       tituloEdicao.innerText = `Editando: ${data.nomePaciente || 'Novo Paciente'}`;
-      
-      // 2. Preencher Inputs
       populateForm(data); 
-      
-      // 3. Carregar Listas nas Variáveis Globais
-      currentMedicacoes = data.medicacoes || []; 
-      currentMedicos = data.medicosAssistentes || []; 
-      currentEvolucoes = data.evolucoes || []; 
-      
-      // 4. FORÇAR RENDERIZAÇÃO NA TELA
-      renderTabelaMedicacoes(); 
-      renderMedicosList(); 
-      renderEvolucoes();
-
-    } catch (error) { 
-        console.error(error); 
-        alert("Erro ao carregar prontuário.");
-    }
+      currentMedicacoes = data.medicacoes || []; renderTabelaMedicacoes(); 
+      currentMedicos = data.medicosAssistentes || []; renderMedicosList(); 
+      currentEvolucoes = data.evolucoes || []; renderEvolucoes();
+    } catch (error) { console.error(error); alert("Erro ao carregar prontuário."); }
   };
 
   const populateForm = (data) => {
@@ -99,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     idadeInput.value = data.idade || '';
     patologiasInput.value = data.patologias || '';
     
-    // Status do Termo
     currentTermoAceite = data.termoAceite || false;
     if (currentTermoAceite) {
         badgeTermo.innerText = "✅ TERMO ACEITO";
@@ -109,18 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
         badgeTermo.className = "badge-termo pendente";
     }
 
-    // Alergias
-    if (data.alergias && data.alergias.temAlergia) { 
-        radioAlergiaSim.checked = true; 
-        inputAlergiasQuais.value = data.alergias.quais || ''; 
-    } else { 
-        radioAlergiaNao.checked = true; 
-        inputAlergiasQuais.value = ''; 
-    }
+    if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
+    else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
     toggleAlergiaInput();
   };
 
-  // --- RENDERIZAR MÉDICOS ---
   const renderMedicosList = () => {
     listaMedicosPills.innerHTML = ''; 
     if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; }
@@ -137,50 +103,31 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
-  // --- RENDERIZAR MEDICAÇÕES ---
   const renderTabelaMedicacoes = () => {
     listaMedicacoesBody.innerHTML = ''; 
     if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação.</td></tr>'; return; }
-    
-    // Ordenar
     const list = [...currentMedicacoes].sort((a, b) => {
         const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59';
         const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59';
         return horaA.localeCompare(horaB);
     });
-
     list.forEach((med) => { 
       let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } }
       if (!turnosHtml) turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>';
-      
       const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>';
       const qtdDisplay = med.quantidade ? med.quantidade : '-';
-
-      const row = `<tr>
-        <td style="font-weight:500;">${med.nome}</td>
-        <td class="col-qtd">${qtdDisplay}</td>
-        <td>${turnosHtml}</td>
-        <td class="col-horario">${horarioDisplay}</td>
-        <td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td>
-      </tr>`;
+      const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`;
       listaMedicacoesBody.insertAdjacentHTML('beforeend', row);
     });
   };
 
   const handleAddMedicacao = (e) => { 
-      e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
-      const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
-      currentMedicacoes.push({ 
-          nome: nomeMedicacaoInput.value, 
-          quantidade: qtdMedicacaoInput.value, 
-          horarioEspecifico: horarioEspecificoInput.value, 
-          horarios: horarios 
-      }); 
+      e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
+      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
       renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none';
   };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
-  // --- EVOLUÇÕES & SALVAR ---
   const renderEvolucoes = () => {
     listaEvolucoesDiv.innerHTML = '';
     if (!currentEvolucoes || currentEvolucoes.length === 0) { listaEvolucoesDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</p>'; return; }
@@ -191,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
       listaEvolucoesDiv.insertAdjacentHTML('beforeend', itemHtml);
     });
   };
+  
   window.toggleEvolucao = (id) => { const body = document.getElementById(`body-${id}`); const icon = document.getElementById(`icon-${id}`); if (body.classList.contains('hidden')) { body.classList.remove('hidden'); icon.style.transform = 'rotate(180deg)'; } else { body.classList.add('hidden'); icon.style.transform = 'rotate(0deg)'; } };
   window.startEditEvolucao = (id) => { const evo = currentEvolucoes.find(e => e._id === id); if (!evo) return; tituloEvolucaoInput.value = evo.titulo || ''; textoEvolucaoInput.value = evo.texto; editingEvolucaoId = id; btnAddEvolucao.innerText = 'Salvar Alteração'; btnAddEvolucao.style.backgroundColor = '#FFB74D'; tituloEvolucaoInput.focus(); };
   window.deleteEvolucao = async (id) => { if (!confirm('Excluir?')) return; try { const response = await fetch(`${API_ADMIN_BASE}${pacienteId}/evolucao/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } }); if (response.ok) { const data = await response.json(); currentEvolucoes = data.prontuario.evolucoes; renderEvolucoes(); } } catch (err) { alert('Erro.'); } };
@@ -202,15 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       await fetch(API_ADMIN_BASE + pacienteId, {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ 
-            nomePaciente: nomePacienteInput.value, 
-            idade: idadeInput.value, 
-            patologias: patologiasInput.value, 
-            alergias: dadosAlergia, 
-            medicosAssistentes: currentMedicos, 
-            medicacoes: currentMedicacoes,
-            termoAceite: currentTermoAceite // Envia o termo atual
-        })
+        body: JSON.stringify({ nomePaciente: nomePacienteInput.value, idade: idadeInput.value, patologias: patologiasInput.value, alergias: dadosAlergia, medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes, termoAceite: currentTermoAceite })
       });
       alert('Dados salvos!');
     } catch(err) { console.error(err); }
