@@ -1,125 +1,267 @@
-// Arquivo: js/admin-dashboard.js (Completo)
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
-    const role = localStorage.getItem('userRole');
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Dra. Aisha</title>
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     
-    // URL da API (Verifique se está usando a URL correta do Render)
-    const API_URL = 'https://aishageriatria.onrender.com/api/admin/pacientes';
-    const API_DELETE_URL = 'https://aishageriatria.onrender.com/api/admin/paciente/';
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    if (!token || role !== 'admin') {
-        localStorage.clear();
-        window.location.href = 'login.html';
-        return;
-    }
+    <style>
+        body { background-color: #f4f6f8; }
+        .dashboard-container { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Gráfico 1/3, Lista 2/3 */
+            gap: 30px;
+        }
 
-    const listaBody = document.getElementById('lista-pacientes-body');
-    const totalSpan = document.getElementById('total-pacientes');
+        /* CARD DO GRÁFICO */
+        .card-grafico {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
 
-    // Função de Busca
-    const fetchPacientes = async () => {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+        /* CARD DA LISTA DE PACIENTES */
+        .card-lista {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .header-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
+        .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
+
+        /* ESTILO DA LISTA (Retornado ao Layout Anterior) */
+        .lista-pacientes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .paciente-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        .paciente-item:last-child { border-bottom: none; }
+        .paciente-item:hover { background-color: #f9f9f9; }
+        
+        .info-paciente strong { display: block; color: #333; font-size: 1rem; }
+        .info-paciente span { display: block; color: #888; font-size: 0.85rem; }
+        .acoes-paciente { display: flex; gap: 10px; }
+        
+        .btn-editar {
+            background-color: #2ADCA1; color: white; border: none; padding: 6px 12px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.85rem;
+        }
+        .btn-excluir {
+            background-color: #ef5350; color: white; border: none; padding: 6px 12px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85rem;
+        }
+
+        #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+        @media (max-width: 800px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="novo-header">
+        <div class="header-container" style="justify-content: space-between;">
+            <a href="#" class="logo">
+                <img src="img/layout.png" alt="Logo" style="height: 40px;">
+            </a>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span style="color: #2ADCA1; font-weight: bold;">Painel Administrativo</span>
+                <button id="btn-logout">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        
+        <h2 class="titulo-secao">Visão Geral</h2>
+
+        <div class="dashboard-grid">
+            
+            <div class="card-grafico">
+                <div class="header-card">
+                    <h3>Idade dos Pacientes</h3>
+                    <span class="total-badge" id="texto-total">Carregando...</span>
+                </div>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="graficoIdades"></canvas>
+                </div>
+            </div>
+
+            <div class="card-lista">
+                <div class="header-card">
+                    <h3>Pacientes Cadastrados</h3>
+                    <button onclick="carregarLista()" style="background:none; border:none; color:#2ADCA1; cursor:pointer;">↻ Atualizar</button>
+                </div>
+                
+                <ul id="lista-pacientes" class="lista-pacientes">
+                    <li style="text-align:center; padding: 20px; color:#999;">Carregando lista...</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        // CONFIGURAÇÃO DA API
+        const API_URL_BASE = 'https://aishageriatria.onrender.com'; 
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            const role = localStorage.getItem('userRole');
+            
+            if (!token || role !== 'admin') {
+                localStorage.clear();
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('btn-logout').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'login.html';
             });
 
-            if (!response.ok) {
-                if (response.status === 401) {
-                    alert('Sessão expirada. Faça login novamente.');
-                    window.location.href = 'login.html';
+            // INICIA CARREGAMENTOS
+            carregarGrafico(token);
+            carregarLista(token);
+        });
+
+        // --- FUNÇÃO 1: CARREGAR GRÁFICO ---
+        async function carregarGrafico(token) {
+            try {
+                const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                document.getElementById('texto-total').innerText = `Total: ${data.total}`;
+
+                const ctx = document.getElementById('graficoIdades').getContext('2d');
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Até 50', '51-60', '61-70', '71-80', '81-90', '> 90', 'N/I'],
+                        datasets: [{
+                            data: [
+                                data.grupos.Ate50, data.grupos.De51a60, data.grupos.De61a70,
+                                data.grupos.De71a80, data.grupos.De81a90, data.grupos.Maior90,
+                                data.grupos.NaoInformado
+                            ],
+                            backgroundColor: ['#B0BEC5', '#90CAF9', '#9575CD', '#00E676', '#FF8A65', '#607D8B', '#E1BEE7'],
+                            borderWidth: 2, borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } }
+                    }
+                });
+            } catch (error) {
+                console.error("Erro gráfico:", error);
+                document.getElementById('texto-total').innerText = "Erro.";
+            }
+        }
+
+        // --- FUNÇÃO 2: CARREGAR LISTA (LAYOUT ANTERIOR) ---
+        async function carregarLista(token = localStorage.getItem('authToken')) {
+            const listaUl = document.getElementById('lista-pacientes');
+            listaUl.innerHTML = '<li style="text-align:center; padding: 20px; color:#999;">Carregando...</li>';
+
+            try {
+                const response = await fetch(`${API_URL_BASE}/api/admin/pacientes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Erro ao buscar lista');
+                
+                const pacientes = await response.json();
+                listaUl.innerHTML = '';
+
+                if (pacientes.length === 0) {
+                    listaUl.innerHTML = '<li style="padding:15px; text-align:center;">Nenhum paciente encontrado.</li>';
                     return;
                 }
-                throw new Error(`Erro do servidor: ${response.status}`);
-            }
 
-            const pacientes = await response.json();
-            renderTabela(pacientes);
+                pacientes.forEach(p => {
+                    const li = document.createElement('li');
+                    li.className = 'paciente-item';
+                    
+                    // Verifica status do termo
+                    const statusTermo = p.termoAceite ? 
+                        '<span style="color:green; font-size:0.75rem;">✔ Termo Aceito</span>' : 
+                        '<span style="color:orange; font-size:0.75rem;">⏳ Pendente</span>';
 
-        } catch (error) {
-            console.error("Erro no fetch:", error);
-            if (listaBody) {
-                listaBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#e74c3c; padding:20px; font-weight:bold;">
-                    Erro ao conectar com o servidor.<br>
-                    <small style="color:#555; font-weight:normal;">Verifique se o backend no Render foi atualizado e reiniciado.</small>
-                </td></tr>`;
+                    li.innerHTML = `
+                        <div class="info-paciente">
+                            <strong>${p.nome}</strong>
+                            <span>${p.email}</span>
+                            ${statusTermo}
+                        </div>
+                        <div class="acoes-paciente">
+                            <a href="admin-prontuario.html?id=${p._id}" class="btn-editar">Editar</a>
+                            <button onclick="deletarPaciente('${p._id}')" class="btn-excluir">Excluir</button>
+                        </div>
+                    `;
+                    listaUl.appendChild(li);
+                });
+
+            } catch (error) {
+                console.error(error);
+                listaUl.innerHTML = '<li style="color:red; text-align:center; padding:15px;">Erro ao carregar lista. Verifique a conexão.</li>';
             }
         }
-    };
 
-    // Função de Renderização
-    const renderTabela = (pacientes) => {
-        if (!listaBody) return;
-        
-        listaBody.innerHTML = ''; 
-        if (totalSpan) totalSpan.innerText = pacientes.length;
-
-        if (pacientes.length === 0) {
-            listaBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:#777;">Nenhum paciente cadastrado.</td></tr>';
-            return;
-        }
-
-        pacientes.forEach(p => {
-            const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
+        // --- FUNÇÃO 3: DELETAR PACIENTE ---
+        async function deletarPaciente(id) {
+            if (!confirm('Tem certeza que deseja excluir este paciente e todo o prontuário dele?')) return;
             
-            // Badge Status Termo
-            let statusHtml = '';
-            if (p.termoAceite === true) {
-                statusHtml = '<span class="status-badge status-ok">✅ Aceito</span>';
-            } else {
-                statusHtml = '<span class="status-badge status-pendente">⚠️ Pendente</span>';
+            const token = localStorage.getItem('authToken');
+            try {
+                const res = await fetch(`${API_URL_BASE}/api/admin/paciente/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    alert('Paciente excluído.');
+                    carregarLista(token); // Recarrega a lista
+                    carregarGrafico(token); // Atualiza o gráfico
+                } else {
+                    alert('Erro ao excluir.');
+                }
+            } catch (err) {
+                alert('Erro de conexão.');
             }
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="font-weight:600; color:#2c3e50;">${p.nome}</td>
-                <td>${p.email}</td>
-                <td style="text-align:center;">${statusHtml}</td>
-                <td>${dataCriacao}</td>
-                <td style="text-align: center;">
-                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Editar Prontuário">
-                        📋 Prontuário
-                    </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir Paciente">
-                        🗑️
-                    </button>
-                </td>
-            `;
-            listaBody.appendChild(tr);
-        });
-    };
-
-    // Funções Globais
-    window.irParaProntuario = (id) => {
-        window.location.href = `admin-prontuario.html?id=${id}`;
-    };
-
-    window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`ATENÇÃO:\nTem certeza que deseja excluir o paciente "${nome}"?\n\nIsso apagará o login e todos os dados do prontuário permanentemente.`)) {
-            return;
         }
-
-        try {
-            const response = await fetch(API_DELETE_URL + id, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                alert('Paciente excluído com sucesso!');
-                fetchPacientes(); 
-            } else {
-                alert('Erro ao excluir.');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Erro de conexão ao tentar excluir.');
-        }
-    };
-
-    fetchPacientes();
-});
+    </script>
+</body>
+</html>

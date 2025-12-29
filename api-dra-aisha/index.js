@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); 
 
 const User = require('./models/User');
-const Prontuario = require('./models/Prontuario'); // Certifique-se que o modelo está importado
+const Prontuario = require('./models/Prontuario');
 const authMiddleware = require('./middleware/authMiddleware');
 const adminMiddleware = require('./middleware/adminMiddleware'); 
 
@@ -29,7 +29,7 @@ mongoose.connect(MONGODB_URI)
 
 app.get('/', (req, res) => res.json({ message: 'API Online' }));
 
-// --- ROTAS DE AUTENTICAÇÃO ---
+// --- AUTH ---
 app.post('/auth/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
@@ -52,12 +52,9 @@ app.post('/auth/login', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// ==========================================================
-// ⚠️ ROTA DO GRÁFICO (ESSENCIAL PARA O ERRO SUMIR) ⚠️
-// ==========================================================
+// --- ROTA DE ESTATÍSTICAS (GRÁFICO) ---
 app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        // Busca apenas o campo 'idade' de todos os prontuários para ser rápido
         const prontuarios = await Prontuario.find({}, 'idade');
         
         const grupos = {
@@ -83,58 +80,41 @@ app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, 
 
         res.status(200).json({ grupos, total });
     } catch (error) {
-        console.error("Erro estatisticas:", error);
-        res.status(500).json({ message: 'Erro ao calcular estatísticas.' });
+        res.status(500).json({ message: 'Erro estatisticas.' });
     }
 });
-// ==========================================================
 
-// Rota Pública (QR Code)
-app.get('/api/public-prontuario/:userId', async (req, res) => {
-  try {
-    const prontuario = await Prontuario.findOne({ user: req.params.userId });
-    if (!prontuario) return res.status(404).json({ message: 'Não encontrado.' });
-    res.status(200).json(prontuario);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-// Rotas do Paciente
-app.get('/api/prontuario', authMiddleware, async (req, res) => {
-  try {
-    let prontuario = await Prontuario.findOne({ user: req.user.userId });
-    if (!prontuario) { prontuario = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await prontuario.save(); }
-    res.status(200).json(prontuario);
-  } catch (error) { res.status(500).json({ message: 'Erro.' }); }
-});
-
-app.post('/api/prontuario', authMiddleware, async (req, res) => {
-  const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
-  try {
-    const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes };
-    const p = await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true });
-    res.status(200).json({ message: 'Salvo!', prontuario: p });
-  } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
-});
-
-// Rotas do Admin (CRUD)
+// --- ROTA LISTA DE PACIENTES (ADMIN) ---
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
     try {
+        // Busca usuários que NÃO são admin
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
+        
         const listaCompleta = await Promise.all(usuarios.map(async (u) => {
             const prontuario = await Prontuario.findOne({ user: u._id }).select('termoAceite');
-            return { _id: u._id, nome: u.nome, email: u.email, createdAt: u.createdAt, termoAceite: prontuario ? prontuario.termoAceite : false };
+            return { 
+                _id: u._id, 
+                nome: u.nome, 
+                email: u.email, 
+                createdAt: u.createdAt, 
+                termoAceite: prontuario ? prontuario.termoAceite : false 
+            };
         }));
+        
         res.status(200).json(listaCompleta);
     } catch (error) { res.status(500).json({ message: 'Erro ao listar.' }); }
 });
 
 app.delete('/api/admin/paciente/:id', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        const { id } = req.params; await User.findByIdAndDelete(id); await Prontuario.findOneAndDelete({ user: id });
+        const { id } = req.params; 
+        await User.findByIdAndDelete(id); 
+        await Prontuario.findOneAndDelete({ user: id });
         res.status(200).json({ message: 'Deletado.' });
     } catch (error) { res.status(500).json({ message: 'Erro ao deletar.' }); }
 });
 
+// --- ROTAS DO PRONTUÁRIO ---
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const p = await Prontuario.findOne({ user: req.params.userId });
@@ -156,6 +136,7 @@ app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
+// Evoluções
 app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
     try { const { titulo, texto } = req.body; const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true }); res.status(200).json({ message: 'Salvo', prontuario: p }); } catch(e) { res.status(500).json({message: 'Erro'}); }
 });
@@ -165,3 +146,8 @@ app.delete('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, admi
 app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req, res) => {
     try { const {titulo, texto} = req.body; const p = await Prontuario.findOne({user: req.params.userId}); const evo = p.evolucoes.id(req.params.evoId); evo.titulo = titulo; evo.texto = texto; await p.save(); res.status(200).json({message: 'Editado', prontuario: p}); } catch(e){ res.status(500).json({message: 'Erro'}); }
 });
+
+// Rota Pública e Paciente
+app.get('/api/public-prontuario/:userId', async (req, res) => { try { const p = await Prontuario.findOne({ user: req.params.userId }); if (!p) return res.status(404).json({ message: 'Não encontrado.' }); res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
+app.get('/api/prontuario', authMiddleware, async (req, res) => { try { let p = await Prontuario.findOne({ user: req.user.userId }); if (!p) { p = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await p.save(); } res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
+app.post('/api/prontuario', authMiddleware, async (req, res) => { const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body; try { const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes }; await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true }); res.status(200).json({ message: 'Salvo!' }); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
