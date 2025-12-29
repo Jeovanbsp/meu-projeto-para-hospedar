@@ -7,8 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/prontuario.css"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body { background-color: #f4f6f8; }
@@ -17,85 +16,32 @@
         
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr; /* Gráfico (1 parte) | Lista (2 partes) */
+            grid-template-columns: 1fr 2fr;
             gap: 30px;
         }
 
-        /* CARD DO GRÁFICO */
         .card-grafico {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
+            background: #fff; padding: 30px; border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            height: fit-content;
+            display: flex; flex-direction: column; height: fit-content;
         }
 
-        /* CARD DA LISTA DE PACIENTES (ESTILO DA LISTA) */
         .card-lista {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
+            background: #fff; padding: 30px; border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
         }
 
-        .header-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
         .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
-
-        /* ESTILO DA LISTA (RESTAURADO) */
-        .lista-pacientes {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .paciente-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            transition: background 0.2s;
-        }
-        .paciente-item:last-child { border-bottom: none; }
-        .paciente-item:hover { background-color: #f9f9f9; }
-        
-        .info-paciente strong { display: block; color: #333; font-size: 1rem; }
-        .info-paciente span { display: block; color: #888; font-size: 0.85rem; }
-        .acoes-paciente { display: flex; gap: 10px; }
-        
-        .btn-editar {
-            background-color: #2ADCA1; color: white; border: none; padding: 6px 12px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.85rem;
-        }
-        .btn-editar:hover { background-color: #24b685; }
-
-        .btn-excluir {
-            background-color: #ef5350; color: white; border: none; padding: 6px 12px;
-            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85rem;
-        }
-        .btn-excluir:hover { background-color: #d32f2f; }
-
         #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
-
-        @media (max-width: 800px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-        }
     </style>
 </head>
 <body>
 
     <header class="novo-header">
         <div class="header-container" style="justify-content: space-between;">
-            <a href="#" class="logo">
-                <img src="img/layout.png" alt="Logo" style="height: 40px;">
-            </a>
+            <a href="#" class="logo"><img src="img/layout.png" alt="Logo" style="height: 40px;"></a>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <span style="color: #2ADCA1; font-weight: bold;">Painel Administrativo</span>
                 <button id="btn-logout">Sair</button>
@@ -104,7 +50,6 @@
     </header>
 
     <main class="dashboard-container">
-        
         <h2 class="titulo-secao">Visão Geral</h2>
 
         <div class="dashboard-grid">
@@ -131,46 +76,34 @@
             </div>
 
         </div>
-
     </main>
 
     <script>
-        // Use a URL do seu servidor (Render) ou localhost para testes
         const API_URL_BASE = 'https://aishageriatria.onrender.com'; 
 
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('authToken');
             const role = localStorage.getItem('userRole');
             
-            if (!token || role !== 'admin') {
-                localStorage.clear();
-                window.location.href = 'login.html';
-                return;
-            }
+            if (!token || role !== 'admin') { localStorage.clear(); window.location.href = 'login.html'; return; }
 
             document.getElementById('btn-logout').addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = 'login.html';
+                localStorage.clear(); window.location.href = 'login.html';
             });
 
-            // Carrega tudo ao iniciar
             carregarGrafico(token);
             carregarLista(token);
         });
 
-        // --- FUNÇÃO 1: CARREGAR GRÁFICO ---
         async function carregarGrafico(token) {
             try {
                 const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();
-
                 document.getElementById('texto-total').innerText = `Total: ${data.total}`;
 
                 const ctx = document.getElementById('graficoIdades').getContext('2d');
-                
-                // Se já existir gráfico, destrói para criar novo (evita bug de sobreposição)
                 if (window.meuGrafico) window.meuGrafico.destroy();
 
                 window.meuGrafico = new Chart(ctx, {
@@ -178,27 +111,16 @@
                     data: {
                         labels: ['Até 50', '51-60', '61-70', '71-80', '81-90', '> 90', 'N/I'],
                         datasets: [{
-                            data: [
-                                data.grupos.Ate50, data.grupos.De51a60, data.grupos.De61a70,
-                                data.grupos.De71a80, data.grupos.De81a90, data.grupos.Maior90,
-                                data.grupos.NaoInformado
-                            ],
+                            data: [data.grupos.Ate50, data.grupos.De51a60, data.grupos.De61a70, data.grupos.De71a80, data.grupos.De81a90, data.grupos.Maior90, data.grupos.NaoInformado],
                             backgroundColor: ['#B0BEC5', '#90CAF9', '#9575CD', '#00E676', '#FF8A65', '#607D8B', '#E1BEE7'],
                             borderWidth: 2, borderColor: '#ffffff'
                         }]
                     },
-                    options: {
-                        responsive: true, maintainAspectRatio: false,
-                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } } }
                 });
-            } catch (error) {
-                console.error("Erro gráfico:", error);
-                document.getElementById('texto-total').innerText = "Erro.";
-            }
+            } catch (error) { console.error("Erro gráfico:", error); }
         }
 
-        // --- FUNÇÃO 2: CARREGAR LISTA DE PACIENTES ---
         async function carregarLista(token = localStorage.getItem('authToken')) {
             const listaUl = document.getElementById('lista-pacientes');
             listaUl.innerHTML = '<li style="text-align:center; padding: 20px; color:#999;">Carregando...</li>';
@@ -207,9 +129,6 @@
                 const response = await fetch(`${API_URL_BASE}/api/admin/pacientes`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
-                if (!response.ok) throw new Error('Erro ao buscar lista');
-                
                 const pacientes = await response.json();
                 listaUl.innerHTML = '';
 
@@ -239,34 +158,19 @@
                     `;
                     listaUl.appendChild(li);
                 });
-
-            } catch (error) {
-                console.error(error);
-                listaUl.innerHTML = '<li style="color:red; text-align:center; padding:15px;">Erro ao carregar lista. Verifique a conexão.</li>';
-            }
+            } catch (error) { listaUl.innerHTML = '<li style="color:red; text-align:center; padding:15px;">Erro ao carregar lista.</li>'; }
         }
 
-        // --- FUNÇÃO 3: DELETAR PACIENTE ---
         async function deletarPaciente(id) {
-            if (!confirm('Tem certeza que deseja excluir este paciente e todo o prontuário dele? Essa ação não pode ser desfeita.')) return;
-            
+            if (!confirm('Excluir paciente? Ação irreversível.')) return;
             const token = localStorage.getItem('authToken');
             try {
                 const res = await fetch(`${API_URL_BASE}/api/admin/paciente/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
+                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
-                if (res.ok) {
-                    alert('Paciente excluído com sucesso.');
-                    carregarLista(token); // Atualiza a lista
-                    carregarGrafico(token); // Atualiza o gráfico
-                } else {
-                    alert('Erro ao excluir.');
-                }
-            } catch (err) {
-                alert('Erro de conexão ao excluir.');
-            }
+                if (res.ok) { alert('Excluído.'); carregarLista(token); carregarGrafico(token); } 
+                else { alert('Erro.'); }
+            } catch (err) { alert('Erro de conexão.'); }
         }
     </script>
 </body>

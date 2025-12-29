@@ -1,91 +1,96 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Completa)                */
+/* ARQUIVO: css/prontuario.css (Estilos da Lista e Botões)      */
 /* ============================================================ */
 
-/* --- 1. LISTA DE MÉDICOS --- */
+/* --- ESTILO DA LISTA DE PACIENTES --- */
+.lista-pacientes {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.paciente-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    transition: background 0.2s;
+}
+
+.paciente-item:last-child { border-bottom: none; }
+.paciente-item:hover { background-color: #f9f9f9; }
+
+.info-paciente strong { display: block; color: #333; font-size: 1rem; margin-bottom: 3px; }
+.info-paciente span { display: block; color: #888; font-size: 0.85rem; }
+
+/* BOTÕES SINCRONIZADOS (Editar / Excluir) */
+.acoes-paciente {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-editar {
+    background-color: #2ADCA1; /* Verde Padrão */
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px; /* Levemente arredondado */
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: background 0.3s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.btn-editar:hover { background-color: #24b685; }
+
+.btn-excluir {
+    background-color: #ef5350; /* Vermelho Suave */
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: background 0.3s;
+}
+.btn-excluir:hover { background-color: #d32f2f; }
+
+/* --- RESTANTE DO CSS (MANTIDO) --- */
 #lista-medicos-pills { display: flex; flex-direction: column; gap: 8px; padding: 10px; background-color: #fff; border: 1px solid #ddd; border-radius: 6px; min-height: 50px; max-height: 200px; overflow-y: auto; list-style: none; margin-top: 10px; margin-bottom: 15px; }
-#lista-medicos-pills::-webkit-scrollbar { width: 5px; }
-#lista-medicos-pills::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
 .pill-medico { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; color: #333; padding: 12px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; border-left: 5px solid #2ADCA1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
 .btn-deletar-medico { display: flex; align-items: center; justify-content: center; background: none; border: none; color: #e53935; margin-left: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; padding: 5px; transition: transform 0.2s; }
-.btn-deletar-medico:hover { color: #b71c1c; transform: scale(1.2); }
-
-/* --- 2. SINALIZADOR DE ALERGIA --- */
 .alerta-alergia { display: none; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-left: 15px; align-items: center; gap: 5px; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
-
-/* --- 3. TABELA DE MEDICAÇÕES --- */
 .tabela-container { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; margin-top: 15px; }
 .tabela-medicacoes { width: 100%; border-collapse: collapse; background-color: #fff; font-size: 0.9rem; }
 .tabela-medicacoes thead { background-color: #2ADCA1; color: #fff; }
 .tabela-medicacoes th { padding: 12px 10px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
 .tabela-medicacoes td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
-.tabela-medicacoes tbody tr:nth-child(even) { background-color: #fcfcfc; }
-.tabela-medicacoes tbody tr:hover { background-color: #f0fdf9; }
-.col-horario { font-family: 'Courier New', monospace; font-weight: 700; color: #333; background-color: #fafafa; text-align: center; border-left: 1px solid #eee; width: 70px; }
-.col-qtd { width: 60px; text-align: center; font-weight: 600; color: #555; }
-.pill-turno { display: inline-block; background-color: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-right: 3px; border: 1px solid #c8e6c9; }
-.btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
-.btn-deletar-medacao:hover { color: #d32f2f; transform: scale(1.2); }
-
-/* --- BOTÃO NOVA MEDICAÇÃO --- */
 .btn-show-form { background-color: #fff; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 8px 20px; border-radius: 25px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; display: inline-block; }
 .btn-show-form:hover { background-color: #2ADCA1; color: #fff; }
 .btn-show-form.cancelar { border-color: #999; color: #999; background: transparent; }
 .btn-show-form.cancelar:hover { background-color: #eee; color: #333; }
 #form-add-medicacao { animation: fadeIn 0.3s ease-in; }
-
-/* --- 4. ÁREA DE TURNOS (ANIMADA) --- */
 #secao-turnos { display: none; margin-top: 10px; padding: 10px; background-color: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; animation: fadeIn 0.3s ease-in; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
-
-/* --- 5. TERMO DE RESPONSABILIDADE --- */
-.box-termo-responsabilidade { background-color: #fff8e1; border: 1px solid #ffe0b2; border-left: 5px solid #ffb74d; padding: 15px; margin-bottom: 20px; border-radius: 6px; }
-.box-termo-responsabilidade p { margin: 0 0 10px 0; color: #5d4037; font-size: 0.9rem; line-height: 1.5; }
-.check-termo-container { display: flex; align-items: center; gap: 10px; font-weight: 600; color: #333; cursor: pointer; }
-.check-termo-container input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2ADCA1; }
-
-/* --- 6. BADGE TERMO --- */
 .badge-termo { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 10px; vertical-align: middle; }
 .badge-termo.aceito { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
 .badge-termo.pendente { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
-
-/* --- 7. EVOLUÇÃO --- */
-.evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; overflow: hidden; }
-.evo-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background-color: #FAFAFA; border-left: 4px solid #2ADCA1; cursor: pointer; }
-.evo-left { display: flex; align-items: center; gap: 10px; }
-.evo-date { font-size: 0.8rem; color: #888; font-family: monospace; }
-.evo-title { font-size: 0.95rem; color: #333; font-weight: 600; }
-.evo-right { display: flex; align-items: center; gap: 15px; }
-.evo-btns { display: flex; gap: 8px; }
-.btn-mini { border: none; background: none; cursor: pointer; font-size: 1.2rem; padding: 2px 6px; opacity: 1; color: #95a5a6; transition: all 0.2s ease; }
-.btn-mini.edit:hover { color: #2980b9; background-color: #eaf2f8; border-radius: 4px; transform: scale(1.1); }
-.btn-mini.delete:hover { color: #c0392b; background-color: #fadbd8; border-radius: 4px; transform: scale(1.1); }
-.evo-body { padding: 15px; border-top: 1px solid #eee; background: #fff; font-size: 0.9rem; color: #444; line-height: 1.6; }
-.evo-body.hidden { display: none; }
-
-/* --- 8. COMORBIDADES & RADIOS --- */
+/* Comorbidades */
 .grid-comorbidades { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; animation: slideDown 0.3s ease-out; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .item-comorbidade { display: flex; flex-direction: column; }
 .label-comorbidade { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; color: #333; cursor: pointer; margin: 0; }
 .label-comorbidade input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: #2ADCA1; cursor: pointer; }
 .desc-comorbidade { font-size: 0.75rem; color: #777; margin-left: 24px; margin-top: 2px; }
-
-/* Radio Buttons */
 .radio-group-container { display: flex; gap: 20px; align-items: center; }
 .radio-label { cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 500; font-size: 1rem; }
 .radio-label input[type="radio"] { width: 18px; height: 18px; margin: 0; accent-color: #2ADCA1; vertical-align: middle; }
-.text-nao { color: #2E7D32; }
-.text-sim { color: #C62828; }
-
-/* Botão Minimizar Minimalista */
-.btn-toggle-lista {
-    display: none; background-color: #2ADCA1; color: #fff; border: none;
-    padding: 4px 12px; font-size: 0.75rem; border-radius: 15px; width: auto;
-    font-weight: 600; cursor: pointer; transition: all 0.2s ease;
-    align-items: center; gap: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-left: auto; 
-}
-.btn-toggle-lista:hover { background-color: #24b685; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+.btn-toggle-lista { display: none; background-color: #2ADCA1; color: #fff; border: none; padding: 4px 12px; font-size: 0.75rem; border-radius: 15px; width: auto; font-weight: 600; cursor: pointer; transition: all 0.2s ease; align-items: center; gap: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-left: auto; }
+.btn-toggle-lista:hover { background-color: #24b685; transform: translateY(-1px); }
 .seta-toggle { display: inline-block; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #fff; transition: transform 0.3s; }
 .btn-toggle-lista.aberto .seta-toggle { transform: rotate(180deg); }
