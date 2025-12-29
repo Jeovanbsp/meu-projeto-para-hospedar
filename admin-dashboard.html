@@ -11,81 +11,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body { background-color: #f4f6f8; } /* Fundo levemente cinza para o painel */
+        body { background-color: #f4f6f8; }
+        .dashboard-container { padding: 40px; max-width: 1200px; margin: 0 auto; }
+        .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
+        .dashboard-grid { display: flex; gap: 30px; flex-wrap: wrap; }
         
-        .dashboard-container {
-            padding: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .card-grafico { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); flex: 1; min-width: 320px; max-width: 450px; display: flex; flex-direction: column; }
+        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
+        .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
 
-        .titulo-secao {
-            color: #555;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-grid {
-            display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        /* CARD DO GRÁFICO */
-        .card-grafico {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            flex: 1;
-            min-width: 320px;
-            max-width: 450px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .header-card h3 {
-            margin: 0;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .total-badge {
-            font-size: 0.9rem;
-            color: #888;
-            font-weight: 400;
-        }
-
-        /* ÁREA DA LISTA DE PACIENTES */
-        .area-lista {
-            flex: 2;
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            min-width: 300px;
-        }
-
-        /* Botão Sair */
-        #btn-logout {
-            background-color: #ff6b6b;
-            border: none;
-            padding: 8px 20px;
-            color: white;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .area-lista { flex: 2; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-width: 300px; }
+        #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -103,7 +40,6 @@
     </header>
 
     <main class="dashboard-container">
-        
         <h2 class="titulo-secao">Geral</h2>
 
         <div class="dashboard-grid">
@@ -123,20 +59,17 @@
                     <h3>Ações Rápidas</h3>
                 </div>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <button onclick="window.location.href='admin-lista.html'" class="btn-agendar" style="flex: 1;">
+                    <button onclick="window.location.href='admin-lista.html'" class="btn-agendar" style="flex: 1; text-align: center;">
                         📂 Ver Lista Completa de Pacientes
                     </button>
-                    </div>
-                
+                </div>
                 <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                
                 <p style="color: #777; font-size: 0.9rem;">
                     Utilize o botão acima para acessar a lista detalhada, editar prontuários e gerenciar cadastros.
                 </p>
             </div>
 
         </div>
-
     </main>
 
     <script>
@@ -144,69 +77,64 @@
             const token = localStorage.getItem('authToken');
             const role = localStorage.getItem('userRole');
             
-            // Proteção de Rota
             if (!token || role !== 'admin') {
                 localStorage.clear();
                 window.location.href = 'login.html';
                 return;
             }
 
-            // Logout
             document.getElementById('btn-logout').addEventListener('click', () => {
                 localStorage.clear();
                 window.location.href = 'login.html';
             });
 
             // CARREGAR DADOS DO GRÁFICO
+            // ⚠️ ATENÇÃO: Se estiver rodando local, mude para http://localhost:3001/api/admin/stats/idades
+            const API_URL = 'https://aishageriatria.onrender.com/api/admin/stats/idades'; 
+
             try {
-                const response = await fetch('https://aishageriatria.onrender.com/api/admin/stats/idades', {
+                const response = await fetch(API_URL, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 
-                if (!response.ok) throw new Error('Falha ao carregar dados');
+                if (!response.ok) {
+                    throw new Error(`Erro API: ${response.status}`);
+                }
                 
                 const data = await response.json();
 
                 // Atualizar Texto Total
                 document.getElementById('texto-total').innerText = `Total geral: ${data.total}`;
 
-                // Configurar Gráfico Chart.js
+                // Configurar Gráfico
                 const ctx = document.getElementById('graficoIdades').getContext('2d');
                 
                 new Chart(ctx, {
                     type: 'pie',
                     data: {
                         labels: [
-                            'Até 50', 
-                            '51 até 60', 
-                            '61 até 70', 
-                            '71 até 80', 
-                            '81 até 90', 
-                            'Maior que 90', 
+                            'Até 50', '51 até 60', '61 até 70', 
+                            '71 até 80', '81 até 90', 'Maior que 90', 
                             'Não informado'
                         ],
                         datasets: [{
                             data: [
-                                data.grupos.Ate50,
-                                data.grupos.De51a60,
-                                data.grupos.De61a70,
-                                data.grupos.De71a80,
-                                data.grupos.De81a90,
-                                data.grupos.Maior90,
+                                data.grupos.Ate50, data.grupos.De51a60, data.grupos.De61a70,
+                                data.grupos.De71a80, data.grupos.De81a90, data.grupos.Maior90,
                                 data.grupos.NaoInformado
                             ],
                             backgroundColor: [
-                                '#B0BEC5', // Cinza (Até 50)
-                                '#90CAF9', // Azul Claro (51-60)
-                                '#9575CD', // Roxo Suave (61-70)
-                                '#00E676', // Verde Neon (71-80) -> DESTAQUE
-                                '#FF8A65', // Laranja Suave (81-90)
-                                '#607D8B', // Azul Acinzentado (>90)
-                                '#E1BEE7'  // Lilás (N/I)
+                                '#B0BEC5', // Até 50
+                                '#90CAF9', // 51-60
+                                '#9575CD', // 61-70
+                                '#00E676', // 71-80 (Verde Destaque)
+                                '#FF8A65', // 81-90
+                                '#607D8B', // >90
+                                '#E1BEE7'  // N/I
                             ],
                             borderWidth: 2,
                             borderColor: '#ffffff',
-                            hoverOffset: 10
+                            hoverOffset: 8
                         }]
                     },
                     options: {
@@ -218,7 +146,7 @@
                                 labels: {
                                     usePointStyle: true,
                                     padding: 20,
-                                    font: { family: "'Montserrat', sans-serif", size: 12 },
+                                    font: { family: "'Montserrat', sans-serif", size: 11 },
                                     color: '#555'
                                 }
                             },
@@ -231,7 +159,8 @@
                                         let label = context.label || '';
                                         if (label) { label += ': '; }
                                         let value = context.raw;
-                                        let percentage = ((value / data.total) * 100).toFixed(1) + '%';
+                                        // Evitar divisão por zero
+                                        let percentage = data.total > 0 ? ((value / data.total) * 100).toFixed(1) + '%' : '0%';
                                         return `${label} ${value} (${percentage})`;
                                     }
                                 }
@@ -241,8 +170,9 @@
                 });
 
             } catch (error) {
-                console.error("Erro:", error);
+                console.error("Erro no gráfico:", error);
                 document.getElementById('texto-total').innerText = "Erro ao carregar.";
+                document.getElementById('texto-total').style.color = "red";
             }
         });
     </script>
