@@ -52,15 +52,14 @@ app.post('/auth/login', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// --- ROTA DE ESTATÍSTICAS (CORRIGIDA) ---
-// Conta apenas prontuários de usuários que ainda existem na tabela User
+// --- ROTA DE ESTATÍSTICAS (CORRIGIDA: REMOVE FANTASMAS) ---
 app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         // 1. Busca IDs de usuários ativos (não admins)
         const activeUsers = await User.find({ role: { $ne: 'admin' } }, '_id');
         const activeUserIds = activeUsers.map(u => u._id);
 
-        // 2. Busca apenas prontuários desses IDs
+        // 2. Busca apenas prontuários que pertencem a esses usuários
         const prontuarios = await Prontuario.find({ user: { $in: activeUserIds } }, 'idade');
         
         const grupos = {
@@ -91,7 +90,7 @@ app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, 
     }
 });
 
-// --- ROTA LISTA DE PACIENTES ---
+// --- LISTA DE PACIENTES ---
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
@@ -118,11 +117,12 @@ app.delete('/api/admin/paciente/:id', authMiddleware, adminMiddleware, async (re
     } catch (error) { res.status(500).json({ message: 'Erro ao deletar.' }); }
 });
 
-// --- CRUD PRONTUÁRIO (Admin e User) ---
+// --- PRONTUÁRIO (GET/POST) ---
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const p = await Prontuario.findOne({ user: req.params.userId });
     if (!p) {
+        // Se não existir prontuário, retorna objeto vazio mas com user ID
         const u = await User.findById(req.params.userId);
         if(!u) return res.status(404).json({message:'User não encontrado'});
         return res.status(200).json({ user: req.params.userId, nomePaciente: u.nome, medicosAssistentes: [], medicacoes: [], evolucoes: [] });
@@ -151,7 +151,7 @@ app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMi
     try { const {titulo, texto} = req.body; const p = await Prontuario.findOne({user: req.params.userId}); const evo = p.evolucoes.id(req.params.evoId); evo.titulo = titulo; evo.texto = texto; await p.save(); res.status(200).json({message: 'Editado', prontuario: p}); } catch(e){ res.status(500).json({message: 'Erro'}); }
 });
 
-// User Routes
+// Rota Pública e Paciente
 app.get('/api/public-prontuario/:userId', async (req, res) => { try { const p = await Prontuario.findOne({ user: req.params.userId }); if (!p) return res.status(404).json({ message: 'Não encontrado.' }); res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.get('/api/prontuario', authMiddleware, async (req, res) => { try { let p = await Prontuario.findOne({ user: req.user.userId }); if (!p) { p = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await p.save(); } res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.post('/api/prontuario', authMiddleware, async (req, res) => { const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body; try { const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes }; await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true }); res.status(200).json({ message: 'Salvo!' }); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });

@@ -20,12 +20,14 @@
             gap: 30px;
         }
 
+        /* CARD GRÁFICO */
         .card-grafico {
             background: #fff; padding: 30px; border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
             display: flex; flex-direction: column; height: fit-content;
         }
 
+        /* CARD LISTA */
         .card-lista {
             background: #fff; padding: 30px; border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
@@ -88,13 +90,15 @@
             if (!token || role !== 'admin') { localStorage.clear(); window.location.href = 'login.html'; return; }
 
             document.getElementById('btn-logout').addEventListener('click', () => {
-                localStorage.clear(); window.location.href = 'login.html';
+                localStorage.clear();
+                window.location.href = 'login.html';
             });
 
             carregarGrafico(token);
             carregarLista(token);
         });
 
+        // GRAFICO
         async function carregarGrafico(token) {
             try {
                 const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, {
@@ -121,6 +125,7 @@
             } catch (error) { console.error("Erro gráfico:", error); }
         }
 
+        // LISTA DE PACIENTES
         async function carregarLista(token = localStorage.getItem('authToken')) {
             const listaUl = document.getElementById('lista-pacientes');
             listaUl.innerHTML = '<li style="text-align:center; padding: 20px; color:#999;">Carregando...</li>';
