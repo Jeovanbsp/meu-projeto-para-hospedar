@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!token || role !== 'admin' || !pacienteId) { localStorage.clear(); window.location.href = 'login.html'; return; }
 
-  // --- SELETORES ---
+  // SELETORES
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
@@ -33,10 +33,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const nomeMedicoInput = document.getElementById('nome-medico');
   const telefoneMedicoInput = document.getElementById('telefone-medico');
-  
   const nomeMedicacaoInput = document.getElementById('nome-medicacao');
   const qtdMedicacaoInput = document.getElementById('qtd-medicacao');
   const horarioEspecificoInput = document.getElementById('horario-especifico'); 
+  const secaoTurnos = document.getElementById('secao-turnos');
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const btnToggleMedForm = document.getElementById('btn-toggle-med-form');
   const formAddMedicacao = document.getElementById('form-add-medicacao');
@@ -44,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const tituloEvolucaoInput = document.getElementById('titulo-evolucao') || createTempTitleInput();
   const textoEvolucaoInput = document.getElementById('texto-evolucao');
   const btnAddEvolucao = document.getElementById('btn-add-evolucao');
-  
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); 
   const tituloEdicao = document.getElementById('titulo-edicao');
   const badgeTermo = document.getElementById('badge-termo-status');
@@ -113,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const renderMedicosList = () => { listaMedicosPills.innerHTML = ''; currentMedicos.forEach((m, i) => { listaMedicosPills.innerHTML += `<li class="pill-medico"><span>${m}</span><button class="btn-deletar-medico" data-index="${i}">✕</button></li>`; }); };
   
-  // --- RENDERIZAR MEDICAÇÃO COM TURNOS CORRETOS ---
   const renderTabelaMedicacoes = () => { 
       listaMedicacoesBody.innerHTML = ''; 
       if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação.</td></tr>'; return; } 
@@ -178,23 +176,21 @@ document.addEventListener('DOMContentLoaded', () => {
   radioComorbidadeNao.addEventListener('change', toggleComorbidades);
   radioComorbidadeSim.addEventListener('change', toggleComorbidades);
   
-  // Toggle Botão Medicação
   if (btnToggleMedForm) { btnToggleMedForm.addEventListener('click', () => { if (formAddMedicacao.style.display === 'none') { formAddMedicacao.style.display = 'block'; btnToggleMedForm.innerText = 'Cancelar'; btnToggleMedForm.classList.add('cancelar'); } else { formAddMedicacao.style.display = 'none'; btnToggleMedForm.innerText = '+ Nova Medicação'; btnToggleMedForm.classList.remove('cancelar'); } }); }
   
   document.getElementById('form-add-medico').addEventListener('submit', (e) => { e.preventDefault(); currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; });
   listaMedicosPills.addEventListener('click', (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); } });
   
-  // ADICIONAR MEDICAÇÃO COM TURNOS (CORRIGIDO)
   document.getElementById('form-add-medicacao').addEventListener('submit', (e) => { 
       e.preventDefault(); 
       const horarios = {}; 
-      checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); // Captura o estado dos checkboxes
+      checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
       
       currentMedicacoes.push({
           nome: nomeMedicacaoInput.value, 
           quantidade: qtdMedicacaoInput.value, 
           horarioEspecifico: horarioEspecificoInput.value, 
-          horarios: horarios // Objeto capturado
+          horarios: horarios 
       }); 
       
       renderTabelaMedicacoes(); 
