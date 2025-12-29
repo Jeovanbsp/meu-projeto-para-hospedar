@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const nomePacienteInput = document.getElementById('nome-paciente');
   const idadeInput = document.getElementById('idade');
+  // MOBILIDADE
+  const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
+
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames'); // EXAMES
   
@@ -38,6 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
   
+  // TOGGLE FORM MEDICAÇÃO
+  const btnToggleMedForm = document.getElementById('btn-toggle-med-form');
+  const formAddMedicacao = document.getElementById('form-add-medicacao');
+
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo');
   const btnDownloadPDF = document.getElementById('btn-download-pdf'); 
   const btnGerarQRCode = document.getElementById('btn-gerar-qrcode');
@@ -60,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (radioComorbidadeSim.checked) { 
           listaComorbidades.style.display = 'block'; 
           btnMinimizarComorbidades.style.display = 'flex'; 
-          // Reset
           listaComorbidades.style.display = 'block';
           btnMinimizarComorbidades.classList.add('aberto');
           if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
@@ -70,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
       } 
   }
   
-  // MINIMIZAR
   if(btnMinimizarComorbidades) {
       btnMinimizarComorbidades.addEventListener('click', () => {
           if (listaComorbidades.style.display === 'none') {
@@ -81,6 +86,21 @@ document.addEventListener('DOMContentLoaded', () => {
               listaComorbidades.style.display = 'none';
               btnMinimizarComorbidades.classList.remove('aberto');
               if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir';
+          }
+      });
+  }
+
+  // TOGGLE MEDICAÇÃO
+  if (btnToggleMedForm) {
+      btnToggleMedForm.addEventListener('click', () => {
+          if (formAddMedicacao.style.display === 'none') {
+              formAddMedicacao.style.display = 'block';
+              btnToggleMedForm.innerText = 'Cancelar Adição';
+              btnToggleMedForm.classList.add('cancelar');
+          } else {
+              formAddMedicacao.style.display = 'none';
+              btnToggleMedForm.innerText = '+ Nova Medicação';
+              btnToggleMedForm.classList.remove('cancelar');
           }
       });
   }
@@ -102,6 +122,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
     idadeInput.value = data.idade || '';
+    
+    // POPULAR MOBILIDADE
+    if (data.mobilidade) {
+        radiosMobilidade.forEach(radio => {
+            if (radio.value === data.mobilidade) radio.checked = true;
+        });
+    } else {
+        radiosMobilidade.forEach(radio => radio.checked = false);
+    }
+
     patologiasInput.value = data.patologias || '';
     examesInput.value = data.exames || '';
 
@@ -134,7 +164,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
 
   const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; } const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); }); list.forEach((med) => { let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } } if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>'; const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; const qtdDisplay = med.quantidade ? med.quantidade : '-'; const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; listaMedicacoesBody.insertAdjacentHTML('beforeend', row); }); };
-  const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; };
+  
+  const handleAddMedicacao = (e) => { 
+      e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
+      const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
+      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
+      renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; 
+      if(formAddMedicacao && btnToggleMedForm) {
+          formAddMedicacao.style.display = 'none';
+          btnToggleMedForm.innerText = '+ Nova Medicação';
+          btnToggleMedForm.classList.remove('cancelar');
+      }
+  };
+  
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
   const handleSalvarTudo = async (e) => {
@@ -142,6 +184,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
     btnSalvarTudo.innerText = 'Salvando...';
     
+    // COLETAR MOBILIDADE
+    let mobilidadeSelecionada = '';
+    const radioMobilidadeChecked = document.querySelector('input[name="mobilidade"]:checked');
+    if (radioMobilidadeChecked) { mobilidadeSelecionada = radioMobilidadeChecked.value; }
+
     // COLETA COMORBIDADES
     const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
     const comorbidadesDados = {
@@ -157,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ 
             nomePaciente: nomePacienteInput.value, 
             idade: idadeInput.value, 
+            mobilidade: mobilidadeSelecionada, // SALVANDO MOBILIDADE
             patologias: patologiasInput.value, 
             exames: examesInput.value,
             comorbidades: comorbidadesDados,

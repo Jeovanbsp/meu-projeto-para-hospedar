@@ -42,6 +42,15 @@
                     <label for="idade">Idade</label>
                     <input type="number" id="idade" required>
                     
+                    <div style="margin-top: 15px; margin-bottom: 20px;">
+                        <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
+                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Independente"> <span style="color: #2E7D32;">Independente</span></label>
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Com Auxílio"> <span style="color: #F57F17;">Com Auxílio</span></label>
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> <span style="color: #C62828;">Dependente</span></label>
+                        </div>
+                    </div>
+
                     <label for="patologias">Patologias</label>
                     <textarea id="patologias"></textarea>
 
@@ -92,6 +101,37 @@
                         </div>
                     </div>
                 </form>
+
+                <div class="gerenciador-medicacao">
+                    <h3>Minhas Medicações</h3>
+                    <button type="button" id="btn-toggle-med-form" class="btn-show-form">+ Nova Medicação</button>
+                    <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
+                        <div class="form-linha-inputs">
+                            <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
+                            <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
+                            <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
+                        </div>
+                        <div id="secao-turnos" style="display: none;">
+                            <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
+                            <div class="checkbox-group">
+                                <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
+                                <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
+                                <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
+                                <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
+                                <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
+                                <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
+                            </div>
+                        </div>
+                        <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar na Lista</button>
+                    </form>
+                    <div class="tabela-container">
+                        <table class="tabela-medicacoes">
+                            <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
+                            <tbody id="lista-medicacoes-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+
                 <div class="gerenciador-medicos">
                     <h3>Médicos Assistentes</h3>
                     <form id="form-add-medico" class="form-add-medico no-print"> 
@@ -103,34 +143,7 @@
                     </form>
                     <ul id="lista-medicos-pills"></ul>
                 </div>
-                <div class="gerenciador-medicacao">
-                    <h3>Minhas Medicações</h3>
-                    <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
-                        <div class="form-linha-inputs">
-                            <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                            <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
-                            <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
-                        </div>
-                        <div id="secao-turnos">
-                            <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
-                                <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
-                                <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
-                                <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
-                                <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
-                                <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
-                            </div>
-                        </div>
-                        <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar</button>
-                    </form>
-                    <div class="tabela-container">
-                        <table class="tabela-medicacoes">
-                            <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
-                            <tbody id="lista-medicacoes-body"></tbody>
-                        </table>
-                    </div>
-                </div>
+
                 <div class="gerenciador-qrcode no-print">
                     <h3>QR Code de Acesso Rápido</h3>
                     <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>

@@ -7,65 +7,243 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <style>
-        body { background-color: #f4f6f8; }
-        .dashboard-container { max-width: 1100px; margin: 40px auto; padding: 20px; }
-        .card-painel { background: white; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); padding: 30px; }
-        .painel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
-        .painel-header h2 { color: #2c3e50; margin: 0; }
-        .tabela-pacientes { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .tabela-pacientes th { background-color: #2ADCA1; color: white; text-align: left; padding: 12px 15px; font-weight: 600; border-radius: 4px 4px 0 0; }
-        .tabela-pacientes td { padding: 12px 15px; border-bottom: 1px solid #eee; color: #555; vertical-align: middle; }
-        .tabela-pacientes tr:hover { background-color: #f9f9f9; }
-        .btn-acao { padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 0.85rem; font-weight: bold; margin-right: 5px; border: none; cursor: pointer; display: inline-block; }
-        .btn-ver { background-color: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
-        .btn-ver:hover { background-color: #BBDEFB; }
-        .btn-excluir { background-color: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
-        .btn-excluir:hover { background-color: #FFCDD2; }
-        .status-badge { padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; display: inline-block; }
-        .status-ok { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-        .status-pendente { background-color: #fff3e0; color: #ef6c00; border: 1px solid #ffe0b2; }
+        body { background-color: #f4f6f8; } /* Fundo levemente cinza para o painel */
+        
+        .dashboard-container {
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .titulo-secao {
+            color: #555;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-grid {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        /* CARD DO GRÁFICO */
+        .card-grafico {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-card h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #333;
+        }
+
+        .total-badge {
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: 400;
+        }
+
+        /* ÁREA DA LISTA DE PACIENTES */
+        .area-lista {
+            flex: 2;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            min-width: 300px;
+        }
+
+        /* Botão Sair */
+        #btn-logout {
+            background-color: #ff6b6b;
+            border: none;
+            padding: 8px 20px;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
+
     <header class="novo-header">
         <div class="header-container" style="justify-content: space-between;">
-            <a href="admin-dashboard.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 40px;"></a>
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-weight: 600; color: #2ADCA1;">Área Administrativa</span>
-                <button id="btn-logout" class="btn-agendar" style="padding: 8px 15px; background: #e74c3c;">Sair</button>
+            <a href="#" class="logo">
+                <img src="img/layout.png" alt="Logo" style="height: 40px;">
+            </a>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <span style="color: #2ADCA1; font-weight: bold;">Painel Administrativo</span>
+                <button id="btn-logout">Sair</button>
             </div>
         </div>
     </header>
+
     <main class="dashboard-container">
-        <div class="card-painel">
-            <div class="painel-header">
-                <h2>Pacientes Cadastrados</h2>
-                <div style="font-size: 0.9rem; color: #777;">Total: <span id="total-pacientes">0</span></div>
+        
+        <h2 class="titulo-secao">Geral</h2>
+
+        <div class="dashboard-grid">
+            
+            <div class="card-grafico">
+                <div class="header-card">
+                    <h3>Pacientes</h3>
+                    <span class="total-badge" id="texto-total">Carregando...</span>
+                </div>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="graficoIdades"></canvas>
+                </div>
             </div>
-            <div style="overflow-x: auto;">
-                <table class="tabela-pacientes">
-                    <thead>
-                        <tr>
-                            <th>Nome do Paciente</th>
-                            <th>E-mail</th>
-                            <th style="text-align:center;">Status Termo</th>
-                            <th>Data Cadastro</th>
-                            <th style="text-align: center;">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lista-pacientes-body">
-                        <tr><td colspan="5" style="text-align:center; padding:20px; color:#888;">Carregando pacientes...</td></tr>
-                    </tbody>
-                </table>
+
+            <div class="area-lista">
+                <div class="header-card">
+                    <h3>Ações Rápidas</h3>
+                </div>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <button onclick="window.location.href='admin-lista.html'" class="btn-agendar" style="flex: 1;">
+                        📂 Ver Lista Completa de Pacientes
+                    </button>
+                    </div>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                
+                <p style="color: #777; font-size: 0.9rem;">
+                    Utilize o botão acima para acessar a lista detalhada, editar prontuários e gerenciar cadastros.
+                </p>
             </div>
+
         </div>
+
     </main>
-    <script src="js/admin-dashboard.js"></script>
+
     <script>
-        document.getElementById('btn-logout').addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            const role = localStorage.getItem('userRole');
+            
+            // Proteção de Rota
+            if (!token || role !== 'admin') {
+                localStorage.clear();
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Logout
+            document.getElementById('btn-logout').addEventListener('click', () => {
+                localStorage.clear();
+                window.location.href = 'login.html';
+            });
+
+            // CARREGAR DADOS DO GRÁFICO
+            try {
+                const response = await fetch('https://aishageriatria.onrender.com/api/admin/stats/idades', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Falha ao carregar dados');
+                
+                const data = await response.json();
+
+                // Atualizar Texto Total
+                document.getElementById('texto-total').innerText = `Total geral: ${data.total}`;
+
+                // Configurar Gráfico Chart.js
+                const ctx = document.getElementById('graficoIdades').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: [
+                            'Até 50', 
+                            '51 até 60', 
+                            '61 até 70', 
+                            '71 até 80', 
+                            '81 até 90', 
+                            'Maior que 90', 
+                            'Não informado'
+                        ],
+                        datasets: [{
+                            data: [
+                                data.grupos.Ate50,
+                                data.grupos.De51a60,
+                                data.grupos.De61a70,
+                                data.grupos.De71a80,
+                                data.grupos.De81a90,
+                                data.grupos.Maior90,
+                                data.grupos.NaoInformado
+                            ],
+                            backgroundColor: [
+                                '#B0BEC5', // Cinza (Até 50)
+                                '#90CAF9', // Azul Claro (51-60)
+                                '#9575CD', // Roxo Suave (61-70)
+                                '#00E676', // Verde Neon (71-80) -> DESTAQUE
+                                '#FF8A65', // Laranja Suave (81-90)
+                                '#607D8B', // Azul Acinzentado (>90)
+                                '#E1BEE7'  // Lilás (N/I)
+                            ],
+                            borderWidth: 2,
+                            borderColor: '#ffffff',
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20,
+                                    font: { family: "'Montserrat', sans-serif", size: 12 },
+                                    color: '#555'
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0,0,0,0.8)',
+                                padding: 12,
+                                bodyFont: { size: 13 },
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) { label += ': '; }
+                                        let value = context.raw;
+                                        let percentage = ((value / data.total) * 100).toFixed(1) + '%';
+                                        return `${label} ${value} (${percentage})`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error("Erro:", error);
+                document.getElementById('texto-total').innerText = "Erro ao carregar.";
+            }
         });
     </script>
 </body>
