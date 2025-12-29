@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const badgeTermo = document.getElementById('badge-termo-status');
 
   let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; let currentTermoAceite = false; 
-  
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
@@ -175,25 +174,11 @@ document.addEventListener('DOMContentLoaded', () => {
   radioComorbidadeNao.addEventListener('change', toggleComorbidades);
   radioComorbidadeSim.addEventListener('change', toggleComorbidades);
   
-  // TOGGLE FORM
-  if (btnToggleMedForm) { 
-      btnToggleMedForm.addEventListener('click', () => { 
-          if (formAddMedicacao.style.display === 'none') { 
-              formAddMedicacao.style.display = 'block'; 
-              btnToggleMedForm.innerText = 'Cancelar'; 
-              btnToggleMedForm.classList.add('cancelar'); 
-          } else { 
-              formAddMedicacao.style.display = 'none'; 
-              btnToggleMedForm.innerText = '+ Nova Medicação'; 
-              btnToggleMedForm.classList.remove('cancelar'); 
-          } 
-      }); 
-  }
+  if (btnToggleMedForm) { btnToggleMedForm.addEventListener('click', () => { if (formAddMedicacao.style.display === 'none') { formAddMedicacao.style.display = 'block'; btnToggleMedForm.innerText = 'Cancelar'; btnToggleMedForm.classList.add('cancelar'); } else { formAddMedicacao.style.display = 'none'; btnToggleMedForm.innerText = '+ Nova Medicação'; btnToggleMedForm.classList.remove('cancelar'); } }); }
   
   document.getElementById('form-add-medico').addEventListener('submit', (e) => { e.preventDefault(); currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; });
   listaMedicosPills.addEventListener('click', (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); } });
   
-  // ADICIONAR COM TURNOS (CORRIGIDO)
   document.getElementById('form-add-medicacao').addEventListener('submit', (e) => { 
       e.preventDefault(); 
       const horarios = {}; 
