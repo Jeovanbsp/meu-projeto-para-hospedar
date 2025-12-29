@@ -1,101 +1,83 @@
-/* ... (MANTENHA TODO O CSS DA LISTA, BOTÕES, ETC) ... */
+/* ============================================================ */
+/* ARQUIVO: css/prontuario.css (Versão Final: Evolução Acordeão) */
+/* ============================================================ */
 
-/* --- EVOLUÇÃO CLÍNICA (ESTILO RESTAURADO) --- */
-.evolucao-item {
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
-    margin-bottom: 10px;
-    overflow: hidden;
-    transition: box-shadow 0.2s;
-}
+/* --- GERAL --- */
+body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 
-.evolucao-item:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
+/* --- LISTA DE PACIENTES (DASHBOARD) --- */
+.lista-pacientes { list-style: none; padding: 0; margin: 0; }
+.paciente-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+.paciente-item:last-child { border-bottom: none; }
+.paciente-item:hover { background-color: #f9f9f9; }
+.info-paciente strong { display: block; color: #333; font-size: 1rem; margin-bottom: 3px; }
+.info-paciente span { display: block; color: #888; font-size: 0.85rem; }
 
-.evo-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 15px;
-    background-color: #fcfcfc;
-    border-left: 4px solid #2ADCA1;
-    cursor: pointer;
-    user-select: none;
-}
+/* Botões da Lista */
+.acoes-paciente { display: flex; gap: 10px; align-items: center; }
+.btn-editar, .btn-excluir { border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; height: 34px; transition: all 0.3s; }
+.btn-editar { background-color: #2ADCA1; color: white; }
+.btn-editar:hover { background-color: #24b685; }
+.btn-excluir { background-color: #ef5350; color: white; }
+.btn-excluir:hover { background-color: #d32f2f; }
 
-.evo-left {
-    display: flex;
-    flex-direction: column; /* Data em cima, título embaixo */
-    gap: 2px;
-}
+/* --- LISTAS INTERNAS (MÉDICOS/MEDICAÇÃO) --- */
+#lista-medicos-pills { display: flex; flex-direction: column; gap: 8px; padding: 10px; background-color: #fff; border: 1px solid #ddd; border-radius: 6px; min-height: 50px; max-height: 200px; overflow-y: auto; list-style: none; margin-top: 10px; margin-bottom: 15px; }
+.pill-medico { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; color: #333; padding: 12px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; border-left: 5px solid #2ADCA1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
+.btn-deletar-medico { display: flex; align-items: center; justify-content: center; background: none; border: none; color: #e53935; margin-left: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; padding: 5px; transition: transform 0.2s; }
 
-.evo-date {
-    font-size: 0.75rem;
-    color: #999;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+/* --- TABELAS --- */
+.tabela-container { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; margin-top: 15px; }
+.tabela-medicacoes { width: 100%; border-collapse: collapse; background-color: #fff; font-size: 0.9rem; }
+.tabela-medicacoes thead { background-color: #2ADCA1; color: #fff; }
+.tabela-medicacoes th { padding: 12px 10px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
+.tabela-medicacoes td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
+.btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
 
-.evo-title {
-    font-size: 1rem;
-    color: #333;
-    font-weight: 700;
-}
+/* --- FORMULÁRIOS E BOTÕES --- */
+.btn-show-form { background-color: #fff; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 8px 20px; border-radius: 25px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; display: inline-block; }
+.btn-show-form:hover { background-color: #2ADCA1; color: #fff; }
+.btn-show-form.cancelar { border-color: #999; color: #999; background: transparent; }
+.btn-show-form.cancelar:hover { background-color: #eee; color: #333; }
+#form-add-medicacao { animation: fadeIn 0.3s ease-in; }
+#secao-turnos { display: none; margin-top: 10px; padding: 10px; background-color: #f9f9f9; border: 1px dashed #ccc; border-radius: 6px; animation: fadeIn 0.3s ease-in; }
 
-.evo-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
+/* --- ALERTAS E BADGES --- */
+.alerta-alergia { display: none; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-left: 15px; align-items: center; gap: 5px; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
+.badge-termo { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 10px; vertical-align: middle; }
+.badge-termo.aceito { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.badge-termo.pendente { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
-/* Botões de Ação na Evolução */
-.evo-btns {
-    display: flex;
-    gap: 8px;
-}
+/* --- COMORBIDADES --- */
+.grid-comorbidades { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; animation: slideDown 0.3s ease-out; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.item-comorbidade { display: flex; flex-direction: column; }
+.label-comorbidade { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 0.9rem; color: #333; cursor: pointer; margin: 0; }
+.label-comorbidade input[type="checkbox"] { width: 16px; height: 16px; margin: 0; accent-color: #2ADCA1; cursor: pointer; }
+.desc-comorbidade { font-size: 0.75rem; color: #777; margin-left: 24px; margin-top: 2px; }
+.radio-group-container { display: flex; gap: 20px; align-items: center; }
+.radio-label { cursor: pointer; display: flex; align-items: center; gap: 8px; margin: 0; font-weight: 500; font-size: 1rem; }
+.radio-label input[type="radio"] { width: 18px; height: 18px; margin: 0; accent-color: #2ADCA1; vertical-align: middle; }
+.text-nao { color: #2E7D32; } .text-sim { color: #C62828; }
+.btn-toggle-lista { display: none; background-color: #2ADCA1; color: #fff; border: none; padding: 4px 12px; font-size: 0.75rem; border-radius: 15px; width: auto; font-weight: 600; cursor: pointer; transition: all 0.2s ease; align-items: center; gap: 5px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-left: auto; }
+.btn-toggle-lista:hover { background-color: #24b685; transform: translateY(-1px); }
+.seta-toggle { display: inline-block; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #fff; transition: transform 0.3s; }
+.btn-toggle-lista.aberto .seta-toggle { transform: rotate(180deg); }
 
-.btn-mini {
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 1.1rem;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background 0.2s;
-    color: #aaa;
-}
-
+/* --- EVOLUÇÃO CLÍNICA (ESTILO ACORDEÃO) --- */
+.evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 10px; overflow: hidden; transition: box-shadow 0.2s; }
+.evolucao-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.evo-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #fcfcfc; border-left: 4px solid #2ADCA1; cursor: pointer; user-select: none; }
+.evo-left { display: flex; flex-direction: column; gap: 2px; }
+.evo-date { font-size: 0.75rem; color: #999; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.evo-title { font-size: 1rem; color: #333; font-weight: 700; }
+.evo-right { display: flex; align-items: center; gap: 15px; }
+.evo-btns { display: flex; gap: 8px; }
+.btn-mini { border: none; background: transparent; cursor: pointer; font-size: 1.1rem; padding: 4px; border-radius: 4px; transition: background 0.2s; color: #aaa; }
 .btn-mini.edit:hover { color: #29b6f6; background-color: #e1f5fe; }
 .btn-mini.delete:hover { color: #ef5350; background-color: #ffebee; }
-
-/* Seta de Expandir */
-.evo-arrow {
-    font-size: 0.8rem;
-    color: #ccc;
-    transition: transform 0.3s;
-}
-
-/* Corpo da Evolução (Texto) */
-.evo-body {
-    padding: 15px;
-    border-top: 1px solid #eee;
-    background-color: #fff;
-    font-size: 0.95rem;
-    color: #444;
-    line-height: 1.6;
-    display: none; /* Começa fechado */
-    white-space: pre-wrap; /* Respeita quebras de linha */
-}
-
-/* Classe para abrir */
-.evo-body.aberto {
-    display: block;
-    animation: fadeIn 0.3s;
-}
-
-.evo-header.aberto .evo-arrow {
-    transform: rotate(180deg);
-}
+.evo-arrow { font-size: 0.8rem; color: #ccc; transition: transform 0.3s; }
+.evo-body { padding: 15px; border-top: 1px solid #eee; background-color: #fff; font-size: 0.95rem; color: #444; line-height: 1.6; display: none; white-space: pre-wrap; }
+.evo-body.aberto { display: block; animation: fadeIn 0.3s; }
+.evo-header.aberto .evo-arrow { transform: rotate(180deg); }
