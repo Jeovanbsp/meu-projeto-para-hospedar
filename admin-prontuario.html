@@ -24,7 +24,7 @@
             
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <h2 id="titulo-edicao" style="margin: 0;">Editando Prontuário</h2>
-                <span id="badge-termo-status" class="badge-termo pendente">AGUARDANDO DADOS...</span>
+                <span id="badge-termo-status" class="badge-termo pendente">AGUARDANDO...</span>
             </div>
 
             <form id="form-prontuario-principal">
@@ -36,18 +36,9 @@
                 <div style="margin-top: 15px; margin-bottom: 20px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                        <label class="radio-label">
-                            <input type="radio" name="mobilidade" value="Independente"> 
-                            <span style="color: #2E7D32;">Independente</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="mobilidade" value="Com Auxílio"> 
-                            <span style="color: #F57F17;">Com Auxílio</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="mobilidade" value="Dependente"> 
-                            <span style="color: #C62828;">Dependente</span>
-                        </label>
+                        <label class="radio-label"><input type="radio" name="mobilidade" value="Independente"> <span style="color: #2E7D32;">Independente</span></label>
+                        <label class="radio-label"><input type="radio" name="mobilidade" value="Com Auxílio"> <span style="color: #F57F17;">Com Auxílio</span></label>
+                        <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> <span style="color: #C62828;">Dependente</span></label>
                     </div>
                 </div>
 
@@ -112,7 +103,6 @@
                         <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                     </div>
                     <div id="secao-turnos" style="display: none;">
-                        <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
                         <div class="checkbox-group">
                             <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
                             <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
@@ -138,8 +128,7 @@
                     <label>Nova Anotação:</label>
                     <textarea id="texto-evolucao" placeholder="Descreva o estado..." style="width: 100%; height: 100px; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc;"></textarea>
                     <button id="btn-add-evolucao" type="button" style="margin-top: 10px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Registrar Evolução</button>
-                    <hr style="margin: 25px 0; border: 0; border-top: 1px solid #eee;">
-                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;"></div>
                 </div>
             </div>
 
