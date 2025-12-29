@@ -9,7 +9,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // SELETORES
   const nomePacienteInput = document.getElementById('nome-paciente');
-  const idadeInput = document.getElementById('idade');
+  const radiosGenero = document.querySelectorAll('input[name="genero"]');
+  const dataNascimentoInput = document.getElementById('data-nascimento');
+  const idadeCalculadaSpan = document.getElementById('idade-calculada');
+  const idadeInput = document.getElementById('idade'); // Campo oculto para salvar idade numérica
+  const emailPessoalInput = document.getElementById('email-pessoal');
+  const cpfInput = document.getElementById('cpf');
+  const rgInput = document.getElementById('rg');
+
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames');
@@ -48,13 +55,46 @@ document.addEventListener('DOMContentLoaded', () => {
   const badgeTermo = document.getElementById('badge-termo-status');
 
   let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; let currentTermoAceite = false; 
+  
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
 
+  // Função para calcular idade
+  function calcularIdade(dataStr) {
+      if (!dataStr) return '';
+      const nascimento = new Date(dataStr);
+      const hoje = new Date();
+      let anos = hoje.getFullYear() - nascimento.getFullYear();
+      let meses = hoje.getMonth() - nascimento.getMonth();
+      if (meses < 0 || (meses === 0 && hoje.getDate() < nascimento.getDate())) {
+          anos--;
+          meses += 12;
+      }
+      return `${anos} anos, ${meses} meses`;
+  }
+
+  // Listener data nascimento
+  if(dataNascimentoInput) {
+      dataNascimentoInput.addEventListener('change', () => {
+          const textoIdade = calcularIdade(dataNascimentoInput.value);
+          if(idadeCalculadaSpan) idadeCalculadaSpan.innerText = textoIdade;
+          if(idadeInput) idadeInput.value = parseInt(textoIdade) || ''; 
+      });
+  }
+
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || '';
-    idadeInput.value = data.idade || '';
+    
+    // Novos Campos
+    if (data.genero) radiosGenero.forEach(r => { if(r.value === data.genero) r.checked = true; });
+    if (dataNascimentoInput) dataNascimentoInput.value = data.dataNascimento || '';
+    if (idadeCalculadaSpan) idadeCalculadaSpan.innerText = calcularIdade(data.dataNascimento) || '-- anos';
+    if (emailPessoalInput) emailPessoalInput.value = data.emailPessoal || '';
+    if (cpfInput) cpfInput.value = data.cpf || '';
+    if (rgInput) rgInput.value = data.rg || '';
+    if (idadeInput) idadeInput.value = data.idade || '';
+
     patologiasInput.value = data.patologias || '';
     examesInput.value = data.exames || '';
 
@@ -150,14 +190,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const handleSalvarTudo = async (e) => {
     e.preventDefault(); btnSalvarTudo.innerText = 'Salvando...';
+    
     let mob = ''; const rMob = document.querySelector('input[name="mobilidade"]:checked'); if(rMob) mob = rMob.value;
+    let genero = ''; const rGenero = document.querySelector('input[name="genero"]:checked'); if(rGenero) genero = rGenero.value;
+    
     const cList = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
     
     try {
         await fetch(API_ADMIN_BASE + pacienteId, {
             method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({
-                nomePaciente: nomePacienteInput.value, idade: idadeInput.value, mobilidade: mob,
+                nomePaciente: nomePacienteInput.value, 
+                genero: genero,
+                dataNascimento: dataNascimentoInput.value,
+                emailPessoal: emailPessoalInput.value,
+                cpf: cpfInput.value,
+                rg: rgInput.value,
+                idade: idadeInput.value,
+                
+                mobilidade: mob,
                 patologias: patologiasInput.value, exames: examesInput.value,
                 comorbidades: { temComorbidade: radioComorbidadeSim.checked, lista: cList, outras: inputOutrasComorbidades.value },
                 alergias: { temAlergia: radioAlergiaSim.checked, quais: inputAlergiasQuais.value },
