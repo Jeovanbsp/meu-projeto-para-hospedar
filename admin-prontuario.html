@@ -32,6 +32,7 @@
                 <input type="text" id="nome-paciente" required>
                 <label for="idade">Idade</label>
                 <input type="number" id="idade" required>
+                
                 <div style="margin-top: 15px; margin-bottom: 20px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
@@ -40,9 +41,13 @@
                         <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> <span style="color: #C62828;">Dependente</span></label>
                     </div>
                 </div>
-                <label for="patologias">Patologias</label><textarea id="patologias"></textarea>
-                <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares</label><textarea id="exames"></textarea>
-                
+
+                <label for="patologias">Patologias</label>
+                <textarea id="patologias"></textarea>
+
+                <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares</label>
+                <textarea id="exames"></textarea>
+
                 <div class="form-group" style="margin-top: 15px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Comorbidades?</label>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
@@ -87,29 +92,37 @@
 
             <div class="gerenciador-medicacao">
                 <h3>Minhas Medicações</h3>
+                
                 <button type="button" id="btn-toggle-med-form" class="btn-show-form">+ Nova Medicação</button>
+
                 <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
                     <div class="form-linha-inputs">
                         <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao"></div>
+                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
                         <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                     </div>
                     
                     <div id="secao-turnos">
-                        <label style="font-size: 0.85rem; font-weight: bold; color: #555; display:block; margin-bottom:8px;">Deseja marcar turnos?</label>
+                        <label class="titulo-secao-turnos">Deseja marcar turnos adicionais?</label>
                         <div class="checkbox-group">
-                            <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
-                            <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
-                            <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
-                            <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
-                            <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
-                            <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
+                            <label>Antes do Café <input type="checkbox" name="horario" value="antes_cafe"></label>
+                            <label>Depois do Café <input type="checkbox" name="horario" value="depois_cafe"></label>
+                            <label>Almoço <input type="checkbox" name="horario" value="almoco"></label>
+                            <label>Tarde <input type="checkbox" name="horario" value="tarde"></label>
+                            <label>Antes do Jantar <input type="checkbox" name="horario" value="antes_jantar"></label>
+                            <label>Antes de Dormir <input type="checkbox" name="horario" value="antes_dormir"></label>
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px;">+ Adicionar na Lista</button>
+                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px; width: 100%; background-color: #2ADCA1; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">+ Adicionar na Lista</button>
                 </form>
-                <div class="tabela-container"><table class="tabela-medicacoes"><thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead><tbody id="lista-medicacoes-body"></tbody></table></div>
+
+                <div class="tabela-container">
+                    <table class="tabela-medicacoes">
+                        <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
+                        <tbody id="lista-medicacoes-body"></tbody>
+                    </table>
+                </div>
             </div>
 
             <div class="gerenciador-evolucoes" style="border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 30px; overflow: hidden;">
@@ -126,8 +139,8 @@
                 <h3>Médicos Assistentes</h3>
                 <form id="form-add-medico" class="form-add-medico no-print"> 
                     <div class="form-linha-inputs" style="display: flex; gap: 10px;">
-                        <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico"></div>
+                        <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
+                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico" placeholder="(71) 9999-9999"></div>
                     </div>
                     <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
                 </form>
