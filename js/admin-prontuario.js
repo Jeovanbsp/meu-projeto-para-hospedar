@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const role = localStorage.getItem('userRole');
-  // Detecta URL automaticamente
   const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001/api/admin/prontuario/' : 'https://aishageriatria.onrender.com/api/admin/prontuario/';
   
   const pacienteId = new URLSearchParams(window.location.search).get('id');
@@ -50,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const badgeTermo = document.getElementById('badge-termo-status');
 
   let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null; let currentTermoAceite = false; 
+  
+  // Mapa para exibir nomes bonitos
   const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         radioComorbidadeNao.checked = true;
     }
-    toggleComorbidades(); // Atualiza UI
+    toggleComorbidades();
 
     // Alergias
     const alerg = data.alergias || {};
@@ -87,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         radioAlergiaNao.checked = true;
     }
-    toggleAlergiaInput(); // Atualiza UI
+    toggleAlergiaInput();
 
     // Termo
     currentTermoAceite = data.termoAceite || false;
@@ -149,7 +150,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- RENDER LISTAS ---
   const renderMedicosList = () => { listaMedicosPills.innerHTML = ''; currentMedicos.forEach((m, i) => { listaMedicosPills.innerHTML += `<li class="pill-medico"><span>${m}</span><button class="btn-deletar-medico" data-index="${i}">✕</button></li>`; }); };
-  const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; currentMedicacoes.forEach(m => { listaMedicacoesBody.innerHTML += `<tr><td>${m.nome}</td><td>${m.quantidade}</td><td>-</td><td>${m.horarioEspecifico}</td><td><button class="btn-deletar-medacao" data-nome="${m.nome}">✕</button></td></tr>`; }); };
+  
+  // CORREÇÃO CRÍTICA AQUI: RENDERIZAÇÃO DOS TURNOS
+  const renderTabelaMedicacoes = () => { 
+      listaMedicacoesBody.innerHTML = ''; 
+      if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação.</td></tr>'; return; } 
+      
+      const list = [...currentMedicacoes].sort((a, b) => { 
+          const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; 
+          const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; 
+          return horaA.localeCompare(horaB); 
+      }); 
+      
+      list.forEach((med) => { 
+          let turnosHtml = ''; 
+          // Verifica se med.horarios existe e tem valores true
+          if (med.horarios) {
+              for (const [key, value] of Object.entries(med.horarios)) { 
+                  if (value === true && mapTurnos[key]) { 
+                      turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; 
+                  } 
+              } 
+          }
+          if (!turnosHtml) turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>'; 
+          
+          const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; 
+          const qtdDisplay = med.quantidade ? med.quantidade : '-'; 
+          
+          const row = `<tr><td>${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; 
+          listaMedicacoesBody.insertAdjacentHTML('beforeend', row); 
+      }); 
+  };
 
   // --- RENDER EVOLUÇÕES (ACORDEÃO) ---
   const renderEvolucoes = () => {
@@ -261,7 +292,28 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('form-add-medico').addEventListener('submit', (e) => { e.preventDefault(); currentMedicos.push(nomeMedicoInput.value); renderMedicosList(); nomeMedicoInput.value=''; });
   listaMedicosPills.addEventListener('click', (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); } });
   
-  document.getElementById('form-add-medicacao').addEventListener('submit', (e) => { e.preventDefault(); currentMedicacoes.push({nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios: {}}); renderTabelaMedicacoes(); formAddMedicacao.style.display='none'; btnToggleMedForm.innerText = '+ Nova'; btnToggleMedForm.classList.remove('cancelar'); });
+  // CORREÇÃO CRÍTICA AQUI: CAPTURAR OS CHECKBOXES NA HORA DE ADICIONAR
+  document.getElementById('form-add-medicacao').addEventListener('submit', (e) => { 
+      e.preventDefault(); 
+      
+      const horarios = {}; 
+      checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
+      
+      currentMedicacoes.push({
+          nome: nomeMedicacaoInput.value, 
+          quantidade: qtdMedicacaoInput.value, 
+          horarioEspecifico: horarioEspecificoInput.value, 
+          horarios: horarios // Passa o objeto preenchido
+      }); 
+      
+      renderTabelaMedicacoes(); 
+      formAddMedicacao.style.display='none'; 
+      btnToggleMedForm.innerText = '+ Nova Medicação'; 
+      btnToggleMedForm.classList.remove('cancelar'); 
+      document.getElementById('form-add-medicacao').reset();
+      secaoTurnos.style.display = 'none';
+  });
+  
   listaMedicacoesBody.addEventListener('click', (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); } });
 
   btnSalvarTudo.addEventListener('click', handleSalvarTudo);
