@@ -1,90 +1,97 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Final: Turnos em Grade)  */
+/* ARQUIVO: css/prontuario.css (Versão Final: Botões Alinhados) */
 /* ============================================================ */
 
 /* --- GERAL --- */
 body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 
-/* --- LISTA DE PACIENTES --- */
+/* --- LISTA DE PACIENTES (DASHBOARD) --- */
 .lista-pacientes { list-style: none; padding: 0; margin: 0; }
-.paciente-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #eee; transition: background 0.2s; }
+
+.paciente-item { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; /* Alinha verticalmente */
+    padding: 15px 20px; 
+    border-bottom: 1px solid #eee; 
+    transition: background 0.2s; 
+}
 .paciente-item:last-child { border-bottom: none; }
 .paciente-item:hover { background-color: #f9f9f9; }
+
+.info-paciente { display: flex; flex-direction: column; justify-content: center; }
 .info-paciente strong { display: block; color: #333; font-size: 1rem; margin-bottom: 3px; }
 .info-paciente span { display: block; color: #888; font-size: 0.85rem; }
 
-/* Botões da Lista */
-.acoes-paciente { display: flex; gap: 10px; align-items: center; }
-.btn-editar, .btn-excluir { border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; font-size: 0.85rem; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; height: 34px; transition: all 0.3s; }
+/* --- BOTÕES EDITAR E EXCLUIR (ALINHADOS) --- */
+.acoes-paciente { 
+    display: flex; 
+    gap: 10px; /* Espaço uniforme entre os botões */
+    align-items: center; /* Garante que fiquem na mesma linha */
+}
+
+.btn-editar, .btn-excluir { 
+    border: none; 
+    padding: 0; /* Reset */
+    width: 80px; /* Largura fixa para ficarem iguais */
+    height: 34px; /* Altura fixa */
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: 700; 
+    font-size: 0.85rem; 
+    text-decoration: none; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    transition: all 0.2s ease; 
+}
+
 .btn-editar { background-color: #2ADCA1; color: white; }
-.btn-editar:hover { background-color: #24b685; }
+.btn-editar:hover { background-color: #24b685; transform: translateY(-1px); }
+
 .btn-excluir { background-color: #ef5350; color: white; }
-.btn-excluir:hover { background-color: #d32f2f; }
+.btn-excluir:hover { background-color: #d32f2f; transform: translateY(-1px); }
 
-/* --- FORMULÁRIO DE MEDICAÇÃO E TURNOS (NOVO) --- */
-.btn-show-form { background-color: #fff; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 8px 20px; border-radius: 25px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; display: inline-block; width: 100%; max-width: 200px; text-align: center; }
-.btn-show-form:hover { background-color: #2ADCA1; color: #fff; }
-.btn-show-form.cancelar { border-color: #999; color: #999; background: transparent; }
-.btn-show-form.cancelar:hover { background-color: #eee; color: #333; }
-#form-add-medicacao { animation: fadeIn 0.3s ease-in; }
 
-/* SEÇÃO DE TURNOS (VISUAL AJUSTADO) */
-#secao-turnos { 
-    display: block; 
-    margin-top: 15px; 
-    padding: 15px; 
-    background-color: #f8f9fa; 
-    border: 1px solid #e0e0e0; 
-    border-radius: 8px; 
-    animation: fadeIn 0.3s ease-in; 
+/* --- LISTAS INTERNAS (MÉDICOS) E BOTÃO "X" --- */
+#lista-medicos-pills { 
+    display: flex; flex-direction: column; gap: 8px; padding: 10px; 
+    background-color: #fff; border: 1px solid #ddd; border-radius: 6px; 
+    min-height: 50px; max-height: 200px; overflow-y: auto; list-style: none; 
+    margin-top: 10px; margin-bottom: 15px; 
 }
 
-#secao-turnos label.titulo-secao-turnos {
-    font-size: 0.9rem; font-weight: 700; color: #555; display: block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;
+.pill-medico { 
+    display: flex; justify-content: space-between; align-items: center; 
+    background-color: #f8f9fa; color: #333; padding: 12px 15px; 
+    border-radius: 6px; font-size: 0.9rem; font-weight: 500; 
+    border-left: 5px solid #2ADCA1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); 
+    width: 100%; box-sizing: border-box; 
 }
 
-/* GRADE DE CHECKBOXES (2 COLUNAS) */
-.checkbox-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Duas colunas iguais */
-    gap: 10px;
+/* Botão X Vermelho (Médicos e Medicação) */
+.btn-deletar-medico, .btn-deletar-medacao { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    background: none; 
+    border: none; 
+    color: #e53935; 
+    font-size: 1.2rem; /* Tamanho do X */
+    font-weight: bold; 
+    cursor: pointer; 
+    padding: 5px; 
+    width: 30px; 
+    height: 30px; 
+    transition: transform 0.2s; 
+}
+.btn-deletar-medico:hover, .btn-deletar-medacao:hover { 
+    color: #b71c1c; 
+    transform: scale(1.2); 
+    background-color: #ffebee; /* Fundo suave ao passar mouse */
+    border-radius: 50%; 
 }
 
-/* ESTILO DO BOTÃO DE TURNO (Texto Esq | Check Dir) */
-.checkbox-group label {
-    display: flex;
-    justify-content: space-between; /* Texto na ponta esquerda, Check na direita */
-    align-items: center;
-    background-color: #fff;
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #444;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-.checkbox-group label:hover {
-    border-color: #2ADCA1;
-    background-color: #f0fdf9;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-
-/* Checkbox Colorido */
-.checkbox-group input[type="checkbox"] {
-    width: 18px; height: 18px;
-    accent-color: #2ADCA1;
-    cursor: pointer;
-}
-
-/* Responsivo Mobile */
-@media (max-width: 500px) {
-    .checkbox-group { grid-template-columns: 1fr; }
-}
 
 /* --- TABELAS --- */
 .tabela-container { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; margin-top: 15px; }
@@ -93,19 +100,29 @@ body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 .tabela-medicacoes th { padding: 12px 10px; text-align: left; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; }
 .tabela-medicacoes td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
 .pill-turno { display: inline-block; background-color: #e8f5e9; color: #2e7d32; padding: 3px 8px; border-radius: 12px; font-size: 0.7rem; font-weight: 600; margin-right: 3px; border: 1px solid #c8e6c9; }
-.btn-deletar-medacao { background: none; border: none; color: #ef5350; font-weight: bold; cursor: pointer; font-size: 1rem; transition: transform 0.2s; }
 
-/* --- OUTROS (Mantidos) --- */
-#lista-medicos-pills { display: flex; flex-direction: column; gap: 8px; padding: 10px; background-color: #fff; border: 1px solid #ddd; border-radius: 6px; min-height: 50px; max-height: 200px; overflow-y: auto; list-style: none; margin-top: 10px; margin-bottom: 15px; }
-.pill-medico { display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; color: #333; padding: 12px 15px; border-radius: 6px; font-size: 0.9rem; font-weight: 500; border-left: 5px solid #2ADCA1; box-shadow: 0 1px 2px rgba(0,0,0,0.05); width: 100%; box-sizing: border-box; }
-.btn-deletar-medico { display: flex; align-items: center; justify-content: center; background: none; border: none; color: #e53935; margin-left: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; padding: 5px; transition: transform 0.2s; }
-.alerta-alergia { display: none; background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; margin-left: 15px; align-items: center; gap: 5px; animation: pulse 2s infinite; }
-@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 6px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
-.badge-termo { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 10px; vertical-align: middle; }
-.badge-termo.aceito { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
-.badge-termo.pendente { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
 
-/* Comorbidades */
+/* --- FORMULÁRIOS E BOTÕES --- */
+.btn-show-form { background-color: #fff; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 8px 20px; border-radius: 25px; font-weight: 700; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; display: inline-block; width: 100%; max-width: 200px; text-align: center; }
+.btn-show-form:hover { background-color: #2ADCA1; color: #fff; }
+.btn-show-form.cancelar { border-color: #999; color: #999; background: transparent; }
+.btn-show-form.cancelar:hover { background-color: #eee; color: #333; }
+#form-add-medicacao { animation: fadeIn 0.3s ease-in; }
+
+/* SEÇÃO DE TURNOS (VISUAL AJUSTADO) */
+#secao-turnos { 
+    display: block; margin-top: 15px; padding: 15px; background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; animation: fadeIn 0.3s ease-in; 
+}
+#secao-turnos label.titulo-secao-turnos { font-size: 0.9rem; font-weight: 700; color: #555; display: block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* GRADE DE CHECKBOXES */
+.checkbox-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.checkbox-group label { display: flex; justify-content: space-between; align-items: center; background-color: #fff; padding: 12px 15px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; color: #444; transition: all 0.2s ease; user-select: none; }
+.checkbox-group label:hover { border-color: #2ADCA1; background-color: #f0fdf9; transform: translateY(-1px); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+.checkbox-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: #2ADCA1; cursor: pointer; }
+@media (max-width: 500px) { .checkbox-group { grid-template-columns: 1fr; } }
+
+/* --- COMORBIDADES --- */
 .grid-comorbidades { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 15px; background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; animation: slideDown 0.3s ease-out; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 .item-comorbidade { display: flex; flex-direction: column; }
@@ -121,7 +138,7 @@ body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 .seta-toggle { display: inline-block; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 4px solid #fff; transition: transform 0.3s; }
 .btn-toggle-lista.aberto .seta-toggle { transform: rotate(180deg); }
 
-/* Evolução */
+/* --- EVOLUÇÃO --- */
 .evolucao-item { background-color: #fff; border: 1px solid #e0e0e0; border-radius: 6px; margin-bottom: 10px; overflow: hidden; transition: box-shadow 0.2s; }
 .evolucao-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
 .evo-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #fcfcfc; border-left: 4px solid #2ADCA1; cursor: pointer; user-select: none; }
@@ -137,3 +154,8 @@ body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 .evo-body { padding: 15px; border-top: 1px solid #eee; background-color: #fff; font-size: 0.95rem; color: #444; line-height: 1.6; display: none; white-space: pre-wrap; }
 .evo-body.aberto { display: block; animation: fadeIn 0.3s; }
 .evo-header.aberto .evo-arrow { transform: rotate(180deg); }
+
+/* --- BADGES --- */
+.badge-termo { display: inline-block; padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; margin-left: 10px; vertical-align: middle; }
+.badge-termo.aceito { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+.badge-termo.pendente { background-color: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }

@@ -15,12 +15,11 @@
         <div class="header-container" style="justify-content: flex-start; gap: 20px;">
             <a href="admin-dashboard.html" class="logo" style="margin-right: auto;"><img src="img/layout.png" alt="Logo" style="height: 40px;"></a>
             <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Edição Rápida (Admin)</h3>
-            <button id="btn-logout-admin" class="btn-agendar" style="padding: 8px 15px;">Sair</button>
-        </div>
+            </div>
     </header>
     <main>
         <div class="card-agendamento" id="prontuario-card">
-            <button onclick="window.location.href='admin-dashboard.html';" style="background: #ccc; color: #333; margin-bottom: 20px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; display: block; width: 100%; max-width: 250px; margin: 0 auto 20px auto;">&larr; Voltar</button>
+            <button onclick="window.location.href='admin-dashboard.html';" style="background: #ccc; color: #333; margin-bottom: 20px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; display: block; width: 100%; max-width: 250px; margin: 0 auto 20px auto;">&larr; Voltar para Dashboard</button>
             
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
                 <h2 id="titulo-edicao" style="margin: 0;">Editando Prontuário</h2>
@@ -92,9 +91,7 @@
 
             <div class="gerenciador-medicacao">
                 <h3>Minhas Medicações</h3>
-                
                 <button type="button" id="btn-toggle-med-form" class="btn-show-form">+ Nova Medicação</button>
-
                 <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
                     <div class="form-linha-inputs">
                         <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
@@ -114,15 +111,9 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px; width: 100%; background-color: #2ADCA1; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">+ Adicionar na Lista</button>
+                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px;">+ Adicionar na Lista</button>
                 </form>
-
-                <div class="tabela-container">
-                    <table class="tabela-medicacoes">
-                        <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
-                        <tbody id="lista-medicacoes-body"></tbody>
-                    </table>
-                </div>
+                <div class="tabela-container"><table class="tabela-medicacoes"><thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead><tbody id="lista-medicacoes-body"></tbody></table></div>
             </div>
 
             <div class="gerenciador-evolucoes" style="border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 30px; overflow: hidden;">
@@ -140,7 +131,7 @@
                 <form id="form-add-medico" class="form-add-medico no-print"> 
                     <div class="form-linha-inputs" style="display: flex; gap: 10px;">
                         <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico" placeholder="(71) 9999-9999"></div>
+                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico"></div>
                     </div>
                     <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
                 </form>
