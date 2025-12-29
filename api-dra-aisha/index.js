@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken'); 
 
 const User = require('./models/User');
-// const Prontuario = require('./models/Prontuario'); // Se estiver usando arquivo separado, mantenha. Se não, use o schema abaixo.
+// const Prontuario = require('./models/Prontuario'); // Remova se estiver definindo o schema aqui embaixo
 const authMiddleware = require('./middleware/authMiddleware');
 const adminMiddleware = require('./middleware/adminMiddleware'); 
 
@@ -27,14 +27,12 @@ mongoose.connect(MONGODB_URI)
   .then(() => { console.log('✅ MongoDB Conectado!'); app.listen(PORT, () => console.log(`🚀 Servidor na porta ${PORT}`)); })
   .catch((err) => console.error('❌ Erro Mongo:', err.message));
 
-app.get('/', (req, res) => res.json({ message: 'API Online' }));
-
-// --- DEFINIÇÃO DO SCHEMA (Se não tiver arquivo separado) ---
+// --- MODELOS (Se estiverem em arquivos separados, mantenha o import, senão atualize aqui) ---
 const MedicacaoSchema = new mongoose.Schema({
   nome: { type: String, required: true },
   quantidade: { type: String, default: '' },
   horarioEspecifico: { type: String, default: '' }, 
-  horarios: { type: Map, of: Boolean, default: {} } 
+  horarios: { type: Map, of: Boolean, default: {} } // Usando Map para flexibilidade
 });
 
 const EvolucaoSchema = new mongoose.Schema({
@@ -48,14 +46,14 @@ const ProntuarioSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   termoAceite: { type: Boolean, default: false },
   
-  // DADOS PESSOAIS COMPLETOS
+  // --- NOVOS DADOS PESSOAIS ---
   nomePaciente: { type: String, default: '' },
-  genero: { type: String, default: '' },        // Novo
-  dataNascimento: { type: String, default: '' }, // Novo
-  emailPessoal: { type: String, default: '' },   // Novo
-  cpf: { type: String, default: '' },            // Novo
-  rg: { type: String, default: '' },             // Novo
-  idade: { type: String, default: '' }, 
+  genero: { type: String, default: '' }, // Feminino / Masculino
+  dataNascimento: { type: String, default: '' }, // YYYY-MM-DD
+  emailPessoal: { type: String, default: '' },
+  cpf: { type: String, default: '' },
+  rg: { type: String, default: '' },
+  idade: { type: String, default: '' }, // Calculada ou manual, opcional salvar
   
   // DADOS CLÍNICOS
   mobilidade: { type: String, default: '' }, 
@@ -79,9 +77,11 @@ const ProntuarioSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-const Prontuario = mongoose.models.Prontuario || mongoose.model('Prontuario', ProntuarioSchema);
+const Prontuario = mongoose.model('Prontuario', ProntuarioSchema);
 
-// --- ROTAS DE AUTH ---
+app.get('/', (req, res) => res.json({ message: 'API Online' }));
+
+// --- AUTH ---
 app.post('/auth/register', async (req, res) => {
   const { nome, email, senha } = req.body;
   if (!nome || !email || !senha) return res.status(400).json({ message: 'Preencha tudo.' });
@@ -109,15 +109,15 @@ app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, 
     try {
         const activeUsers = await User.find({ role: { $ne: 'admin' } }, '_id');
         const activeUserIds = activeUsers.map(u => u._id);
-        const prontuarios = await Prontuario.find({ user: { $in: activeUserIds } }, 'idade dataNascimento');
+        const prontuarios = await Prontuario.find({ user: { $in: activeUserIds } }, 'idade dataNascimento'); // Pega dataNascimento também
         
         const grupos = { 'Ate50': 0, 'De51a60': 0, 'De61a70': 0, 'De71a80': 0, 'De81a90': 0, 'Maior90': 0, 'NaoInformado': 0 };
         let total = 0;
 
         prontuarios.forEach(p => {
             total++;
+            // Tenta calcular idade pela data de nascimento se o campo idade for nulo
             let id = parseInt(p.idade);
-            // Calcula idade se não estiver salva, mas tiver data de nascimento
             if (!id && p.dataNascimento) {
                 const birthDate = new Date(p.dataNascimento);
                 const today = new Date();
@@ -142,6 +142,7 @@ app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
         const listaCompleta = await Promise.all(usuarios.map(async (u) => {
             const prontuario = await Prontuario.findOne({ user: u._id }).select('termoAceite nomePaciente');
+            // Usa o nome do prontuário se existir, senão usa o do cadastro
             const nomeExibicao = (prontuario && prontuario.nomePaciente) ? prontuario.nomePaciente : u.nome;
             return { _id: u._id, nome: nomeExibicao, email: u.email, createdAt: u.createdAt, termoAceite: prontuario ? prontuario.termoAceite : false };
         }));
@@ -173,13 +174,14 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const { 
-        nomePaciente, genero, dataNascimento, emailPessoal, cpf, rg, 
+        nomePaciente, genero, dataNascimento, emailPessoal, cpf, rg, // Novos campos
         idade, mobilidade, patologias, exames, comorbidades, alergias, 
         medicosAssistentes, medicacoes, termoAceite 
     } = req.body;
 
     const dados = { 
-        user: req.params.userId, termoAceite, 
+        user: req.params.userId, 
+        termoAceite, 
         nomePaciente, genero, dataNascimento, emailPessoal, cpf, rg, idade,
         mobilidade, patologias, exames, comorbidades, alergias, 
         medicosAssistentes, medicacoes 

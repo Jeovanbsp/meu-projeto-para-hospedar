@@ -15,7 +15,7 @@
         <div class="header-container" style="justify-content: flex-start; gap: 20px;">
             <a href="admin-dashboard.html" class="logo" style="margin-right: auto;"><img src="img/layout.png" alt="Logo" style="height: 40px;"></a>
             <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Edição Rápida (Admin)</h3>
-        </div>
+            </div>
     </header>
     <main>
         <div class="card-agendamento" id="prontuario-card">
@@ -27,40 +27,10 @@
             </div>
 
             <form id="form-prontuario-principal">
-                
-                <div class="input-container">
-                    <label>Nome</label>
-                    <input type="text" id="nome-paciente" required placeholder="Nome completo do paciente">
-                </div>
-
-                <div class="genero-group" style="margin-top: 10px;">
-                    <label class="radio-genero"><input type="radio" name="genero" value="Feminino"> Feminino</label>
-                    <label class="radio-genero"><input type="radio" name="genero" value="Masculino"> Masculino</label>
-                </div>
-
-                <div class="form-linha-dupla">
-                    <div class="input-container">
-                        <label>Data de nascimento</label>
-                        <input type="date" id="data-nascimento">
-                        <span id="idade-calculada" class="idade-texto">-- anos</span>
-                        <input type="hidden" id="idade"> 
-                    </div>
-                    <div class="input-container">
-                        <label>E-mail pessoal</label>
-                        <input type="email" id="email-pessoal" placeholder="exemplo@email.com">
-                    </div>
-                </div>
-
-                <div class="form-linha-dupla">
-                    <div class="input-container">
-                        <label>CPF</label>
-                        <input type="text" id="cpf" placeholder="000.000.000-00">
-                    </div>
-                    <div class="input-container">
-                        <label>RG</label>
-                        <input type="text" id="rg" placeholder="RG">
-                    </div>
-                </div>
+                <label for="nome-paciente">Nome do Paciente</label>
+                <input type="text" id="nome-paciente" required>
+                <label for="idade">Idade</label>
+                <input type="number" id="idade" required>
                 
                 <div style="margin-top: 15px; margin-bottom: 20px;">
                     <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
@@ -71,10 +41,10 @@
                     </div>
                 </div>
 
-                <label for="patologias" style="font-weight: 600; color: #555;">Patologias</label>
+                <label for="patologias">Patologias</label>
                 <textarea id="patologias"></textarea>
 
-                <label for="exames" style="margin-top: 15px; font-weight: 600; color: #555;">Exames Complementares</label>
+                <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares</label>
                 <textarea id="exames"></textarea>
 
                 <div class="form-group" style="margin-top: 15px;">
@@ -125,7 +95,7 @@
                 <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
                     <div class="form-linha-inputs">
                         <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao"></div>
+                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
                         <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
                     </div>
                     
@@ -141,7 +111,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px; width: 100%; background-color: #2ADCA1; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer;">+ Adicionar na Lista</button>
+                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px;">+ Adicionar na Lista</button>
                 </form>
                 <div class="tabela-container"><table class="tabela-medicacoes"><thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead><tbody id="lista-medicacoes-body"></tbody></table></div>
             </div>
@@ -173,5 +143,6 @@
         </div>
     </main>
     <script src="js/admin-prontuario.js"></script>
+    <script src="js/logout-simples.js"></script>
 </body>
 </html>
