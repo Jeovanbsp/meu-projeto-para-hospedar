@@ -14,15 +14,79 @@
         body { background-color: #f4f6f8; }
         .dashboard-container { padding: 40px; max-width: 1200px; margin: 0 auto; }
         .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
-        .dashboard-grid { display: flex; gap: 30px; flex-wrap: wrap; }
         
-        .card-grafico { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); flex: 1; min-width: 320px; max-width: 450px; display: flex; flex-direction: column; }
-        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr; /* Gráfico (1 parte) | Lista (2 partes) */
+            gap: 30px;
+        }
+
+        /* CARD DO GRÁFICO */
+        .card-grafico {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+        }
+
+        /* CARD DA LISTA DE PACIENTES (ESTILO DA LISTA) */
+        .card-lista {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .header-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
         .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
 
-        .area-lista { flex: 2; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); min-width: 300px; }
+        /* ESTILO DA LISTA (RESTAURADO) */
+        .lista-pacientes {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .paciente-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+        .paciente-item:last-child { border-bottom: none; }
+        .paciente-item:hover { background-color: #f9f9f9; }
+        
+        .info-paciente strong { display: block; color: #333; font-size: 1rem; }
+        .info-paciente span { display: block; color: #888; font-size: 0.85rem; }
+        .acoes-paciente { display: flex; gap: 10px; }
+        
+        .btn-editar {
+            background-color: #2ADCA1; color: white; border: none; padding: 6px 12px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; text-decoration: none; font-size: 0.85rem;
+        }
+        .btn-editar:hover { background-color: #24b685; }
+
+        .btn-excluir {
+            background-color: #ef5350; color: white; border: none; padding: 6px 12px;
+            border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.85rem;
+        }
+        .btn-excluir:hover { background-color: #d32f2f; }
+
         #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
+
+        @media (max-width: 800px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -40,13 +104,14 @@
     </header>
 
     <main class="dashboard-container">
-        <h2 class="titulo-secao">Geral</h2>
+        
+        <h2 class="titulo-secao">Visão Geral</h2>
 
         <div class="dashboard-grid">
             
             <div class="card-grafico">
                 <div class="header-card">
-                    <h3>Pacientes</h3>
+                    <h3>Idade dos Pacientes</h3>
                     <span class="total-badge" id="texto-total">Carregando...</span>
                 </div>
                 <div style="position: relative; height: 300px; width: 100%;">
@@ -54,25 +119,25 @@
                 </div>
             </div>
 
-            <div class="area-lista">
+            <div class="card-lista">
                 <div class="header-card">
-                    <h3>Ações Rápidas</h3>
+                    <h3>Pacientes Cadastrados</h3>
+                    <button onclick="carregarLista()" style="background:none; border:none; color:#2ADCA1; cursor:pointer;">↻ Atualizar</button>
                 </div>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <button onclick="window.location.href='admin-lista.html'" class="btn-agendar" style="flex: 1; text-align: center;">
-                        📂 Ver Lista Completa de Pacientes
-                    </button>
-                </div>
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                <p style="color: #777; font-size: 0.9rem;">
-                    Utilize o botão acima para acessar a lista detalhada, editar prontuários e gerenciar cadastros.
-                </p>
+                
+                <ul id="lista-pacientes" class="lista-pacientes">
+                    <li style="text-align:center; padding: 20px; color:#999;">Carregando lista...</li>
+                </ul>
             </div>
 
         </div>
+
     </main>
 
     <script>
+        // Use a URL do seu servidor (Render) ou localhost para testes
+        const API_URL_BASE = 'https://aishageriatria.onrender.com'; 
+
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('authToken');
             const role = localStorage.getItem('userRole');
@@ -88,93 +153,121 @@
                 window.location.href = 'login.html';
             });
 
-            // CARREGAR DADOS DO GRÁFICO
-            // ⚠️ ATENÇÃO: Se estiver rodando local, mude para http://localhost:3001/api/admin/stats/idades
-            const API_URL = 'https://aishageriatria.onrender.com/api/admin/stats/idades'; 
+            // Carrega tudo ao iniciar
+            carregarGrafico(token);
+            carregarLista(token);
+        });
 
+        // --- FUNÇÃO 1: CARREGAR GRÁFICO ---
+        async function carregarGrafico(token) {
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                
-                if (!response.ok) {
-                    throw new Error(`Erro API: ${response.status}`);
-                }
-                
                 const data = await response.json();
 
-                // Atualizar Texto Total
-                document.getElementById('texto-total').innerText = `Total geral: ${data.total}`;
+                document.getElementById('texto-total').innerText = `Total: ${data.total}`;
 
-                // Configurar Gráfico
                 const ctx = document.getElementById('graficoIdades').getContext('2d');
                 
-                new Chart(ctx, {
+                // Se já existir gráfico, destrói para criar novo (evita bug de sobreposição)
+                if (window.meuGrafico) window.meuGrafico.destroy();
+
+                window.meuGrafico = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                        labels: [
-                            'Até 50', '51 até 60', '61 até 70', 
-                            '71 até 80', '81 até 90', 'Maior que 90', 
-                            'Não informado'
-                        ],
+                        labels: ['Até 50', '51-60', '61-70', '71-80', '81-90', '> 90', 'N/I'],
                         datasets: [{
                             data: [
                                 data.grupos.Ate50, data.grupos.De51a60, data.grupos.De61a70,
                                 data.grupos.De71a80, data.grupos.De81a90, data.grupos.Maior90,
                                 data.grupos.NaoInformado
                             ],
-                            backgroundColor: [
-                                '#B0BEC5', // Até 50
-                                '#90CAF9', // 51-60
-                                '#9575CD', // 61-70
-                                '#00E676', // 71-80 (Verde Destaque)
-                                '#FF8A65', // 81-90
-                                '#607D8B', // >90
-                                '#E1BEE7'  // N/I
-                            ],
-                            borderWidth: 2,
-                            borderColor: '#ffffff',
-                            hoverOffset: 8
+                            backgroundColor: ['#B0BEC5', '#90CAF9', '#9575CD', '#00E676', '#FF8A65', '#607D8B', '#E1BEE7'],
+                            borderWidth: 2, borderColor: '#ffffff'
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    padding: 20,
-                                    font: { family: "'Montserrat', sans-serif", size: 11 },
-                                    color: '#555'
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: 'rgba(0,0,0,0.8)',
-                                padding: 12,
-                                bodyFont: { size: 13 },
-                                callbacks: {
-                                    label: function(context) {
-                                        let label = context.label || '';
-                                        if (label) { label += ': '; }
-                                        let value = context.raw;
-                                        // Evitar divisão por zero
-                                        let percentage = data.total > 0 ? ((value / data.total) * 100).toFixed(1) + '%' : '0%';
-                                        return `${label} ${value} (${percentage})`;
-                                    }
-                                }
-                            }
-                        }
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 15 } } }
                     }
+                });
+            } catch (error) {
+                console.error("Erro gráfico:", error);
+                document.getElementById('texto-total').innerText = "Erro.";
+            }
+        }
+
+        // --- FUNÇÃO 2: CARREGAR LISTA DE PACIENTES ---
+        async function carregarLista(token = localStorage.getItem('authToken')) {
+            const listaUl = document.getElementById('lista-pacientes');
+            listaUl.innerHTML = '<li style="text-align:center; padding: 20px; color:#999;">Carregando...</li>';
+
+            try {
+                const response = await fetch(`${API_URL_BASE}/api/admin/pacientes`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (!response.ok) throw new Error('Erro ao buscar lista');
+                
+                const pacientes = await response.json();
+                listaUl.innerHTML = '';
+
+                if (pacientes.length === 0) {
+                    listaUl.innerHTML = '<li style="padding:15px; text-align:center;">Nenhum paciente encontrado.</li>';
+                    return;
+                }
+
+                pacientes.forEach(p => {
+                    const li = document.createElement('li');
+                    li.className = 'paciente-item';
+                    
+                    const statusTermo = p.termoAceite ? 
+                        '<span style="color:green; font-size:0.75rem;">✔ Termo Aceito</span>' : 
+                        '<span style="color:orange; font-size:0.75rem;">⏳ Pendente</span>';
+
+                    li.innerHTML = `
+                        <div class="info-paciente">
+                            <strong>${p.nome}</strong>
+                            <span>${p.email}</span>
+                            ${statusTermo}
+                        </div>
+                        <div class="acoes-paciente">
+                            <a href="admin-prontuario.html?id=${p._id}" class="btn-editar">Editar</a>
+                            <button onclick="deletarPaciente('${p._id}')" class="btn-excluir">Excluir</button>
+                        </div>
+                    `;
+                    listaUl.appendChild(li);
                 });
 
             } catch (error) {
-                console.error("Erro no gráfico:", error);
-                document.getElementById('texto-total').innerText = "Erro ao carregar.";
-                document.getElementById('texto-total').style.color = "red";
+                console.error(error);
+                listaUl.innerHTML = '<li style="color:red; text-align:center; padding:15px;">Erro ao carregar lista. Verifique a conexão.</li>';
             }
-        });
+        }
+
+        // --- FUNÇÃO 3: DELETAR PACIENTE ---
+        async function deletarPaciente(id) {
+            if (!confirm('Tem certeza que deseja excluir este paciente e todo o prontuário dele? Essa ação não pode ser desfeita.')) return;
+            
+            const token = localStorage.getItem('authToken');
+            try {
+                const res = await fetch(`${API_URL_BASE}/api/admin/paciente/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    alert('Paciente excluído com sucesso.');
+                    carregarLista(token); // Atualiza a lista
+                    carregarGrafico(token); // Atualiza o gráfico
+                } else {
+                    alert('Erro ao excluir.');
+                }
+            } catch (err) {
+                alert('Erro de conexão ao excluir.');
+            }
+        }
     </script>
 </body>
 </html>

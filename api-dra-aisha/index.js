@@ -84,12 +84,10 @@ app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, 
     }
 });
 
-// --- ROTA LISTA DE PACIENTES (ADMIN) ---
+// --- ROTA LISTA DE PACIENTES (ESSENCIAL PARA A LISTA APARECER) ---
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        // Busca usuários que NÃO são admin
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
-        
         const listaCompleta = await Promise.all(usuarios.map(async (u) => {
             const prontuario = await Prontuario.findOne({ user: u._id }).select('termoAceite');
             return { 
@@ -100,7 +98,6 @@ app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res
                 termoAceite: prontuario ? prontuario.termoAceite : false 
             };
         }));
-        
         res.status(200).json(listaCompleta);
     } catch (error) { res.status(500).json({ message: 'Erro ao listar.' }); }
 });
@@ -114,7 +111,7 @@ app.delete('/api/admin/paciente/:id', authMiddleware, adminMiddleware, async (re
     } catch (error) { res.status(500).json({ message: 'Erro ao deletar.' }); }
 });
 
-// --- ROTAS DO PRONTUÁRIO ---
+// --- ROTAS DO PRONTUÁRIO (Admin e User) ---
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const p = await Prontuario.findOne({ user: req.params.userId });
@@ -129,6 +126,7 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
+    // Todos os campos novos inclusos
     const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
     const dados = { user: req.params.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes };
     await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
@@ -136,7 +134,7 @@ app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// Evoluções
+// Evoluções e outras rotas de suporte
 app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
     try { const { titulo, texto } = req.body; const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true }); res.status(200).json({ message: 'Salvo', prontuario: p }); } catch(e) { res.status(500).json({message: 'Erro'}); }
 });
@@ -147,7 +145,7 @@ app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMi
     try { const {titulo, texto} = req.body; const p = await Prontuario.findOne({user: req.params.userId}); const evo = p.evolucoes.id(req.params.evoId); evo.titulo = titulo; evo.texto = texto; await p.save(); res.status(200).json({message: 'Editado', prontuario: p}); } catch(e){ res.status(500).json({message: 'Erro'}); }
 });
 
-// Rota Pública e Paciente
+// Rota Pública e do Paciente
 app.get('/api/public-prontuario/:userId', async (req, res) => { try { const p = await Prontuario.findOne({ user: req.params.userId }); if (!p) return res.status(404).json({ message: 'Não encontrado.' }); res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.get('/api/prontuario', authMiddleware, async (req, res) => { try { let p = await Prontuario.findOne({ user: req.user.userId }); if (!p) { p = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await p.save(); } res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.post('/api/prontuario', authMiddleware, async (req, res) => { const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body; try { const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes }; await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true }); res.status(200).json({ message: 'Salvo!' }); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
