@@ -7,32 +7,16 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/prontuario.css"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/prontuario.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body { background-color: #f4f6f8; }
         .dashboard-container { padding: 40px; max-width: 1200px; margin: 0 auto; }
         .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
-        
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 30px;
-        }
-
-        /* CARD GRÁFICO */
-        .card-grafico {
-            background: #fff; padding: 30px; border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            display: flex; flex-direction: column; height: fit-content;
-        }
-
-        /* CARD LISTA */
-        .card-lista {
-            background: #fff; padding: 30px; border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
+        .card-grafico { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: fit-content; }
+        .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
         .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
@@ -40,7 +24,6 @@
     </style>
 </head>
 <body>
-
     <header class="novo-header">
         <div class="header-container" style="justify-content: space-between;">
             <a href="#" class="logo"><img src="img/layout.png" alt="Logo" style="height: 40px;"></a>
@@ -53,9 +36,7 @@
 
     <main class="dashboard-container">
         <h2 class="titulo-secao">Visão Geral</h2>
-
         <div class="dashboard-grid">
-            
             <div class="card-grafico">
                 <div class="header-card">
                     <h3>Idade dos Pacientes</h3>
@@ -65,18 +46,15 @@
                     <canvas id="graficoIdades"></canvas>
                 </div>
             </div>
-
             <div class="card-lista">
                 <div class="header-card">
                     <h3>Pacientes Cadastrados</h3>
                     <button onclick="carregarLista()" style="background:none; border:none; color:#2ADCA1; cursor:pointer;">↻ Atualizar</button>
                 </div>
-                
                 <ul id="lista-pacientes" class="lista-pacientes">
                     <li style="text-align:center; padding: 20px; color:#999;">Carregando lista...</li>
                 </ul>
             </div>
-
         </div>
     </main>
 
@@ -86,30 +64,19 @@
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('authToken');
             const role = localStorage.getItem('userRole');
-            
             if (!token || role !== 'admin') { localStorage.clear(); window.location.href = 'login.html'; return; }
-
-            document.getElementById('btn-logout').addEventListener('click', () => {
-                localStorage.clear();
-                window.location.href = 'login.html';
-            });
-
+            document.getElementById('btn-logout').addEventListener('click', () => { localStorage.clear(); window.location.href = 'login.html'; });
             carregarGrafico(token);
             carregarLista(token);
         });
 
-        // GRAFICO
         async function carregarGrafico(token) {
             try {
-                const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const data = await response.json();
                 document.getElementById('texto-total').innerText = `Total: ${data.total}`;
-
                 const ctx = document.getElementById('graficoIdades').getContext('2d');
                 if (window.meuGrafico) window.meuGrafico.destroy();
-
                 window.meuGrafico = new Chart(ctx, {
                     type: 'pie',
                     data: {
@@ -125,31 +92,18 @@
             } catch (error) { console.error("Erro gráfico:", error); }
         }
 
-        // LISTA DE PACIENTES
         async function carregarLista(token = localStorage.getItem('authToken')) {
             const listaUl = document.getElementById('lista-pacientes');
             listaUl.innerHTML = '<li style="text-align:center; padding: 20px; color:#999;">Carregando...</li>';
-
             try {
-                const response = await fetch(`${API_URL_BASE}/api/admin/pacientes`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+                const response = await fetch(`${API_URL_BASE}/api/admin/pacientes`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const pacientes = await response.json();
                 listaUl.innerHTML = '';
-
-                if (pacientes.length === 0) {
-                    listaUl.innerHTML = '<li style="padding:15px; text-align:center;">Nenhum paciente encontrado.</li>';
-                    return;
-                }
-
+                if (pacientes.length === 0) { listaUl.innerHTML = '<li style="padding:15px; text-align:center;">Nenhum paciente encontrado.</li>'; return; }
                 pacientes.forEach(p => {
                     const li = document.createElement('li');
                     li.className = 'paciente-item';
-                    
-                    const statusTermo = p.termoAceite ? 
-                        '<span style="color:green; font-size:0.75rem;">✔ Termo Aceito</span>' : 
-                        '<span style="color:orange; font-size:0.75rem;">⏳ Pendente</span>';
-
+                    const statusTermo = p.termoAceite ? '<span style="color:green; font-size:0.75rem;">✔ Termo Aceito</span>' : '<span style="color:orange; font-size:0.75rem;">⏳ Pendente</span>';
                     li.innerHTML = `
                         <div class="info-paciente">
                             <strong>${p.nome}</strong>
@@ -170,11 +124,8 @@
             if (!confirm('Excluir paciente? Ação irreversível.')) return;
             const token = localStorage.getItem('authToken');
             try {
-                const res = await fetch(`${API_URL_BASE}/api/admin/paciente/${id}`, {
-                    method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }
-                });
-                if (res.ok) { alert('Excluído.'); carregarLista(token); carregarGrafico(token); } 
-                else { alert('Erro.'); }
+                const res = await fetch(`${API_URL_BASE}/api/admin/paciente/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+                if (res.ok) { alert('Excluído.'); carregarLista(token); carregarGrafico(token); } else { alert('Erro.'); }
             } catch (err) { alert('Erro de conexão.'); }
         }
     </script>

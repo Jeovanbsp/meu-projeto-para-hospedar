@@ -52,29 +52,23 @@ app.post('/auth/login', async (req, res) => {
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// --- ROTA DE ESTATÍSTICAS (CORRIGIDA: REMOVE FANTASMAS) ---
+// --- ROTA DE ESTATÍSTICAS (CORRIGIDA - TOTAL 1) ---
 app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, res) => {
     try {
-        // 1. Busca IDs de usuários ativos (não admins)
+        // 1. Pega IDs de usuários que AINDA existem e NÃO são admin
         const activeUsers = await User.find({ role: { $ne: 'admin' } }, '_id');
         const activeUserIds = activeUsers.map(u => u._id);
 
-        // 2. Busca apenas prontuários que pertencem a esses usuários
+        // 2. Busca somente prontuários desses IDs (ignora órfãos)
         const prontuarios = await Prontuario.find({ user: { $in: activeUserIds } }, 'idade');
         
-        const grupos = {
-            'Ate50': 0, 'De51a60': 0, 'De61a70': 0, 'De71a80': 0, 
-            'De81a90': 0, 'Maior90': 0, 'NaoInformado': 0
-        };
-
+        const grupos = { 'Ate50': 0, 'De51a60': 0, 'De61a70': 0, 'De71a80': 0, 'De81a90': 0, 'Maior90': 0, 'NaoInformado': 0 };
         let total = 0;
 
         prontuarios.forEach(p => {
             total++;
             const id = p.idade;
-
             if (!id && id !== 0) { grupos.NaoInformado++; return; }
-            
             if (id <= 50) grupos.Ate50++;
             else if (id <= 60) grupos.De51a60++;
             else if (id <= 70) grupos.De61a70++;
@@ -84,25 +78,16 @@ app.get('/api/admin/stats/idades', authMiddleware, adminMiddleware, async (req, 
         });
 
         res.status(200).json({ grupos, total });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro estatisticas.' });
-    }
+    } catch (error) { res.status(500).json({ message: 'Erro estatisticas.' }); }
 });
 
-// --- LISTA DE PACIENTES ---
+// --- ROTA LISTA DE PACIENTES ---
 app.get('/api/admin/pacientes', authMiddleware, adminMiddleware, async (req, res) => {
     try {
         const usuarios = await User.find({ role: { $ne: 'admin' } }).select('-password').sort({ createdAt: -1 });
         const listaCompleta = await Promise.all(usuarios.map(async (u) => {
             const prontuario = await Prontuario.findOne({ user: u._id }).select('termoAceite');
-            return { 
-                _id: u._id, 
-                nome: u.nome, 
-                email: u.email, 
-                createdAt: u.createdAt, 
-                termoAceite: prontuario ? prontuario.termoAceite : false 
-            };
+            return { _id: u._id, nome: u.nome, email: u.email, createdAt: u.createdAt, termoAceite: prontuario ? prontuario.termoAceite : false };
         }));
         res.status(200).json(listaCompleta);
     } catch (error) { res.status(500).json({ message: 'Erro ao listar.' }); }
@@ -117,12 +102,11 @@ app.delete('/api/admin/paciente/:id', authMiddleware, adminMiddleware, async (re
     } catch (error) { res.status(500).json({ message: 'Erro ao deletar.' }); }
 });
 
-// --- PRONTUÁRIO (GET/POST) ---
+// --- CRUD PRONTUÁRIO ---
 app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const p = await Prontuario.findOne({ user: req.params.userId });
     if (!p) {
-        // Se não existir prontuário, retorna objeto vazio mas com user ID
         const u = await User.findById(req.params.userId);
         if(!u) return res.status(404).json({message:'User não encontrado'});
         return res.status(200).json({ user: req.params.userId, nomePaciente: u.nome, medicosAssistentes: [], medicacoes: [], evolucoes: [] });
@@ -133,6 +117,7 @@ app.get('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async 
 
 app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async (req, res) => {
   try {
+    // SALVA TUDO
     const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body;
     const dados = { user: req.params.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes };
     await Prontuario.findOneAndUpdate({ user: req.params.userId }, dados, { new: true, upsert: true });
@@ -140,18 +125,10 @@ app.post('/api/admin/prontuario/:userId', authMiddleware, adminMiddleware, async
   } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// Evoluções
-app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => {
-    try { const { titulo, texto } = req.body; const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true }); res.status(200).json({ message: 'Salvo', prontuario: p }); } catch(e) { res.status(500).json({message: 'Erro'}); }
-});
-app.delete('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req,res)=>{
-    try { await Prontuario.findOneAndUpdate({user: req.params.userId}, {$pull: {evolucoes: {_id: req.params.evoId}}}); res.status(200).json({message: 'Deletado'}); } catch(e){ res.status(500).json({message:'Erro'}); }
-});
-app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req, res) => {
-    try { const {titulo, texto} = req.body; const p = await Prontuario.findOne({user: req.params.userId}); const evo = p.evolucoes.id(req.params.evoId); evo.titulo = titulo; evo.texto = texto; await p.save(); res.status(200).json({message: 'Editado', prontuario: p}); } catch(e){ res.status(500).json({message: 'Erro'}); }
-});
-
-// Rota Pública e Paciente
+// Outras rotas
+app.post('/api/admin/prontuario/:userId/evolucao', authMiddleware, adminMiddleware, async (req, res) => { try { const { titulo, texto } = req.body; const p = await Prontuario.findOneAndUpdate({ user: req.params.userId }, { $push: { evolucoes: { titulo, texto, data: new Date(), autor: 'Dra. Aisha' } } }, { new: true }); res.status(200).json({ message: 'Salvo', prontuario: p }); } catch(e) { res.status(500).json({message: 'Erro'}); } });
+app.delete('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req,res)=>{ try { await Prontuario.findOneAndUpdate({user: req.params.userId}, {$pull: {evolucoes: {_id: req.params.evoId}}}); res.status(200).json({message: 'Deletado'}); } catch(e){ res.status(500).json({message:'Erro'}); } });
+app.put('/api/admin/prontuario/:userId/evolucao/:evoId', authMiddleware, adminMiddleware, async (req, res) => { try { const {titulo, texto} = req.body; const p = await Prontuario.findOne({user: req.params.userId}); const evo = p.evolucoes.id(req.params.evoId); evo.titulo = titulo; evo.texto = texto; await p.save(); res.status(200).json({message: 'Editado', prontuario: p}); } catch(e){ res.status(500).json({message: 'Erro'}); } });
 app.get('/api/public-prontuario/:userId', async (req, res) => { try { const p = await Prontuario.findOne({ user: req.params.userId }); if (!p) return res.status(404).json({ message: 'Não encontrado.' }); res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.get('/api/prontuario', authMiddleware, async (req, res) => { try { let p = await Prontuario.findOne({ user: req.user.userId }); if (!p) { p = new Prontuario({ user: req.user.userId, nomePaciente: req.user.nome }); await p.save(); } res.status(200).json(p); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });
 app.post('/api/prontuario', authMiddleware, async (req, res) => { const { nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes, termoAceite } = req.body; try { const dados = { user: req.user.userId, termoAceite, nomePaciente, idade, mobilidade, patologias, exames, comorbidades, alergias, medicosAssistentes, medicacoes }; await Prontuario.findOneAndUpdate({ user: req.user.userId }, dados, { new: true, upsert: true }); res.status(200).json({ message: 'Salvo!' }); } catch (error) { res.status(500).json({ message: 'Erro.' }); } });

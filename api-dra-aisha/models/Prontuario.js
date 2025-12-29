@@ -24,15 +24,12 @@ const EvolucaoSchema = new Schema({
 
 const ProntuarioSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
-  
   termoAceite: { type: Boolean, default: false },
-
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
   
-  // --- MOBILIDADE ---
+  // NOVOS CAMPOS ESSENCIAIS
   mobilidade: { type: String, default: '' }, 
-  
   patologias: { type: String, default: '' },
   exames: { type: String, default: '' },
 

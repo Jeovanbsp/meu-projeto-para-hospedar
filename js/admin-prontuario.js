@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function createTempTitleInput() { const input = document.createElement('input'); input.id = 'titulo-evolucao'; input.className = 'form-control'; input.placeholder = 'Assunto'; input.style.marginBottom = '5px'; const textArea = document.getElementById('texto-evolucao'); if(textArea) textArea.parentNode.insertBefore(input, textArea); return input; }
 
-  // --- LÓGICA DE CARREGAMENTO SEGURA ---
+  // --- POPULATE FORM SEGURO ---
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || '';
     idadeInput.value = data.idade || '';
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Comorbidades (COM PROTEÇÃO)
-    const comorbidades = data.comorbidades || {}; // Evita erro se for null
+    // Comorbidades (SEGURO)
+    const comorbidades = data.comorbidades || {}; 
     if (comorbidades.temComorbidade) {
         radioComorbidadeSim.checked = true;
         inputOutrasComorbidades.value = comorbidades.outras || '';
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     toggleComorbidades(); 
 
-    // Alergias (COM PROTEÇÃO)
+    // Alergias
     const alergias = data.alergias || {};
     if (alergias.temAlergia) {
         radioAlergiaSim.checked = true;
@@ -143,12 +143,22 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) { console.error(error); alert("Erro ao carregar prontuário."); }
   };
 
+  // --- RENDERS ---
   const renderMedicosList = () => { listaMedicosPills.innerHTML = ''; if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; } currentMedicos.forEach((medico, index) => { const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`; listaMedicosPills.insertAdjacentHTML('beforeend', pill); }); };
+  const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação.</td></tr>'; return; } const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); }); list.forEach((med) => { let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } } if (!turnosHtml) turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>'; const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; const qtdDisplay = med.quantidade ? med.quantidade : '-'; const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; listaMedicacoesBody.insertAdjacentHTML('beforeend', row); }); };
+  const renderEvolucoes = () => { listaEvolucoesDiv.innerHTML = ''; if (!currentEvolucoes || currentEvolucoes.length === 0) { listaEvolucoesDiv.innerHTML = '<p style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</p>'; return; } const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data)); list.forEach(evo => { const d = new Date(evo.data); const dataStr = `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')} ${d.getHours()}:${d.getMinutes().toString().padStart(2,'0')}`; const itemHtml = `<div class="evolucao-item" id="evo-${evo._id}"><div class="evo-header" onclick="toggleEvolucao('${evo._id}')"><div class="evo-left"><span class="evo-date">${dataStr}</span><strong class="evo-title">${evo.titulo}</strong></div><div class="evo-right"><span class="evo-arrow" id="icon-${evo._id}">▼</span><div class="evo-btns" onclick="event.stopPropagation()"><button class="btn-mini edit" onclick="startEditEvolucao('${evo._id}')">✎</button><button class="btn-mini delete" onclick="deleteEvolucao('${evo._id}')">✕</button></div></div></div><div class="evo-body hidden" id="body-${evo._id}"><p>${evo.texto.replace(/\n/g, '<br>')}</p><small style="display:block; margin-top:5px; color:#aaa; font-style:italic;">Ass: ${evo.autor || 'Dra. Aisha'}</small></div></div>`; listaEvolucoesDiv.insertAdjacentHTML('beforeend', itemHtml); }); };
+
+  // --- HANDLERS ---
   const handleAddMedico = (e) => { e.preventDefault(); const nome = nomeMedicoInput.value.trim(); const tel = telefoneMedicoInput.value.trim(); if(!nome) return; const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`; currentMedicos.push(textoFinal); renderMedicosList(); nomeMedicoInput.value=''; telefoneMedicoInput.value=''; };
   const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
-
-  const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Nenhuma medicação.</td></tr>'; return; } const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); }); list.forEach((med) => { let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } } if (!turnosHtml) turnosHtml = '<span style="color:#ccc; font-size:0.8rem;">-</span>'; const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; const qtdDisplay = med.quantidade ? med.quantidade : '-'; const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; listaMedicacoesBody.insertAdjacentHTML('beforeend', row); }); };
-  const handleAddMedicacao = (e) => { e.preventDefault(); if(!nomeMedicacaoInput.value) return; const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; if(formAddMedicacao && btnToggleMedForm) { formAddMedicacao.style.display = 'none'; btnToggleMedForm.innerText = '+ Nova Medicação'; btnToggleMedForm.classList.remove('cancelar'); } };
+  
+  const handleAddMedicacao = (e) => { 
+      e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
+      const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
+      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
+      renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; 
+      if(formAddMedicacao && btnToggleMedForm) { formAddMedicacao.style.display = 'none'; btnToggleMedForm.innerText = '+ Nova Medicação'; btnToggleMedForm.classList.remove('cancelar'); }
+  };
   const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
 
   if (btnToggleMedForm) { btnToggleMedForm.addEventListener('click', () => { if (formAddMedicacao.style.display === 'none') { formAddMedicacao.style.display = 'block'; btnToggleMedForm.innerText = 'Cancelar Adição'; btnToggleMedForm.classList.add('cancelar'); } else { formAddMedicacao.style.display = 'none'; btnToggleMedForm.innerText = '+ Nova Medicação'; btnToggleMedForm.classList.remove('cancelar'); } }); }
