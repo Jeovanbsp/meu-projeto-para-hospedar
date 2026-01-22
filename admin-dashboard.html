@@ -7,7 +7,8 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/prontuario.css"> <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/prontuario.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body { background-color: #f4f6f8; }
@@ -18,9 +19,22 @@
         .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
-        .total-badge { font-size: 0.9rem; color: #888; font-weight: 400; }
+        
+        /* Botão Novo Paciente */
+        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
+        .btn-novo:hover { background-color: #24b685; transform: translateY(-2px); }
+
         #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
         @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+
+        /* MODAL CADASTRO */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s; }
+        .modal-box { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-box h3 { margin-top: 0; color: #333; }
+        .modal-box input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
+        .btn-cancelar { background: #eee; color: #555; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-salvar-modal { background: #2ADCA1; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -41,12 +55,38 @@
                 <div class="header-card"><h3>Idade dos Pacientes</h3><span class="total-badge" id="texto-total">Carregando...</span></div>
                 <div style="position: relative; height: 300px; width: 100%;"><canvas id="graficoIdades"></canvas></div>
             </div>
+            
             <div class="card-lista">
-                <div class="header-card"><h3>Pacientes Cadastrados</h3><button onclick="carregarLista()" style="background:none; border:none; color:#2ADCA1; cursor:pointer;">↻ Atualizar</button></div>
+                <div class="header-card">
+                    <h3>Pacientes Cadastrados</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="abrirModalCadastro()" class="btn-novo">+ Novo Paciente</button>
+                        <button onclick="carregarLista()" style="background:none; border:none; color:#2ADCA1; cursor:pointer;">↻</button>
+                    </div>
+                </div>
                 <ul id="lista-pacientes" class="lista-pacientes"><li style="text-align:center; padding: 20px; color:#999;">Carregando lista...</li></ul>
             </div>
         </div>
     </main>
+
+    <div id="modal-cadastro" class="modal-overlay">
+        <div class="modal-box">
+            <h3>Cadastrar Novo Paciente</h3>
+            <form id="form-cadastro-paciente">
+                <label style="font-size:0.9rem; font-weight:600; color:#555;">Nome Completo</label>
+                <input type="text" id="novo-nome" required>
+                
+                <label style="font-size:0.9rem; font-weight:600; color:#555;">E-mail (Login)</label>
+                <input type="email" id="novo-email" required>
+                
+                <label style="font-size:0.9rem; font-weight:600; color:#555;">Senha de Acesso</label>
+                <input type="text" id="novo-senha" value="123456" required> <div class="modal-btns">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalCadastro()">Cancelar</button>
+                    <button type="submit" class="btn-salvar-modal">Criar Conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         const API_URL_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
@@ -59,6 +99,41 @@
             carregarGrafico(token); carregarLista(token);
         });
 
+        // --- FUNÇÕES DO MODAL ---
+        function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
+        function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
+
+        // --- CADASTRAR PACIENTE (ADMIN) ---
+        document.getElementById('form-cadastro-paciente').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const token = localStorage.getItem('authToken');
+            const nome = document.getElementById('novo-nome').value;
+            const email = document.getElementById('novo-email').value;
+            const senha = document.getElementById('novo-senha').value;
+
+            if(!nome || !email || !senha) return alert("Preencha tudo!");
+
+            try {
+                const res = await fetch(`${API_URL_BASE}/api/admin/cadastro`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ nome, email, senha })
+                });
+
+                const data = await res.json();
+                if(res.ok) {
+                    alert("Paciente cadastrado com sucesso!");
+                    fecharModalCadastro();
+                    document.getElementById('form-cadastro-paciente').reset();
+                    carregarLista(token); // Atualiza a lista
+                    carregarGrafico(token); // Atualiza o gráfico
+                } else {
+                    alert("Erro: " + data.message);
+                }
+            } catch(err) { alert("Erro de conexão."); }
+        });
+
+        // --- CARREGAR DADOS ---
         async function carregarGrafico(token) {
             try {
                 const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, { headers: { 'Authorization': `Bearer ${token}` } });
