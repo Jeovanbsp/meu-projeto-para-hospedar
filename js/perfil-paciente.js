@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // LÓGICA DO TERMO DE RESPONSABILIDADE (MODAL + CHECKBOX)
   // ============================================================
 
-  // Função central para exibir ou esconder o prontuário
   function toggleConteudoProntuario() { 
       if (checkTermoAceite.checked) { 
           conteudoProntuario.style.display = 'block'; 
@@ -69,16 +68,14 @@ document.addEventListener('DOMContentLoaded', () => {
       } 
   }
 
-  // EVENTO CRÍTICO: Quando o usuário clica manualmente na caixinha
+  // EVENTO PARA FECHAR AO DESMARCAR
   checkTermoAceite.addEventListener('change', () => {
       toggleConteudoProntuario();
       if(!checkTermoAceite.checked) {
-          // Se desmarcar, avisa e fecha
           alert("Você retirou o aceite. O prontuário foi ocultado.");
       }
   });
 
-  // Função para abrir o Modal
   window.abrirModalTermo = () => {
       const nomeParaTermo = nomePacienteInput.value || userName || "____________________";
       const rgParaTermo = rgPacienteInput.value || "____________________";
@@ -92,28 +89,20 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('modal-termo').style.display = 'flex';
   };
 
-  // Função para fechar o Modal (Cancelar)
   window.fecharModalTermo = () => {
       document.getElementById('modal-termo').style.display = 'none';
   };
 
-  // Função para Aceitar no Modal
   window.aceitarTermo = () => {
       checkTermoAceite.checked = true;
-      checkTermoAceite.disabled = false; // Habilita o check para poder desmarcar depois
-      
-      toggleConteudoProntuario(); // Mostra o formulário
+      checkTermoAceite.disabled = false;
+      toggleConteudoProntuario();
       fecharModalTermo();
       
-      // Rola a tela até o início do formulário
       setTimeout(() => {
           conteudoProntuario.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 300);
   };
-
-  // ============================================================
-  // RESTANTE DO CÓDIGO (Lógica do Prontuário)
-  // ============================================================
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
   
@@ -200,7 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     toggleComorbidades();
     
-    // Se o termo já foi aceito anteriormente, mostra o conteúdo e habilita o check
     if (data.termoAceite) { 
         checkTermoAceite.checked = true; 
         checkTermoAceite.disabled = false;
