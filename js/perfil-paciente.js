@@ -9,12 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const conteudoProntuario = document.getElementById('conteudo-prontuario');
 
   const nomePacienteInput = document.getElementById('nome-paciente');
+  const rgPacienteInput = document.getElementById('rg-paciente'); // NOVO CAMPO RG
   const idadeInput = document.getElementById('idade');
   // MOBILIDADE
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
 
   const patologiasInput = document.getElementById('patologias');
-  const examesInput = document.getElementById('exames'); // EXAMES
+  const examesInput = document.getElementById('exames');
   
   // COMORBIDADES
   const radioComorbidadeNao = document.getElementById('comorbidade-nao');
@@ -41,7 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
   
-  // TOGGLE FORM MEDICAÇÃO
   const btnToggleMedForm = document.getElementById('btn-toggle-med-form');
   const formAddMedicacao = document.getElementById('form-add-medicacao');
 
@@ -57,17 +57,50 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogout = document.getElementById('btn-logout-paciente');
   if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
 
-  function toggleConteudoProntuario() { if (checkTermoAceite.checked) { conteudoProntuario.style.display = 'block'; } else { conteudoProntuario.style.display = 'none'; } }
-  checkTermoAceite.addEventListener('change', toggleConteudoProntuario);
+  // --- LÓGICA DO TERMO DE RESPONSABILIDADE ---
+  window.abrirModalTermo = () => {
+      // Preenche dados no termo para visualização
+      const nomeParaTermo = nomePacienteInput.value || userName || "____________________";
+      const rgParaTermo = rgPacienteInput.value || "____________________";
+      
+      document.getElementById('termo-nome-paciente').innerText = nomeParaTermo;
+      document.getElementById('termo-rg-paciente').innerText = rgParaTermo;
+      
+      const hoje = new Date();
+      document.getElementById('termo-data-atual').innerText = hoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('modal-termo').style.display = 'flex';
+  };
+
+  window.fecharModalTermo = () => {
+      document.getElementById('modal-termo').style.display = 'none';
+  };
+
+  window.aceitarTermo = () => {
+      checkTermoAceite.checked = true;
+      checkTermoAceite.disabled = false; // Habilita visualmente
+      toggleConteudoProntuario();
+      fecharModalTermo();
+      // Rolar a tela para o formulário
+      conteudoProntuario.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  function toggleConteudoProntuario() { 
+      if (checkTermoAceite.checked) { 
+          conteudoProntuario.style.display = 'block'; 
+      } else { 
+          conteudoProntuario.style.display = 'none'; 
+      } 
+  }
+  // Removemos o listener direto de 'change' para forçar o uso do botão, mas mantemos a função
+  // checkTermoAceite.addEventListener('change', toggleConteudoProntuario); 
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
   
-  // TOGGLE COMORBIDADES
   function toggleComorbidades() { 
       if (radioComorbidadeSim.checked) { 
           listaComorbidades.style.display = 'block'; 
           btnMinimizarComorbidades.style.display = 'flex'; 
-          listaComorbidades.style.display = 'block';
           btnMinimizarComorbidades.classList.add('aberto');
           if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
       } else { 
@@ -121,21 +154,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
+    if(rgPacienteInput) rgPacienteInput.value = data.rg || ''; // Popula RG
     idadeInput.value = data.idade || '';
     
-    // POPULAR MOBILIDADE
     if (data.mobilidade) {
         radiosMobilidade.forEach(radio => {
             if (radio.value === data.mobilidade) radio.checked = true;
         });
-    } else {
-        radiosMobilidade.forEach(radio => radio.checked = false);
     }
 
     patologiasInput.value = data.patologias || '';
     examesInput.value = data.exames || '';
 
-    // COMORBIDADES
     if (data.comorbidades && data.comorbidades.temComorbidade) {
         radioComorbidadeSim.checked = true;
         inputOutrasComorbidades.value = data.comorbidades.outras || '';
@@ -151,8 +181,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     toggleComorbidades();
     
-    if (data.termoAceite) { checkTermoAceite.checked = true; }
-    toggleConteudoProntuario();
+    if (data.termoAceite) { 
+        checkTermoAceite.checked = true; 
+        checkTermoAceite.disabled = false;
+        toggleConteudoProntuario();
+    }
 
     if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
     else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
@@ -184,12 +217,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
     btnSalvarTudo.innerText = 'Salvando...';
     
-    // COLETAR MOBILIDADE
     let mobilidadeSelecionada = '';
     const radioMobilidadeChecked = document.querySelector('input[name="mobilidade"]:checked');
     if (radioMobilidadeChecked) { mobilidadeSelecionada = radioMobilidadeChecked.value; }
 
-    // COLETA COMORBIDADES
     const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
     const comorbidadesDados = {
         temComorbidade: radioComorbidadeSim.checked,
@@ -203,8 +234,9 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ 
             nomePaciente: nomePacienteInput.value, 
+            rg: rgPacienteInput.value, // Salva o RG
             idade: idadeInput.value, 
-            mobilidade: mobilidadeSelecionada, // SALVANDO MOBILIDADE
+            mobilidade: mobilidadeSelecionada, 
             patologias: patologiasInput.value, 
             exames: examesInput.value,
             comorbidades: comorbidadesDados,

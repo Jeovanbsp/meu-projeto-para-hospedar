@@ -31,14 +31,28 @@
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
             <h2>Minhas Informações (Prontuário)</h2>
+            
             <div class="box-termo-responsabilidade">
-                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. Para visualizar e preencher o formulário, você deve concordar abaixo.</p>
-                <label class="check-termo-container"><input type="checkbox" id="check-termo-aceite"> <span>Declaro que li e <strong>aceito</strong> os termos de responsabilidade.</span></label>
+                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. É obrigatória a leitura do termo abaixo.</p>
+                
+                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">📄 Ler Termo de Declaração e Responsabilidade</button>
+                
+                <div style="margin-top: 15px;">
+                    <label class="check-termo-container">
+                        <input type="checkbox" id="check-termo-aceite" disabled> 
+                        <span>Li e <strong>ACEITO</strong> os termos acima (Clique no botão para ler e aceitar).</span>
+                    </label>
+                </div>
             </div>
+
             <div id="conteudo-prontuario" style="display: none;">
                 <form id="form-prontuario-principal">
                     <label for="nome-paciente">Nome do Paciente</label>
                     <input type="text" id="nome-paciente" required>
+                    
+                    <label for="rg-paciente">RG (Documento de Identificação)</label>
+                    <input type="text" id="rg-paciente" placeholder="RG ou CPF">
+
                     <label for="idade">Idade</label>
                     <input type="number" id="idade" required>
                     
@@ -157,6 +171,37 @@
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
     </main>
+
+    <div id="modal-termo" class="modal-overlay">
+        <div class="modal-box modal-termo-box">
+            <h3>Termo de Declaração e Responsabilidade</h3>
+            
+            <div class="texto-termo">
+                <p>Eu, <strong id="termo-nome-paciente">____________________</strong>, portador(a) do documento de identificação nº <strong id="termo-rg-paciente">____________________</strong>, declaro para os devidos fins que:</p>
+
+                <ul>
+                    <li>Estou ciente de que todas as informações prestadas neste atendimento médico são de minha inteira responsabilidade, sendo necessárias para o correto encaminhamento e acompanhamento da minha condição de saúde.</li>
+                    <li>Reconheço que a veracidade e completude dos dados fornecidos são fundamentais para a adequada condução do tratamento e tomada de decisões clínicas.</li>
+                    <li>Declaro estar informado(a) de que, a qualquer momento, poderei retificar, complementar ou ratificar as informações prestadas, mediante comunicação direta ao profissional ou serviço de saúde responsável.</li>
+                    <li>Assumo plena responsabilidade pelas informações fornecidas, eximindo o profissional e a instituição de saúde de eventuais consequências decorrentes de dados incorretos, incompletos ou omissos.</li>
+                    <li>Estou ciente, desde já, de que poderá haver edição, atualização ou ajustes nas informações relacionadas a receitas médicas, atestados e demais documentos clínicos, realizados pela equipe médica e seus colaboradores, sempre que necessário para o adequado acompanhamento do tratamento.</li>
+                </ul>
+
+                <p>Por ser expressão da verdade, firmo o presente termo em ciência e concordância.</p>
+                
+                <br>
+                <p>Salvador/BA, <span id="termo-data-atual"></span>.</p>
+                <br>
+                <p><strong>Assinatura Digital do Paciente/Responsável (Ao clicar em aceitar)</strong></p>
+            </div>
+
+            <div class="modal-btns">
+                <button type="button" class="btn-cancelar" onclick="fecharModalTermo()">Cancelar</button>
+                <button type="button" class="btn-aceitar" onclick="aceitarTermo()">✅ Li, concordo e Aceito</button>
+            </div>
+        </div>
+    </div>
+
     <footer id="contato" class="no-print"><p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p></footer>
     <script src="js/perfil-paciente.js"></script>
 </body>
