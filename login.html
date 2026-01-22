@@ -6,39 +6,96 @@
     <title>Login - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        body { background-color: #f4f6f8; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+    <link rel="stylesheet" href="css/style.css"> <style>
+        body { 
+            background-color: #f4f6f8; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Ajuste para o conteúdo ficar centralizado verticalmente descontando o header */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+
         .logo-login { max-width: 180px; margin-bottom: 20px; }
+        
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; color: #666; font-weight: 600; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        
         .btn-entrar { width: 100%; padding: 12px; background-color: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
         .btn-entrar:hover { background-color: #24b685; }
+        
         .erro-msg { color: #ef5350; font-size: 0.9rem; margin-top: 15px; display: none; }
+
+        /* Botão de voltar no header */
+        .btn-voltar {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .btn-voltar:hover {
+            background-color: #eee;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <img src="img/layout.png" alt="Logo Dra Aisha" class="logo-login">
-        <h2 style="color: #333; margin-bottom: 20px;">Acesso ao Prontuário</h2>
-        
-        <form id="form-login">
-            <div class="input-group">
-                <label>E-mail</label>
-                <input type="email" id="email" required placeholder="seu@email.com">
-            </div>
-            <div class="input-group">
-                <label>Senha</label>
-                <input type="password" id="senha" required placeholder="********">
-            </div>
-            <button type="submit" class="btn-entrar">Entrar</button>
-            <p id="msg-erro" class="erro-msg"></p>
-        </form>
-    </div>
+    <header class="novo-header">
+        <div class="header-container" style="justify-content: space-between;">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 40px;">
+            </a>
+            
+            <nav>
+                <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-card">
+            <h2 style="color: #333; margin-bottom: 20px;">Acesso ao Prontuário</h2>
+            <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Área restrita para pacientes cadastrados e administração.</p>
+            
+            <form id="form-login">
+                <div class="input-group">
+                    <label>E-mail</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                <div class="input-group">
+                    <label>Senha</label>
+                    <input type="password" id="senha" required placeholder="********">
+                </div>
+                <button type="submit" class="btn-entrar">Entrar</button>
+                <p id="msg-erro" class="erro-msg"></p>
+            </form>
+        </div>
+    </main>
 
     <script>
+        // Detecta URL automaticamente (Localhost ou Produção)
         const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
         document.getElementById('form-login').addEventListener('submit', async (e) => {
@@ -64,14 +121,18 @@
                     localStorage.setItem('userRole', data.role);
                     localStorage.setItem('userName', data.userName);
                     
-                    if (data.role === 'admin') window.location.href = 'admin-dashboard.html';
-                    else window.location.href = 'perfil-paciente.html';
+                    if (data.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'perfil-paciente.html';
+                    }
                 } else {
                     msgErro.innerText = data.message || 'Erro ao entrar.';
                     msgErro.style.display = 'block';
                     document.querySelector('.btn-entrar').innerText = 'Entrar';
                 }
             } catch (err) {
+                console.error(err);
                 msgErro.innerText = 'Erro de conexão com o servidor.';
                 msgErro.style.display = 'block';
                 document.querySelector('.btn-entrar').innerText = 'Entrar';
