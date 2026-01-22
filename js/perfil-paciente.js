@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
 
   // ============================================================
-  // LÓGICA DO TERMO DE RESPONSABILIDADE (MODAL + CHECKBOX)
+  // LÓGICA DO TERMO (Modal + Fechar ao desmarcar)
   // ============================================================
 
   function toggleConteudoProntuario() { 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } 
   }
 
-  // EVENTO PARA FECHAR AO DESMARCAR
+  // EVENTO PARA FECHAR IMEDIATAMENTE AO DESMARCAR
   checkTermoAceite.addEventListener('change', () => {
       toggleConteudoProntuario();
       if(!checkTermoAceite.checked) {

@@ -14,7 +14,6 @@
         #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
         #qrcode-container img { width: 100% !important; height: 100% !important; }
         #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @media print { .no-print { display: none !important; } }
     </style>
 </head>
@@ -33,14 +32,19 @@
             <h2>Minhas Informações (Prontuário)</h2>
             
             <div class="box-termo-responsabilidade">
-                <p>O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. É obrigatória a leitura do termo abaixo.</p>
-                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">Ler Termo de Declaração</button>
-                <div style="margin-top: 10px;">
-                    <label class="check-termo-container">
-                        <input type="checkbox" id="check-termo-aceite" disabled> 
-                        <span>Li e <strong>ACEITO</strong> os termos. (Clique no botão para ler).</span>
-                    </label>
+                <div>
+                    <p style="font-weight: 700; font-size: 1rem; color: #2c3e50; margin-bottom: 5px;">Termo de Declaração e Responsabilidade</p>
+                    <p>O preenchimento deste prontuário é de responsabilidade exclusiva do paciente ou seu responsável legal. Para acessar e editar os dados, a leitura e o aceite do termo são obrigatórios.</p>
                 </div>
+                
+                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">
+                    📄 Ler Termo Completo
+                </button>
+                
+                <label class="check-termo-container">
+                    <input type="checkbox" id="check-termo-aceite" disabled> 
+                    <span>Declaro que li e <strong>CONCORDO</strong> com as informações prestadas.</span>
+                </label>
             </div>
 
             <div id="conteudo-prontuario" style="display: none;">
