@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const conteudoProntuario = document.getElementById('conteudo-prontuario');
 
   const nomePacienteInput = document.getElementById('nome-paciente');
-  const rgPacienteInput = document.getElementById('rg-paciente'); // Novo campo RG
+  const rgPacienteInput = document.getElementById('rg-paciente'); 
   const idadeInput = document.getElementById('idade');
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
 
@@ -55,9 +55,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogout = document.getElementById('btn-logout-paciente');
   if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
 
-  // --- LÓGICA DO MODAL (JANELA FLUTUANTE) ---
+  // ============================================================
+  // LÓGICA DO TERMO DE RESPONSABILIDADE (MODAL + CHECKBOX)
+  // ============================================================
+
+  // Função central para exibir ou esconder o prontuário
+  function toggleConteudoProntuario() { 
+      if (checkTermoAceite.checked) { 
+          conteudoProntuario.style.display = 'block'; 
+          conteudoProntuario.style.animation = 'slideDown 0.5s ease-out';
+      } else { 
+          conteudoProntuario.style.display = 'none'; 
+      } 
+  }
+
+  // EVENTO CRÍTICO: Quando o usuário clica manualmente na caixinha
+  checkTermoAceite.addEventListener('change', () => {
+      toggleConteudoProntuario();
+      if(!checkTermoAceite.checked) {
+          // Se desmarcar, avisa e fecha
+          alert("Você retirou o aceite. O prontuário foi ocultado.");
+      }
+  });
+
+  // Função para abrir o Modal
   window.abrirModalTermo = () => {
-      // Preenche os dados no termo para leitura
       const nomeParaTermo = nomePacienteInput.value || userName || "____________________";
       const rgParaTermo = rgPacienteInput.value || "____________________";
       
@@ -70,25 +92,28 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('modal-termo').style.display = 'flex';
   };
 
+  // Função para fechar o Modal (Cancelar)
   window.fecharModalTermo = () => {
       document.getElementById('modal-termo').style.display = 'none';
   };
 
+  // Função para Aceitar no Modal
   window.aceitarTermo = () => {
       checkTermoAceite.checked = true;
-      checkTermoAceite.disabled = false; 
-      toggleConteudoProntuario();
+      checkTermoAceite.disabled = false; // Habilita o check para poder desmarcar depois
+      
+      toggleConteudoProntuario(); // Mostra o formulário
       fecharModalTermo();
-      conteudoProntuario.scrollIntoView({ behavior: 'smooth' });
+      
+      // Rola a tela até o início do formulário
+      setTimeout(() => {
+          conteudoProntuario.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
   };
 
-  function toggleConteudoProntuario() { 
-      if (checkTermoAceite.checked) { 
-          conteudoProntuario.style.display = 'block'; 
-      } else { 
-          conteudoProntuario.style.display = 'none'; 
-      } 
-  }
+  // ============================================================
+  // RESTANTE DO CÓDIGO (Lógica do Prontuário)
+  // ============================================================
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
   
@@ -175,6 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     toggleComorbidades();
     
+    // Se o termo já foi aceito anteriormente, mostra o conteúdo e habilita o check
     if (data.termoAceite) { 
         checkTermoAceite.checked = true; 
         checkTermoAceite.disabled = false;

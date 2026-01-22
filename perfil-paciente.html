@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="css/prontuario.css">
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
+        /* Estilos específicos desta página que não estão no CSS global */
         .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
         #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
         #qrcode-container img { width: 100% !important; height: 100% !important; }
@@ -33,16 +34,19 @@
             <h2>Minhas Informações (Prontuário)</h2>
             
             <div class="box-termo-responsabilidade">
-                <p><strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. É obrigatória a leitura e aceite do termo abaixo.</p>
-                
-                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">Ler Termo de Declaração e Responsabilidade</button>
-                
-                <div style="margin-top: 15px;">
-                    <label class="check-termo-container">
-                        <input type="checkbox" id="check-termo-aceite" disabled> 
-                        <span>Li e <strong>ACEITO</strong> os termos (Clique no botão acima para ler e confirmar).</span>
-                    </label>
+                <div>
+                    <p style="font-weight: 600; font-size: 1rem; color: #2c3e50; margin-bottom: 5px;">Termo de Responsabilidade</p>
+                    <p>O preenchimento deste prontuário é de responsabilidade do paciente. Para acessar e editar os dados, é obrigatória a leitura e o aceite dos termos.</p>
                 </div>
+                
+                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">
+                    📄 Ler e Aceitar Termo
+                </button>
+                
+                <label class="check-termo-container">
+                    <input type="checkbox" id="check-termo-aceite" disabled> 
+                    <span>Declaro que li e <strong>CONCORDO</strong> com as informações prestadas.</span>
+                </label>
             </div>
 
             <div id="conteudo-prontuario" style="display: none;">
