@@ -33,14 +33,14 @@
             <h2>Minhas Informações (Prontuário)</h2>
             
             <div class="box-termo-responsabilidade">
-                <p>⚠️ <strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. É obrigatória a leitura do termo abaixo.</p>
+                <p><strong>Atenção:</strong> O preenchimento deste prontuário é feito pelo paciente ou seu responsável legal. É obrigatória a leitura e aceite do termo abaixo.</p>
                 
-                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">📄 Ler Termo de Declaração e Responsabilidade</button>
+                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">Ler Termo de Declaração e Responsabilidade</button>
                 
                 <div style="margin-top: 15px;">
                     <label class="check-termo-container">
                         <input type="checkbox" id="check-termo-aceite" disabled> 
-                        <span>Li e <strong>ACEITO</strong> os termos acima (Clique no botão para ler e aceitar).</span>
+                        <span>Li e <strong>ACEITO</strong> os termos (Clique no botão acima para ler e confirmar).</span>
                     </label>
                 </div>
             </div>
@@ -109,7 +109,7 @@
                             <div class="radio-group-container">
                                 <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span class="text-nao">Não</span></label>
                                 <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span class="text-sim">Sim</span></label>
-                                <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
+                                <span id="sinalizador-alergia" class="alerta-alergia">PACIENTE ALÉRGICO</span>
                             </div>
                             <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
                         </div>
@@ -192,12 +192,12 @@
                 <br>
                 <p>Salvador/BA, <span id="termo-data-atual"></span>.</p>
                 <br>
-                <p><strong>Assinatura Digital do Paciente/Responsável (Ao clicar em aceitar)</strong></p>
+                <p style="text-align: center; border-top: 1px solid #ccc; padding-top: 5px;"><strong>Assinatura Digital do Paciente/Responsável (Confirmada ao Aceitar)</strong></p>
             </div>
 
             <div class="modal-btns">
                 <button type="button" class="btn-cancelar" onclick="fecharModalTermo()">Cancelar</button>
-                <button type="button" class="btn-aceitar" onclick="aceitarTermo()">✅ Li, concordo e Aceito</button>
+                <button type="button" class="btn-aceitar" onclick="aceitarTermo()">Li, concordo e ACEITO</button>
             </div>
         </div>
     </div>

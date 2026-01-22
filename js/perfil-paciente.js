@@ -9,15 +9,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const conteudoProntuario = document.getElementById('conteudo-prontuario');
 
   const nomePacienteInput = document.getElementById('nome-paciente');
-  const rgPacienteInput = document.getElementById('rg-paciente'); // NOVO CAMPO RG
+  const rgPacienteInput = document.getElementById('rg-paciente'); // Novo campo RG
   const idadeInput = document.getElementById('idade');
-  // MOBILIDADE
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
 
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames');
   
-  // COMORBIDADES
   const radioComorbidadeNao = document.getElementById('comorbidade-nao');
   const radioComorbidadeSim = document.getElementById('comorbidade-sim');
   const listaComorbidades = document.getElementById('lista-comorbidades');
@@ -57,9 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnLogout = document.getElementById('btn-logout-paciente');
   if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
 
-  // --- LÓGICA DO TERMO DE RESPONSABILIDADE ---
+  // --- LÓGICA DO MODAL (JANELA FLUTUANTE) ---
   window.abrirModalTermo = () => {
-      // Preenche dados no termo para visualização
+      // Preenche os dados no termo para leitura
       const nomeParaTermo = nomePacienteInput.value || userName || "____________________";
       const rgParaTermo = rgPacienteInput.value || "____________________";
       
@@ -78,10 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.aceitarTermo = () => {
       checkTermoAceite.checked = true;
-      checkTermoAceite.disabled = false; // Habilita visualmente
+      checkTermoAceite.disabled = false; 
       toggleConteudoProntuario();
       fecharModalTermo();
-      // Rolar a tela para o formulário
       conteudoProntuario.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -92,8 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
           conteudoProntuario.style.display = 'none'; 
       } 
   }
-  // Removemos o listener direto de 'change' para forçar o uso do botão, mas mantemos a função
-  // checkTermoAceite.addEventListener('change', toggleConteudoProntuario); 
 
   function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
   
@@ -123,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-  // TOGGLE MEDICAÇÃO
   if (btnToggleMedForm) {
       btnToggleMedForm.addEventListener('click', () => {
           if (formAddMedicacao.style.display === 'none') {
@@ -154,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const populateForm = (data) => {
     nomePacienteInput.value = data.nomePaciente || userName || '';
-    if(rgPacienteInput) rgPacienteInput.value = data.rg || ''; // Popula RG
+    if(rgPacienteInput) rgPacienteInput.value = data.rg || '';
     idadeInput.value = data.idade || '';
     
     if (data.mobilidade) {
@@ -234,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ 
             nomePaciente: nomePacienteInput.value, 
-            rg: rgPacienteInput.value, // Salva o RG
+            rg: rgPacienteInput.value,
             idade: idadeInput.value, 
             mobilidade: mobilidadeSelecionada, 
             patologias: patologiasInput.value, 
