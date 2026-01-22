@@ -1,887 +1,168 @@
-/* =========================
-    Fonte global
-========================= */
-body {
-    font-family: 'Montserrat', Arial, sans-serif;
-    margin: 0;
-    background: #fdfdfd; 
-    color: #2c3e50;
-    box-sizing: border-box;
-    line-height: 1.6; 
-}
+/* ============================================================ */
+/* ARQUIVO: css/style.css (Estilos da Página Principal)         */
+/* ============================================================ */
 
-/* =========================
-    NOVO Cabeçalho (Topo Branco) - AJUSTADO
-========================= */
-.novo-header {
-    background: #ffffff;
-    width: 100%;
-    padding: 20px 40px; 
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08); 
-    box-sizing: border-box;
-    position: sticky;
-    top: 0;
+/* --- RESET & GERAL --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Montserrat', sans-serif; color: #333; line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* --- CABEÇALHO --- */
+.header-fixo {
+    position: fixed;
+    top: 0; width: 100%;
+    background-color: #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     z-index: 1000;
 }
 
 .header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1100px; 
-    margin: 0 auto; 
 }
 
-/* GARANTIA ANTI-LINHA AZUL */
-.logo {
-    display: block;
-    outline: none; 
-    text-decoration: none; 
-    border: none;
-    /* Garante que a logo fique visível mesmo com o menu mobile */
-    position: relative; 
-    z-index: 1001; 
-}
-
+/* LOGO AUMENTADA */
 .logo img {
-    height: 60px; 
+    height: 70px; /* Ajuste solicitado */
     width: auto;
     display: block;
-    border: 0; 
-    outline: none; 
-}
-/* FIM DA GARANTIA */
-
-.main-nav ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    display: flex;
-    gap: 35px; 
-}
-
-/* AJUSTES PARA EFEITO HOVER */
-.main-nav a {
-    position: relative; /* Necessário para posicionar o ::after */
-    text-decoration: none;
-    color: #333; 
-    font-weight: 600;
-    font-size: 16px;
-    padding-bottom: 5px; /* Espaço para a linha abaixo */
-    transition: color 0.3s;
-}
-
-.main-nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0; /* Começa com largura zero */
-    height: 2px; /* Espessura da linha */
-    background-color: #2ADCA1; /* Cor verde */
-    transition: width 0.3s ease; /* Animação da largura */
-}
-
-.main-nav a:hover {
-    color: #2ADCA1; 
-}
-
-.main-nav a:hover::after {
-    width: 100%; /* Linha cresce para 100% no hover */
-}
-/* FIM DOS AJUSTES */
-
-/* =========================
-    ESTILOS DO BOTÃO HAMBURGER
-========================= */
-.hamburger {
-    display: none; /* Escondido por padrão (aparece no mobile) */
-    padding: 10px;
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    position: relative; /* Garante que fique acima de outros elementos se necessário */
-    z-index: 1001; 
-}
-
-.hamburger-box {
-    width: 24px;
-    height: 18px;
-    display: inline-block;
-    position: relative;
-}
-
-.hamburger-inner {
-    display: block;
-    top: 50%;
-    margin-top: -1px; /* Centraliza verticalmente */
-}
-.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
-    width: 100%;
-    height: 2px;
-    background-color: #333; /* Cor das linhas */
-    border-radius: 4px;
-    position: absolute;
-    transition-property: transform;
-    transition-duration: 0.15s;
-    transition-timing-function: ease;
-}
-.hamburger-inner::before, .hamburger-inner::after {
-    content: "";
-    display: block;
-}
-.hamburger-inner::before {
-    top: -6px; /* Espaçamento entre as linhas */
-}
-.hamburger-inner::after {
-    bottom: -6px;
-}
-
-/* Animação para o X quando ativo */
-.hamburger.is-active .hamburger-inner {
-    transform: rotate(45deg);
-    transition-delay: 0.12s;
-    transition-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
-    background-color: #333; /* Pode mudar a cor quando ativo */
-}
-.hamburger.is-active .hamburger-inner::before {
-    top: 0;
-    opacity: 0;
-    transition: top 0.1s ease-out, opacity 0.1s 0.12s ease-out;
-}
-.hamburger.is-active .hamburger-inner::after {
-    bottom: 0;
-    transform: rotate(-90deg);
-    transition: bottom 0.1s ease-out, transform 0.22s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
-}
-
-
-/* =========================
-    Conteúdo principal
-========================= */
-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0 10px;
-}
-
-/* =========================
-    Seção de boas-vindas (.sobre) - LAYOUT FINAL COM BONECA DENTRO (Texto Alinhado)
-========================= */
-.sobre {
-    background: #e0f5ef;
-    padding: 20px 40px; /* Reduzido padding vertical */
-    border-radius: 16px; 
-    box-shadow: 0 6px 25px rgba(42, 220, 161, 0.15);
-    width: 100%;
-    max-width: 900px; 
-    margin: 40px auto 20px auto; 
     transition: transform 0.3s;
-    box-sizing: border-box;
-    overflow: hidden; /* Mantém o conteúdo dentro */
-    position: relative; 
-    z-index: 1; 
 }
+.logo img:hover { transform: scale(1.05); }
 
-.sobre-container {
-    display: flex;
-    align-items: center; /* ALINHA VERTICALMENTE A IMAGEM E O TEXTO */
-    gap: 40px; /* Aumenta o espaço entre imagem e texto */
+/* --- NAVEGAÇÃO --- */
+.nav-links { display: flex; align-items: center; gap: 20px; }
+.nav-links li a { 
+    font-weight: 500; font-size: 0.95rem; color: #555; 
+    transition: color 0.3s; 
 }
+.nav-links li a:hover { color: #2ADCA1; }
 
-/* Coluna da imagem da boneca */
-.sobre-imagem-boneca {
-    flex-shrink: 0; /* Impede que a imagem encolha demais */
-    align-self: center; /* Garante alinhamento central vertical */
-    max-width: 250px; /* Largura máxima para a coluna da imagem */
-    width: 100%; /* Permite que ocupe menos em telas pequenas */
+/* Botões Especiais no Menu */
+.btn-destaque-outline {
+    border: 2px solid #2ADCA1; color: #2ADCA1 !important;
+    padding: 8px 15px; border-radius: 20px;
+    font-weight: 700 !important;
 }
+.btn-destaque-outline:hover { background-color: #2ADCA1; color: white !important; }
 
-.sobre-imagem-boneca img {
-    display: block; 
-    width: 100%; 
-    height: auto; 
+.btn-login {
+    background-color: #2ADCA1; color: white !important;
+    padding: 8px 20px; border-radius: 20px;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 6px rgba(42, 220, 161, 0.2);
 }
+.btn-login:hover { background-color: #24b685; transform: translateY(-2px); }
 
-/* Coluna do texto */
-.sobre-texto {
-    flex: 1; 
-    text-align: left; 
-    padding: 10px 0; /* Pequeno padding vertical para texto */
-}
-
-.sobre:hover {
-    transform: translateY(-5px);
-}
-
-.sobre h2 {
-    color: #2c3e50;
-    font-size: 28px;
-    margin-top: 0; 
-    margin-bottom: 10px; /* Reduz espaço abaixo do título */
-    position: relative; 
-    z-index: 1;
-}
-
-.sobre p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #2c3e50;
-    margin-bottom: 20px; /* Reduz espaço abaixo do parágrafo */
-    position: relative; 
-    z-index: 1;
-}
-
-/* Botão Agendar (WhatsApp) */
-.btn-agendar {
-    display: inline-block; 
-    background: #2ADCA1;
-    color: white;
-    padding: 14px 28px;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 16px;
-    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-    text-align: center;
-    width: fit-content;
-    margin: 15px 0 0 0; /* Ajusta margem acima do botão */
-    position: relative; 
-    z-index: 1;
-}
-
-.btn-agendar:hover {
-    background: #22b392;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 
-}
-
-/* =========================
-    Seção de serviços delicados
-========================= */
-.servicos-destaque-delicado {
+/* --- HERO SECTION --- */
+.hero {
+    margin-top: 90px; /* Compensar header fixo */
+    background-color: #e0f5ef; /* Verde bem claro */
+    padding: 60px 20px;
     display: flex;
     justify-content: center;
-    gap: 25px;
-    margin: 40px auto 50px auto;
-    flex-wrap: wrap;
-    max-width: 1100px; 
 }
 
-.servico-delicado {
-    background: #ffffff; 
-    padding: 25px 20px;
-    border-radius: 16px; 
-    border: 1px solid #e0f5ef; 
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-    text-align: center;
-    flex: 1 1 280px;
-    transition: transform 0.3s, box-shadow 0.3s;
+.hero-content {
+    max-width: 1200px; width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 40px;
 }
 
-.servico-delicado:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1); 
-}
+.hero-text { flex: 1; }
+.hero-text h1 { font-size: 2.5rem; color: #2c3e50; margin-bottom: 15px; font-weight: 700; }
+.hero-text .subtitulo { font-size: 1.1rem; color: #555; margin-bottom: 30px; max-width: 500px; }
 
-.servico-delicado h3 {
-    color: #2ADCA1;
-    font-size: 18px;
-    margin-bottom: 10px;
-}
-
-.servico-delicado p {
-    color: #2c3e50;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-/* =========================
-    Nova Seção Sobre Mim (Layout Lado a Lado)
-========================= */
-.sobre-mim {
-    max-width: 1100px; 
-    margin: 50px auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.sobre-mim-container {
-    display: flex;
-    align-items: flex-start; 
-    gap: 50px; 
-}
-
-.sobre-mim-imagem {
-    flex: 0 0 340px; 
-    text-align: center;
-    background: #ffffff; 
-    border-radius: 16px; 
-    padding: 25px; 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06); 
-    border: 1px solid #f0f0f0; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.sobre-mim-imagem:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.profile-img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5; 
-    object-fit: cover; 
-    object-position: 50% 20%; 
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-.profile-caption {
-    font-size: 14px; 
-    font-weight: normal; 
-    color: #555; 
-    line-height: 1.4; 
-}
-
-.profile-caption .name {
-    font-weight: 600; 
-    font-size: 16px; 
-    color: #2c3e50;
-    display: block;
-    margin-bottom: 5px; 
-}
-
-.sobre-mim-texto {
-    flex: 1; 
-    text-align: left;
-    padding-top: 0; 
-}
-
-.sobre-mim-texto h3 {
-    color: #2ADCA1;
-    font-size: 28px;
-    margin-top: 0; 
-    margin-bottom: 20px; 
-    scroll-margin-top: 100px; 
-}
-
-.sobre-mim-texto .historia {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    font-size: 16px; 
-    line-height: 1.8; 
-    color: #333; 
-}
-
-.sobre-mim-texto .historia li {
-    margin-bottom: 15px;
-}
-
-/* =========================
-    NOVA SEÇÃO Experiência Profissional (LAYOUT TEXTO COM IMAGEM)
-========================= */
-.experiencia-texto-com-imagem {
-    max-width: 1100px; 
-    margin: 50px auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.experiencia-container-novo {
-    display: flex;
-    align-items: flex-start; /* Alinha a imagem e o texto no topo */
-    gap: 50px; /* Espaço entre a imagem e o texto */
-}
-
-.experiencia-imagem-lateral {
-    flex: 0 0 340px; /* Largura fixa para a imagem */
-    text-align: center;
-    background: #ffffff; 
-    border-radius: 16px; 
-    padding: 25px; 
-    box-shadow: 0 8px 25px rgba(0,0,0,0.06); 
-    border: 1px solid #f0f0f0; 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.experiencia-imagem-lateral:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-.experiencia-imagem-lateral img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 3; /* Proporção mais horizontal para a imagem do consultório */
-    object-fit: cover; 
-    border-radius: 12px;
-}
-
-.experiencia-conteudo-texto {
-    flex: 1; /* Ocupa o restante do espaço */
-    text-align: left;
-    padding-top: 0; 
-}
-
-.experiencia-conteudo-texto h3 {
-    color: #2ADCA1;
-    font-size: 28px;
-    margin-top: 0; 
-    margin-bottom: 20px; 
-    scroll-margin-top: 100px; /* Margem para o cabeçalho fixo */
-}
-
-/* ESTILO PARA A NOVA LISTA DE EXPERIÊNCIA */
-.experiencia-lista-formatada {
-    list-style: none; /* Remove marcadores padrão */
-    padding: 0;
-    margin: 0;
-    font-size: 16px;
-    line-height: 1.8;
-    color: #333;
-}
-
-.experiencia-lista-formatada > li { /* Estilo para os itens principais */
-    margin-bottom: 20px; /* Espaço entre os blocos de experiência */
-}
-
-.experiencia-lista-formatada ul { /* Estilo para sub-listas (cargos) */
-    list-style: disc; /* Adiciona marcador */
-    padding-left: 25px; /* Recuo da sub-lista */
-    margin-top: 8px;
-}
-
-.experiencia-lista-formatada ul li {
-    margin-bottom: 5px; /* Espaço entre os cargos */
-    font-size: 15px; /* Fonte um pouco menor para sub-itens */
-    color: #555; /* Cor mais suave */
-}
-
-/* =========================
-   Seção Condições Acompanhadas (Pills)
-========================= */
-.condicoes-acompanhadas {
-    max-width: 1100px; 
-    margin: 50px auto;
-    padding: 20px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-.condicoes-acompanhadas h3 {
-    color: #2ADCA1; /* Cor verde do tema */
-    font-size: 28px;
-    margin-top: 0; 
-    margin-bottom: 20px; 
-}
-
-.condicoes-acompanhadas p {
-    font-size: 16px; 
-    line-height: 1.7; 
-    color: #555; /* Um pouco mais suave */
-    max-width: 800px; /* Limita a largura do parágrafo */
-    margin: 0 auto 30px auto; /* Centraliza o parágrafo */
-}
-
-.condicoes-lista-pills {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap; /* Isso faz as "pills" quebrarem a linha */
-    justify-content: center;
-    gap: 12px; /* Espaço entre as pills */
-}
-
-.condicoes-lista-pills li {
-    background: #e0f5ef; /* Verde claro do tema (do .sobre) */
-    color: #2c3e50; /* Texto escuro */
-    padding: 10px 20px;
-    border-radius: 25px; /* Pílula arredondada */
-    font-size: 15px;
-    font-weight: 600;
-    border: 1px solid #ccebe2; /* Borda sutil */
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-/* Efeito hover sutil, combinando com o site */
-.condicoes-lista-pills li:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-/* =========================
-    Formulário (para agendamento.html)
-========================= */
-.card-agendamento {
-    background: #ffffff;
-    padding: 30px 40px;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-    max-width: 600px;
-    margin: 40px auto;
-    box-sizing: border-box;
-    border: 1px solid #eee;
-}
-.card-agendamento h2 {
-    text-align: center;
-    color: #2ADCA1;
-    margin-top: 0;
-    margin-bottom: 25px;
-}
-form {
-    display: flex;
-    flex-direction: column;
-}
-label {
-    margin-top: 15px;
-    font-weight: 600; 
-    font-size: 14px;
-    color: #333;
-}
-input, button, textarea {
-    padding: 12px; 
-    margin-top: 8px;
-    border-radius: 8px; 
-    border: 1px solid #ccc;
-    font-size: 15px;
-    font-family: 'Montserrat', sans-serif;
-    width: 100%;
-    box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-input:focus, textarea:focus {
-    border-color: #2ADCA1;
-    box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.2);
-    outline: none;
-}
-button {
-    background: #2ADCA1;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin-top: 25px;
-    transition: 0.3s;
-    font-weight: bold;
-}
-button:hover {
-    background: #22b392;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
-
-/* =========================
-    Rodapé
-========================= */
-footer {
-    background: #e0f5ef; 
-    padding: 40px 20px; 
-    text-align: center;
-    margin-top: 40px;
-    border-top: 1px solid #d4e9e2;
-}
-footer p {
-    margin: 0 0 10px 0;
-    font-weight: normal; 
-    color: #2c3e50;
-}
-footer .crm-info {
-    font-size: 14px;
-    color: #2c3e50;
-    margin: 15px 0 10px 0;
-    font-weight: 600; 
-}
-footer .copyright {
-    font-size: 12px;
-    color: #5cbf99;
-    margin-top: 15px;
-    font-weight: normal;
-}
-.social-icons a {
-    margin: 0 10px;
-    display: inline-block;
-}
-.social-icons img {
-    width: 30px;
-    height: 30px;
+.hero-buttons { display: flex; gap: 15px; }
+.btn-cta {
+    background-color: #2ADCA1; color: white; padding: 12px 25px;
+    border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center;
     transition: 0.3s;
 }
-.social-icons img:hover {
-    transform: scale(1.2) translateY(-2px);
+.btn-cta:hover { background-color: #24b685; transform: translateY(-2px); }
+
+.btn-secondary {
+    border: 2px solid #ccc; color: #555; padding: 12px 25px;
+    border-radius: 8px; font-weight: 600; transition: 0.3s;
+}
+.btn-secondary:hover { border-color: #555; color: #333; }
+
+.hero-image img {
+    max-width: 400px; width: 100%; border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
-/* =========================
-    Responsividade e ajustes Mobile
-========================= */
-@media (max-width: 900px) { 
-    .sobre {
-        padding: 30px 20px; 
-        padding-left: 20px; 
-        text-align: center; 
-        overflow: hidden; 
-        margin-top: 30px;
-    }
+/* --- SEÇÕES PADRÃO --- */
+.section-padrao { padding: 60px 20px; background-color: #fff; text-align: center; }
+.section-cinza { padding: 60px 20px; background-color: #f9f9f9; text-align: center; }
+.container { max-width: 1000px; margin: 0 auto; }
 
-    .sobre::before {
-        display: none; 
-    }
-
-    .sobre h2 {
-        font-size: 24px;
-    }
-
-    .sobre p {
-        font-size: 15px;
-    }
-
-    .btn-agendar {
-        margin: 20px auto 0 auto; 
-    }
+.titulo-secao { 
+    font-size: 2rem; color: #2c3e50; margin-bottom: 40px; position: relative; display: inline-block; 
+}
+.titulo-secao::after {
+    content: ''; display: block; width: 50px; height: 4px;
+    background-color: #2ADCA1; margin: 10px auto 0; border-radius: 2px;
 }
 
-/* Breakpoint onde o menu hamburger aparece */
+/* Cards */
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.card {
+    background: white; padding: 30px; border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05); text-align: left;
+    border-top: 4px solid #2ADCA1;
+}
+.card h3 { color: #2c3e50; margin-bottom: 10px; }
+.card-icon { font-size: 2rem; margin-bottom: 15px; }
+
+/* Locais */
+.locais-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.local-card {
+    background: #f8fcfb; padding: 30px; border-radius: 12px;
+    border: 1px solid #e0f5ef; text-align: left;
+}
+.local-card h3 { color: #2ADCA1; margin-bottom: 10px; }
+.horario { font-weight: 600; color: #666; margin: 10px 0; font-size: 0.9rem; }
+.btn-link { color: #2ADCA1; font-weight: 700; margin-top: 10px; display: inline-block; }
+
+/* Contato */
+.section-contato { padding: 60px 20px; background-color: #2c3e50; text-align: center; color: white; }
+.btn-whatsapp-grande {
+    background-color: #25D366; color: white; font-size: 1.2rem;
+    padding: 15px 30px; border-radius: 50px; font-weight: bold;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: 0.3s; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.3);
+}
+.btn-whatsapp-grande:hover { background-color: #1ebe57; transform: scale(1.05); }
+
+/* --- RODAPÉ --- */
+footer { background-color: #222; color: #aaa; padding: 40px 20px; text-align: center; font-size: 0.9rem; }
+.social-links { margin-top: 15px; display: flex; justify-content: center; gap: 15px; }
+.social-links a { color: #fff; opacity: 0.8; }
+.social-links a:hover { opacity: 1; color: #2ADCA1; }
+
+/* --- MOBILE --- */
+.menu-toggle { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+.bar { width: 25px; height: 3px; background-color: #333; border-radius: 2px; }
+.mobile-nav {
+    display: none; flex-direction: column; background: white;
+    position: absolute; top: 100%; left: 0; width: 100%;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+.mobile-nav.active { display: flex; }
+.mobile-nav a { padding: 15px 20px; border-bottom: 1px solid #eee; text-align: center; }
+.btn-login-mobile { background-color: #2ADCA1; color: white !important; font-weight: bold; }
+
 @media (max-width: 768px) {
-    main {
-        padding: 0 15px;
-    }
-
-    /* Ajustes para o novo header no mobile */
-    .novo-header {
-        padding: 15px 20px; 
-    }
-
-    .header-container {
-        /* Logo e Hamburger ficam nas pontas */
-        justify-content: space-between; 
-    }
-
-    .logo img {
-        height: 50px; 
-    }
-    
-    /* MOSTRA O BOTÃO HAMBURGER */
-    .hamburger {
-        display: inline-block;
-    }
-
-    /* ESTILOS DO MENU MOBILE (quando ativo) */
-    .main-nav {
-        display: none; /* Escondido por padrão */
-        position: absolute;
-        top: 100%; /* Começa logo abaixo do header */
-        left: 0;
-        width: 100%;
-        background-color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        padding: 20px 0;
-    }
-
-    .main-nav.is-active {
-        display: block; /* Mostra o menu quando ativo */
-    }
-
-    .main-nav ul {
-        flex-direction: column; /* Links em coluna */
-        align-items: center; /* Centraliza os links */
-        gap: 0; /* Remove gap horizontal */
-    }
-
-    .main-nav li {
-        width: 100%; /* Ocupa toda a largura */
-        text-align: center;
-    }
-
-    .main-nav a {
-        display: block; /* Faz o link ocupar o li inteiro */
-        padding: 15px 0; /* Espaçamento vertical */
-        width: 100%;
-        border-bottom: 1px solid #eee; /* Linha separadora */
-    }
-    .main-nav li:last-child a {
-        border-bottom: none; /* Remove a última linha */
-    }
-
-    .main-nav a::after {
-        display: none; /* Esconde a linha verde no mobile */
-    }
-
-    /* Caixa de boas-vindas (.sobre) - Mobile */
-    .sobre-container {
-        flex-direction: column; 
-        gap: 20px;
-    }
-
-    .sobre-imagem-boneca {
-        flex-basis: auto; 
-        align-self: center; 
-        width: 60%; 
-        max-width: 180px; 
-    }
-
-    .sobre-imagem-boneca img {
-        min-height: auto; 
-        aspect-ratio: auto; 
-    }
-
-    .sobre-texto {
-        text-align: center; 
-        padding: 0; 
-    }
-
-    /* Responsividade da seção Sobre Mim */
-    .sobre-mim-container {
-        flex-direction: column;
-        align-items: center; 
-        gap: 30px;
-    }
-
-    .sobre-mim-imagem {
-        flex-basis: auto;
-        width: 100%;
-        max-width: 340px; 
-        min-height: auto; 
-    }
-
-    .profile-img {
-        aspect-ratio: 1 / 1; 
-        max-height: 300px;
-    }
-    
-    .sobre-mim-texto {
-        padding-top: 0; 
-    }
-
-    .sobre-mim-texto h3 { 
-        text-align: center; 
-        margin-top: 0; 
-    }
-
-    /* Responsividade da NOVA SEÇÃO Experiência Profissional */
-    .experiencia-container-novo {
-        flex-direction: column; /* Empilha no mobile */
-        align-items: center; 
-        gap: 30px;
-    }
-
-    .experiencia-imagem-lateral {
-        flex-basis: auto;
-        width: 100%;
-        max-width: 340px; /* Limita a largura do card no mobile */
-    }
-
-    .experiencia-imagem-lateral img {
-        aspect-ratio: 16 / 9; /* Mais horizontal no mobile se desejar */
-    }
-
-    .experiencia-conteudo-texto {
-        padding-top: 0; 
-    }
-
-    .experiencia-conteudo-texto h3 { 
-        text-align: center; 
-        margin-top: 0; 
-    }
-
-    /* Regra .card antiga (mantida do seu original) */
-    .card {
-        width: 100%;
-    }
-
-    .card-agendamento {
-        padding: 25px 20px;
-        margin-top: 20px;
-    }
-}
-
-@media (max-width: 480px) {
-    .sobre h2 {
-        font-size: clamp(20px, 5vw, 28px);
-    }
-    .sobre p {
-        font-size: clamp(14px, 4vw, 16px);
-    }
-    .btn-agendar {
-        padding: 12px 20px;
-    }
-    .social-icons {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
-}
-
-/* ------------------------------
-    Seção de Localizações
------------------------------- */
-.localizacao {
-    text-align: center;
-    padding: 50px 20px;
-    background: #f9f9f9; 
-    margin-top: 40px;
-}
-.localizacao h2 {
-    font-size: 2rem;
-    color: #2ADCA1;
-    margin-bottom: 10px;
-}
-.localizacao p {
-    color: #555;
-    font-size: 1rem;
-    margin-bottom: 30px;
-}
-.locais {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-}
-.local {
-    background: #ffffff;
-    border-radius: 16px; 
-    padding: 25px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
-    border: 1px solid #eee; 
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s, box-shadow 0.3s; 
-}
-.local:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-}
-.local h3 {
-    color: #2ADCA1;
-    margin-bottom: 10px;
-}
-.local p {
-    flex: 1;
-    color: #2c3e50;
-    font-size: 0.95rem;
-    margin-bottom: 15px;
-    line-height: 1.5;
-}
-.btn-maps {
-    align-self: center;
-    display: inline-block;
-    margin-top: 15px;
-    padding: 12px 24px;
-    background: #2ADCA1;
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 15px;
-    transition: 0.3s ease;
-}
-.btn-maps:hover {
-    background: #22b392;
-    transform: translateY(-3px);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    .nav-links { display: none; }
+    .menu-toggle { display: flex; }
+    .hero-content { flex-direction: column-reverse; text-align: center; }
+    .hero-text h1 { font-size: 2rem; }
+    .hero-buttons { justify-content: center; }
+    .logo img { height: 50px; } /* Logo um pouco menor no celular para caber */
 }

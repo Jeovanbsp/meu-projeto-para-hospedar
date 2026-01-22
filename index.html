@@ -3,293 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>"Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório"</title>
+    <title>Dra. Aisha Wenzinger - Geriatria e Clínica Médica</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
-
-    <style>
-        /* CSS EXTRA PARA ORGANIZAR A NAV E DAR DESTAQUE SIMPLES */
-        .main-nav ul {
-            display: flex;
-            align-items: center;
-            gap: 20px; /* Espaço entre os links */
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Destaque Simples para a Ficha */
-        .ficha-link {
-            color: #2ADCA1; /* Verde da marca */
-            font-weight: 700;
-            text-decoration: none;
-            border: 1px solid #2ADCA1;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        
-        /* HOVER SUAVE */
-        .ficha-link:hover {
-            background-color: rgba(42, 220, 161, 0.1);
-        }
-
-        /* --- ALTERAÇÃO SOLICITADA: BOTÕES DA HOME PEQUENOS E LADO A LADO --- */
-        
-        /* Container para alinhar lado a lado */
-        .botoes-hero {
-            display: flex;
-            gap: 10px; /* Espaço pequeno entre eles */
-            align-items: center;
-            margin-top: 15px;
-            flex-wrap: wrap; /* Permite quebrar linha em telas muito pequenas para não vazar */
-        }
-
-        /* Estilo específico para deixar ESTES botões menores e minimalistas */
-        .botoes-hero .btn-agendar {
-            padding: 8px 15px; /* Padding reduzido para ficar menor */
-            font-size: 0.85rem; /* Fonte menor */
-            font-weight: 600; /* Peso um pouco menor */
-            white-space: nowrap; /* Tenta manter em uma linha */
-            /* As outras propriedades (cor de fundo, raio da borda) são herdadas do css/style.css original */
-        }
-
-        /* Ajuste para não quebrar no celular a navegação */
-        @media (max-width: 900px) {
-            .main-nav ul { flex-direction: column; gap: 15px; }
-        }
-        
-        /* Ajuste opcional para centralizar os botões pequenos no celular */
-        @media (max-width: 600px) {
-             .botoes-hero {
-                 justify-content: center;
-            }
-        }
-    </style>
 </head>
 <body>
-
-    <header class="novo-header">
+    
+    <header class="header-fixo">
         <div class="header-container">
-            <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo">
+            <a href="#" class="logo">
+                <img src="img/layout.png" alt="Logo Dra Aisha Wenzinger">
             </a>
             
-            <nav class="main-nav" id="mobile-menu"> 
-                <ul>
-                    <li>
-                        <a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link">
-                            Ficha Pré-Atendimento
-                        </a>
-                    </li>
-
-                    <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
-                    <li><a href="#experiencia-section">Experiência</a></li> 
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="https://forms.gle/SEU_LINK_DO_GOOGLE_FORMS" target="_blank" class="btn-destaque-outline">Ficha Pré-Atendimento</a></li>
+                    
+                    <li><a href="#sobre">Sobre Mim</a></li>
+                    <li><a href="#experiencia">Experiência</a></li>
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
-
-                    <li><a href="cadastro.html">Cadastro</a></li>
-                    <li><a href="login.html" style="font-weight: bold; color: #2ADCA1;">Login</a></li>
+                    
+                    <li><a href="login.html" class="btn-login">Login</a></li>
                 </ul>
+                
+                <div class="menu-toggle" id="mobile-menu-btn">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
             </nav>
-
-            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
-                <span class="hamburger-box">
-                    <span class="hamburger-inner"></span>
-                </span>
-            </button>
+        </div>
+        
+        <div class="mobile-nav" id="mobile-nav-list">
+            <a href="https://forms.gle/SEU_LINK" target="_blank">Ficha Pré-Atendimento</a>
+            <a href="#sobre">Sobre Mim</a>
+            <a href="#experiencia">Experiência</a>
+            <a href="#locais">Onde Atende</a>
+            <a href="#contato">Contato</a>
+            <a href="login.html" class="btn-login-mobile">Área do Paciente (Login)</a>
         </div>
     </header>
 
-    <main>
-        
-        <section class="sobre">
-            <div class="sobre-container">
-                <div class="sobre-imagem-boneca">
-                    <img src="img/perfil.png" alt="Dra. Aisha Wenzinger - Ilustração"> 
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Dra. Aisha Wenzinger</h1>
+                <p class="subtitulo">Geriatria e Clínica Médica com foco no cuidado integral, autonomia e envelhecimento saudável.</p>
+                
+                <div class="hero-buttons">
+                    <a href="https://wa.me/5571999999999" target="_blank" class="btn-cta">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg" style="vertical-align: middle; margin-right: 5px;"><path d="M12.031 6.172c-5.621 0-10.192 4.56-10.192 10.169 0 1.797.469 3.555 1.359 5.105l-1.449 5.289 5.461-1.429c1.477.809 3.16 1.234 4.863 1.234 5.621 0 10.191-4.56 10.191-10.168-.008-5.617-4.578-10.187-10.233-10.2zm5.883 14.898c-.242.684-1.41.949-1.922 1.008-.476.059-1.097.086-3.777-1.074-3.601-1.555-5.918-5.465-6.094-5.703-.172-.23-1.453-2.074-1.453-3.965 0-1.891.918-2.82 1.238-3.195.274-.32.695-.461 1.094-.461.274 0 .54.004.774.012.25.008.578-.094.906.691.344.82 1.172 2.859 1.274 3.066.101.211.171.461.031.734-.141.282-.211.461-.414.696-.211.234-.446.523-.633.703-.211.219-.43.461-.188.887.242.418 1.071 1.77 2.297 2.863 1.574 1.402 2.899 1.848 3.321 2.066.422.219.664.188.914-.094.25-.281 1.07-1.246 1.359-1.672.289-.422.586-.352.977-.203.391.148 2.469 1.16 2.891 1.371.422.211.703.316.805.492.101.18.101 1.039-.141 1.723z" fill="white"/></svg>
+                        Agendar Consulta
+                    </a>
+                    <a href="#sobre" class="btn-secondary">Saiba Mais</a>
                 </div>
+            </div>
+            
+            <div class="hero-image">
+                <img src="img/dra-aisha-perfil.png" alt="Foto Dra. Aisha" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="section-padrao">
+        <div class="container">
+            <h2 class="titulo-secao">Sobre Mim</h2>
+            <div class="sobre-content">
                 <div class="sobre-texto">
-                    <h2>Atenção Especializada para Idosos</h2>
-                    <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
-                    
-                    <div class="botoes-hero">
-                        <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                            Agende em Lauro de Freitas
-                        </a>
-
-                        <a href="https://wa.me/5571983943153" target="_blank" class="btn-agendar">
-                            Agende em Salvador
-                        </a>
-                    </div>
-                    </div>
-            </div>
-        </section> 
-        
-        <section class="servicos-destaque-delicado">
-            <div class="servico-delicado">
-                <h3>Telemedicina</h3>
-                <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
-            </div>
-            <div class="servico-delicado">
-                <h3>Atendimento Domiciliar</h3>
-                <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
-            </div>
-            <div class="servico-delicado">
-                <h3>Atendimento Presencial</h3>
-                <p>Consultas realizadas em consultório com infraestrutura completa para seu conforto.</p> 
-            </div>
-        </section>
-
-        <section class="sobre-mim"> 
-            <div class="sobre-mim-container">
-                <div class="sobre-mim-imagem">
-                    <img src="img/aisha_perfil.jpg" alt="Dra. Aisha Wenzinger" class="profile-img">
-                    <p class="profile-caption">
-                        <span class="name">Dra. Aishá Wenzinger</span>
-                        CRM: 20473 <br> 
-                        RQE: 19692
-                    </p>
-                </div>
-                <div class="sobre-mim-texto">
-                    <h3 id="sobre-mim-section">Sobre Mim</h3> 
-                    <ul class="historia">
-                        <li>Dra. Aishá Wenzinger: Clínica Médica, Geriatria e Cuidados Paliativos.</li>
-                        <li>Médica graduada pela Escola Bahiana de Medicina e Saúde Pública, com 17 anos de formação. Iniciou sua trajetória profissional atuando em atendimentos de emergência e no Programa de Saúde da Família em Esplanada (BA), entre 2009 e início de 2010.</li>
-                        <li>Devido à sólida experiência na área de urgência, assumiu precocemente a função de Coordenadora Médica do Serviço de Ambulância MedSalva, cargo que exerceu por cerca de quatro anos. Em seguida, iniciou formação em Clínica Médica no Hospital São Rafael (2011–2013).</li>
-                        <li>Após esse período, manteve atuação em Clínica Médica e Emergência até 2015, quando iniciou sua formação em Geriatria no Hospital Santo Antônio – Obras Sociais Irmã Dulce, concluída em 2017. Permaneceu na instituição até 2022, período marcado por intensa dedicação, especialmente durante a pandemia de COVID-19, que demandou cuidado e compaixão frente à vulnerabilidade dos idosos assistidos.</li>
-                        <li>Em novembro de 2022, assumiu o desafio de estruturar o serviço de Geriatria do Hospital Português, onde permanece até o presente momento, consolidando uma equipe voltada ao cuidado integral da pessoa idosa, com foco em desospitalização segura, manejo clínico de idosos frágeis e atenção centrada na pessoa.</li>
-                        <li>Possui especialização em Cuidados Paliativos pelo Instituto Paliar e ampla experiência em ambientes hospitalares, ambulatórios e atendimentos domiciliares, com atuação também em telemedicina e consultório próprio. Oferece assistência personalizada a idosos com limitações funcionais ou acamados, prezando pelo cuidado integral, humanizado e contínuo.</li>
-                        <li>É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências, aliando conhecimento técnico à sensibilidade humana em todas as fases do envelhecimento.</li>
-                    </ul>
+                    <p>Olá! Sou Dra. Aisha Wenzinger. Minha missão é oferecer um cuidado médico humanizado, onde cada paciente é ouvido e tratado em sua totalidade.</p>
+                    <p>Com especialização em Geriatria e Clínica Médica, foco não apenas em tratar doenças, mas em promover saúde, prevenir complicações e garantir a melhor qualidade de vida possível para meus pacientes e suas famílias.</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        
-        <section class="experiencia-texto-com-imagem"> 
-            <div class="experiencia-container-novo">
-                <div class="experiencia-imagem-lateral">
-                    <img src="img/atendimento.jpg" alt="Consultório Médico">
+    <section id="experiencia" class="section-cinza">
+        <div class="container">
+            <h2 class="titulo-secao">Experiência Profissional</h2>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🏥</div>
+                    <h3>Hospital Santo Antônio</h3>
+                    <p>Residência Médica em Clínica Médica.</p>
                 </div>
-                <div class="experiencia-conteudo-texto">
-                    <h3 id="experiencia-section">Experiência Profissional</h3> 
-                    <ul class="experiencia-lista-formatada">
-                        <li>
-                            <strong>Formação Médica:</strong> Escola Bahiana de Medicina e Saúde Pública – Conclusão em 2008
-                        </li>
-                        <li>
-                            <strong>Hospital Geral do Estado (HGE 2) – Salvador:</strong>
-                            <ul>
-                                <li>Médica Clínica (Unidade Intermediária 2): 2022 - presente</li>
-                                <li>Médica Emergencista: 2013 – 2023</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Hospital Português – Salvador:</strong>
-                            <ul>
-                                <li>Coordenadora da Geriatria: Nov 2021 - presente</li>
-                                <li>Médica da Equipe de Desospitalização: Desde 2022</li>
-                                <li>Médica Emergencista: 2014 – 2024</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Clínica NewLife – Salvador:</strong>
-                            <ul>
-                                <li>Médica Geriatra (Consultório): 2016 - presente</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <strong>Atendimento Domiciliar em Geriatria:</strong>
-                            <ul>
-                                <li>Cuidados a idosos com limitações e acamados: 2017 - presente</li>
-                            </ul>
-                        </li>
-                    </ul>
+                <div class="card">
+                    <div class="card-icon">🤍</div>
+                    <h3>Obras Sociais Irmã Dulce</h3>
+                    <p>Atuação em Geriatria e Cuidados Paliativos.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3>Formação Acadêmica</h3>
+                    <p>Graduação em Medicina e atualização constante em gerontologia.</p>
                 </div>
             </div>
-        </section>
-        
-    </main>
+        </div>
+    </section>
 
-    <section class="localizacao" id="locais">
-        <h2>Onde nos encontrar</h2>
-        <p>Confira nossas unidades e escolha a mais próxima de você:</p>
-
-        <div class="locais">
-            <div class="local">
-                <h3>Unidade 1 - Estrada do Coco</h3>
-                <p>
-                    Localizado em: Shopping Estrada do Coco <br>
-                    Endereço: Av. Santos Dumont, Est do Coco, 6216 - loja 102 -
-                    Pitangueiras, Lauro de Freitas - BA, 42701-260
-                </p>
-                <a href="https://www.google.com/maps/place/CL%C3%8DNICA+NEWLIFE/@-12.8753177,-38.3061968,17z/data=!3m1!4b1!4m6!3m5!1s0x7163fe91f42daa5:0xc0e707ebb4383169!8m2!3d-12.8753177!4d-38.3061968!16s%2Fg%2F11mtjn_gww?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
-                   target="_blank" class="btn-maps">
-                    Ver no Google Maps
-                </a>
+    <section id="locais" class="section-padrao">
+        <div class="container">
+            <h2 class="titulo-secao">Locais de Atendimento</h2>
+            <div class="locais-grid">
+                <div class="local-card">
+                    <h3>Consultório Principal</h3>
+                    <p>Av. Antônio Carlos Magalhães, 1234 - Salvador/BA</p>
+                    <p class="horario">Seg a Sex: 08h às 18h</p>
+                    <a href="#" class="btn-link">Ver no Mapa &rarr;</a>
+                </div>
+                <div class="local-card">
+                    <h3>Telemedicina</h3>
+                    <p>Atendimento online para todo o Brasil.</p>
+                    <p class="horario">Agendamento prévio</p>
+                    <a href="https://wa.me/5571999999999" class="btn-link">Agendar Online &rarr;</a>
+                </div>
             </div>
+        </div>
+    </section>
 
-            <div class="local">
-                <h3>Unidade 2 - Salvador</h3>
-                <p>
-                    Localizado em: International Trade Center - Salvador <br>
-                    Endereço: Rua Arthur de Azevedo Machado, 1459 <br>
-                    Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA, 41770-790
-                </p>
-                <a href="https://www.google.com/maps/place/SALUTE+COWORKING/@-12.9870998,-38.4487191,17z/data=!3m1!4b1!4m6!3m5!1s0x7161b64dc24a075:0x7d8d414872c6bcf3!8m2!3d-12.9870998!4d-38.4487191!16s%2Fg%2F11s0t99lhf?entry=ttu&g_ep=EgoyMDI1MDkwNy4wIKXMDSoASAFQAw%3D%3D"
-                   target="_blank" class="btn-maps">
-                    Ver no Google Maps
+    <section id="contato" class="section-contato">
+        <div class="container">
+            <h2 class="titulo-secao" style="color: white;">Entre em Contato</h2>
+            <p style="color: #e0f2f1; margin-bottom: 30px;">Dúvidas ou agendamentos? Fale conosco pelo WhatsApp ou envie uma mensagem.</p>
+            
+            <div class="contato-wrapper">
+                <a href="https://wa.me/5571999999999" target="_blank" class="btn-whatsapp-grande">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12.031 6.172c-5.621 0-10.192 4.56-10.192 10.169 0 1.797.469 3.555 1.359 5.105l-1.449 5.289 5.461-1.429c1.477.809 3.16 1.234 4.863 1.234 5.621 0 10.191-4.56 10.191-10.168-.008-5.617-4.578-10.187-10.233-10.2zm5.883 14.898c-.242.684-1.41.949-1.922 1.008-.476.059-1.097.086-3.777-1.074-3.601-1.555-5.918-5.465-6.094-5.703-.172-.23-1.453-2.074-1.453-3.965 0-1.891.918-2.82 1.238-3.195.274-.32.695-.461 1.094-.461.274 0 .54.004.774.012.25.008.578-.094.906.691.344.82 1.172 2.859 1.274 3.066.101.211.171.461.031.734-.141.282-.211.461-.414.696-.211.234-.446.523-.633.703-.211.219-.43.461-.188.887.242.418 1.071 1.77 2.297 2.863 1.574 1.402 2.899 1.848 3.321 2.066.422.219.664.188.914-.094.25-.281 1.07-1.246 1.359-1.672.289-.422.586-.352.977-.203.391.148 2.469 1.16 2.891 1.371.422.211.703.316.805.492.101.18.101 1.039-.141 1.723z"/></svg>
+                    Chamar no WhatsApp
                 </a>
             </div>
         </div>
     </section>
 
-
-    <footer id="contato">
-        <p>Siga a Dra. Aisha nas redes sociais:</p>
-        <div class="social-icons">
-            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank">
-                <img src="img/instagram.png" alt="Instagram">
-            </a>
-            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank">
-                <img src="img/facebook.png" alt="Facebook">
-            </a>
-            <a href="https://wa.me/5571981233912" target="_blank">
-                <img src="img/whatsapp.png" alt="WhatsApp">
-            </a>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Dra. Aisha Wenzinger. Todos os direitos reservados.</p>
+            <div class="social-links">
+                <a href="#">Instagram</a>
+                <a href="#">LinkedIn</a>
+                <a href="login.html" style="font-size: 0.8rem; opacity: 0.7;">Acesso Admin</a>
+            </div>
         </div>
-        
-        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
-
-        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
     </footer>
 
     <script>
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileNav = document.getElementById('mobile-nav-list');
 
-        hamburgerButton.addEventListener('click', () => {
-            // Alterna a classe 'is-active' no botão
-            hamburgerButton.classList.toggle('is-active');
-            // Alterna o atributo aria-expanded para acessibilidade
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            // Alterna a classe 'is-active' no menu
-            mobileMenu.classList.toggle('is-active');
-        });
-
-        // Opcional: Fechar o menu ao clicar em um link (útil para Single Page Applications)
-        const menuLinks = mobileMenu.querySelectorAll('a');
-        menuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerButton.classList.remove('is-active');
-                hamburgerButton.setAttribute('aria-expanded', 'false');
-                mobileMenu.classList.remove('is-active');
-            });
+        menuBtn.addEventListener('click', () => {
+            mobileNav.classList.toggle('active');
         });
     </script>
-
 </body>
 </html>
