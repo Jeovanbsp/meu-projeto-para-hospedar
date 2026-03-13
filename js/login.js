@@ -1,40 +1,39 @@
 document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const emailInput = document.getElementById('email').value;
-    const senhaInput = document.getElementById('senha').value;
+    // Pegando os valores dos inputs exatamente como estão no seu HTML
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('senha').value;
     const msgErro = document.getElementById('msg-erro');
-    
-    msgErro.style.display = 'none';
 
     try {
+        // Chamada para o seu servidor no Render
         const res = await fetch('https://aishageriatria.onrender.com/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                email: emailInput.toLowerCase().trim(), 
-                password: senhaInput 
-            })
+            body: JSON.stringify({ email, password }) // Enviando campos padrão
         });
 
         const data = await res.json();
 
         if (res.ok) {
+            // Salva o token e o cargo (role) para o sistema saber quem logou
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userRole', data.user.role);
-            localStorage.setItem('userName', data.user.name);
 
+            // Redirecionamento baseado no que você já tinha
             if (data.user.role === 'admin') {
                 window.location.href = 'admin-dashboard.html';
             } else {
                 window.location.href = 'perfil-paciente.html';
             }
         } else {
-            msgErro.innerText = data.message;
+            // Se der erro 400, ele vai mostrar a mensagem real aqui
+            msgErro.innerText = data.message || "Erro no login";
             msgErro.style.display = 'block';
         }
     } catch (err) {
-        msgErro.innerText = 'Erro de conexão. Tente novamente.';
+        msgErro.innerText = "Erro de conexão com o servidor.";
         msgErro.style.display = 'block';
     }
 });
