@@ -8,57 +8,48 @@ require('dotenv').config();
 const User = require('./models/User');
 const app = express();
 
-// Configurações de Segurança e Dados
 app.use(cors());
 app.use(express.json());
 
-// Rota de Login Corrigida
+// ROTA DE LOGIN (Onde estava o erro de 404/500)
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         
-        // 1. Busca o usuário
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({ message: 'Utilizador não encontrado.' });
         }
 
-        // 2. Compara a senha
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ message: 'Senha incorreta.' });
         }
 
-        // 3. Gera o Token
         const token = jwt.sign(
             { id: user._id, role: user.role },
             process.env.JWT_SECRET || 'secreta_padrao_123',
             { expiresIn: '1d' }
         );
 
-        // 4. Resposta formatada para o seu login.js
+        // Retorno exatamente como o seu js/login.js espera
         res.status(200).json({
             token,
-            user: {
-                id: user._id,
-                name: user.name,
-                role: user.role
-            }
+            user: { id: user._id, name: user.name, role: user.role }
         });
 
     } catch (error) {
-        console.error("ERRO NO LOGIN:", error);
-        res.status(500).json({ message: 'Erro interno no servidor.', error: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Erro interno no servidor' });
     }
 });
 
-// CONEXÃO COM O MONGODB
-// Usei a sua URI, mas adicionei o nome do banco 'test' ou 'dra_aisha' antes do '?'
+// SUA CONEXÃO (Ajustada para conectar no banco 'test' ou 'dra_aisha')
 const MONGODB_URI = "mongodb+srv://Jeovanbsp:jbsjbsjeo1@cluster0.sxnk9v3.mongodb.net/dra_aisha?retryWrites=true&w=majority";
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Conectado ao MongoDB Atlas com sucesso!'))
-  .catch(err => console.error('❌ Erro de conexão com o banco:', err));
+  .then(() => console.log('✅ MongoDB Conectado'))
+  .catch(err => console.error('❌ Erro MongoDB:', err));
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`🚀 Servidor ativo na porta ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Porta ${PORT}`));
