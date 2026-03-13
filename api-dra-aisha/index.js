@@ -10,38 +10,55 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ROTA DE LOGIN DEFINITIVA
+// ROTA DE LOGIN - REVISADA PARA NÃO DAR ERRO 500
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        
+        // 1. Procura o utilizador
+        const user = await User.findOne({ email: email.toLowerCase().trim() });
+        if (!user) {
+            return res.status(400).json({ message: 'Utilizador não encontrado.' });
+        }
 
-        if (!user) return res.status(400).json({ message: 'Utilizador não encontrado.' });
+        // 2. Verifica a senha (O bcrypt pode dar erro 500 se a senha no banco for inválida)
+        try {
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: 'Senha incorreta.' });
+            }
+        } catch (bcryptError) {
+            return res.status(500).json({ message: 'Erro ao verificar senha. Tente redefinir a senha do utilizador.' });
+        }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Senha incorreta.' });
-
+        // 3. Gera o Token
         const token = jwt.sign(
             { id: user._id, role: user.role },
-            'secreta_123',
+            'secreta_123_aisha',
             { expiresIn: '1d' }
         );
 
-        // Envia os dados exatamente como o login.js vai ler
-        res.status(200).json({
+        // 4. Envia a resposta
+        return res.status(200).json({
             token,
-            user: { name: user.name, role: user.role }
+            user: {
+                name: user.name,
+                role: user.role || 'paciente'
+            }
         });
+
     } catch (error) {
-        res.status(500).json({ message: 'Erro no servidor' });
+        console.error("ERRO CRÍTICO NO LOGIN:", error);
+        return res.status(500).json({ message: 'Erro interno no servidor.' });
     }
 });
 
-// SUA CONEXÃO DIRETA
+// LIGAÇÃO DIRETA AO BANCO (Sem depender de variáveis do Render para testar)
 const MONGODB_URI = "mongodb+srv://Jeovanbsp:jbsjbsjeo1@cluster0.sxnk9v3.mongodb.net/dra_aisha?retryWrites=true&w=majority";
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('✅ Banco Conectado'))
-  .catch(err => console.error('❌ Erro Banco:', err));
+  .then(() => console.log('✅ Base de dados conectada'))
+  .catch(err => console.error('❌ Erro ao ligar ao banco:', err));
 
-app.listen(process.env.PORT || 3001, () => console.log(`🚀 Online`));
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => console.log(`🚀 Servidor pronto na porta ${PORT}`));
