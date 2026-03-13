@@ -8,7 +8,8 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
     const btn = document.querySelector('.btn-entrar');
 
     msgErro.style.display = 'none';
-    btn.innerText = 'A conectar...';
+    btn.innerText = 'Processando...';
+    btn.disabled = true;
 
     try {
         const res = await fetch(`${API_BASE}/api/auth/login`, {
@@ -20,26 +21,26 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
         const data = await res.json();
 
         if (res.ok) {
-            // Guardar os dados corretamente (o servidor envia dentro de data.user)
+            // Salva no LocalStorage
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userRole', data.user.role);
             localStorage.setItem('userName', data.user.name);
 
-            // Redirecionar
+            // Redireciona conforme o cargo
             if (data.user.role === 'admin') {
                 window.location.href = 'admin-dashboard.html';
             } else {
                 window.location.href = 'perfil-paciente.html';
             }
         } else {
-            msgErro.innerText = data.message || 'Credenciais inválidas.';
+            msgErro.innerText = data.message || 'Erro ao fazer login.';
             msgErro.style.display = 'block';
-            btn.innerText = 'Entrar';
         }
     } catch (err) {
-        console.error(err);
-        msgErro.innerText = 'Erro de conexão. Verifique se o servidor está online.';
+        msgErro.innerText = 'O servidor está ligando. Tente novamente em 20 segundos.';
         msgErro.style.display = 'block';
+    } finally {
         btn.innerText = 'Entrar';
+        btn.disabled = false;
     }
 });
