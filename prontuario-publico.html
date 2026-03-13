@@ -6,12 +6,16 @@
     <title>Ficha Médica - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prontuario.css">
+    
     <style>
-        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; }
-        .container-publico { max-width: 800px; margin: 40px auto; padding: 20px; }
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
+        
+        .container-publico { max-width: 800px; margin: 120px auto 40px auto; padding: 20px; }
+        
         .cabecalho-publico { text-align: center; margin-bottom: 30px; }
-        .cabecalho-publico img { height: 60px; margin-bottom: 10px; }
         .cabecalho-publico h2 { color: #2c3e50; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
         
         .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2ADCA1; }
@@ -45,9 +49,19 @@
 </head>
 <body>
 
+    <header class="header-fixo no-print">
+        <div class="header-container" style="justify-content: space-between; align-items: center;">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha">
+            </a>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar ao Início</a>
+            </div>
+        </div>
+    </header>
+
     <div class="container-publico">
         <div class="cabecalho-publico">
-            <img src="img/layout.png" alt="Logo Dra. Aisha">
             <h2>Ficha Médica Resumo</h2>
             <p style="color: #777; font-size: 0.9rem; margin-top: 5px;">Acesso via QR Code</p>
         </div>

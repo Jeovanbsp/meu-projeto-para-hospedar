@@ -18,17 +18,22 @@
     </style>
 </head>
 <body>
-    <header class="novo-header no-print"> 
-        <div class="header-container" style="justify-content: space-between; align-items: center;">
-            <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 40px;"></a>
+    
+    <header class="header-fixo no-print"> 
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha">
+            </a>
+            
             <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="index.html" style="text-decoration: none; color: #2c3e50; font-weight: 600; font-size: 0.9rem;">&larr; Voltar para o Início</a>
-                <button id="btn-logout-paciente" class="btn-agendar" style="padding: 8px 20px; background-color: #ff6b6b; border: none;">Sair</button>
+                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar para o Início</a>
+                <button id="btn-logout-paciente" style="background-color: #ff6b6b; color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(255, 107, 107, 0.2);">Sair</button>
             </div>
         </div>
     </header>
+
     <main>
-        <div class="card-agendamento" id="prontuario-card" style="margin-top: 60px; margin-bottom: 60px;">
+        <div class="card-agendamento" id="prontuario-card" style="margin-top: 120px; margin-bottom: 60px;">
             <h2>Minhas Informações (Prontuário)</h2>
             
             <div class="box-termo-responsabilidade">

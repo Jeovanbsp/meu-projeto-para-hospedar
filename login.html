@@ -6,7 +6,8 @@
     <title>Login - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> <style>
+    <link rel="stylesheet" href="css/style.css"> 
+    <style>
         body { 
             background-color: #f4f6f8; 
             margin: 0;
@@ -15,13 +16,13 @@
             min-height: 100vh;
         }
 
-        /* Ajuste para o conteúdo ficar centralizado verticalmente descontando o header */
+        /* Ajuste para o conteúdo não ficar escondido atrás do cabeçalho fixo */
         main {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 120px 20px 20px 20px; /* O 120px empurra a caixa de login para baixo da logo grande */
         }
 
         .login-card { 
@@ -62,12 +63,11 @@
     </style>
 </head>
 <body>
-    <header class="novo-header">
-        <div class="header-container" style="justify-content: space-between;">
+    <header class="header-fixo no-print">
+        <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 40px;">
+                <img src="img/layout.png" alt="Logo Dra Aisha">
             </a>
-            
             <nav>
                 <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
             </nav>
@@ -108,7 +108,7 @@
             document.querySelector('.btn-entrar').innerText = 'Entrando...';
 
             try {
-                const res = await fetch(`${API_BASE}/auth/login`, {
+                const res = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ email, senha })
@@ -118,10 +118,10 @@
                 
                 if (res.ok) {
                     localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('userRole', data.role);
-                    localStorage.setItem('userName', data.userName);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('userName', data.user.name);
                     
-                    if (data.role === 'admin') {
+                    if (data.user.role === 'admin') {
                         window.location.href = 'admin-dashboard.html';
                     } else {
                         window.location.href = 'perfil-paciente.html';
