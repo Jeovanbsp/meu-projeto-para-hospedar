@@ -13,15 +13,14 @@
         .main-nav ul {
             display: flex;
             align-items: center;
-            gap: 20px; /* Espaço entre os links */
+            gap: 20px;
             list-style: none;
             margin: 0;
             padding: 0;
         }
 
-        /* Destaque Simples para a Ficha */
         .ficha-link {
-            color: #2ADCA1; /* Verde da marca */
+            color: #2ADCA1;
             font-weight: 700;
             text-decoration: none;
             border: 1px solid #2ADCA1;
@@ -30,54 +29,76 @@
             transition: background 0.3s;
         }
         
-        /* HOVER SUAVE */
         .ficha-link:hover {
             background-color: rgba(42, 220, 161, 0.1);
         }
 
-        /* --- ALTERAÇÃO SOLICITADA: BOTÕES DA HOME PEQUENOS E LADO A LADO --- */
-        
-        /* Container para alinhar lado a lado */
-        .botoes-hero {
-            display: flex;
-            gap: 10px; /* Espaço pequeno entre eles */
-            align-items: center;
-            margin-top: 15px;
-            flex-wrap: wrap; /* Permite quebrar linha em telas muito pequenas para não vazar */
-        }
-
-        /* Estilo específico para deixar ESTES botões menores e minimalistas */
-        .botoes-hero .btn-agendar {
-            padding: 8px 15px; /* Padding reduzido para ficar menor */
-            font-size: 0.85rem; /* Fonte menor */
-            font-weight: 600; /* Peso um pouco menor */
-            white-space: nowrap; /* Tenta manter em uma linha */
-            /* As outras propriedades (cor de fundo, raio da borda) são herdadas do css/style.css original */
-        }
-
-        /* AJUSTE PARA O CABEÇALHO PADRÃO */
+        /* CABEÇALHO PADRÃO */
         .novo-header {
             background-color: #ffffff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             padding: 10px 0;
         }
 
-        /* AUMENTAR TAMANHO DA IMAGEM PERFIL.PNG (BONECA) */
+        /* --- DESTAQUE DA BONECA --- */
+        .sobre-container {
+            display: flex;
+            align-items: center; /* Centraliza verticalmente a boneca com o texto */
+            gap: 40px;
+        }
+
+        .sobre-imagem-boneca {
+            display: flex;
+            justify-content: center;
+            flex: 1; /* Ocupa metade do espaço */
+        }
+
         .sobre-imagem-boneca img {
-            max-width: 350px !important; /* Tamanho maior para a imagem */
+            max-width: 480px !important; /* DEIXA A IMAGEM BEM MAIOR (Antes estava 350) */
+            width: 100%;
             height: auto;
         }
 
-        /* Ajuste para não quebrar no celular a navegação */
+        /* --- AJUSTE DO TEXTO E BOTÃO --- */
+        .sobre-texto {
+            flex: 1; /* Ocupa a outra metade do espaço */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left; /* Garante que o título, o texto e o botão fiquem alinhados juntos */
+        }
+
+        .botoes-hero {
+            display: flex;
+            justify-content: flex-start; /* Alinha o botão exatamente com o canto esquerdo do texto */
+            margin-top: 20px;
+        }
+
+        .botoes-hero .btn-agendar {
+            padding: 12px 25px; /* Deixei o botão um pouco mais robusto e elegante */
+            font-size: 1rem;
+            font-weight: bold;
+            white-space: nowrap;
+            display: inline-block;
+            background-color: #2ADCA1; /* Verde da marca */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px; /* Borda levemente arredondada */
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .botoes-hero .btn-agendar:hover {
+            background-color: #24b685;
+            transform: translateY(-2px);
+        }
+
+        /* --- RESPONSIVIDADE (CELULAR) --- */
         @media (max-width: 900px) {
             .main-nav ul { flex-direction: column; gap: 15px; }
-        }
-        
-        /* Ajuste opcional para centralizar os botões pequenos no celular */
-        @media (max-width: 600px) {
-             .botoes-hero {
-                 justify-content: center;
-            }
+            .sobre-container { flex-direction: column; text-align: center; }
+            .sobre-texto { text-align: center; align-items: center; }
+            .botoes-hero { justify-content: center; } /* Centraliza o botão no celular */
+            .sobre-imagem-boneca img { max-width: 300px !important; } /* Diminui um pouco no celular para não quebrar a tela */
         }
     </style>
 </head>
@@ -96,12 +117,10 @@
                             Ficha Pré-Atendimento
                         </a>
                     </li>
-
                     <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
-
                     <li><a href="login.html" style="font-weight: bold; color: #2ADCA1;">Login</a></li>
                 </ul>
             </nav>
@@ -130,7 +149,7 @@
                             Agende sua consulta
                         </a>
                     </div>
-                    </div>
+                </div>
             </div>
         </section> 
         
@@ -174,7 +193,6 @@
             </div>
         </section>
 
-        
         <section class="experiencia-texto-com-imagem"> 
             <div class="experiencia-container-novo">
                 <div class="experiencia-imagem-lateral">
@@ -253,7 +271,6 @@
         </div>
     </section>
 
-
     <footer id="contato">
         <p>Siga a Dra. Aisha nas redes sociais:</p>
         <div class="social-icons">
@@ -269,7 +286,6 @@
         </div>
         
         <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
-
         <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
     </footer>
 
@@ -278,17 +294,12 @@
         const mobileMenu = document.getElementById('mobile-menu');
 
         hamburgerButton.addEventListener('click', () => {
-            // Alterna a classe 'is-active' no botão
             hamburgerButton.classList.toggle('is-active');
-            // Alterna o atributo aria-expanded para acessibilidade
             const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
             hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            
-            // Alterna a classe 'is-active' no menu
             mobileMenu.classList.toggle('is-active');
         });
 
-        // Opcional: Fechar o menu ao clicar em um link (útil para Single Page Applications)
         const menuLinks = mobileMenu.querySelectorAll('a');
         menuLinks.forEach(link => {
             link.addEventListener('click', () => {
@@ -298,6 +309,5 @@
             });
         });
     </script>
-
 </body>
 </html>
