@@ -1,22 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Dra. Aisha Wenzinger</title>
-    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/prontuario.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <style>
-        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
-        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
-        #qrcode-container img { width: 100% !important; height: 100% !important; }
-        #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
-        @media print { .no-print { display: none !important; } }
-    </style>
-</head>
+<header class="header-fixo no-print"> 
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha">
+            </a>
+            
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar para o Início</a>
+                <button id="btn-logout-paciente" style="background-color: #ff6b6b; color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(255, 107, 107, 0.2);">Sair</button>
+            </div>
+        </div>
+    </header>
 <body>
     <header class="novo-header no-print"> 
         <div class="header-container" style="justify-content: space-between; align-items: center;">
