@@ -8,26 +8,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css"> 
     <style>
-        body { background-color: #f4f6f8; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        /* Padding aumentado para 190px */
-        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 190px 20px 20px 20px; }
-        .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        body { 
+            background-color: #f4f6f8; 
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Ajuste para o conteúdo ficar centralizado verticalmente descontando o header */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 400px; 
+            text-align: center; 
+        }
+
         .input-group { margin-bottom: 15px; text-align: left; }
         .input-group label { display: block; margin-bottom: 5px; color: #666; font-weight: 600; }
         .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
+        
         .btn-entrar { width: 100%; padding: 12px; background-color: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
         .btn-entrar:hover { background-color: #24b685; }
+        
         .erro-msg { color: #ef5350; font-size: 0.9rem; margin-top: 15px; display: none; }
-        .btn-voltar { text-decoration: none; color: #555; font-weight: 600; padding: 8px 15px; border: 1px solid #ccc; border-radius: 20px; transition: 0.3s; }
-        .btn-voltar:hover { background-color: #eee; color: #333; }
+
+        /* Botão de voltar no header */
+        .btn-voltar {
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            padding: 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+        .btn-voltar:hover {
+            background-color: #eee;
+            color: #333;
+        }
     </style>
 </head>
 <body>
     <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 160px !important; max-height: none !important; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 130px; width: auto;">
             </a>
             <nav>
                 <a href="index.html" class="btn-voltar">← Voltar ao Início</a>
@@ -56,27 +93,38 @@
     </main>
 
     <script>
+        // Correção para funcionar tanto no PC local quanto no Render
         const API_BASE = (window.location.hostname === 'localhost' || window.location.protocol === 'file:') ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+
         document.getElementById('form-login').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const senha = document.getElementById('senha').value;
             const msgErro = document.getElementById('msg-erro');
+            
             msgErro.style.display = 'none';
             document.querySelector('.btn-entrar').innerText = 'Entrando...';
+
             try {
+                // Rota corrigida para /api/auth/login e password enviado corretamente
                 const res = await fetch(`${API_BASE}/api/auth/login`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email, senha })
+                    body: JSON.stringify({ email: email, password: senha })
                 });
+                
                 const data = await res.json();
+                
                 if (res.ok) {
                     localStorage.setItem('authToken', data.token);
                     localStorage.setItem('userRole', data.user.role);
                     localStorage.setItem('userName', data.user.name);
-                    if (data.user.role === 'admin') window.location.href = 'admin-dashboard.html';
-                    else window.location.href = 'perfil-paciente.html';
+                    
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'perfil-paciente.html';
+                    }
                 } else {
                     msgErro.innerText = data.message || 'Erro ao entrar.';
                     msgErro.style.display = 'block';
@@ -84,7 +132,7 @@
                 }
             } catch (err) {
                 console.error(err);
-                msgErro.innerText = 'Erro de conexão com o servidor.';
+                msgErro.innerText = 'Erro de conexão com o servidor. Verifique o Render.';
                 msgErro.style.display = 'block';
                 document.querySelector('.btn-entrar').innerText = 'Entrar';
             }
