@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* CSS EXTRA PARA ORGANIZAR A NAV E DAR DESTAQUE SIMPLES */
+        /* ORGANIZAR A NAV E DAR DESTAQUE SIMPLES */
         .main-nav ul {
             display: flex;
             align-items: center;
@@ -33,72 +33,95 @@
             background-color: rgba(42, 220, 161, 0.1);
         }
 
-        /* CABEÇALHO PADRÃO */
         .novo-header {
             background-color: #ffffff;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             padding: 10px 0;
         }
 
-        /* --- DESTAQUE DA BONECA --- */
+        /* =========================================
+           DESTAQUE GIGANTE DA BONECA
+           ========================================= */
         .sobre-container {
             display: flex;
-            align-items: center; /* Centraliza verticalmente a boneca com o texto */
-            gap: 40px;
+            align-items: center; 
+            gap: 20px;
+            overflow: visible !important; /* Permite que a boneca saia da caixa se precisar */
         }
 
         .sobre-imagem-boneca {
             display: flex;
             justify-content: center;
-            flex: 1; /* Ocupa metade do espaço */
+            flex: 1; 
         }
 
         .sobre-imagem-boneca img {
-            max-width: 480px !important; /* DEIXA A IMAGEM BEM MAIOR (Antes estava 350) */
+            max-width: 500px !important; 
             width: 100%;
             height: auto;
+            transform: scale(1.35); /* SUPER ZOOM: Aumenta a boneca em 35% */
+            transform-origin: bottom center; /* Cresce a partir da base para não vazar por baixo */
+            position: relative;
+            z-index: 2;
         }
 
-        /* --- AJUSTE DO TEXTO E BOTÃO --- */
+        /* =========================================
+           ALINHAMENTO PERFEITO DO TEXTO E BOTÃO
+           ========================================= */
         .sobre-texto {
-            flex: 1; /* Ocupa a outra metade do espaço */
+            flex: 1.2; /* Dá um pouco mais de espaço para o texto */
             display: flex;
             flex-direction: column;
             justify-content: center;
-            text-align: left; /* Garante que o título, o texto e o botão fiquem alinhados juntos */
+            text-align: left !important; /* Força o texto à esquerda */
+            align-items: flex-start !important; /* Força o botão e os textos a começarem no mesmo alinhamento */
+            z-index: 3;
+        }
+
+        .sobre-texto h2, .sobre-texto p {
+            margin-left: 0 !important;
+            padding-left: 0 !important;
         }
 
         .botoes-hero {
             display: flex;
-            justify-content: flex-start; /* Alinha o botão exatamente com o canto esquerdo do texto */
-            margin-top: 20px;
+            justify-content: flex-start !important; /* Botão segue a mesma linha do texto */
+            margin-top: 25px;
+            width: 100%;
         }
 
         .botoes-hero .btn-agendar {
-            padding: 12px 25px; /* Deixei o botão um pouco mais robusto e elegante */
-            font-size: 1rem;
-            font-weight: bold;
+            padding: 14px 28px; /* Botão mais robusto e clique fácil */
+            font-size: 1.05rem;
+            font-weight: 700;
             white-space: nowrap;
-            display: inline-block;
-            background-color: #2ADCA1; /* Verde da marca */
+            background-color: #2ADCA1; 
             color: white;
             text-decoration: none;
-            border-radius: 8px; /* Borda levemente arredondada */
+            border-radius: 8px; 
             transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(42, 220, 161, 0.3); /* Sombra elegante */
         }
 
         .botoes-hero .btn-agendar:hover {
             background-color: #24b685;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(42, 220, 161, 0.4);
         }
 
         /* --- RESPONSIVIDADE (CELULAR) --- */
         @media (max-width: 900px) {
             .main-nav ul { flex-direction: column; gap: 15px; }
-            .sobre-container { flex-direction: column; text-align: center; }
-            .sobre-texto { text-align: center; align-items: center; }
-            .botoes-hero { justify-content: center; } /* Centraliza o botão no celular */
-            .sobre-imagem-boneca img { max-width: 300px !important; } /* Diminui um pouco no celular para não quebrar a tela */
+            .sobre-container { flex-direction: column; text-align: center; gap: 50px; }
+            .sobre-texto { 
+                text-align: center !important; 
+                align-items: center !important; /* No celular centraliza tudo para ficar bonito */
+            }
+            .botoes-hero { justify-content: center !important; } 
+            .sobre-imagem-boneca img { 
+                max-width: 350px !important; 
+                transform: scale(1.15); /* Zoom um pouco menor no celular para não quebrar a tela */
+            }
         }
     </style>
 </head>
