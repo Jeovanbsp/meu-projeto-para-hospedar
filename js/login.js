@@ -1,25 +1,34 @@
 document.getElementById('form-login').addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = document.getElementById('email').value;
-    const password = document.getElementById('senha').value;
+    const senha = document.getElementById('senha').value;
+    const msgErro = document.getElementById('msg-erro');
 
     try {
-        const response = await fetch('https://aishageriatria.onrender.com/api/auth/login', {
+        const res = await fetch('https://aishageriatria.onrender.com/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password: senha })
         });
 
-        const data = await response.json();
+        const data = await res.json();
 
-        if (response.ok) {
+        if (res.ok) {
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userRole', data.user.role);
-            window.location.href = data.user.role === 'admin' ? 'admin-dashboard.html' : 'perfil-paciente.html';
+            
+            // Redireciona
+            if (data.user.role === 'admin') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                window.location.href = 'perfil-paciente.html';
+            }
         } else {
-            alert(data.message);
+            msgErro.innerText = data.message;
+            msgErro.style.display = 'block';
         }
     } catch (err) {
-        alert("Erro ao conectar com o servidor.");
+        msgErro.innerText = "Erro ao conectar. Tente novamente.";
+        msgErro.style.display = 'block';
     }
 });

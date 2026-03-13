@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
 
 const User = require('./models/User');
 const app = express();
@@ -11,31 +10,38 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// ROTA DE LOGIN DEFINITIVA
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        // Busca o usuário apenas pelo email
-        const user = await User.findOne({ email: email });
-        
-        if (!user) return res.status(400).json({ message: 'Usuário não encontrado' });
+        const user = await User.findOne({ email });
 
-        // Compara a senha
+        if (!user) return res.status(400).json({ message: 'Utilizador não encontrado.' });
+
         const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: 'Senha incorreta' });
+        if (!isMatch) return res.status(400).json({ message: 'Senha incorreta.' });
 
-        // Cria o token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET || 'secret', { expiresIn: '1d' });
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            'secreta_123',
+            { expiresIn: '1d' }
+        );
 
-        // Retorna os dados exatamente como o JS vai ler
-        res.json({
+        // Envia os dados exatamente como o login.js vai ler
+        res.status(200).json({
             token,
             user: { name: user.name, role: user.role }
         });
-    } catch (err) {
-        res.status(500).json({ message: 'Erro interno', error: err.message });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro no servidor' });
     }
 });
 
-mongoose.connect(process.env.MONGODB_URI || "sua_uri_aqui")
-    .then(() => app.listen(process.env.PORT || 3001, () => console.log("Rodando!")))
-    .catch(err => console.log(err));
+// SUA CONEXÃO DIRETA
+const MONGODB_URI = "mongodb+srv://Jeovanbsp:jbsjbsjeo1@cluster0.sxnk9v3.mongodb.net/dra_aisha?retryWrites=true&w=majority";
+
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log('✅ Banco Conectado'))
+  .catch(err => console.error('❌ Erro Banco:', err));
+
+app.listen(process.env.PORT || 3001, () => console.log(`🚀 Online`));
