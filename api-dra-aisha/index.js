@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ROTA DE LOGIN (Onde estava o erro de 404/500)
+// Rota de Login Corrigida
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -32,24 +32,27 @@ app.post('/api/auth/login', async (req, res) => {
             { expiresIn: '1d' }
         );
 
-        // Retorno exatamente como o seu js/login.js espera
+        // Resposta estruturada para o login.js ler sem erros
         res.status(200).json({
             token,
-            user: { id: user._id, name: user.name, role: user.role }
+            user: {
+                id: user._id,
+                name: user.name,
+                role: user.role
+            }
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro interno no servidor' });
+        console.error("Erro interno:", error);
+        res.status(500).json({ message: 'Erro interno no servidor.' });
     }
 });
 
-// SUA CONEXÃO (Ajustada para conectar no banco 'test' ou 'dra_aisha')
-const MONGODB_URI = "mongodb+srv://Jeovanbsp:jbsjbsjeo1@cluster0.sxnk9v3.mongodb.net/dra_aisha?retryWrites=true&w=majority";
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://Jeovanbsp:jbsjbsjeo1@cluster0.sxnk9v3.mongodb.net/dra_aisha?retryWrites=true&w=majority";
 
 mongoose.connect(MONGODB_URI)
   .then(() => console.log('✅ MongoDB Conectado'))
   .catch(err => console.error('❌ Erro MongoDB:', err));
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`🚀 Porta ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Servidor na porta ${PORT}`));
