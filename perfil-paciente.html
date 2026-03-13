@@ -3,215 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil - Dra. Aisha Wenzinger</title>
+    <title>Ficha Médica - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
-        /* Fundo branco para a barra de navegação */
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        
-        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
-        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
-        #qrcode-container img { width: 100% !important; height: 100% !important; }
-        #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
-        @media print { .no-print { display: none !important; } }
+        .container-publico { max-width: 800px; margin: 160px auto 40px auto; padding: 20px; }
+        .cabecalho-publico { text-align: center; margin-bottom: 30px; }
+        .cabecalho-publico h2 { color: #2c3e50; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
+        .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2ADCA1; }
+        .card-secao h3 { color: #2ADCA1; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .alerta-alergia-emergencia { background-color: #ffebee; border-left: 6px solid #c62828; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: none; animation: pulse 2s infinite; }
+        .alerta-alergia-emergencia h3 { color: #c62828; margin: 0 0 5px 0; border: none; padding: 0; font-size: 1.1rem; }
+        .alerta-alergia-emergencia p { color: #b71c1c; margin: 0; font-weight: 600; font-size: 1.1rem; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .info-item { margin-bottom: 10px; }
+        .info-item span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; }
+        .info-item span.valor { display: block; font-size: 1.05rem; color: #333; font-weight: 500; margin-top: 2px; }
+        .info-bloco { margin-bottom: 20px; }
+        .info-bloco span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+        .info-bloco div.valor { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 1rem; color: #444; min-height: 20px; white-space: pre-wrap; border: 1px solid #eee; }
+        .tabela-publica { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .tabela-publica th { background-color: #f0f0f0; padding: 10px; text-align: left; font-size: 0.85rem; color: #555; border-bottom: 2px solid #ddd; }
+        .tabela-publica td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #333; font-size: 0.95rem; }
+        .pill-med { display: inline-block; background-color: #e0f5ef; color: #2c3e50; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; margin: 2px; }
+        .loader { text-align: center; padding: 50px; color: #888; font-weight: 600; }
+        @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
-    <header class="header-fixo no-print"> 
+
+    <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 90px; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 130px !important; max-height: none !important; width: auto;">
             </a>
-            
-            <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar para o Início</a>
-                <button id="btn-logout-paciente" style="background-color: #ff6b6b; color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 6px rgba(255, 107, 107, 0.2);">Sair</button>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar ao Início</a>
             </div>
         </div>
     </header>
-    
-    <main>
-        <div class="card-agendamento" id="prontuario-card" style="margin-top: 140px; margin-bottom: 60px;">
-            <h2>Minhas Informações (Prontuário)</h2>
-            
-            <div class="box-termo-responsabilidade">
-                <div>
-                    <p style="font-weight: 700; font-size: 1rem; color: #2c3e50; margin-bottom: 5px;">Termo de Declaração e Responsabilidade</p>
-                    <p>O preenchimento deste prontuário é de responsabilidade exclusiva do paciente ou seu responsável legal. Para acessar e editar os dados, a leitura e o aceite do termo são obrigatórios.</p>
-                </div>
-                
-                <button type="button" onclick="abrirModalTermo()" class="btn-ler-termo">
-                    📄 Ler Termo Completo
-                </button>
-                
-                <label class="check-termo-container">
-                    <input type="checkbox" id="check-termo-aceite" disabled> 
-                    <span>Declaro que li e <strong>CONCORDO</strong> com as informações prestadas.</span>
-                </label>
-            </div>
 
-            <div id="conteudo-prontuario" style="display: none;">
-                <form id="form-prontuario-principal">
-                    <label for="nome-paciente">Nome do Paciente</label>
-                    <input type="text" id="nome-paciente" required>
-                    
-                    <label for="rg-paciente">RG (Documento de Identificação)</label>
-                    <input type="text" id="rg-paciente" placeholder="RG ou CPF">
-
-                    <label for="idade">Idade</label>
-                    <input type="number" id="idade" required>
-                    
-                    <div style="margin-top: 15px; margin-bottom: 20px;">
-                        <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
-                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                            <label class="radio-label"><input type="radio" name="mobilidade" value="Independente"> <span style="color: #2E7D32;">Independente</span></label>
-                            <label class="radio-label"><input type="radio" name="mobilidade" value="Com Auxílio"> <span style="color: #F57F17;">Com Auxílio</span></label>
-                            <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> <span style="color: #C62828;">Dependente</span></label>
-                        </div>
-                    </div>
-
-                    <label for="patologias">Patologias</label>
-                    <textarea id="patologias"></textarea>
-
-                    <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares Relevantes (Recentes)</label>
-                    <textarea id="exames" placeholder="Liste aqui os exames importantes..."></textarea>
-
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Comorbidades?</label>
-                        <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                                <div class="radio-group-container">
-                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-nao" value="nao" checked> <span class="text-nao">Não Existe</span></label>
-                                    <label class="radio-label"><input type="radio" name="temComorbidade" id="comorbidade-sim" value="sim"> <span class="text-sim">Existe</span></label>
-                                </div>
-                                <button type="button" id="btn-minimizar-comorbidades" class="btn-toggle-lista">
-                                    <span id="texto-btn-toggle">Minimizar</span>
-                                    <span class="seta-toggle"></span>
-                                </button>
-                            </div>
-                            <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 15px;">
-                                <div class="grid-comorbidades">
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão Arterial</label><span class="desc-comorbidade">Pressão alta</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes Mellitus</label><span class="desc-comorbidade">Açúcar no sangue</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label><span class="desc-comorbidade">Coração fraco</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Osteoporose"> Osteoporose</label><span class="desc-comorbidade">Ossos fracos</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Artrose/Artrite"> Artrose / Artrite</label><span class="desc-comorbidade">Desgaste nas juntas</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="DPOC"> DPOC</label><span class="desc-comorbidade">Doença pulmonar</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Depressão/Ansiedade"> Depressão / Ansiedade</label><span class="desc-comorbidade">Saúde mental</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Demência"> Demência</label><span class="desc-comorbidade">Alzheimer e outros</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Parkinson"> Parkinson</label><span class="desc-comorbidade">Tremores/Rigidez</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Dislipidemia"> Dislipidemia</label><span class="desc-comorbidade">Colesterol alto</span></div>
-                                    <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label><span class="desc-comorbidade">Derrame</span></div>
-                                </div>
-                                <input type="text" id="comorbidades-outras" class="form-control" placeholder="Outras (escreva aqui)" style="margin-top: 15px; width: 100%; box-sizing: border-box;">
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group" style="margin-top: 15px;">
-                        <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
-                        <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
-                            <div class="radio-group-container">
-                                <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span class="text-nao">Não</span></label>
-                                <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span class="text-sim">Sim</span></label>
-                                <span id="sinalizador-alergia" class="alerta-alergia">PACIENTE ALÉRGICO</span>
-                            </div>
-                            <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
-                        </div>
-                    </div>
-                </form>
-
-                <div class="gerenciador-medicacao">
-                    <h3>Minhas Medicações</h3>
-                    <button type="button" id="btn-toggle-med-form" class="btn-show-form">+ Nova Medicação</button>
-                    <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
-                        <div class="form-linha-inputs">
-                            <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                            <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
-                            <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
-                        </div>
-                        <div id="secao-turnos" style="display: none;">
-                            <label style="font-size: 0.85rem; font-weight: bold; color: #555;">Deseja marcar turnos adicionais?</label>
-                            <div class="checkbox-group">
-                                <label><input type="checkbox" name="horario" value="antes_cafe"> Antes Café</label>
-                                <label><input type="checkbox" name="horario" value="depois_cafe"> Depois Café</label>
-                                <label><input type="checkbox" name="horario" value="almoco"> Almoço</label>
-                                <label><input type="checkbox" name="horario" value="tarde"> Tarde</label>
-                                <label><input type="checkbox" name="horario" value="antes_jantar"> Antes Jantar</label>
-                                <label><input type="checkbox" name="horario" value="antes_dormir"> Antes Dormir</label>
-                            </div>
-                        </div>
-                        <button type="submit" id="btn-add-medicacao" style="margin-top: 10px;">+ Adicionar na Lista</button>
-                    </form>
-                    <div class="tabela-container">
-                        <table class="tabela-medicacoes">
-                            <thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead>
-                            <tbody id="lista-medicacoes-body"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="gerenciador-medicos">
-                    <h3>Médicos Assistentes</h3>
-                    <form id="form-add-medico" class="form-add-medico no-print"> 
-                        <div class="form-linha-inputs" style="display: flex; gap: 10px;">
-                            <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
-                            <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico" placeholder="(71) 9999-9999"></div>
-                        </div>
-                        <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
-                    </form>
-                    <ul id="lista-medicos-pills"></ul>
-                </div>
-
-                <div class="gerenciador-qrcode no-print">
-                    <h3>QR Code de Acesso Rápido</h3>
-                    <button type="button" id="btn-gerar-qrcode">Gerar meu QR Code</button>
-                    <div id="qrcode-container"></div>
-                </div>
-                <div class="botoes-acao-container no-print"> 
-                    <button type="submit" id="btn-salvar-tudo">Salvar Prontuário Completo</button>
-                    <button type="button" id="btn-download-pdf">Baixar Prontuário (PDF)</button>
-                </div>
-            </div>
-            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+    <div class="container-publico">
+        <div class="cabecalho-publico">
+            <h2>Ficha Médica Resumo</h2>
+            <p style="color: #777; font-size: 0.9rem; margin-top: 5px;">Acesso via QR Code</p>
         </div>
-    </main>
-
-    <div id="modal-termo" class="modal-overlay">
-        <div class="modal-box modal-termo-box">
-            <h3>Termo de Declaração e Responsabilidade</h3>
+        <div id="loading" class="loader">Buscando informações do paciente...</div>
+        <div id="erro-msg" class="loader" style="display: none; color: #e74c3c;">Prontuário não encontrado ou ID inválido.</div>
+        
+        <div id="conteudo-prontuario" style="display: none;">
+            <div id="alerta-alergia" class="alerta-alergia-emergencia">
+                <h3>⚠️ ATENÇÃO: PACIENTE ALÉRGICO</h3>
+                <p id="pub-alergias"></p>
+            </div>
             
-            <div class="texto-termo">
-                <p>Eu, <strong id="termo-nome-paciente">____________________</strong>, portador(a) do documento de identificação nº <strong id="termo-rg-paciente">____________________</strong>, declaro para os devidos fins que:</p>
-
-                <ul>
-                    <li>Estou ciente de que todas as informações prestadas neste atendimento médico são de minha inteira responsabilidade, sendo necessárias para o correto encaminhamento e acompanhamento da minha condição de saúde.</li>
-                    <li>Reconheço que a veracidade e completude dos dados fornecidos são fundamentais para a adequada condução do tratamento e tomada de decisões clínicas.</li>
-                    <li>Declaro estar informado(a) de que, a qualquer momento, poderei retificar, complementar ou ratificar as informações prestadas, mediante comunicação direta ao profissional ou serviço de saúde responsável.</li>
-                    <li>Assumo plena responsabilidade pelas informações fornecidas, eximindo o profissional e a instituição de saúde de eventuais consequências decorrentes de dados incorretos, incompletos ou omissos.</li>
-                    <li>Estou ciente, desde já, de que poderá haver edição, atualização ou ajustes nas informações relacionadas a receitas médicas, atestados e demais documentos clínicos, realizados pela equipe médica e seus colaboradores, sempre que necessário para o adequado acompanhamento do tratamento.</li>
-                </ul>
-
-                <p>Por ser expressão da verdade, firmo o presente termo em ciência e concordância.</p>
-                
-                <br>
-                <p>Salvador/BA, <span id="termo-data-atual"></span>.</p>
-                <br>
-                <p style="text-align: center; border-top: 1px solid #ccc; padding-top: 5px;"><strong>Assinatura Digital do Paciente/Responsável (Confirmada ao Aceitar)</strong></p>
+            <div class="card-secao">
+                <h3>Identificação</h3>
+                <div class="info-grid">
+                    <div class="info-item"><span class="label">Nome Completo</span><span class="valor" id="pub-nome"></span></div>
+                    <div class="info-item"><span class="label">Idade</span><span class="valor" id="pub-idade"></span></div>
+                    <div class="info-item"><span class="label">Documento (RG)</span><span class="valor" id="pub-rg"></span></div>
+                    <div class="info-item"><span class="label">Mobilidade</span><span class="valor" id="pub-mobilidade"></span></div>
+                </div>
             </div>
-
-            <div class="modal-btns">
-                <button type="button" class="btn-cancelar" onclick="fecharModalTermo()">Cancelar</button>
-                <button type="button" class="btn-aceitar" onclick="aceitarTermo()">Li, concordo e ACEITO</button>
             </div>
-        </div>
     </div>
 
-    <footer id="contato" class="no-print"><p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473</p></footer>
-    <script src="js/perfil-paciente.js"></script>
+    <script src="js/prontuario-publico.js"></script>
 </body>
 </html>

@@ -10,36 +10,27 @@
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
-        
-        /* Fundo branco para a barra de navegação e margem ajustada */
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        .container-publico { max-width: 800px; margin: 140px auto 40px auto; padding: 20px; }
-        
+        .container-publico { max-width: 800px; margin: 160px auto 40px auto; padding: 20px; }
         .cabecalho-publico { text-align: center; margin-bottom: 30px; }
         .cabecalho-publico h2 { color: #2c3e50; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
-        
         .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2ADCA1; }
         .card-secao h3 { color: #2ADCA1; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        
         .alerta-alergia-emergencia { background-color: #ffebee; border-left: 6px solid #c62828; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: none; animation: pulse 2s infinite; }
         .alerta-alergia-emergencia h3 { color: #c62828; margin: 0 0 5px 0; border: none; padding: 0; font-size: 1.1rem; }
         .alerta-alergia-emergencia p { color: #b71c1c; margin: 0; font-weight: 600; font-size: 1.1rem; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
-
         .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
         .info-item { margin-bottom: 10px; }
         .info-item span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; }
         .info-item span.valor { display: block; font-size: 1.05rem; color: #333; font-weight: 500; margin-top: 2px; }
-        
         .info-bloco { margin-bottom: 20px; }
         .info-bloco span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
         .info-bloco div.valor { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 1rem; color: #444; min-height: 20px; white-space: pre-wrap; border: 1px solid #eee; }
-
         .tabela-publica { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .tabela-publica th { background-color: #f0f0f0; padding: 10px; text-align: left; font-size: 0.85rem; color: #555; border-bottom: 2px solid #ddd; }
         .tabela-publica td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #333; font-size: 0.95rem; }
         .pill-med { display: inline-block; background-color: #e0f5ef; color: #2c3e50; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; margin: 2px; }
-
         .loader { text-align: center; padding: 50px; color: #888; font-weight: 600; }
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
     </style>
@@ -49,7 +40,7 @@
     <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 90px; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 130px !important; max-height: none !important; width: auto;">
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar ao Início</a>
@@ -62,17 +53,15 @@
             <h2>Ficha Médica Resumo</h2>
             <p style="color: #777; font-size: 0.9rem; margin-top: 5px;">Acesso via QR Code</p>
         </div>
-
         <div id="loading" class="loader">Buscando informações do paciente...</div>
         <div id="erro-msg" class="loader" style="display: none; color: #e74c3c;">Prontuário não encontrado ou ID inválido.</div>
-
+        
         <div id="conteudo-prontuario" style="display: none;">
-            
             <div id="alerta-alergia" class="alerta-alergia-emergencia">
                 <h3>⚠️ ATENÇÃO: PACIENTE ALÉRGICO</h3>
                 <p id="pub-alergias"></p>
             </div>
-
+            
             <div class="card-secao">
                 <h3>Identificação</h3>
                 <div class="info-grid">
@@ -82,53 +71,7 @@
                     <div class="info-item"><span class="label">Mobilidade</span><span class="valor" id="pub-mobilidade"></span></div>
                 </div>
             </div>
-
-            <div class="card-secao">
-                <h3>Quadro Clínico</h3>
-                
-                <div class="info-bloco">
-                    <span class="label">Patologias Base</span>
-                    <div class="valor" id="pub-patologias">Não informado.</div>
-                </div>
-
-                <div class="info-bloco">
-                    <span class="label">Comorbidades</span>
-                    <div class="valor" id="pub-comorbidades">Não informado.</div>
-                </div>
-
-                <div class="info-bloco">
-                    <span class="label">Exames Complementares Recentes</span>
-                    <div class="valor" id="pub-exames">Não informado.</div>
-                </div>
             </div>
-
-            <div class="card-secao">
-                <h3>Medicações em Uso</h3>
-                <div style="overflow-x: auto;">
-                    <table class="tabela-publica">
-                        <thead>
-                            <tr>
-                                <th>Medicamento</th>
-                                <th>Qtd / Dose</th>
-                                <th>Horários / Turnos</th>
-                            </tr>
-                        </thead>
-                        <tbody id="pub-medicacoes-body">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card-secao" style="border-top-color: #3498db;">
-                <h3 style="color: #3498db;">Médicos Assistentes</h3>
-                <ul id="pub-medicos" style="list-style: none; padding: 0; margin: 0;">
-                    </ul>
-            </div>
-            
-            <p style="text-align: center; color: #aaa; font-size: 0.8rem; margin-top: 30px;">
-                Informações de responsabilidade do paciente/responsável.<br>Dra. Aishá Wenzinger | CRM/BA: 20473
-            </p>
-        </div>
     </div>
 
     <script src="js/prontuario-publico.js"></script>

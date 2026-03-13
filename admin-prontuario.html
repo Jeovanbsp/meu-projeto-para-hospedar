@@ -9,9 +9,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
-        /* Fundo branco e margem ajustada */
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        .card-agendamento { margin: 140px auto 40px auto; } 
+        .card-agendamento { margin: 160px auto 40px auto; } 
         textarea { min-height: 100px; resize: vertical; }
     </style>
 </head>
@@ -19,7 +18,7 @@
     <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: flex-start; gap: 20px; align-items: center;">
             <a href="admin-dashboard.html" class="logo" style="margin-right: auto;">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 90px; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 130px !important; max-height: none !important; width: auto;">
             </a>
             <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Edição Rápida (Admin)</h3>
         </div>
@@ -50,7 +49,6 @@
 
                 <label for="patologias">Patologias</label>
                 <textarea id="patologias"></textarea>
-
                 <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares</label>
                 <textarea id="exames"></textarea>
 
@@ -66,85 +64,14 @@
                         </div>
                         <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 15px;">
                             <div class="grid-comorbidades">
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão Arterial</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes Mellitus</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Osteoporose"> Osteoporose</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Artrose/Artrite"> Artrose / Artrite</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="DPOC"> DPOC</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Depressão/Ansiedade"> Depressão / Ansiedade</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Demência"> Demência</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Parkinson"> Parkinson</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Dislipidemia"> Dislipidemia</label></div>
-                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Hipertensão Arterial"> Hipertensão</label></div>
+                                <div class="item-comorbidade"><label class="label-comorbidade"><input type="checkbox" name="comorbidade_item" value="Diabetes Mellitus"> Diabetes</label></div>
                             </div>
                             <input type="text" id="comorbidades-outras" class="form-control" placeholder="Outras" style="margin-top: 15px; width: 100%; box-sizing: border-box;">
                         </div>
                     </div>
                 </div>
-
-                <div class="form-group" style="margin-top: 15px;">
-                    <label style="font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Possui Alergias?</label>
-                    <div style="background: #fff; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
-                        <div class="radio-group-container">
-                            <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-nao" value="nao" checked> <span class="text-nao">Não</span></label>
-                            <label class="radio-label"><input type="radio" name="temAlergia" id="alergia-sim" value="sim"> <span class="text-sim">Sim</span></label>
-                            <span id="sinalizador-alergia" class="alerta-alergia">⚠️ PACIENTE ALÉRGICO</span>
-                        </div>
-                        <input type="text" id="alergias-quais" class="form-control" placeholder="Quais?" style="display: none; margin-top: 10px; border-left: 3px solid #C62828; width: 100%; box-sizing: border-box;">
-                    </div>
-                </div>
             </form>
-
-            <div class="gerenciador-medicacao">
-                <h3>Minhas Medicações</h3>
-                <button type="button" id="btn-toggle-med-form" class="btn-show-form">+ Nova Medicação</button>
-                <form id="form-add-medicacao" class="form-add-medicacao no-print" style="display: none;"> 
-                    <div class="form-linha-inputs">
-                        <div class="input-group" style="flex: 2;"><label>Nome</label><input type="text" id="nome-medicacao" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Qtd</label><input type="text" id="qtd-medicacao" placeholder="Ex: 1 cp"></div>
-                        <div class="input-group-pequeno"><label>Horário</label><input type="time" id="horario-especifico"></div>
-                    </div>
-                    
-                    <div id="secao-turnos">
-                        <label class="titulo-secao-turnos">Deseja marcar turnos adicionais?</label>
-                        <div class="checkbox-group">
-                            <label>Antes do Café <input type="checkbox" name="horario" value="antes_cafe"></label>
-                            <label>Depois do Café <input type="checkbox" name="horario" value="depois_cafe"></label>
-                            <label>Almoço <input type="checkbox" name="horario" value="almoco"></label>
-                            <label>Tarde <input type="checkbox" name="horario" value="tarde"></label>
-                            <label>Antes do Jantar <input type="checkbox" name="horario" value="antes_jantar"></label>
-                            <label>Antes de Dormir <input type="checkbox" name="horario" value="antes_dormir"></label>
-                        </div>
-                    </div>
-
-                    <button type="submit" id="btn-add-medicacao" style="margin-top: 15px;">+ Adicionar na Lista</button>
-                </form>
-                <div class="tabela-container"><table class="tabela-medicacoes"><thead><tr><th>Medicação</th><th>Qtd</th><th>Turno</th><th>Horário</th><th class="no-print" style="text-align: center;">Ação</th></tr></thead><tbody id="lista-medicacoes-body"></tbody></table></div>
-            </div>
-
-            <div class="gerenciador-evolucoes" style="border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 30px; overflow: hidden;">
-                <h3 style="background: #e0f5ef; color: #2c3e50; padding: 15px 20px; margin: 0; font-size: 18px;">Evolução Clínica</h3>
-                <div style="padding: 20px;">
-                    <label>Nova Anotação:</label>
-                    <textarea id="texto-evolucao" placeholder="Descreva o estado..." style="width: 100%; height: 100px; padding: 10px; margin-top: 5px; border-radius: 8px; border: 1px solid #ccc;"></textarea>
-                    <button id="btn-add-evolucao" type="button" style="margin-top: 10px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">+ Registrar Evolução</button>
-                    <div id="lista-evolucoes" style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;"></div>
-                </div>
-            </div>
-
-            <div class="gerenciador-medicos">
-                <h3>Médicos Assistentes</h3>
-                <form id="form-add-medico" class="form-add-medico no-print"> 
-                    <div class="form-linha-inputs" style="display: flex; gap: 10px;">
-                        <div class="input-group" style="flex: 2;"><label>Nome e Especialidade</label><input type="text" id="nome-medico" placeholder="Ex: Dr. Carlos" required></div>
-                        <div class="input-group" style="flex: 1;"><label>Telefone</label><input type="text" id="telefone-medico"></div>
-                    </div>
-                    <button type="submit" id="btn-add-medico" style="margin-top: 10px;">+ Adicionar Médico</button>
-                </form>
-                <ul id="lista-medicos-pills"></ul>
-            </div>
-            
             <div class="botoes-acao-container no-print"><button type="submit" id="btn-salvar-tudo-admin">Salvar Edição do Paciente</button></div>
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
         </div>
