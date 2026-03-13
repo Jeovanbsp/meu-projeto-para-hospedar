@@ -12,8 +12,11 @@
 
     <style>
         body { background-color: #f4f6f8; }
-        /* Ajuste da margem superior para 120px para compensar o cabeçalho fixo */
-        .dashboard-container { padding: 40px; max-width: 1200px; margin: 120px auto 0 auto; }
+        
+        /* Fundo branco e espaçamento ajustado */
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+        .dashboard-container { padding: 40px; max-width: 1200px; margin: 140px auto 0 auto; }
+        
         .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
         .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; }
         .card-grafico { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: fit-content; }
@@ -21,14 +24,12 @@
         .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header-card h3 { margin: 0; font-size: 1.1rem; color: #333; }
         
-        /* Botão Novo Paciente */
         .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
         .btn-novo:hover { background-color: #24b685; transform: translateY(-2px); }
 
         #btn-logout { background-color: #ff6b6b; border: none; padding: 8px 20px; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; }
         @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
 
-        /* MODAL CADASTRO */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s; }
         .modal-box { background: white; padding: 30px; border-radius: 10px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-box h3 { margin-top: 0; color: #333; }
@@ -39,11 +40,10 @@
     </style>
 </head>
 <body>
-
     <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 90px; width: auto;">
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <span style="color: #2ADCA1; font-weight: bold;">Painel Administrativo</span>
@@ -93,7 +93,7 @@
     </div>
 
     <script>
-        const API_URL_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+        const API_URL_BASE = (window.location.hostname === 'localhost' || window.location.protocol === 'file:') ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
         document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('authToken');
@@ -103,11 +103,9 @@
             carregarGrafico(token); carregarLista(token);
         });
 
-        // --- FUNÇÕES DO MODAL ---
         function abrirModalCadastro() { document.getElementById('modal-cadastro').style.display = 'flex'; }
         function fecharModalCadastro() { document.getElementById('modal-cadastro').style.display = 'none'; }
 
-        // --- CADASTRAR PACIENTE (ADMIN) ---
         document.getElementById('form-cadastro-paciente').addEventListener('submit', async (e) => {
             e.preventDefault();
             const token = localStorage.getItem('authToken');
@@ -129,15 +127,14 @@
                     alert("Paciente cadastrado com sucesso!");
                     fecharModalCadastro();
                     document.getElementById('form-cadastro-paciente').reset();
-                    carregarLista(token); // Atualiza a lista
-                    carregarGrafico(token); // Atualiza o gráfico
+                    carregarLista(token);
+                    carregarGrafico(token);
                 } else {
                     alert("Erro: " + data.message);
                 }
             } catch(err) { alert("Erro de conexão."); }
         });
 
-        // --- CARREGAR DADOS ---
         async function carregarGrafico(token) {
             try {
                 const response = await fetch(`${API_URL_BASE}/api/admin/stats/idades`, { headers: { 'Authorization': `Bearer ${token}` } });

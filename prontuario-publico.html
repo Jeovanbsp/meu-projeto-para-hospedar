@@ -6,14 +6,14 @@
     <title>Ficha Médica - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
-    
     <style>
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
         
-        .container-publico { max-width: 800px; margin: 120px auto 40px auto; padding: 20px; }
+        /* Fundo branco para a barra de navegação e margem ajustada */
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+        .container-publico { max-width: 800px; margin: 140px auto 40px auto; padding: 20px; }
         
         .cabecalho-publico { text-align: center; margin-bottom: 30px; }
         .cabecalho-publico h2 { color: #2c3e50; margin: 0; font-size: 1.5rem; text-transform: uppercase; }
@@ -21,7 +21,6 @@
         .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2ADCA1; }
         .card-secao h3 { color: #2ADCA1; margin-top: 0; margin-bottom: 20px; font-size: 1.2rem; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         
-        /* Alerta de Alergia Crítico */
         .alerta-alergia-emergencia { background-color: #ffebee; border-left: 6px solid #c62828; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; display: none; animation: pulse 2s infinite; }
         .alerta-alergia-emergencia h3 { color: #c62828; margin: 0 0 5px 0; border: none; padding: 0; font-size: 1.1rem; }
         .alerta-alergia-emergencia p { color: #b71c1c; margin: 0; font-weight: 600; font-size: 1.1rem; }
@@ -36,14 +35,12 @@
         .info-bloco span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
         .info-bloco div.valor { background: #f9f9f9; padding: 12px; border-radius: 6px; font-size: 1rem; color: #444; min-height: 20px; white-space: pre-wrap; border: 1px solid #eee; }
 
-        /* Tabelas e Listas */
         .tabela-publica { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .tabela-publica th { background-color: #f0f0f0; padding: 10px; text-align: left; font-size: 0.85rem; color: #555; border-bottom: 2px solid #ddd; }
         .tabela-publica td { padding: 12px 10px; border-bottom: 1px solid #eee; color: #333; font-size: 0.95rem; }
         .pill-med { display: inline-block; background-color: #e0f5ef; color: #2c3e50; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: 600; margin: 2px; }
 
         .loader { text-align: center; padding: 50px; color: #888; font-weight: 600; }
-        
         @media (max-width: 600px) { .info-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
@@ -52,7 +49,7 @@
     <header class="header-fixo no-print">
         <div class="header-container" style="justify-content: space-between; align-items: center;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 90px; width: auto;">
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; transition: color 0.3s;">&larr; Voltar ao Início</a>
