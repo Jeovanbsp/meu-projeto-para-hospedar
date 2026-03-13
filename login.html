@@ -6,6 +6,7 @@
     <title>Login - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> 
     <style>
         body { background-color: #f4f6f8; margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: 'Montserrat', sans-serif; }
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; flex-shrink: 0; }
@@ -22,16 +23,20 @@
     </style>
 </head>
 <body>
-    <header class="header-fixo">
+    <header class="header-fixo no-print">
         <div class="header-container">
-            <a href="index.html"><img src="img/layout.png" alt="Logo" style="height: 120px;"></a>
-            <nav><a href="index.html" class="btn-voltar">← Voltar</a></nav>
+            <a href="index.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 140px; width: auto;">
+            </a>
+            <nav><a href="index.html" class="btn-voltar">← Voltar ao Início</a></nav>
         </div>
     </header>
 
     <main>
         <div class="login-card">
-            <h2>Acesso ao Prontuário</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Acesso ao Prontuário</h2>
+            <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Área restrita para pacientes cadastrados e administração.</p>
+            
             <form id="form-login">
                 <div class="input-group">
                     <label>E-mail</label>
@@ -47,49 +52,6 @@
         </div>
     </main>
 
-    <script>
-        // FORÇANDO O ENDEREÇO DO RENDER DIRETAMENTE
-        const API_BASE = 'https://aishageriatria.onrender.com';
-
-        document.getElementById('form-login').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const senha = document.getElementById('senha').value;
-            const msgErro = document.getElementById('msg-erro');
-            const btn = document.querySelector('.btn-entrar');
-            
-            msgErro.style.display = 'none';
-            btn.innerText = 'Conectando ao servidor...';
-
-            try {
-                // Chamada para a rota que definimos no index.js anterior
-                const res = await fetch(`${API_BASE}/auth/login`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ email, password: senha })
-                });
-                
-                const data = await res.json();
-                
-                if (res.ok) {
-                    localStorage.setItem('authToken', data.token);
-                    localStorage.setItem('userRole', data.role);
-                    localStorage.setItem('userName', data.userName);
-                    
-                    window.location.href = (data.role === 'admin') ? 'admin-dashboard.html' : 'perfil-paciente.html';
-                } else {
-                    msgErro.innerText = data.message || 'Credenciais inválidas.';
-                    msgErro.style.display = 'block';
-                    btn.innerText = 'Entrar';
-                }
-            } catch (err) {
-                msgErro.innerText = 'Servidor está acordando... Tente novamente em instantes.';
-                msgErro.style.display = 'block';
-                btn.innerText = 'Entrar';
-                // Tenta "acordar" o servidor abrindo a URL base
-                fetch(API_BASE).catch(() => {});
-            }
-        });
-    </script>
+    <script src="js/login.js"></script>
 </body>
 </html>
