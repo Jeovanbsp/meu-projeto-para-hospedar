@@ -55,9 +55,17 @@
             /* As outras propriedades (cor de fundo, raio da borda) são herdadas do css/style.css original */
         }
 
-        /* AJUSTE PARA O CABEÇALHO GRANDE NÃO COBRIR O CONTEÚDO */
-        .sobre {
-            padding-top: 150px !important;
+        /* AJUSTE PARA O CABEÇALHO PADRÃO */
+        .novo-header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 10px 0;
+        }
+
+        /* AUMENTAR TAMANHO DA IMAGEM PERFIL.PNG (BONECA) */
+        .sobre-imagem-boneca img {
+            max-width: 350px !important; /* Tamanho maior para a imagem */
+            height: auto;
         }
 
         /* Ajuste para não quebrar no celular a navegação */
@@ -75,7 +83,7 @@
 </head>
 <body>
 
-    <header class="novo-header" style="background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0;">
+    <header class="novo-header">
         <div class="header-container">
             <a href="index.html" class="logo">
                 <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 130px !important; max-height: none !important; width: auto;">
@@ -118,12 +126,8 @@
                     <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
                     
                     <div class="botoes-hero">
-                        <a href="https://wa.me/5571981233912" target="_blank" class="btn-agendar">
-                            Agende em Lauro de Freitas
-                        </a>
-
-                        <a href="https://wa.me/5571983943153" target="_blank" class="btn-agendar">
-                            Agende em Salvador
+                        <a href="tel:+5571983943153" class="btn-agendar">
+                            Agende sua consulta
                         </a>
                     </div>
                     </div>
