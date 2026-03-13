@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
     // Detecta URL automaticamente (Localhost ou Render)
-    const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+   const API_BASE = (window.location.hostname === 'localhost' || window.location.protocol === 'file:') ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
     
     // Captura o ID do paciente da URL (ex: ?id=12345)
     const urlParams = new URLSearchParams(window.location.search);
