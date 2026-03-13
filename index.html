@@ -40,7 +40,7 @@
         }
 
         /* =========================================
-           AJUSTE DA SEÇÃO SOBRE (CAIXA VERDE)
+           CAIXA VERDE AMPLIADA E FRASE IMPACTANTE
            ========================================= */
         .sobre {
             padding: 0 !important; 
@@ -55,46 +55,47 @@
             align-items: center; 
             max-width: 1200px;
             width: 100%;
-            min-height: 400px; /* Altura ideal para a faixa */
+            min-height: 500px; /* Aumentei a altura da caixa verde para o padrão anterior */
             position: relative;
         }
 
-        /* BONECA ENCOSTANDO NAS BORDAS VERMELHAS */
+        /* BONECA ENCOSTANDO NAS BORDAS (ACOMPANHA OS 500PX) */
         .sobre-imagem-boneca {
             flex: 1;
             display: flex;
             align-items: flex-end; 
             justify-content: center;
-            height: 400px; /* Mesma altura do container */
+            height: 500px; 
         }
 
         .sobre-imagem-boneca img {
-            height: 100% !important; /* Encosta em cima e embaixo */
+            height: 100% !important; 
             width: auto;
             object-fit: contain;
             display: block;
         }
 
-        /* TEXTO E BOTÃO CENTRALIZADOS (O "X") */
+        /* TEXTO CENTRALIZADO COM TÍTULO MAIOR */
         .sobre-texto {
             flex: 1.5;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center; /* Centraliza horizontalmente */
-            text-align: center; /* Centraliza o texto */
+            align-items: center; 
+            text-align: center; 
             padding: 20px;
         }
 
         .sobre-texto h2 {
-            font-size: 2.3rem;
-            margin-bottom: 15px;
+            font-size: 3rem; /* Título grande e impactante como antes */
+            margin-bottom: 20px;
             color: #1a1a1a;
+            line-height: 1.2;
         }
 
         .sobre-texto p {
-            font-size: 1.1rem;
-            margin-bottom: 30px;
+            font-size: 1.2rem;
+            margin-bottom: 35px;
             color: #333;
             max-width: 600px;
         }
@@ -106,8 +107,8 @@
         }
 
         .botoes-hero .btn-agendar {
-            padding: 15px 40px;
-            font-size: 1.1rem;
+            padding: 18px 45px; /* Botão um pouco maior para acompanhar o layout */
+            font-size: 1.2rem;
             font-weight: 700;
             background-color: #2ADCA1;
             color: white;
@@ -125,9 +126,9 @@
         /* RESPONSIVIDADE */
         @media (max-width: 900px) {
             .sobre-container { flex-direction: column; padding: 40px 20px; min-height: auto; }
-            .sobre-imagem-boneca { height: 300px; }
-            .sobre-imagem-boneca img { height: 300px !important; }
-            .sobre-texto h2 { font-size: 1.8rem; }
+            .sobre-imagem-boneca { height: 350px; }
+            .sobre-imagem-boneca img { height: 350px !important; }
+            .sobre-texto h2 { font-size: 2.2rem; }
         }
     </style>
 </head>
@@ -200,12 +201,11 @@
                     <h3 id="sobre-mim-section">Sobre Mim</h3> 
                     <ul class="historia">
                         <li>Dra. Aishá Wenzinger: Clínica Médica, Geriatria e Cuidados Paliativos.</li>
-                        <li>Médica graduada pela Escola Bahiana de Medicina e Saúde Pública, com 17 anos de formação. Iniciou sua trajetória profissional atuando em atendimentos de emergência e no Programa de Saúde da Família em Esplanada (BA), entre 2009 e início de 2010.</li>
-                        <li>Devido à sólida experiência na área de urgência, assumiu precocemente a função de Coordenadora Médica do Serviço de Ambulância MedSalva, cargo que exerceu por cerca de quatro anos. Em seguida, iniciou formação em Clínica Médica no Hospital São Rafael (2011–2013).</li>
-                        <li>Após esse período, manteve atuação em Clínica Médica e Emergência até 2015, quando iniciou sua formação em Geriatria no Hospital Santo Antônio – Obras Sociais Irmã Dulce, concluída em 2017. Permaneceu na instituição até 2022, período marcado por intensa dedicação, especialmente durante a pandemia de COVID-19, que demandou cuidado e compaixão frente à vulnerabilidade dos idosos assistidos.</li>
-                        <li>Em novembro de 2022, assumiu o desafio de estruturar o serviço de Geriatria do Hospital Português, onde permanece até o presente momento, consolidando uma equipe voltada ao cuidado integral da pessoa idosa.</li>
-                        <li>Possui especialização em Cuidados Paliativos pelo Instituto Paliar e ampla experiência em ambientes hospitalares, ambulatórios e atendimentos domiciliares, com atuação também em telemedicina e consultório próprio.</li>
-                        <li>É reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências.</li>
+                        <li>Médica graduada pela Escola Bahiana de Medicina e Saúde Pública, com 17 anos de formação.</li>
+                        <li>Especialista em Geriatria pelo Hospital Santo Antônio – Obras Sociais Irmã Dulce.</li>
+                        <li>Coordenadora da Geriatria do Hospital Português.</li>
+                        <li>Possui especialização em Cuidados Paliativos pelo Instituto Paliar e ampla experiência em ambientes hospitalares, ambulatórios e atendimentos domiciliares.</li>
+                        <li>Reconhecida pela escuta qualificada, empatia no cuidado e compromisso com a medicina baseada em evidências.</li>
                     </ul>
                 </div>
             </div>
@@ -236,12 +236,12 @@
             <div class="local">
                 <h3>Unidade 1 - Estrada do Coco</h3>
                 <p>Shopping Estrada do Coco, Loja 102 - Lauro de Freitas - BA</p>
-                <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
+                <a href="#" target="_blank" class="btn-maps">Ver no Google Maps</a>
             </div>
             <div class="local">
                 <h3>Unidade 2 - Salvador</h3>
                 <p>Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA</p>
-                <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
+                <a href="#" target="_blank" class="btn-maps">Ver no Google Maps</a>
             </div>
         </div>
     </section>
