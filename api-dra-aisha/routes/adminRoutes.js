@@ -1,5 +1,3 @@
-// Arquivo: /routes/adminRoutes.js (Completo e Atualizado)
-
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
@@ -10,7 +8,7 @@ const adminMiddleware = require('../middleware/adminMiddleware');
 // Protege TODAS as rotas deste arquivo exigindo token e nível admin
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar todos os pacientes com status do termo e IDADE (para o gráfico)
+// 1. DASHBOARD: Listar pacientes com idade (para o gráfico) e status
 router.get('/pacientes', async (req, res) => {
     try {
         const pacientes = await User.find({ role: 'paciente' }).lean();
@@ -23,7 +21,6 @@ router.get('/pacientes', async (req, res) => {
                 nome: pac.nome,
                 email: pac.email,
                 createdAt: pac.createdAt,
-                // ESSENCIAL PARA O GRÁFICO:
                 idade: prontuario ? prontuario.idade : null,
                 termoAceite: prontuario ? prontuario.termoAceite : false
             };
@@ -59,7 +56,7 @@ router.get('/prontuario/:id', async (req, res) => {
     }
 });
 
-// 4. PRONTUÁRIO ADMIN: Salvar/Atualizar prontuário inteiro
+// 4. PRONTUÁRIO ADMIN: Salvar/Atualizar prontuário inteiro (INCLUINDO RG)
 router.post('/prontuario/:id', async (req, res) => {
     try {
         const dados = { ...req.body, user: req.params.id };
