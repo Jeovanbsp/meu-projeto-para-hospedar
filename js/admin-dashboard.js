@@ -1,4 +1,4 @@
-// Arquivo: js/admin-dashboard.js (Completo e Atualizado)
+// Arquivo: js/admin-dashboard.js (Completo e Atualizado com Ícones)
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // CORREÇÃO 1: IDs atualizados para bater com o admin-dashboard.html
     const listaBody = document.getElementById('lista-pacientes');
     const totalSpan = document.getElementById('texto-total');
 
@@ -47,8 +46,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro no fetch:", error);
             if (listaBody) {
-                // CORREÇÃO 2: Mudando para <li>, já que o HTML usa <ul>
-                listaBody.innerHTML = `<li style="text-align:center; color:#e74c3c; padding:20px; font-weight:bold;">
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">
+                    <i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>
                     Erro ao conectar com o servidor.<br>
                     <small style="color:#555; font-weight:normal;">Verifique se o backend no Render foi atualizado e reiniciado.</small>
                 </li>`;
@@ -64,22 +63,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalSpan) totalSpan.innerText = pacientes.length;
 
         if (pacientes.length === 0) {
-            listaBody.innerHTML = '<li style="text-align:center; padding:20px; color:#777;">Nenhum paciente cadastrado.</li>';
+            listaBody.innerHTML = `<li style="text-align:center; padding:40px; color:#777;">
+                <i class="ph ph-users" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto; color: #ccc;"></i>
+                Nenhum paciente cadastrado.
+            </li>`;
             return;
         }
 
         pacientes.forEach(p => {
             const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
             
-            // Badge Status Termo
+            // Badge Status Termo (Agora com ícones Phosphor)
             let statusHtml = '';
             if (p.termoAceite === true) {
-                statusHtml = '<span class="status-badge status-ok">✅ Aceito</span>';
+                statusHtml = '<span class="status-badge status-ok"><i class="ph ph-check-circle"></i> Aceito</span>';
             } else {
-                statusHtml = '<span class="status-badge status-pendente">⚠️ Pendente</span>';
+                statusHtml = '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
             }
 
-            // CORREÇÃO 3: Estrutura feita para se alinhar em Flexbox (como lista)
             const li = document.createElement('li');
             li.style.display = 'flex';
             li.style.justifyContent = 'space-between';
@@ -89,17 +90,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             li.innerHTML = `
                 <div style="flex: 2;">
-                    <strong style="color:#2c3e50; font-size: 1.1rem;">${p.nome}</strong><br>
-                    <span style="color: #666; font-size: 0.9rem;">${p.email}</span>
+                    <strong style="color:#2c3e50; font-size: 1.05rem;">${p.nome}</strong><br>
+                    <span style="color: #888; font-size: 0.85rem;">${p.email}</span>
                 </div>
                 <div style="flex: 1; text-align: center;">${statusHtml}</div>
-                <div style="flex: 1; text-align: center; color: #888; font-size: 0.9rem;">${dataCriacao}</div>
-                <div style="flex: 1; text-align: right;">
-                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Editar Prontuário" style="margin-right: 5px; background: #2ADCA1; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer;">
-                        📋 Prontuário
+                <div style="flex: 1; text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
+                <div style="flex: 1.5; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Acessar Prontuário">
+                        <i class="ph ph-clipboard-text" style="font-size: 1.1rem;"></i> Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir Paciente" style="background: #ff6b6b; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer;">
-                        🗑️
+                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir Paciente">
+                        <i class="ph ph-trash" style="font-size: 1.1rem;"></i> Deletar
                     </button>
                 </div>
             `;
@@ -135,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // CORREÇÃO 4: Expondo as funções que o HTML procura para carregar atualizar e o Modal
+    // Expondo as funções que o HTML procura para carregar atualizar e o Modal
     window.carregarLista = fetchPacientes;
     
     window.abrirModalCadastro = () => {
