@@ -11,21 +11,22 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
-        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; }
-        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
         
-        /* CORREÇÃO DO ESPAÇO NO TOPO: Margem reduzida para um visual mais limpo */
-        .dashboard-container { padding: 40px; max-width: 1300px; margin: 40px auto; }
+        /* Ajuste leve no padding do header */
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 5px 0; position: relative; z-index: 100;}
         
-        .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
+        /* CORREÇÃO DA DISTÂNCIA (Foto com X):
+           Reduzi o padding geral para 20px e a margem superior/inferior para 10px.
+        */
+        .dashboard-container { padding: 20px; max-width: 1300px; margin: 10px auto; }
         
-        /* VOLTANDO COM O GRID LADO A LADO (Foto 2) */
+        .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; margin-top: 0;}
+        
         .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; } 
         @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
         
-        /* CORREÇÃO DISTÂNCIA GRÁFICO (Foto 1) */
         .card-grafico { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: fit-content; }
-        
         .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         
         .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;}
@@ -33,7 +34,6 @@
         
         .total-badge { background-color: #e8f9f4; color: #2ADCA1; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; }
 
-        /* BARRA DE PESQUISA */
         .search-container { flex-grow: 1; min-width: 200px; margin: 0 20px; position: relative; }
         .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem; }
         .search-container input { width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; box-sizing: border-box;}
@@ -42,8 +42,7 @@
         .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
         .btn-novo:hover { background-color: #24b685; }
         
-        /* CORREÇÃO DO ALINHAMENTO DA LISTA (LINHA RETA) */
-        .linha-grid { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1.5fr; gap: 15px; align-items: center; }
+        .linha-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 15px; align-items: center; }
         
         .cabecalho-lista { padding: 10px 10px 15px 10px; border-bottom: 2px solid #eee; font-weight: 600; font-size: 0.85rem; color: #888; text-transform: uppercase; margin-bottom: 10px;}
         
@@ -56,19 +55,17 @@
         .status-ok { background-color: #e8f9f4; color: #2ADCA1; }
         .status-pendente { background-color: #fff4e5; color: #f39c12; }
 
-        .btn-acao { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; font-size: 0.82rem; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.15s; }
+        .btn-acao { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; font-size: 0.82rem; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.15s; white-space: nowrap; }
         .btn-ver { background: #f0fdf9; color: #2ADCA1; border: 1px solid #2ADCA1; }
         .btn-ver:hover { background: #2ADCA1; color: white; }
         .btn-excluir { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; }
         .btn-excluir:hover { background: #ff6b6b; color: white; }
 
-        /* CORREÇÃO CABEÇALHO (Foto 3): Alinhamento horizontal/vertical perfeito */
         .btn-user-controls { display: flex; gap: 15px; align-items: center; justify-content: flex-end;}
         
         #btn-logout { background-color: transparent; border: 1px solid #ff6b6b; padding: 8px 18px; color: #ff6b6b; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
         #btn-logout:hover { background-color: #ff6b6b; color: white; }
 
-        /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s; }
         .modal-box { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-box h3 { margin-top: 0; color: #333; margin-bottom: 20px;}
@@ -82,9 +79,9 @@
 </head>
 <body>
     <header class="header-fixo no-print">
-        <div class="header-container" style="justify-content: space-between; align-items: center;">
+        <div class="header-container" style="justify-content: space-between; align-items: center; padding: 0 20px;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 160px !important; max-height: none !important; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 80px !important; max-height: none !important; width: auto; display: block;">
             </a>
             <div class="btn-user-controls">
                 <span style="color: #2ADCA1; font-weight: 600; display: flex; align-items: center; gap: 6px;">
@@ -157,6 +154,6 @@
         </div>
     </div>
     
-    <script src="js/admin-dashboard.js?v=5"></script>
+    <script src="js/admin-dashboard.js?v=7"></script>
 </body>
 </html>

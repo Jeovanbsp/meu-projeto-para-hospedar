@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    // Configuração de URL inteligente (Local vs Vercel/Render)
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
     const API_ADMIN_BASE = isLocal ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalSpan = document.getElementById('texto-total');
     const inputPesquisa = document.getElementById('input-pesquisa');
     
-    // Variáveis Globais para Pesquisa e Gráfico
     let pacientesGlobais = [];
     let graficoInstancia = null;
 
@@ -39,7 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erro do servidor: ${response.status}`);
             }
 
-            // Salva na memória para a pesquisa funcionar rápido
             pacientesGlobais = await response.json(); 
             
             renderTabela(pacientesGlobais);
@@ -53,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // SISTEMA DE PESQUISA (Filtro em tempo real)
     if (inputPesquisa) {
         inputPesquisa.addEventListener('input', (e) => {
             const termoBusca = e.target.value.toLowerCase().trim();
@@ -83,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
 
             const li = document.createElement('li');
-            li.className = 'linha-grid'; // Aplica o alinhamento profissional (alinhado com o cabeçalho)
+            li.className = 'linha-grid'; 
             
             li.innerHTML = `
                 <div>
@@ -92,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="text-align: center;">${statusHtml}</div>
                 <div style="text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
-                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <div style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: nowrap;">
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Acessar Prontuário">
                         <i class="ph ph-clipboard-text" style="font-size: 1.15rem;"></i> Prontuário
                     </button>
@@ -105,16 +101,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // FUNÇÃO DO GRÁFICO (Volta a funcionar lado a lado)
     const renderGrafico = (pacientes) => {
         const ctx = document.getElementById('graficoIdades');
         if (!ctx) return;
 
-        // Contador de idades (Por enquanto, todos ficam "Não Informada" pois o back-end não está enviando esse dado na lista principal)
         let faixas = { 'Não Informada': 0, 'Até 60': 0, '61 a 70': 0, '71 a 80': 0, '81+': 0 };
         
         pacientes.forEach(p => {
-            const idade = p.idade; // Nota: esse campo precisa ser adicionado no adminRoutes.js se quiser idades reais
+            const idade = p.idade; 
             if (!idade) faixas['Não Informada']++;
             else if (idade <= 60) faixas['Até 60']++;
             else if (idade <= 70) faixas['61 a 70']++;
@@ -130,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: Object.keys(faixas),
                 datasets: [{
                     data: Object.values(faixas),
-                    // Usando as cores verdes da identidade Dra. Aisha
                     backgroundColor: ['#e0e0e0', '#2ADCA1', '#f39c12', '#3498db', '#9b59b6'],
                     borderWidth: 0,
                     hoverOffset: 4
@@ -158,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             if (response.ok) {
-                inputPesquisa.value = ''; // Limpa a pesquisa ao deletar
+                inputPesquisa.value = '';
                 fetchPacientes(); 
             } else { alert('Erro ao excluir.'); }
         } catch (error) { alert('Erro de conexão ao tentar excluir.'); }
@@ -184,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 if (response.ok) {
                     window.fecharModalCadastro();
-                    inputPesquisa.value = ''; // Limpa a pesquisa ao cadastrar
+                    inputPesquisa.value = ''; 
                     fetchPacientes(); 
                 } else {
                     const data = await response.json();
