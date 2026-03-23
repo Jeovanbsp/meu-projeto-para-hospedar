@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
-  const API_URL = 'https://aishageriatria.onrender.com/api/prontuario';
+  const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+  const API_URL = `${API_ADMIN_BASE}/api/prontuario`;
 
   if (!token) { window.location.href = 'login.html'; return; }
 

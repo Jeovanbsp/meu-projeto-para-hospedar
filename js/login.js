@@ -5,10 +5,11 @@ document.getElementById('form-login').addEventListener('submit', async (e) => {
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('senha').value;
     const msgErro = document.getElementById('msg-erro');
+    const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
     try {
         // Chamada para o seu servidor no Render
-        const res = await fetch('https://aishageriatria.onrender.com/api/auth/login', {
+        const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password }) // Enviando campos padrão

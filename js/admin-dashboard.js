@@ -5,8 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = localStorage.getItem('userRole');
     
     // URL da API (Verifique se está usando a URL correta do Render)
-    const API_URL = 'https://aishageriatria.onrender.com/api/admin/pacientes';
-    const API_DELETE_URL = 'https://aishageriatria.onrender.com/api/admin/paciente/';
+    const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+
+    const API_URL = `${API_ADMIN_BASE}/api/admin/pacientes`;
+    const API_DELETE_URL = `${API_ADMIN_BASE}/api/admin/paciente/`;
 
     if (!token || role !== 'admin') {
         localStorage.clear();

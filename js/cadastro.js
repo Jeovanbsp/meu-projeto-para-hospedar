@@ -8,8 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnCadastrar = document.getElementById('btn-cadastrar');
   const mensagemRetorno = document.getElementById('mensagem-retorno');
 
-  // *** CORREÇÃO AQUI: Adicionado /auth/register ***
-  const API_URL = 'https://aishageriatria.onrender.com/auth/register'; 
+  const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+  
+  // CORREÇÃO: Adicionado o /api antes do /auth/register
+  const API_URL = `${API_ADMIN_BASE}/api/auth/register`; 
   
   formCadastro.addEventListener('submit', async (event) => {
     event.preventDefault(); 
