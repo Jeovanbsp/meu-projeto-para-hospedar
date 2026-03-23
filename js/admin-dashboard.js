@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro no fetch:", error);
             if (listaBody) {
-                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao conectar com o servidor.</li>`;
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao carregar pacientes.</li>`;
             }
         }
     };
@@ -81,14 +81,14 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'linha-grid'; 
             
             li.innerHTML = `
-                <div>
+                <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     <strong style="color:#2c3e50; font-size: 1.05rem;">${p.nome}</strong><br>
                     <span style="color: #888; font-size: 0.85rem;">${p.email}</span>
                 </div>
                 <div style="text-align: center;">${statusHtml}</div>
                 <div style="text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
                 
-                <div style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: nowrap;">
+                <div style="display: flex; justify-content: flex-end; gap: 8px; flex-direction: row; flex-wrap: nowrap;">
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
                         <i class="ph ph-clipboard-text"></i> Prontuário
                     </button>
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`Excluir paciente "${nome}"?`)) return;
+        if (!confirm(`Deseja excluir permanentemente o paciente "${nome}"?`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {
                 method: 'DELETE',
