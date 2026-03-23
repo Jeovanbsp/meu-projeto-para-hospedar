@@ -28,35 +28,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
             });
 
-            if (!response.ok) {
-                if (response.status === 401) {
-                    alert('Sessão expirada. Faça login novamente.');
-                    window.location.href = 'login.html';
-                    return;
-                }
-                throw new Error(`Erro do servidor: ${response.status}`);
-            }
+            if (!response.ok) throw new Error("Erro");
 
             pacientesGlobais = await response.json(); 
             renderTabela(pacientesGlobais);
             renderGrafico(pacientesGlobais);
 
         } catch (error) {
-            console.error("Erro no fetch:", error);
-            if (listaBody) {
-                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao carregar pacientes.</li>`;
-            }
+            if (listaBody) listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar pacientes.</li>`;
         }
     };
 
     if (inputPesquisa) {
         inputPesquisa.addEventListener('input', (e) => {
-            const termoBusca = e.target.value.toLowerCase().trim();
-            const pacientesFiltrados = pacientesGlobais.filter(p => 
-                p.nome.toLowerCase().includes(termoBusca) || 
-                p.email.toLowerCase().includes(termoBusca)
-            );
-            renderTabela(pacientesFiltrados);
+            const termo = e.target.value.toLowerCase().trim();
+            const filtrados = pacientesGlobais.filter(p => p.nome.toLowerCase().includes(termo));
+            renderTabela(filtrados);
         });
     }
 
@@ -66,14 +53,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (totalSpan) totalSpan.innerText = pacientes.length;
 
         if (pacientes.length === 0) {
-            listaBody.innerHTML = '<li style="text-align:center; padding:40px; color:#777;"><i class="ph ph-users" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto; color: #ccc;"></i>Nenhum paciente encontrado.</li>';
+            listaBody.innerHTML = '<li style="text-align:center; padding:40px; color:#777;">Nenhum paciente encontrado.</li>';
             return;
         }
 
         pacientes.forEach(p => {
-            const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
+            const dataStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
             
-            let statusHtml = p.termoAceite 
+            let statusBadge = p.termoAceite 
                 ? '<span class="status-badge status-ok"><i class="ph ph-check-circle"></i> Aceito</span>' 
                 : '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
 
@@ -82,17 +69,17 @@ document.addEventListener('DOMContentLoaded', () => {
             
             li.innerHTML = `
                 <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    <strong style="color:#2c3e50; font-size: 1rem;">${p.nome}</strong><br>
-                    <span style="color: #888; font-size: 0.8rem;">${p.email}</span>
+                    <strong style="color:#2c3e50; font-size: 0.95rem;">${p.nome}</strong><br>
+                    <span style="color: #888; font-size: 0.75rem;">${p.email}</span>
                 </div>
-                <div style="text-align: center;">${statusHtml}</div>
-                <div style="text-align: center; color: #666; font-size: 0.85rem;">${dataCriacao}</div>
+                <div style="text-align: center;">${statusBadge}</div>
+                <div style="text-align: center; color: #666; font-size: 0.8rem;">${dataStr}</div>
                 
-                <div style="display: flex; justify-content: flex-end; gap: 10px; align-items: center; flex-direction: row; flex-wrap: nowrap;">
-                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
+                <div class="acoes-container">
+                    <button class="btn-ver" onclick="irParaProntuario('${p._id}')">
                         <i class="ph ph-clipboard-text"></i> Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" data-tooltip="Deletar Paciente">
+                    <button class="btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" data-tooltip="Deletar Paciente">
                         <i class="ph ph-trash"></i>
                     </button>
                 </div>
@@ -104,17 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderGrafico = (pacientes) => {
         const ctx = document.getElementById('graficoIdades');
         if (!ctx) return;
-
-        let faixas = { 'Não Informada': 0, 'Até 60': 0, '61 a 70': 0, '71 a 80': 0, '81+': 0 };
+        let faixas = { 'Não Informada': 0, 'Até 60': 0, '61-70': 0, '71-80': 0, '81+': 0 };
         pacientes.forEach(p => {
-            const idade = p.idade; 
-            if (!idade) faixas['Não Informada']++;
-            else if (idade <= 60) faixas['Até 60']++;
-            else if (idade <= 70) faixas['61 a 70']++;
-            else if (idade <= 80) faixas['71 a 80']++;
+            if (!p.idade) faixas['Não Informada']++;
+            else if (p.idade <= 60) faixas['Até 60']++;
+            else if (p.idade <= 70) faixas['61-70']++;
+            else if (p.idade <= 80) faixas['71-80']++;
             else faixas['81+']++;
         });
-
         if (graficoInstancia) graficoInstancia.destroy();
         graficoInstancia = new Chart(ctx, {
             type: 'doughnut',
@@ -123,11 +107,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 datasets: [{
                     data: Object.values(faixas),
                     backgroundColor: ['#e0e0e0', '#2ADCA1', '#f39c12', '#3498db', '#9b59b6'],
-                    borderWidth: 0,
-                    hoverOffset: 4
+                    borderWidth: 0, hoverOffset: 4
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Montserrat', size: 10 } } } } }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
         });
     };
 
@@ -136,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deletarPaciente = async (id, nome) => {
-        // PERGUNTA PERSONALIZADA QUE VOCÊ PEDIU
+        // A PERGUNTA QUE VOCÊ PEDIU
         if (!confirm(`Você quer deletar mesmo o paciente "${nome}"?`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {
