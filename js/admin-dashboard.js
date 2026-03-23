@@ -38,14 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             pacientesGlobais = await response.json(); 
-            
             renderTabela(pacientesGlobais);
             renderGrafico(pacientesGlobais);
 
         } catch (error) {
             console.error("Erro no fetch:", error);
             if (listaBody) {
-                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao conectar com o servidor.<br><small style="color:#666">Verifique se o backend está rodando.</small></li>`;
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao conectar com o servidor.</li>`;
             }
         }
     };
@@ -88,12 +87,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="text-align: center;">${statusHtml}</div>
                 <div style="text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
+                
                 <div style="display: flex; justify-content: flex-end; gap: 8px; flex-wrap: nowrap;">
-                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Acessar Prontuário">
-                        <i class="ph ph-clipboard-text" style="font-size: 1.15rem;"></i> Prontuário
+                    <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
+                        <i class="ph ph-clipboard-text"></i> Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir">
-                        <i class="ph ph-trash" style="font-size: 1.15rem;"></i> Deletar
+                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')">
+                        <i class="ph ph-trash"></i> Deletar
                     </button>
                 </div>
             `;
@@ -144,17 +144,14 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`ATENÇÃO:\nTem certeza que deseja excluir o paciente "${nome}"?\n\nIsso apagará o login e todos os dados do prontuário permanentemente.`)) return;
+        if (!confirm(`Excluir paciente "${nome}"?`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-            if (response.ok) {
-                inputPesquisa.value = '';
-                fetchPacientes(); 
-            } else { alert('Erro ao excluir.'); }
-        } catch (error) { alert('Erro de conexão ao tentar excluir.'); }
+            if (response.ok) { fetchPacientes(); } else { alert('Erro ao excluir.'); }
+        } catch (error) { alert('Erro de conexão.'); }
     };
 
     window.carregarLista = fetchPacientes;
@@ -177,13 +174,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 if (response.ok) {
                     window.fecharModalCadastro();
-                    inputPesquisa.value = ''; 
                     fetchPacientes(); 
                 } else {
                     const data = await response.json();
-                    alert(data.message || 'Erro ao cadastrar paciente.');
+                    alert(data.message || 'Erro ao cadastrar.');
                 }
-            } catch (error) { alert('Erro de conexão ao cadastrar paciente.'); }
+            } catch (error) { alert('Erro de conexão.'); }
         });
     }
 
