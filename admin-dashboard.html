@@ -7,28 +7,40 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; }
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        /* Margem ajustada */
-        .dashboard-container { padding: 40px; max-width: 1200px; margin: 150px auto 0 auto; }
+        
+        /* CORREÇÃO DO ESPAÇO NO TOPO: Margem reduzida de 150px para 40px */
+        .dashboard-container { padding: 40px; max-width: 1300px; margin: 40px auto; }
+        
         .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 20px; }
         
-        /* Agora a lista ocupa 100% da largura */
-        .dashboard-grid { display: block; } 
+        /* VOLTANDO COM A DIVISÃO EM COLUNAS PARA O GRÁFICO */
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; } 
+        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
         
+        .card-grafico { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column; height: fit-content; }
         .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        
         .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;}
         .header-card h3 { margin: 0; font-size: 1.2rem; color: #333; display: flex; align-items: center; gap: 10px;}
         
         .total-badge { background-color: #e8f9f4; color: #2ADCA1; padding: 4px 10px; border-radius: 12px; font-size: 0.9rem; font-weight: 700; }
 
-        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; text-decoration: none; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
+        /* BARRA DE PESQUISA */
+        .search-container { flex-grow: 1; min-width: 200px; margin: 0 20px; position: relative; }
+        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.2rem; }
+        .search-container input { width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ddd; border-radius: 8px; font-family: inherit; font-size: 0.9rem; outline: none; transition: 0.2s; box-sizing: border-box;}
+        .search-container input:focus { border-color: #2ADCA1; box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.2); }
+
+        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 6px;}
         .btn-novo:hover { background-color: #24b685; }
         
-        .btn-acao { display: flex; align-items: center; gap: 6px; font-weight: 500; font-size: 0.85rem; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .btn-acao { display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; font-size: 0.85rem; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
         .btn-ver { background: #f0fdf9; color: #2ADCA1; border: 1px solid #2ADCA1; }
         .btn-ver:hover { background: #2ADCA1; color: white; }
         .btn-excluir { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; }
@@ -37,15 +49,21 @@
         #btn-logout { background-color: transparent; border: 1px solid #ff6b6b; padding: 8px 20px; color: #ff6b6b; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
         #btn-logout:hover { background-color: #ff6b6b; color: white; }
 
+        /* ALINHAMENTO PERFEITO DA LISTA (GRID) */
+        .linha-grid { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1.5fr; gap: 15px; align-items: center; }
+        
+        .cabecalho-lista { padding: 10px 10px 15px 10px; border-bottom: 2px solid #eee; font-weight: 600; font-size: 0.85rem; color: #888; text-transform: uppercase; }
+        
         .lista-pacientes { list-style: none; padding: 0; margin: 0; }
         .lista-pacientes li { padding: 15px 10px; border-bottom: 1px solid #f5f5f5; transition: 0.2s; }
         .lista-pacientes li:hover { background-color: #fafafa; }
         .lista-pacientes li:last-child { border-bottom: none; }
         
-        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;}
+        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 4px;}
         .status-ok { background-color: #e8f9f4; color: #2ADCA1; }
         .status-pendente { background-color: #fff4e5; color: #f39c12; }
 
+        /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s; }
         .modal-box { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
         .modal-box h3 { margin-top: 0; color: #333; margin-bottom: 20px;}
@@ -53,10 +71,8 @@
         .modal-box input { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: inherit;}
         .modal-box input:focus { outline: none; border-color: #2ADCA1; }
         .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
-        .btn-cancelar { background: #f0f0f0; color: #555; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;}
-        .btn-cancelar:hover { background: #e0e0e0; }
-        .btn-salvar-modal { background: #2ADCA1; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;}
-        .btn-salvar-modal:hover { background: #24b685; }
+        .btn-cancelar { background: #f0f0f0; color: #555; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;}
+        .btn-salvar-modal { background: #2ADCA1; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;}
     </style>
 </head>
 <body>
@@ -66,7 +82,7 @@
                 <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 160px !important; max-height: none !important; width: auto;">
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
-                <span style="color: #2ADCA1; font-weight: 600;"><i class="ph ph-shield-check" style="font-size: 1.2rem; vertical-align: middle;"></i> Painel Administrativo</span>
+                <span style="color: #2ADCA1; font-weight: 600;"><i class="ph ph-shield-check" style="font-size: 1.2rem; vertical-align: middle;"></i> Painel Admin</span>
                 <button id="btn-logout"><i class="ph ph-sign-out" style="font-size: 1.1rem; vertical-align: middle;"></i> Sair</button>
             </div>
         </div>
@@ -74,26 +90,45 @@
 
     <main class="dashboard-container">
         <h2 class="titulo-secao">Gestão de Pacientes</h2>
+        
         <div class="dashboard-grid">
-            <div class="card-lista">
+            
+            <div class="card-grafico">
                 <div class="header-card">
+                    <h3><i class="ph ph-chart-pie-slice" style="color:#2ADCA1;"></i> Idades</h3>
+                </div>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="graficoIdades"></canvas>
+                </div>
+            </div>
+
+            <div class="card-lista">
+                <div class="header-card" style="flex-wrap: wrap;">
                     <h3>Pacientes <span class="total-badge" id="texto-total">0</span></h3>
+                    
+                    <div class="search-container">
+                        <i class="ph ph-magnifying-glass"></i>
+                        <input type="text" id="input-pesquisa" placeholder="Buscar por nome ou e-mail...">
+                    </div>
+
                     <div style="display: flex; gap: 10px;">
                         <button onclick="carregarLista()" style="background:#f0f0f0; border:none; color:#555; cursor:pointer; padding: 8px; border-radius: 8px; transition: 0.2s;" title="Atualizar Lista"><i class="ph ph-arrows-clockwise" style="font-size: 1.2rem;"></i></button>
-                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-plus-circle" style="font-size: 1.2rem;"></i> Novo Paciente</button>
+                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-user-plus" style="font-size: 1.2rem;"></i> Novo Paciente</button>
                     </div>
                 </div>
-                <div style="display: flex; justify-content: space-between; padding: 10px 10px 15px 10px; border-bottom: 2px solid #eee; font-weight: 600; font-size: 0.85rem; color: #888; text-transform: uppercase;">
-                    <div style="flex: 2;">Paciente</div>
-                    <div style="flex: 1; text-align: center;">Termo de Aceite</div>
-                    <div style="flex: 1; text-align: center;">Data de Cadastro</div>
-                    <div style="flex: 1.5; text-align: right;">Ações</div>
+                
+                <div class="linha-grid cabecalho-lista">
+                    <div>Paciente</div>
+                    <div style="text-align: center;">Termo de Aceite</div>
+                    <div style="text-align: center;">Data de Cadastro</div>
+                    <div style="text-align: right;">Ações</div>
                 </div>
                 
                 <ul id="lista-pacientes" class="lista-pacientes">
                     <li style="text-align:center; padding: 30px; color:#999;"><i class="ph ph-spinner-gap ph-spin" style="font-size: 2rem; display: block; margin: 0 auto 10px auto;"></i> Carregando pacientes...</li>
                 </ul>
             </div>
+
         </div>
     </main>
 
@@ -103,13 +138,10 @@
             <form id="form-cadastro-paciente">
                 <label>Nome Completo</label>
                 <input type="text" id="novo-nome" placeholder="Ex: João da Silva" required>
-                
                 <label>E-mail (Login)</label>
                 <input type="email" id="novo-email" placeholder="joao@email.com" required>
-                
                 <label>Senha Provisória</label>
                 <input type="text" id="novo-senha" value="123456" required> 
-                
                 <div class="modal-btns">
                     <button type="button" class="btn-cancelar" onclick="fecharModalCadastro()">Cancelar</button>
                     <button type="submit" class="btn-salvar-modal">Cadastrar</button>
@@ -117,6 +149,7 @@
             </form>
         </div>
     </div>
-    <script src="js/admin-dashboard.js?v=3"></script>
+    
+    <script src="js/admin-dashboard.js?v=4"></script>
 </body>
 </html>

@@ -1,10 +1,7 @@
-// Arquivo: js/admin-dashboard.js (Completo e Atualizado com Ícones)
-
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    // Configuração de URL inteligente (Local vs Vercel/Render)
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
     const API_ADMIN_BASE = isLocal ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
@@ -19,16 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const listaBody = document.getElementById('lista-pacientes');
     const totalSpan = document.getElementById('texto-total');
+    const inputPesquisa = document.getElementById('input-pesquisa');
+    
+    // Variáveis Globais para Pesquisa e Gráfico
+    let pacientesGlobais = [];
+    let graficoInstancia = null;
 
-    // Função de Busca
     const fetchPacientes = async () => {
         try {
             const response = await fetch(API_URL, {
                 method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
             });
 
             if (!response.ok) {
@@ -40,66 +38,64 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erro do servidor: ${response.status}`);
             }
 
-            const pacientes = await response.json();
-            renderTabela(pacientes);
+            // Salva na memória para a pesquisa funcionar rápido
+            pacientesGlobais = await response.json(); 
+            
+            renderTabela(pacientesGlobais);
+            renderGrafico(pacientesGlobais);
 
         } catch (error) {
             console.error("Erro no fetch:", error);
             if (listaBody) {
-                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">
-                    <i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>
-                    Erro ao conectar com o servidor.<br>
-                    <small style="color:#555; font-weight:normal;">Verifique se o backend no Render foi atualizado e reiniciado.</small>
-                </li>`;
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto;"></i>Erro ao conectar com o servidor.</li>`;
             }
         }
     };
 
-    // Função de Renderização
+    // SISTEMA DE PESQUISA (Filtro em tempo real)
+    if (inputPesquisa) {
+        inputPesquisa.addEventListener('input', (e) => {
+            const termoBusca = e.target.value.toLowerCase();
+            const pacientesFiltrados = pacientesGlobais.filter(p => 
+                p.nome.toLowerCase().includes(termoBusca) || 
+                p.email.toLowerCase().includes(termoBusca)
+            );
+            renderTabela(pacientesFiltrados);
+        });
+    }
+
     const renderTabela = (pacientes) => {
         if (!listaBody) return;
-        
         listaBody.innerHTML = ''; 
         if (totalSpan) totalSpan.innerText = pacientes.length;
 
         if (pacientes.length === 0) {
-            listaBody.innerHTML = `<li style="text-align:center; padding:40px; color:#777;">
-                <i class="ph ph-users" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto; color: #ccc;"></i>
-                Nenhum paciente cadastrado.
-            </li>`;
+            listaBody.innerHTML = '<li style="text-align:center; padding:40px; color:#777;"><i class="ph ph-users" style="font-size: 2.5rem; display:block; margin: 0 auto 10px auto; color: #ccc;"></i>Nenhum paciente encontrado.</li>';
             return;
         }
 
         pacientes.forEach(p => {
             const dataCriacao = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
             
-            // Badge Status Termo (Agora com ícones Phosphor)
-            let statusHtml = '';
-            if (p.termoAceite === true) {
-                statusHtml = '<span class="status-badge status-ok"><i class="ph ph-check-circle"></i> Aceito</span>';
-            } else {
-                statusHtml = '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
-            }
+            let statusHtml = p.termoAceite 
+                ? '<span class="status-badge status-ok"><i class="ph ph-check-circle"></i> Aceito</span>' 
+                : '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
 
             const li = document.createElement('li');
-            li.style.display = 'flex';
-            li.style.justifyContent = 'space-between';
-            li.style.alignItems = 'center';
-            li.style.padding = '15px';
-            li.style.borderBottom = '1px solid #eee';
+            li.className = 'linha-grid'; // Aplica o alinhamento perfeito com o cabeçalho
             
             li.innerHTML = `
-                <div style="flex: 2;">
+                <div>
                     <strong style="color:#2c3e50; font-size: 1.05rem;">${p.nome}</strong><br>
                     <span style="color: #888; font-size: 0.85rem;">${p.email}</span>
                 </div>
-                <div style="flex: 1; text-align: center;">${statusHtml}</div>
-                <div style="flex: 1; text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
-                <div style="flex: 1.5; text-align: right; display: flex; justify-content: flex-end; gap: 8px;">
+                <div style="text-align: center;">${statusHtml}</div>
+                <div style="text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')" title="Acessar Prontuário">
                         <i class="ph ph-clipboard-text" style="font-size: 1.1rem;"></i> Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir Paciente">
+                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" title="Excluir">
                         <i class="ph ph-trash" style="font-size: 1.1rem;"></i> Deletar
                     </button>
                 </div>
@@ -108,48 +104,68 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Funções Globais da Lista e Botões de Ação
+    // FUNÇÃO DO GRÁFICO (Chart.js)
+    const renderGrafico = (pacientes) => {
+        const ctx = document.getElementById('graficoIdades');
+        if (!ctx) return;
+
+        // Contador de idades
+        let faixas = { 'Não Informada': 0, 'Até 60': 0, '61 a 70': 0, '71 a 80': 0, '81+': 0 };
+        
+        pacientes.forEach(p => {
+            const idade = p.idade; 
+            if (!idade) faixas['Não Informada']++;
+            else if (idade <= 60) faixas['Até 60']++;
+            else if (idade <= 70) faixas['61 a 70']++;
+            else if (idade <= 80) faixas['71 a 80']++;
+            else faixas['81+']++;
+        });
+
+        if (graficoInstancia) graficoInstancia.destroy();
+
+        graficoInstancia = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(faixas),
+                datasets: [{
+                    data: Object.values(faixas),
+                    backgroundColor: ['#e0e0e0', '#2ADCA1', '#f39c12', '#3498db', '#9b59b6'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Montserrat' } } }
+                }
+            }
+        });
+    };
+
     window.irParaProntuario = (id) => {
         window.location.href = `admin-prontuario.html?id=${id}`;
     };
 
     window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`ATENÇÃO:\nTem certeza que deseja excluir o paciente "${nome}"?\n\nIsso apagará o login e todos os dados do prontuário permanentemente.`)) {
-            return;
-        }
-
+        if (!confirm(`ATENÇÃO:\nTem certeza que deseja excluir o paciente "${nome}"?\n\nIsso apagará o login e todos os dados do prontuário permanentemente.`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
-
             if (response.ok) {
-                alert('Paciente excluído com sucesso!');
+                inputPesquisa.value = ''; // Limpa a pesquisa ao deletar
                 fetchPacientes(); 
-            } else {
-                alert('Erro ao excluir.');
-            }
-        } catch (error) {
-            console.error(error);
-            alert('Erro de conexão ao tentar excluir.');
-        }
+            } else { alert('Erro ao excluir.'); }
+        } catch (error) { alert('Erro de conexão ao tentar excluir.'); }
     };
 
-    // Expondo as funções que o HTML procura para carregar atualizar e o Modal
     window.carregarLista = fetchPacientes;
-    
-    window.abrirModalCadastro = () => {
-        document.getElementById('modal-cadastro').style.display = 'flex';
-    };
+    window.abrirModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'flex'; };
+    window.fecharModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'none'; document.getElementById('form-cadastro-paciente').reset(); };
 
-    window.fecharModalCadastro = () => {
-        document.getElementById('modal-cadastro').style.display = 'none';
-        const form = document.getElementById('form-cadastro-paciente');
-        if(form) form.reset();
-    };
-
-    // Configuração do formulário de novo paciente no modal
     const formCadastro = document.getElementById('form-cadastro-paciente');
     if (formCadastro) {
         formCadastro.addEventListener('submit', async (e) => {
@@ -164,22 +180,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, email, password: senha, role: 'paciente' })
                 });
-                
                 if (response.ok) {
-                    alert('Paciente cadastrado com sucesso!');
                     window.fecharModalCadastro();
+                    inputPesquisa.value = ''; // Limpa a pesquisa ao cadastrar
                     fetchPacientes(); 
                 } else {
                     const data = await response.json();
                     alert(data.message || 'Erro ao cadastrar paciente.');
                 }
-            } catch (error) {
-                alert('Erro de conexão ao cadastrar paciente.');
-            }
+            } catch (error) { alert('Erro de conexão ao cadastrar paciente.'); }
         });
     }
 
-    // Configuração do Logout
     const btnLogout = document.getElementById('btn-logout');
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
@@ -188,6 +200,5 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Chamada inicial
     fetchPacientes();
 });
