@@ -1,4 +1,4 @@
-// Arquivo: /routes/adminRoutes.js
+// Arquivo: /routes/adminRoutes.js (Completo e Atualizado)
 
 const express = require('express');
 const router = express.Router();
@@ -10,10 +10,9 @@ const adminMiddleware = require('../middleware/adminMiddleware');
 // Protege TODAS as rotas deste arquivo exigindo token e nível admin
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar todos os pacientes com status do termo e IDADE
+// 1. DASHBOARD: Listar todos os pacientes com status do termo e IDADE (para o gráfico)
 router.get('/pacientes', async (req, res) => {
     try {
-        // Buscamos os usuários e os prontuários ao mesmo tempo
         const pacientes = await User.find({ role: 'paciente' }).lean();
         const prontuarios = await Prontuario.find({ user: { $in: pacientes.map(p => p._id) } }).lean();
 
@@ -24,7 +23,7 @@ router.get('/pacientes', async (req, res) => {
                 nome: pac.nome,
                 email: pac.email,
                 createdAt: pac.createdAt,
-                // O SEGREDO DO GRÁFICO: Pegamos a idade que está salva no prontuário
+                // ESSENCIAL PARA O GRÁFICO:
                 idade: prontuario ? prontuario.idade : null,
                 termoAceite: prontuario ? prontuario.termoAceite : false
             };
@@ -46,10 +45,10 @@ router.delete('/paciente/:id', async (req, res) => {
     }
 });
 
-// 3. PRONTUÁRIO ADMIN: Buscar prontuário de um paciente específico
+// 3. PRONTUÁRIO ADMIN: Buscar prontuário de um paciente específico (CARREGA TUDO)
 router.get('/prontuario/:id', async (req, res) => {
     try {
-        let prontuario = await Prontuario.findOne({ user: req.params.id });
+        let prontuario = await Prontuario.findOne({ user: req.params.id }).lean();
         if (!prontuario) {
             const user = await User.findById(req.params.id);
             return res.json({ user: req.params.id, nomePaciente: user ? user.nome : '', termoAceite: false });
