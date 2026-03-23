@@ -28,13 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
             });
 
-            if (!response.ok) throw new Error("Erro");
+            if (!response.ok) throw new Error("Erro ao buscar dados");
 
             pacientesGlobais = await response.json(); 
             renderTabela(pacientesGlobais);
-            renderGrafico(pacientesGlobais);
+            renderGrafico(pacientesGlobais); // O gráfico agora recebe os dados reais do back-end
 
         } catch (error) {
+            console.error(error);
             if (listaBody) listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar pacientes.</li>`;
         }
     };
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const termo = e.target.value.toLowerCase().trim();
             const filtrados = pacientesGlobais.filter(p => p.nome.toLowerCase().includes(termo));
             renderTabela(filtrados);
+            // Opcional: renderGrafico(filtrados); // Se quiser que o gráfico mude conforme a pesquisa
         });
     }
 
@@ -59,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         pacientes.forEach(p => {
             const dataStr = p.createdAt ? new Date(p.createdAt).toLocaleDateString('pt-BR') : '-';
-            
             let statusBadge = p.termoAceite 
                 ? '<span class="status-badge status-ok"><i class="ph ph-check-circle"></i> Aceito</span>' 
                 : '<span class="status-badge status-pendente"><i class="ph ph-clock-circle"></i> Pendente</span>';
@@ -74,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div style="text-align: center;">${statusBadge}</div>
                 <div style="text-align: center; color: #666; font-size: 0.8rem;">${dataStr}</div>
-                
                 <div class="acoes-container">
                     <button class="btn-ver" onclick="irParaProntuario('${p._id}')">
                         <i class="ph ph-clipboard-text"></i> Prontuário
@@ -88,29 +88,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // --- GRÁFICO TURBINADO COM CORES DA IDENTIDADE ---
     const renderGrafico = (pacientes) => {
         const ctx = document.getElementById('graficoIdades');
         if (!ctx) return;
-        let faixas = { 'Não Informada': 0, 'Até 60': 0, '61-70': 0, '71-80': 0, '81+': 0 };
+
+        let faixas = { 
+            'Até 60 anos': 0, 
+            '61-70 anos': 0, 
+            '71-80 anos': 0, 
+            '81+ anos': 0, 
+            'Não Informada': 0 
+        };
+
         pacientes.forEach(p => {
-            if (!p.idade) faixas['Não Informada']++;
-            else if (p.idade <= 60) faixas['Até 60']++;
-            else if (p.idade <= 70) faixas['61-70']++;
-            else if (p.idade <= 80) faixas['71-80']++;
-            else faixas['81+']++;
+            const idade = p.idade ? parseInt(p.idade) : null;
+            if (!idade) faixas['Não Informada']++;
+            else if (idade <= 60) faixas['Até 60 anos']++;
+            else if (idade <= 70) faixas['61-70 anos']++;
+            else if (idade <= 80) faixas['71-80 anos']++;
+            else faixas['81+ anos']++;
         });
+
         if (graficoInstancia) graficoInstancia.destroy();
+
         graficoInstancia = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: Object.keys(faixas),
                 datasets: [{
                     data: Object.values(faixas),
-                    backgroundColor: ['#e0e0e0', '#2ADCA1', '#f39c12', '#3498db', '#9b59b6'],
-                    borderWidth: 0, hoverOffset: 4
+                    // Paleta de cores: Verdes, Laranja (alerta) e Cinza
+                    backgroundColor: [
+                        '#2ADCA1', // Até 60 (Verde principal)
+                        '#24b685', // 61-70 (Verde escuro)
+                        '#FFB74D', // 71-80 (Laranja suave)
+                        '#3498db', // 81+ (Azul confiança)
+                        '#e0e0e0'  // Não informada (Cinza)
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 10
                 }]
             },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '70%', // Deixa o gráfico em estilo "anel" (mais moderno)
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            font: { family: 'Montserrat', size: 11, weight: '600' }
+                        }
+                    }
+                }
+            }
         });
     };
 
@@ -119,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deletarPaciente = async (id, nome) => {
-        // A PERGUNTA QUE VOCÊ PEDIU
         if (!confirm(`Você quer deletar mesmo o paciente "${nome}"?`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {

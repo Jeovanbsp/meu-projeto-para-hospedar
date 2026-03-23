@@ -10,9 +10,10 @@ const adminMiddleware = require('../middleware/adminMiddleware');
 // Protege TODAS as rotas deste arquivo exigindo token e nível admin
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar todos os pacientes com status do termo
+// 1. DASHBOARD: Listar todos os pacientes com status do termo e IDADE
 router.get('/pacientes', async (req, res) => {
     try {
+        // Buscamos os usuários e os prontuários ao mesmo tempo
         const pacientes = await User.find({ role: 'paciente' }).lean();
         const prontuarios = await Prontuario.find({ user: { $in: pacientes.map(p => p._id) } }).lean();
 
@@ -23,6 +24,8 @@ router.get('/pacientes', async (req, res) => {
                 nome: pac.nome,
                 email: pac.email,
                 createdAt: pac.createdAt,
+                // O SEGREDO DO GRÁFICO: Pegamos a idade que está salva no prontuário
+                idade: prontuario ? prontuario.idade : null,
                 termoAceite: prontuario ? prontuario.termoAceite : false
             };
         });
@@ -49,7 +52,6 @@ router.get('/prontuario/:id', async (req, res) => {
         let prontuario = await Prontuario.findOne({ user: req.params.id });
         if (!prontuario) {
             const user = await User.findById(req.params.id);
-            // Retorna um "molde" vazio caso o prontuário ainda não exista no banco
             return res.json({ user: req.params.id, nomePaciente: user ? user.nome : '', termoAceite: false });
         }
         res.json(prontuario);
@@ -62,7 +64,6 @@ router.get('/prontuario/:id', async (req, res) => {
 router.post('/prontuario/:id', async (req, res) => {
     try {
         const dados = { ...req.body, user: req.params.id };
-        // Atualiza se existir, ou cria se não existir (upsert: true)
         const prontuario = await Prontuario.findOneAndUpdate(
             { user: req.params.id }, 
             dados, 
@@ -80,7 +81,7 @@ router.post('/prontuario/:id/evolucao', async (req, res) => {
         const { titulo, texto } = req.body;
         const prontuario = await Prontuario.findOneAndUpdate(
             { user: req.params.id },
-            { $push: { evolucoes: { titulo, texto, autor: 'Dra. Aisha' } } },
+            { $push: { evolucoes: { titulo, texto, autor: 'Dra. Aisha', data: new Date() } } },
             { new: true, upsert: true }
         );
         res.json({ prontuario });
