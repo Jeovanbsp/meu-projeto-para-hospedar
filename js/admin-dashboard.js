@@ -82,18 +82,18 @@ document.addEventListener('DOMContentLoaded', () => {
             
             li.innerHTML = `
                 <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    <strong style="color:#2c3e50; font-size: 1.05rem;">${p.nome}</strong><br>
-                    <span style="color: #888; font-size: 0.85rem;">${p.email}</span>
+                    <strong style="color:#2c3e50; font-size: 1rem;">${p.nome}</strong><br>
+                    <span style="color: #888; font-size: 0.8rem;">${p.email}</span>
                 </div>
                 <div style="text-align: center;">${statusHtml}</div>
-                <div style="text-align: center; color: #666; font-size: 0.9rem;">${dataCriacao}</div>
+                <div style="text-align: center; color: #666; font-size: 0.85rem;">${dataCriacao}</div>
                 
-                <div style="display: flex; justify-content: flex-end; gap: 8px; flex-direction: row; flex-wrap: nowrap;">
+                <div style="display: flex; justify-content: flex-end; gap: 10px; align-items: center; flex-direction: row; flex-wrap: nowrap;">
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
                         <i class="ph ph-clipboard-text"></i> Prontuário
                     </button>
-                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')">
-                        <i class="ph ph-trash"></i> Deletar
+                    <button class="btn-acao btn-excluir" onclick="deletarPaciente('${p._id}', '${p.nome}')" data-tooltip="Deletar Paciente">
+                        <i class="ph ph-trash"></i>
                     </button>
                 </div>
             `;
@@ -106,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ctx) return;
 
         let faixas = { 'Não Informada': 0, 'Até 60': 0, '61 a 70': 0, '71 a 80': 0, '81+': 0 };
-        
         pacientes.forEach(p => {
             const idade = p.idade; 
             if (!idade) faixas['Não Informada']++;
@@ -117,7 +116,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         if (graficoInstancia) graficoInstancia.destroy();
-
         graficoInstancia = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -129,13 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     hoverOffset: 4
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Montserrat', size: 12 } } }
-                }
-            }
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Montserrat', size: 10 } } } } }
         });
     };
 
@@ -144,7 +136,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     window.deletarPaciente = async (id, nome) => {
-        if (!confirm(`Deseja excluir permanentemente o paciente "${nome}"?`)) return;
+        // PERGUNTA PERSONALIZADA QUE VOCÊ PEDIU
+        if (!confirm(`Você quer deletar mesmo o paciente "${nome}"?`)) return;
         try {
             const response = await fetch(API_DELETE_URL + id, {
                 method: 'DELETE',
@@ -165,20 +158,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const nome = document.getElementById('novo-nome').value;
             const email = document.getElementById('novo-email').value;
             const senha = document.getElementById('novo-senha').value;
-            
             try {
                 const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, email, password: senha, role: 'paciente' })
                 });
-                if (response.ok) {
-                    window.fecharModalCadastro();
-                    fetchPacientes(); 
-                } else {
-                    const data = await response.json();
-                    alert(data.message || 'Erro ao cadastrar.');
-                }
+                if (response.ok) { window.fecharModalCadastro(); fetchPacientes(); } 
+                else { const data = await response.json(); alert(data.message || 'Erro.'); }
             } catch (error) { alert('Erro de conexão.'); }
         });
     }
