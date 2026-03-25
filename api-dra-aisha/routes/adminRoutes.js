@@ -5,33 +5,26 @@ const Prontuario = require('../models/Prontuario');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
-// Protege todas as rotas deste arquivo
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar pacientes com idade e termo
+// DASHBOARD: Listar pacientes para a tabela e gráfico
 router.get('/pacientes', async (req, res) => {
     try {
         const pacientes = await User.find({ role: 'paciente' }).lean();
         const prontuarios = await Prontuario.find({ user: { $in: pacientes.map(p => p._id) } }).lean();
-
-        const listaFormatada = pacientes.map(pac => {
-            const prontuario = prontuarios.find(p => p.user.toString() === pac._id.toString());
+        const lista = pacientes.map(pac => {
+            const pront = prontuarios.find(p => p.user.toString() === pac._id.toString());
             return {
-                _id: pac._id,
-                nome: pac.nome,
-                email: pac.email,
-                createdAt: pac.createdAt,
-                idade: prontuario ? prontuario.idade : null,
-                termoAceite: prontuario ? prontuario.termoAceite : false
+                _id: pac._id, nome: pac.nome, email: pac.email, createdAt: pac.createdAt,
+                idade: pront ? pront.idade : null,
+                termoAceite: pront ? pront.termoAceite : false
             };
         });
-        res.json(listaFormatada);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar pacientes.' });
-    }
+        res.json(lista);
+    } catch (error) { res.status(500).json({ message: 'Erro ao buscar pacientes.' }); }
 });
 
-// 2. BUSCA PRONTUÁRIO: Carrega RG, Médicos, Medicamentos e Evoluções
+// BUSCA DETALHADA: Carrega tudo (RG, Médicos, Medicamentos, Evoluções)
 router.get('/prontuario/:id', async (req, res) => {
     try {
         const prontuario = await Prontuario.findOne({ user: req.params.id }).lean();
@@ -43,7 +36,7 @@ router.get('/prontuario/:id', async (req, res) => {
     } catch (error) { res.status(500).json({ message: 'Erro ao buscar.' }); }
 });
 
-// 3. SALVAR PRONTUÁRIO: Admin edita tudo
+// SALVAR TUDO: O que o Admin mudar aqui, o paciente verá no perfil dele
 router.post('/prontuario/:id', async (req, res) => {
     try {
         const prontuario = await Prontuario.findOneAndUpdate(
@@ -55,7 +48,7 @@ router.post('/prontuario/:id', async (req, res) => {
     } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
 });
 
-// 4. EVOLUÇÃO (CRUD)
+// EVOLUÇÕES: Criar, Editar e Deletar
 router.post('/prontuario/:id/evolucao', async (req, res) => {
     try {
         const { titulo, texto } = req.body;
