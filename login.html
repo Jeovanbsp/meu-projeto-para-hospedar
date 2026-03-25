@@ -6,6 +6,7 @@
     <title>Login - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css"> 
     <style>
         body { background-color: #f4f6f8; margin: 0; display: flex; flex-direction: column; height: 100vh; font-family: 'Montserrat', sans-serif; }
@@ -14,21 +15,23 @@
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .login-card { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; margin-top: -50px; }
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; color: #666; font-weight: 600; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; }
-        .btn-entrar { width: 100%; padding: 12px; background-color: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .input-group label { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #666; font-weight: 600; font-size: 0.9rem; }
+        .input-group label i { color: #2ADCA1; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; box-sizing: border-box; outline: none; transition: border-color 0.3s; }
+        .input-group input:focus { border-color: #2ADCA1; }
+        .btn-entrar { width: 100%; padding: 14px; background-color: #2ADCA1; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .btn-entrar:hover { background-color: #24b685; }
         .erro-msg { color: #ef5350; font-size: 0.9rem; margin-top: 15px; display: none; }
-        .btn-voltar { text-decoration: none; color: #555; font-weight: 600; padding: 8px 15px; border: 1px solid #ccc; border-radius: 20px; }
+        .btn-voltar { text-decoration: none; color: #555; font-weight: 600; padding: 8px 15px; border: 1px solid #ccc; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
     </style>
 </head>
 <body>
     <header class="header-fixo no-print">
         <div class="header-container">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 140px; width: auto;">
+                <img src="img/layout.png" alt="Logo Dra Aisha" style="height: 160px !important; width: auto;">
             </a>
-            <nav><a href="index.html" class="btn-voltar">← Voltar ao Início</a></nav>
+            <nav><a href="index.html" class="btn-voltar"><i class="ph ph-arrow-left"></i> Início</a></nav>
         </div>
     </header>
 
@@ -39,19 +42,19 @@
             
             <form id="form-login">
                 <div class="input-group">
-                    <label>E-mail</label>
+                    <label><i class="ph ph-envelope"></i> E-mail</label>
                     <input type="email" id="email" required placeholder="seu@email.com">
                 </div>
                 <div class="input-group">
-                    <label>Senha</label>
+                    <label><i class="ph ph-lock"></i> Senha</label>
                     <input type="password" id="senha" required placeholder="********">
                 </div>
-                <button type="submit" class="btn-entrar">Entrar</button>
+                <button type="submit" class="btn-entrar">Entrar <i class="ph ph-sign-in"></i></button>
                 <p id="msg-erro" class="erro-msg"></p>
             </form>
         </div>
     </main>
 
-    <script src="js/login.js"></script>git
+    <script src="js/login.js"></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>"Dra. Aisha Wenzinger – Geriatria em Casa e em Consultório"</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
 
     <style>
@@ -27,6 +28,9 @@
             padding: 5px 10px;
             border-radius: 5px;
             transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .ficha-link:hover {
@@ -55,11 +59,10 @@
             align-items: center; 
             max-width: 1200px;
             width: 100%;
-            min-height: 500px; /* Aumentei a altura da caixa verde para o padrão anterior */
+            min-height: 500px;
             position: relative;
         }
 
-        /* BONECA ENCOSTANDO NAS BORDAS (ACOMPANHA OS 500PX) */
         .sobre-imagem-boneca {
             flex: 1;
             display: flex;
@@ -75,7 +78,6 @@
             display: block;
         }
 
-        /* TEXTO CENTRALIZADO COM TÍTULO MAIOR */
         .sobre-texto {
             flex: 1.5;
             display: flex;
@@ -87,7 +89,7 @@
         }
 
         .sobre-texto h2 {
-            font-size: 3rem; /* Título grande e impactante como antes */
+            font-size: 3rem;
             margin-bottom: 20px;
             color: #1a1a1a;
             line-height: 1.2;
@@ -107,7 +109,7 @@
         }
 
         .botoes-hero .btn-agendar {
-            padding: 18px 45px; /* Botão um pouco maior para acompanhar o layout */
+            padding: 18px 45px;
             font-size: 1.2rem;
             font-weight: 700;
             background-color: #2ADCA1;
@@ -116,6 +118,9 @@
             border-radius: 50px;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .botoes-hero .btn-agendar:hover {
@@ -123,7 +128,6 @@
             transform: translateY(-3px);
         }
 
-        /* RESPONSIVIDADE */
         @media (max-width: 900px) {
             .sobre-container { flex-direction: column; padding: 40px 20px; min-height: auto; }
             .sobre-imagem-boneca { height: 350px; }
@@ -135,19 +139,19 @@
 <body>
 
     <header class="novo-header">
-        <div class="header-container">
+        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 130px !important; width: auto;">
+                <img src="img/layout.png" alt="Dra. Aisha Logo" style="height: 160px !important; width: auto;">
             </a>
             
             <nav class="main-nav" id="mobile-menu"> 
                 <ul>
-                    <li><a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link">Ficha Pré-Atendimento</a></li>
+                    <li><a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link"><i class="ph ph-file-text"></i> Ficha Pré-Atendimento</a></li>
                     <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
                     <li><a href="#contato">Contato</a></li>
-                    <li><a href="login.html" style="font-weight: bold; color: #2ADCA1;">Login</a></li>
+                    <li><a href="login.html" style="font-weight: bold; color: #2ADCA1; display: flex; align-items: center; gap: 6px;"><i class="ph ph-user"></i> Login</a></li>
                 </ul>
             </nav>
 
@@ -167,7 +171,7 @@
                     <h2>Atenção Especializada para Idosos</h2>
                     <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
                     <div class="botoes-hero">
-                        <a href="tel:+5571983943153" class="btn-agendar">Agende sua consulta</a>
+                        <a href="tel:+5571983943153" class="btn-agendar"><i class="ph ph-phone"></i> Agende sua consulta</a>
                     </div>
                 </div>
             </div>
@@ -175,15 +179,15 @@
         
         <section class="servicos-destaque-delicado">
             <div class="servico-delicado">
-                <h3>Telemedicina</h3>
+                <h3><i class="ph ph-video-conference" style="color: #2ADCA1;"></i> Telemedicina</h3>
                 <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
             </div>
             <div class="servico-delicado">
-                <h3>Atendimento Domiciliar</h3>
+                <h3><i class="ph ph-house-line" style="color: #2ADCA1;"></i> Atendimento Domiciliar</h3>
                 <p>Visitas médicas no conforto do lar, garantindo cuidado integral e humanizado.</p>
             </div>
             <div class="servico-delicado">
-                <h3>Atendimento Presencial</h3>
+                <h3><i class="ph ph-first-aid" style="color: #2ADCA1;"></i> Atendimento Presencial</h3>
                 <p>Consultas realizadas em consultório com infraestrutura completa para seu conforto.</p> 
             </div>
         </section>
@@ -236,12 +240,12 @@
             <div class="local">
                 <h3>Unidade 1 - Estrada do Coco</h3>
                 <p>Shopping Estrada do Coco, Loja 102 - Lauro de Freitas - BA</p>
-                <a href="#" target="_blank" class="btn-maps">Ver no Google Maps</a>
+                <a href="#" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
             <div class="local">
                 <h3>Unidade 2 - Salvador</h3>
                 <p>Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA</p>
-                <a href="#" target="_blank" class="btn-maps">Ver no Google Maps</a>
+                <a href="#" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
         </div>
     </section>

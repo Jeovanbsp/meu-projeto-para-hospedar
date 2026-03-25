@@ -3,60 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Prontuário - Admin</title>
+    <title>Editar Prontuário - Dra. Aisha</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
-        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-        /* Margem aumentada para 190px */
-        .card-agendamento { margin: 190px auto 40px auto; } 
-        textarea { min-height: 100px; resize: vertical; }
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: sticky; top: 0; z-index: 100; }
+        .logo img { height: 160px !important; width: auto; display: block; }
+        
+        .card-edicao { 
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            max-width: 800px; 
+            margin: 40px auto; 
+        }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: #555; 
+            margin-bottom: 8px; 
+        }
+        .input-group label i { color: #2ADCA1; font-size: 1.15rem; }
+        
+        input[type="text"], input[type="number"], textarea {
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            font-family: 'Montserrat', sans-serif;
+            box-sizing: border-box;
+        }
+
+        .btn-voltar {
+            background: #f5f5f5;
+            color: #666;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        .btn-voltar:hover { background: #eee; }
     </style>
 </head>
 <body>
     <header class="header-fixo no-print">
-        <div class="header-container" style="justify-content: flex-start; gap: 20px; align-items: center;">
-            <a href="admin-dashboard.html" class="logo" style="margin-right: auto;">
-                <img src="img/layout.png" alt="Logo Dra. Aisha" style="height: 160px !important; max-height: none !important; width: auto;">
+        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <a href="admin-dashboard.html" class="logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha">
             </a>
-            <h3 style="color: #2ADCA1; margin: 0; font-size: 18px;">Edição Rápida (Admin)</h3>
+            <h3 style="color: #2ADCA1; margin: 0; font-size: 18px; display: flex; align-items: center; gap: 8px;">
+                <i class="ph ph-note-pencil"></i> Edição de Prontuário
+            </h3>
         </div>
     </header>
-    <main>
-        <div class="card-agendamento" id="prontuario-card">
-            <button onclick="window.location.href='admin-dashboard.html';" style="background: #ccc; color: #333; margin-bottom: 20px; padding: 10px; border: none; border-radius: 5px; cursor: pointer; display: block; width: 100%; max-width: 250px; margin: 0 auto 20px auto;">&larr; Voltar para Dashboard</button>
+
+    <main style="padding: 20px;">
+        <div class="card-edicao" id="prontuario-card">
+            <button class="btn-voltar" onclick="window.location.href='admin-dashboard.html';">
+                <i class="ph ph-arrow-left"></i> Voltar ao Painel
+            </button>
             
-            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                <h2 id="titulo-edicao" style="margin: 0;">Editando Prontuário</h2>
-                <span id="badge-termo-status" class="badge-termo pendente">AGUARDANDO...</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;">
+                <h2 id="titulo-edicao" style="margin: 0; font-size: 1.4rem; color: #333;">Ficha do Paciente</h2>
+                <span id="badge-termo-status" class="status-badge status-pendente">Aguardando...</span>
             </div>
 
             <form id="form-prontuario-principal">
-                <label for="nome-paciente">Nome do Paciente</label>
-                <input type="text" id="nome-paciente" required>
-                <label for="idade">Idade</label>
-                <input type="number" id="idade" required>
+                <div class="input-group">
+                    <label><i class="ph ph-user"></i> Nome do Paciente</label>
+                    <input type="text" id="nome-paciente" required>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="ph ph-calendar"></i> Idade</label>
+                    <input type="number" id="idade" required>
+                </div>
                 
-                <div style="margin-top: 15px; margin-bottom: 20px;">
-                    <label style="font-weight: 600; color: #555; display: block; margin-bottom: 8px;">Mobilidade</label>
-                    <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
-                        <label class="radio-label"><input type="radio" name="mobilidade" value="Independente"> <span style="color: #2E7D32;">Independente</span></label>
-                        <label class="radio-label"><input type="radio" name="mobilidade" value="Com Auxílio"> <span style="color: #F57F17;">Com Auxílio</span></label>
-                        <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> <span style="color: #C62828;">Dependente</span></label>
+                <div class="input-group">
+                    <label><i class="ph ph-person-arms-spread"></i> Mobilidade</label>
+                    <div style="display: flex; gap: 20px; margin-top: 10px;">
+                        <label style="font-weight: 500; cursor: pointer;"><input type="radio" name="mobilidade" value="Independente"> Independente</label>
+                        <label style="font-weight: 500; cursor: pointer;"><input type="radio" name="mobilidade" value="Com Auxílio"> Com Auxílio</label>
+                        <label style="font-weight: 500; cursor: pointer;"><input type="radio" name="mobilidade" value="Dependente"> Dependente</label>
                     </div>
                 </div>
 
-                <label for="patologias">Patologias</label>
-                <textarea id="patologias"></textarea>
-                <label for="exames" style="margin-top: 15px; color: #2c3e50; font-weight: 600;">Exames Complementares</label>
-                <textarea id="exames"></textarea>
+                <div class="input-group">
+                    <label><i class="ph ph-first-aid"></i> Patologias</label>
+                    <textarea id="patologias" rows="4"></textarea>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="ph ph-microscope"></i> Exames Complementares</label>
+                    <textarea id="exames" rows="4"></textarea>
+                </div>
+
+                <button type="submit" id="btn-salvar-tudo-admin" class="btn-novo" style="width: 100%; justify-content: center; padding: 15px; font-size: 1rem;">
+                    <i class="ph ph-floppy-disk"></i> Salvar Alterações
+                </button>
             </form>
-            <div class="botoes-acao-container no-print"><button type="submit" id="btn-salvar-tudo-admin">Salvar Edição do Paciente</button></div>
-            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px;"></div>
         </div>
     </main>
+
     <script src="js/admin-prontuario.js"></script>
     <script src="js/logout.js"></script>
 </body>

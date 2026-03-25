@@ -3,102 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Dra. Aisha Wenzinger</title>
-    
+    <title>Cadastro - Dra. Aisha</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+        .logo img { height: 160px !important; width: auto; display: block; margin: 0 auto; }
+
+        .cadastro-container { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 40px 20px;
+        }
+
+        .card-cadastro { 
+            background: #fff; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05); 
+            width: 100%; 
+            max-width: 450px; 
+        }
+
+        .card-cadastro h2 { text-align: center; color: #333; margin-bottom: 10px; }
+        .card-cadastro p { text-align: center; color: #666; font-size: 0.9rem; margin-bottom: 30px; }
+
+        .input-group { margin-bottom: 20px; }
+        .input-group label { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 600; 
+            color: #555; 
+            margin-bottom: 8px; 
+        }
+        .input-group label i { color: #2ADCA1; font-size: 1.1rem; }
+        
+        .input-group input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 8px; 
+            outline: none; 
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        .input-group input:focus { border-color: #2ADCA1; box-shadow: 0 0 0 2px rgba(42, 220, 161, 0.1); }
+
+        .btn-principal { 
+            background-color: #2ADCA1; 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 8px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            width: 100%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px;
+            transition: 0.3s;
+        }
+        .btn-principal:hover { background-color: #24c28e; transform: translateY(-2px); }
+    </style>
 </head>
 <body>
-
-    <header class="novo-header">
+    <header class="header-fixo">
         <div class="header-container">
             <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Dra. Aisha Logo">
+                <img src="img/layout.png" alt="Logo Dra. Aisha">
             </a>
-            
-            <nav class="main-nav" id="mobile-menu"> 
-                <ul>
-                    <li><a href="index.html#sobre-mim-section">Sobre Mim</a></li> 
-                    <li><a href="index.html#experiencia-section">Experiência</a></li> 
-                    <li><a href="index.html#locais">Onde Atende</a></li>
-                    <li><a href="index.html#contato">Contato</a></li>
-                    <li><a href="login.html">Login</a></li>
-                    <li><a href="cadastro.html"><b>Cadastro Paciente</b></a></li>
-                </ul>
-            </nav>
-
-            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu" aria-expanded="false">
-                <span class="hamburger-box">
-                    <span class="hamburger-inner"></span>
-                </span>
-            </button>
         </div>
     </header>
 
-    <main>
-        <div class="card-agendamento" style="margin-top: 60px; margin-bottom: 60px;">
-            
-            <h2>Crie sua conta de paciente</h2>
-            <p style="text-align: center; margin-top: -15px; font-size: 15px; color: #555;">
-                Preencha os dados abaixo para começar.
-            </p>
+    <main class="cadastro-container">
+        <div class="card-cadastro">
+            <h2>Criar Conta</h2>
+            <p>Seja bem-vindo(a). Preencha seus dados abaixo.</p>
 
             <form id="form-cadastro">
-                
-                <label for="nome">Nome Completo</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
-                
-                <label for="email">Seu E-mail</label>
-                <input type="email" id="email" name="email" placeholder="exemplo@gmail.com" required>
-                
-                <label for="senha">Crie uma Senha</label>
-                <input type="password" id="senha" name="senha" placeholder="Mínimo 6 caracteres" required>
+                <div class="input-group">
+                    <label><i class="ph ph-user"></i> Nome Completo</label>
+                    <input type="text" id="nome" placeholder="Seu nome completo" required>
+                </div>
 
-                <button type="submit" id="btn-cadastrar">Criar Minha Conta</button>
+                <div class="input-group">
+                    <label><i class="ph ph-envelope"></i> Seu E-mail</label>
+                    <input type="email" id="email" placeholder="exemplo@gmail.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label><i class="ph ph-lock"></i> Criar Senha</label>
+                    <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required>
+                </div>
+
+                <button type="submit" class="btn-principal" id="btn-cadastrar">
+                    Criar Minha Conta <i class="ph ph-user-plus"></i>
+                </button>
             </form>
 
-            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: 600;"></div>
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px;"></div>
 
-            <p style="text-align: center; margin-top: 25px; font-size: 14px; color: #333;">
-                Já tem uma conta? 
-                <a href="login.html" style="color: #2ADCA1; font-weight: 600; text-decoration: none;">
-                    Faça o login aqui
-                </a>
+            <p style="margin-top: 25px; font-size: 0.9rem; color: #555;">
+                Já tem conta? <a href="login.html" style="color: #2ADCA1; font-weight: 700; text-decoration: none;">Faça login</a>
             </p>
-
         </div>
     </main>
 
-    <footer id="contato">
-        <p>Siga a Dra. Aisha nas redes sociais:</p>
-        <div class="social-icons">
-            <a href="https://www.instagram.com/aisha_wenzinger" target="_blank">
-                <img src="img/instagram.png" alt="Instagram">
-            </a>
-            <a href="https://www.facebook.com/Aisha_wenzinger" target="_blank">
-                <img src="img/facebook.png" alt="Facebook">
-            </a>
-            <a href="https://wa.me/5571981233912" target="_blank">
-                <img src="img/whatsapp.png" alt="WhatsApp">
-            </a>
-        </div>
-        <p class="crm-info">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
-        <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
+    <footer style="text-align: center; padding: 40px 20px; background: #fff; border-top: 1px solid #eee;">
+        <p class="crm-info" style="color: #666; font-size: 0.8rem;">Dra. Aishá Wenzinger | CRM/BA: 20473 | RQE: 19692</p>
     </footer>
-    
-    <script>
-        const hamburgerButton = document.getElementById('hamburger-button');
-        const mobileMenu = document.getElementById('mobile-menu');
 
-        hamburgerButton.addEventListener('click', () => {
-            hamburgerButton.classList.toggle('is-active');
-            const isExpanded = hamburgerButton.getAttribute('aria-expanded') === 'true';
-            hamburgerButton.setAttribute('aria-expanded', !isExpanded);
-            mobileMenu.classList.toggle('is-active');
-        });
-    </script>
     <script src="js/cadastro.js"></script>
-
 </body>
 </html>
