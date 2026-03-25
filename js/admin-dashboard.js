@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    // Removida a barra extra no final para evitar duplicidade //
     const API_ADMIN_BASE = isLocal ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
     const API_URL = `${API_ADMIN_BASE}/api/admin/pacientes`;
@@ -23,20 +24,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchPacientes = async () => {
         try {
+            console.log("Tentando buscar pacientes em:", API_URL); // Log de ajuda
             const response = await fetch(API_URL, {
                 method: 'GET',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${token}` 
+                }
             });
 
-            if (!response.ok) throw new Error("Erro ao buscar dados");
+            if (!response.ok) {
+                const erroTexto = await response.text();
+                console.error("Resposta do servidor:", response.status, erroTexto);
+                throw new Error(`Erro ${response.status}: Falha ao buscar dados`);
+            }
 
             pacientesGlobais = await response.json(); 
             renderTabela(pacientesGlobais);
-            renderGrafico(pacientesGlobais); // O gráfico agora recebe os dados reais do back-end
+            renderGrafico(pacientesGlobais);
 
         } catch (error) {
-            console.error(error);
-            if (listaBody) listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar pacientes.</li>`;
+            console.error("Erro no fetchPacientes:", error);
+            if (listaBody) {
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar dados do servidor.</li>`;
+            }
         }
     };
 
@@ -45,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const termo = e.target.value.toLowerCase().trim();
             const filtrados = pacientesGlobais.filter(p => p.nome.toLowerCase().includes(termo));
             renderTabela(filtrados);
-            // Opcional: renderGrafico(filtrados); // Se quiser que o gráfico mude conforme a pesquisa
         });
     }
 
@@ -88,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- GRÁFICO TURBINADO COM CORES DA IDENTIDADE ---
     const renderGrafico = (pacientes) => {
         const ctx = document.getElementById('graficoIdades');
         if (!ctx) return;
@@ -118,14 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 labels: Object.keys(faixas),
                 datasets: [{
                     data: Object.values(faixas),
-                    // Paleta de cores: Verdes, Laranja (alerta) e Cinza
-                    backgroundColor: [
-                        '#2ADCA1', // Até 60 (Verde principal)
-                        '#24b685', // 61-70 (Verde escuro)
-                        '#FFB74D', // 71-80 (Laranja suave)
-                        '#3498db', // 81+ (Azul confiança)
-                        '#e0e0e0'  // Não informada (Cinza)
-                    ],
+                    backgroundColor: ['#2ADCA1', '#24b685', '#FFB74D', '#3498db', '#e0e0e0'],
                     borderWidth: 2,
                     borderColor: '#ffffff',
                     hoverOffset: 10
@@ -134,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: '70%', // Deixa o gráfico em estilo "anel" (mais moderno)
+                cutout: '70%',
                 plugins: {
                     legend: {
                         position: 'bottom',
@@ -166,7 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.carregarLista = fetchPacientes;
     window.abrirModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'flex'; };
-    window.fecharModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'none'; document.getElementById('form-cadastro-paciente').reset(); };
+    window.fecharModalCadastro = () => { 
+        document.getElementById('modal-cadastro').style.display = 'none'; 
+        document.getElementById('form-cadastro-paciente').reset(); 
+    };
 
     const formCadastro = document.getElementById('form-cadastro-paciente');
     if (formCadastro) {

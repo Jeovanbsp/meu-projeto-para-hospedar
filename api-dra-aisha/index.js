@@ -11,32 +11,36 @@ app.use(cors());
 app.use(express.json());
 
 // ==========================================
-// IMPORTANDO E USANDO AS ROTAS
+// IMPORTANDO AS ROTAS
 // ==========================================
 const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
 
-// O front-end da Dra. Aisha chama "/api/admin/..."
+// Rotas da Dra. Aisha (Admin)
+// Se adminRoutes.js tem router.get('/pacientes'), o caminho será /api/admin/pacientes
 app.use('/api/admin', adminRoutes);
 
-// O front-end do paciente chama "/api/prontuario"
+// Rotas do Perfil do Paciente
 app.use('/api/prontuario', pacienteRoutes);
 
 
-// ROTA DE LOGIN
+// ==========================================
+// ROTAS DE AUTENTICAÇÃO
+// ==========================================
+
+// LOGIN
 app.post('/api/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email.toLowerCase().trim() });
 
         if (!user) return res.status(400).json({ message: 'E-mail não cadastrado.' });
-        console.log(user)
+        
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Senha incorreta.' });
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-        // Ajuste: buscando user.nome do banco para não dar erro no front-end
         res.json({ token, user: { name: user.nome, role: user.role } });
     } catch (err) {
         console.error(err)
@@ -44,16 +48,15 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// ROTA DE CADASTRO (Para o Admin criar pacientes)
+// CADASTRO (Admin cria pacientes)
 app.post('/api/auth/register', async (req, res) => {
     try {
-        // CORREÇÃO: Pegando 'nome' do req.body em vez de 'name'
         const { nome, email, password, role } = req.body;
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            nome, // CORREÇÃO: Salvando no banco de dados como 'nome'
+            nome,
             email: email.toLowerCase().trim(),
             password: hashedPassword,
             role: role || 'paciente'
@@ -69,4 +72,5 @@ app.post('/api/auth/register', async (req, res) => {
 
 const SERVER_PORT = process.env.PORT || 3001
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => app.listen(SERVER_PORT, () => console.log(`Servidor OK Porta: ${SERVER_PORT}`)));
+    .then(() => app.listen(SERVER_PORT, () => console.log(`Servidor OK Porta: ${SERVER_PORT}`)))
+    .catch(err => console.error("Erro ao conectar no MongoDB:", err));
