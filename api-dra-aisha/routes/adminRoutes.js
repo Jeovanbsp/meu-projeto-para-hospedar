@@ -5,7 +5,7 @@ const Prontuario = require('../models/Prontuario');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
-// Protege todas as rotas
+// Protege todas as rotas deste arquivo
 router.use(authMiddleware, adminMiddleware);
 
 // 1. DASHBOARD: Listar pacientes com idade e termo

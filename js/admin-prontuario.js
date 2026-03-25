@@ -7,26 +7,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token || role !== 'admin' || !pacienteId) { window.location.href = 'login.html'; return; }
 
-    // SELETORES
+    // --- SELETORES GERAIS ---
     const nomePacienteInput = document.getElementById('nome-paciente');
     const rgPacienteInput = document.getElementById('rg-paciente');
     const idadeInput = document.getElementById('idade');
     const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
     const patologiasInput = document.getElementById('patologias');
     const examesInput = document.getElementById('exames');
+    
+    // --- COMORBIDADES ---
     const radioComorbidadeSim = document.getElementById('comorbidade-sim');
     const radioComorbidadeNao = document.getElementById('comorbidade-nao');
+    const listaComorbidades = document.getElementById('lista-comorbidades');
     const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
     const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
+    const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
+
+    // --- ALERGIAS ---
     const radioAlergiaSim = document.getElementById('alergia-sim');
     const radioAlergiaNao = document.getElementById('alergia-nao');
     const inputAlergiasQuais = document.getElementById('alergias-quais');
+    const sinalizadorAlergia = document.getElementById('sinalizador-alergia');
+
+    // --- MÉDICOS E MEDICAÇÕES ---
     const listaMedicosPills = document.getElementById('lista-medicos-pills');
     const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
     const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin');
     const badgeTermo = document.getElementById('badge-termo-status');
 
-    // EVOLUÇÕES
+    // --- EVOLUÇÕES ---
     const tituloEvolucaoInput = document.getElementById('titulo-evolucao');
     const textoEvolucaoInput = document.getElementById('texto-evolucao');
     const btnAddEvolucao = document.getElementById('btn-add-evolucao');
@@ -34,6 +43,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let currentMedicacoes = []; let currentMedicos = []; let currentEvolucoes = []; let editingEvolucaoId = null;
     const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
+
+    // --- FUNÇÕES DE INTERAÇÃO (IGUAL AO PACIENTE) ---
+    function toggleComorbidades() {
+        if (radioComorbidadeSim.checked) {
+            listaComorbidades.style.display = 'block';
+            if(btnMinimizarComorbidades) btnMinimizarComorbidades.style.display = 'flex';
+        } else {
+            listaComorbidades.style.display = 'none';
+            if(btnMinimizarComorbidades) btnMinimizarComorbidades.style.display = 'none';
+        }
+    }
+
+    function toggleAlergiaInput() {
+        if (radioAlergiaSim.checked) {
+            inputAlergiasQuais.style.display = 'block';
+            if(sinalizadorAlergia) sinalizadorAlergia.style.display = 'flex';
+        } else {
+            inputAlergiasQuais.style.display = 'none';
+            if(sinalizadorAlergia) sinalizadorAlergia.style.display = 'none';
+        }
+    }
 
     const populateForm = (data) => {
         if(nomePacienteInput) nomePacienteInput.value = data.nomePaciente || '';
@@ -50,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             radioComorbidadeNao.checked = !comorb.temComorbidade;
             if(inputOutrasComorbidades) inputOutrasComorbidades.value = comorb.outras || '';
             if(checkboxesComorbidades) checkboxesComorbidades.forEach(cb => { cb.checked = comorb.lista?.includes(cb.value); });
+            toggleComorbidades();
         }
 
         const alerg = data.alergias || {};
@@ -57,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             radioAlergiaSim.checked = !!alerg.temAlergia;
             radioAlergiaNao.checked = !alerg.temAlergia;
             if(inputAlergiasQuais) inputAlergiasQuais.value = alerg.quais || '';
+            toggleAlergiaInput();
         }
 
         if (badgeTermo) {
@@ -73,8 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
         renderEvolucoes();
     };
 
+    // --- RENDERIZAÇÕES ---
     const renderTabelaMedicacoes = () => {
+        if(!listaMedicacoesBody) return;
         listaMedicacoesBody.innerHTML = '';
+        if (currentMedicacoes.length === 0) {
+            listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#999; padding:20px;">Vazio</td></tr>';
+            return;
+        }
         currentMedicacoes.forEach((med) => {
             let turnosHtml = '';
             if (med.horarios) {
@@ -87,6 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderMedicosList = () => {
+        if(!listaMedicosPills) return;
         listaMedicosPills.innerHTML = '';
         currentMedicos.forEach((m, i) => {
             listaMedicosPills.innerHTML += `<li class="pill-medico"><span>${m}</span><button class="btn-deletar-medico" data-index="${i}">✕</button></li>`;
@@ -94,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderEvolucoes = () => {
+        if(!listaEvolucoesDiv) return;
         listaEvolucoesDiv.innerHTML = '';
         const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
         list.forEach(evo => {
@@ -113,19 +153,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // CRUD EVOLUÇÕES
+    // --- EVENTOS MÉDICOS / MEDICAÇÕES ---
+    document.getElementById('form-add-medico')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nome-medico').value;
+        const tel = document.getElementById('telefone-medico').value;
+        currentMedicos.push(`${nome} ${tel ? '('+tel+')' : ''}`);
+        renderMedicosList();
+        document.getElementById('form-add-medico').reset();
+    });
+
+    document.getElementById('form-add-medicacao')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const horarios = {};
+        document.querySelectorAll('input[name="horario"]').forEach(cb => horarios[cb.value] = cb.checked);
+        currentMedicacoes.push({
+            nome: document.getElementById('nome-medicacao').value,
+            quantidade: document.getElementById('qtd-medicacao').value,
+            horarioEspecifico: document.getElementById('horario-especifico').value,
+            horarios: horarios
+        });
+        renderTabelaMedicacoes();
+        document.getElementById('form-add-medicacao').reset();
+        document.getElementById('form-add-medicacao').style.display = 'none';
+    });
+
+    // --- EVOLUÇÕES ---
     btnAddEvolucao?.addEventListener('click', async () => {
         const titulo = tituloEvolucaoInput.value;
         const texto = textoEvolucaoInput.value;
         const url = `${API_ADMIN_BASE}${pacienteId}/evolucao${editingEvolucaoId ? '/' + editingEvolucaoId : ''}`;
         const method = editingEvolucaoId ? 'PUT' : 'POST';
-
         const res = await fetch(url, {
             method,
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify({ titulo, texto })
         });
-
         if(res.ok) {
             const result = await res.json();
             currentEvolucoes = result.prontuario.evolucoes;
@@ -156,34 +219,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // EVENTOS DE ADIÇÃO (MÉDICOS / MEDICAÇÕES)
-    document.getElementById('form-add-medico')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const nome = document.getElementById('nome-medico').value;
-        const tel = document.getElementById('telefone-medico').value;
-        const texto = `${nome} ${tel ? '('+tel+')' : ''}`;
-        currentMedicos.push(texto); renderMedicosList();
-        document.getElementById('form-add-medico').reset();
-    });
-
-    document.getElementById('form-add-medicacao')?.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const horarios = {}; 
-        document.querySelectorAll('input[name="horario"]').forEach(cb => horarios[cb.value] = cb.checked);
-        currentMedicacoes.push({
-            nome: document.getElementById('nome-medicacao').value,
-            quantidade: document.getElementById('qtd-medicacao').value,
-            horarioEspecifico: document.getElementById('horario-especifico').value,
-            horarios: horarios
-        });
-        renderTabelaMedicacoes();
-        document.getElementById('form-add-medicacao').reset();
-        document.getElementById('form-add-medicacao').style.display = 'none';
-    });
-
-    // BOTÃO SALVAR TUDO
+    // --- SALVAR TUDO ---
     btnSalvarTudo?.addEventListener('click', async (e) => {
         e.preventDefault();
+        btnSalvarTudo.innerText = 'Salvando...';
         const payload = {
             nomePaciente: nomePacienteInput.value, rg: rgPacienteInput.value, idade: idadeInput.value,
             mobilidade: document.querySelector('input[name="mobilidade"]:checked')?.value || '',
@@ -196,8 +235,15 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(payload)
         });
-        alert('Prontuário guardado!');
+        alert('Prontuário salvo!');
+        btnSalvarTudo.innerText = 'Salvar Edição';
     });
+
+    // --- LISTENERS DE TOGGLE ---
+    radioComorbidadeSim?.addEventListener('change', toggleComorbidades);
+    radioComorbidadeNao?.addEventListener('change', toggleComorbidades);
+    radioAlergiaSim?.addEventListener('change', toggleAlergiaInput);
+    radioAlergiaNao?.addEventListener('change', toggleAlergiaInput);
 
     const fetchProntuario = async () => {
         const res = await fetch(API_ADMIN_BASE + pacienteId, { headers: { 'Authorization': `Bearer ${token}` } });
