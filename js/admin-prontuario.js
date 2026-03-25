@@ -7,30 +7,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!token || role !== 'admin' || !pacienteId) { window.location.href = 'login.html'; return; }
 
-    // --- SELETORES (Sincronizados com Paciente) ---
+    // SELETORES
     const nomePacienteInput = document.getElementById('nome-paciente');
-    const rgPacienteInput = document.getElementById('rg-paciente'); 
+    const rgPacienteInput = document.getElementById('rg-paciente');
     const idadeInput = document.getElementById('idade');
     const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
     const patologiasInput = document.getElementById('patologias');
     const examesInput = document.getElementById('exames');
-    
     const radioComorbidadeSim = document.getElementById('comorbidade-sim');
     const radioComorbidadeNao = document.getElementById('comorbidade-nao');
     const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
     const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
-    const listaComorbidades = document.getElementById('lista-comorbidades');
-
     const radioAlergiaSim = document.getElementById('alergia-sim');
     const radioAlergiaNao = document.getElementById('alergia-nao');
     const inputAlergiasQuais = document.getElementById('alergias-quais');
-
     const listaMedicosPills = document.getElementById('lista-medicos-pills');
     const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
-    const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin'); 
+    const btnSalvarTudo = document.getElementById('btn-salvar-tudo-admin');
     const badgeTermo = document.getElementById('badge-termo-status');
 
-    // Evoluções
+    // EVOLUÇÕES
     const tituloEvolucaoInput = document.getElementById('titulo-evolucao');
     const textoEvolucaoInput = document.getElementById('texto-evolucao');
     const btnAddEvolucao = document.getElementById('btn-add-evolucao');
@@ -54,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
             radioComorbidadeNao.checked = !comorb.temComorbidade;
             if(inputOutrasComorbidades) inputOutrasComorbidades.value = comorb.outras || '';
             if(checkboxesComorbidades) checkboxesComorbidades.forEach(cb => { cb.checked = comorb.lista?.includes(cb.value); });
-            toggleComorbidades();
         }
 
         const alerg = data.alergias || {};
@@ -62,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
             radioAlergiaSim.checked = !!alerg.temAlergia;
             radioAlergiaNao.checked = !alerg.temAlergia;
             if(inputAlergiasQuais) inputAlergiasQuais.value = alerg.quais || '';
-            toggleAlergiaInput();
         }
 
         if (badgeTermo) {
@@ -79,22 +73,20 @@ document.addEventListener('DOMContentLoaded', () => {
         renderEvolucoes();
     };
 
-    const renderTabelaMedicacoes = () => { 
-        if(!listaMedicacoesBody) return;
-        listaMedicacoesBody.innerHTML = ''; 
-        currentMedicacoes.forEach((med) => { 
-            let turnosHtml = ''; 
+    const renderTabelaMedicacoes = () => {
+        listaMedicacoesBody.innerHTML = '';
+        currentMedicacoes.forEach((med) => {
+            let turnosHtml = '';
             if (med.horarios) {
-                Object.entries(med.horarios).forEach(([key, val]) => { 
-                    if (val && mapTurnos[key]) turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; 
-                }); 
+                Object.entries(med.horarios).forEach(([key, val]) => {
+                    if (val && mapTurnos[key]) turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`;
+                });
             }
-            listaMedicacoesBody.insertAdjacentHTML('beforeend', `<tr><td>${med.nome}</td><td>${med.quantidade || '-'}</td><td>${turnosHtml || '-'}</td><td>${med.horarioEspecifico || '--:--'}</td><td style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`); 
-        }); 
+            listaMedicacoesBody.insertAdjacentHTML('beforeend', `<tr><td>${med.nome}</td><td>${med.quantidade || '-'}</td><td>${turnosHtml || '-'}</td><td>${med.horarioEspecifico || '--:--'}</td><td style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`);
+        });
     };
 
     const renderMedicosList = () => {
-        if(!listaMedicosPills) return;
         listaMedicosPills.innerHTML = '';
         currentMedicos.forEach((m, i) => {
             listaMedicosPills.innerHTML += `<li class="pill-medico"><span>${m}</span><button class="btn-deletar-medico" data-index="${i}">✕</button></li>`;
@@ -102,12 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const renderEvolucoes = () => {
-        if(!listaEvolucoesDiv) return;
         listaEvolucoesDiv.innerHTML = '';
         const list = [...currentEvolucoes].sort((a, b) => new Date(b.data) - new Date(a.data));
         list.forEach(evo => {
             const d = new Date(evo.data);
-            const dataStr = d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+            const dataStr = d.toLocaleString('pt-BR', { day:'2-digit', month:'2-digit', hour:'2-digit', minute:'2-digit' });
             listaEvolucoesDiv.insertAdjacentHTML('beforeend', `
                 <div class="evolucao-item">
                     <div class="evo-header" onclick="toggleEvolucao('${evo._id}')">
@@ -122,30 +113,28 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // CRUD Evoluções
-    if(btnAddEvolucao) {
-        btnAddEvolucao.addEventListener('click', async () => {
-            const titulo = tituloEvolucaoInput.value;
-            const texto = textoEvolucaoInput.value;
-            const url = `${API_ADMIN_BASE}${pacienteId}/evolucao${editingEvolucaoId ? '/' + editingEvolucaoId : ''}`;
-            const method = editingEvolucaoId ? 'PUT' : 'POST';
+    // CRUD EVOLUÇÕES
+    btnAddEvolucao?.addEventListener('click', async () => {
+        const titulo = tituloEvolucaoInput.value;
+        const texto = textoEvolucaoInput.value;
+        const url = `${API_ADMIN_BASE}${pacienteId}/evolucao${editingEvolucaoId ? '/' + editingEvolucaoId : ''}`;
+        const method = editingEvolucaoId ? 'PUT' : 'POST';
 
-            const res = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ titulo, texto })
-            });
-
-            if(res.ok) {
-                const result = await res.json();
-                currentEvolucoes = result.prontuario.evolucoes;
-                renderEvolucoes();
-                tituloEvolucaoInput.value = ''; textoEvolucaoInput.value = '';
-                editingEvolucaoId = null;
-                btnAddEvolucao.innerText = '+ Registrar Evolução';
-            }
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({ titulo, texto })
         });
-    }
+
+        if(res.ok) {
+            const result = await res.json();
+            currentEvolucoes = result.prontuario.evolucoes;
+            renderEvolucoes();
+            tituloEvolucaoInput.value = ''; textoEvolucaoInput.value = '';
+            editingEvolucaoId = null;
+            btnAddEvolucao.innerText = '+ Registrar Evolução';
+        }
+    });
 
     window.startEditEvolucao = (id) => {
         const evo = currentEvolucoes.find(e => e._id === id);
@@ -167,28 +156,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Salvar Tudo
-    if(btnSalvarTudo) {
-        btnSalvarTudo.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const payload = {
-                nomePaciente: nomePacienteInput.value, rg: rgPacienteInput.value, idade: idadeInput.value,
-                mobilidade: document.querySelector('input[name="mobilidade"]:checked')?.value || '',
-                patologias: patologiasInput.value, exames: examesInput.value,
-                comorbidades: { temComorbidade: radioComorbidadeSim.checked, lista: Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value), outras: inputOutrasComorbidades.value },
-                alergias: { temAlergia: radioAlergiaSim.checked, quais: inputAlergiasQuais.value },
-                medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes, termoAceite: true
-            };
-            await fetch(API_ADMIN_BASE + pacienteId, {
-                method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify(payload)
-            });
-            alert('Salvo!');
-        });
-    }
+    // EVENTOS DE ADIÇÃO (MÉDICOS / MEDICAÇÕES)
+    document.getElementById('form-add-medico')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nome-medico').value;
+        const tel = document.getElementById('telefone-medico').value;
+        const texto = `${nome} ${tel ? '('+tel+')' : ''}`;
+        currentMedicos.push(texto); renderMedicosList();
+        document.getElementById('form-add-medico').reset();
+    });
 
-    function toggleComorbidades() { if(listaComorbidades) listaComorbidades.style.display = radioComorbidadeSim.checked ? 'block' : 'none'; }
-    function toggleAlergiaInput() { if(inputAlergiasQuais) inputAlergiasQuais.style.display = radioAlergiaSim.checked ? 'block' : 'none'; }
+    document.getElementById('form-add-medicacao')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const horarios = {}; 
+        document.querySelectorAll('input[name="horario"]').forEach(cb => horarios[cb.value] = cb.checked);
+        currentMedicacoes.push({
+            nome: document.getElementById('nome-medicacao').value,
+            quantidade: document.getElementById('qtd-medicacao').value,
+            horarioEspecifico: document.getElementById('horario-especifico').value,
+            horarios: horarios
+        });
+        renderTabelaMedicacoes();
+        document.getElementById('form-add-medicacao').reset();
+        document.getElementById('form-add-medicacao').style.display = 'none';
+    });
+
+    // BOTÃO SALVAR TUDO
+    btnSalvarTudo?.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const payload = {
+            nomePaciente: nomePacienteInput.value, rg: rgPacienteInput.value, idade: idadeInput.value,
+            mobilidade: document.querySelector('input[name="mobilidade"]:checked')?.value || '',
+            patologias: patologiasInput.value, exames: examesInput.value,
+            comorbidades: { temComorbidade: radioComorbidadeSim.checked, lista: Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value), outras: inputOutrasComorbidades.value },
+            alergias: { temAlergia: radioAlergiaSim.checked, quais: inputAlergiasQuais.value },
+            medicosAssistentes: currentMedicos, medicacoes: currentMedicacoes, termoAceite: true
+        };
+        await fetch(API_ADMIN_BASE + pacienteId, {
+            method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(payload)
+        });
+        alert('Prontuário guardado!');
+    });
 
     const fetchProntuario = async () => {
         const res = await fetch(API_ADMIN_BASE + pacienteId, { headers: { 'Authorization': `Bearer ${token}` } });

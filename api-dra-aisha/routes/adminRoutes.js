@@ -5,10 +5,10 @@ const Prontuario = require('../models/Prontuario');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
-// Protege todas as rotas deste ficheiro
+// Protege todas as rotas
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar todos os pacientes (Caminho final: /api/admin/pacientes)
+// 1. DASHBOARD: Listar pacientes com idade e termo
 router.get('/pacientes', async (req, res) => {
     try {
         const pacientes = await User.find({ role: 'paciente' }).lean();
@@ -31,36 +31,19 @@ router.get('/pacientes', async (req, res) => {
     }
 });
 
-// 2. DASHBOARD: Deletar paciente e prontuário
-router.delete('/paciente/:id', async (req, res) => {
-    try {
-        await User.findByIdAndDelete(req.params.id);
-        await Prontuario.findOneAndDelete({ user: req.params.id });
-        res.json({ message: 'Paciente excluído com sucesso.' });
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao excluir.' });
-    }
-});
-
-// 3. PRONTUÁRIO: Buscar dados completos (RG, Médicos, Medicamentos)
+// 2. BUSCA PRONTUÁRIO: Carrega RG, Médicos, Medicamentos e Evoluções
 router.get('/prontuario/:id', async (req, res) => {
     try {
         const prontuario = await Prontuario.findOne({ user: req.params.id }).lean();
         if (!prontuario) {
             const user = await User.findById(req.params.id);
-            return res.json({ 
-                user: req.params.id, 
-                nomePaciente: user ? user.nome : '', 
-                termoAceite: false 
-            });
+            return res.json({ user: req.params.id, nomePaciente: user?.nome || '', termoAceite: false });
         }
         res.json(prontuario);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao buscar prontuário.' });
-    }
+    } catch (error) { res.status(500).json({ message: 'Erro ao buscar.' }); }
 });
 
-// 4. PRONTUÁRIO: Salvar Edição Completa
+// 3. SALVAR PRONTUÁRIO: Admin edita tudo
 router.post('/prontuario/:id', async (req, res) => {
     try {
         const prontuario = await Prontuario.findOneAndUpdate(
@@ -69,12 +52,10 @@ router.post('/prontuario/:id', async (req, res) => {
             { new: true, upsert: true }
         );
         res.json(prontuario);
-    } catch (error) {
-        res.status(500).json({ message: 'Erro ao salvar.' });
-    }
+    } catch (error) { res.status(500).json({ message: 'Erro ao salvar.' }); }
 });
 
-// 5. EVOLUÇÕES: Criar (POST)
+// 4. EVOLUÇÃO (CRUD)
 router.post('/prontuario/:id/evolucao', async (req, res) => {
     try {
         const { titulo, texto } = req.body;
@@ -87,7 +68,6 @@ router.post('/prontuario/:id/evolucao', async (req, res) => {
     } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// 6. EVOLUÇÕES: Editar (PUT)
 router.put('/prontuario/:id/evolucao/:evolucaoId', async (req, res) => {
     try {
         const { titulo, texto } = req.body;
@@ -100,7 +80,6 @@ router.put('/prontuario/:id/evolucao/:evolucaoId', async (req, res) => {
     } catch (error) { res.status(500).json({ message: 'Erro.' }); }
 });
 
-// 7. EVOLUÇÕES: Deletar (DELETE)
 router.delete('/prontuario/:id/evolucao/:evolucaoId', async (req, res) => {
     try {
         const prontuario = await Prontuario.findOneAndUpdate(
@@ -110,6 +89,14 @@ router.delete('/prontuario/:id/evolucao/:evolucaoId', async (req, res) => {
         );
         res.json({ prontuario });
     } catch (error) { res.status(500).json({ message: 'Erro.' }); }
+});
+
+router.delete('/paciente/:id', async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        await Prontuario.findOneAndDelete({ user: req.params.id });
+        res.json({ message: 'Sucesso' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
 });
 
 module.exports = router;
