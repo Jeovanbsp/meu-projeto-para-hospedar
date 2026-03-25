@@ -17,7 +17,6 @@ const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
 
 // Rotas da Dra. Aisha (Admin)
-// Se adminRoutes.js tem router.get('/pacientes'), o caminho será /api/admin/pacientes
 app.use('/api/admin', adminRoutes);
 
 // Rotas do Perfil do Paciente
@@ -41,6 +40,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
+        // Retornando 'name' para manter consistência com o que o front-end espera
         res.json({ token, user: { name: user.nome, role: user.role } });
     } catch (err) {
         console.error(err)
@@ -48,10 +48,17 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// CADASTRO (Admin cria pacientes)
+// CADASTRO
 app.post('/api/auth/register', async (req, res) => {
     try {
         const { nome, email, password, role } = req.body;
+        
+        // Verifica se o usuário já existe
+        const userExists = await User.findOne({ email: email.toLowerCase().trim() });
+        if (userExists) {
+            return res.status(400).json({ message: 'Este e-mail já está em uso.' });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 

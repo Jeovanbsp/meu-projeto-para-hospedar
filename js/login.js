@@ -1,5 +1,3 @@
-// Arquivo: /js/login.js
-
 document.addEventListener('DOMContentLoaded', () => {
   const formLogin = document.getElementById('form-login');
   
@@ -10,11 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('senha').value;
       const msgErro = document.getElementById('msg-erro');
-      const btnEntrar = e.submitter; // Pega o botão que disparou o envio
+      const btnEntrar = e.submitter;
 
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
 
-      // Feedback visual de carregamento
       if (btnEntrar) {
         btnEntrar.disabled = true;
         btnEntrar.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Entrando...';
@@ -32,12 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
 
         if (res.ok) {
-            // Salva dados essenciais no LocalStorage
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userRole', data.user.role);
-            localStorage.setItem('userName', data.user.nome);
+            // Ajustado para 'name' conforme definido no index.js
+            localStorage.setItem('userName', data.user.name);
 
-            // Redirecionamento baseado no cargo
             if (data.user.role === 'admin') {
                 window.location.href = 'admin-dashboard.html';
             } else {
