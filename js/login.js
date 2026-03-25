@@ -1,40 +1,65 @@
-document.getElementById('form-login').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Pegando os valores dos inputs exatamente como estão no seu HTML
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('senha').value;
-    const msgErro = document.getElementById('msg-erro');
-    const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+// Arquivo: /js/login.js
 
-    try {
-        // Chamada para o seu servidor no Render
+document.addEventListener('DOMContentLoaded', () => {
+  const formLogin = document.getElementById('form-login');
+  
+  if (formLogin) {
+    formLogin.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('senha').value;
+      const msgErro = document.getElementById('msg-erro');
+      const btnEntrar = e.submitter; // Pega o botão que disparou o envio
+
+      const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+
+      // Feedback visual de carregamento
+      if (btnEntrar) {
+        btnEntrar.disabled = true;
+        btnEntrar.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Entrando...';
+      }
+      
+      if (msgErro) msgErro.style.display = 'none';
+
+      try {
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password }) // Enviando campos padrão
+            body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
-            // Salva o token e o cargo (role) para o sistema saber quem logou
+            // Salva dados essenciais no LocalStorage
             localStorage.setItem('authToken', data.token);
             localStorage.setItem('userRole', data.user.role);
+            localStorage.setItem('userName', data.user.nome);
 
-            // Redirecionamento baseado no que você já tinha
+            // Redirecionamento baseado no cargo
             if (data.user.role === 'admin') {
                 window.location.href = 'admin-dashboard.html';
             } else {
                 window.location.href = 'perfil-paciente.html';
             }
         } else {
-            // Se der erro 400, ele vai mostrar a mensagem real aqui
-            msgErro.innerText = data.message || "Erro no login";
-            msgErro.style.display = 'block';
+            if (msgErro) {
+              msgErro.innerText = data.message || "E-mail ou senha incorretos.";
+              msgErro.style.display = 'block';
+            }
         }
-    } catch (err) {
-        msgErro.innerText = "Erro de conexão com o servidor.";
-        msgErro.style.display = 'block';
-    }
+      } catch (err) {
+          if (msgErro) {
+            msgErro.innerText = "Erro de conexão com o servidor.";
+            msgErro.style.display = 'block';
+          }
+      } finally {
+        if (btnEntrar) {
+          btnEntrar.disabled = false;
+          btnEntrar.innerHTML = 'Entrar <i class="ph ph-sign-in"></i>';
+        }
+      }
+    });
+  }
 });

@@ -1,3 +1,5 @@
+// Arquivo: /js/perfil-paciente.js
+
 document.addEventListener('DOMContentLoaded', () => {
   const token = localStorage.getItem('authToken');
   const userName = localStorage.getItem('userName');
@@ -6,275 +8,192 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!token) { window.location.href = 'login.html'; return; }
 
+  // Seletores principais
   const checkTermoAceite = document.getElementById('check-termo-aceite');
   const conteudoProntuario = document.getElementById('conteudo-prontuario');
-
   const nomePacienteInput = document.getElementById('nome-paciente');
   const rgPacienteInput = document.getElementById('rg-paciente'); 
   const idadeInput = document.getElementById('idade');
   const radiosMobilidade = document.querySelectorAll('input[name="mobilidade"]');
-
   const patologiasInput = document.getElementById('patologias');
   const examesInput = document.getElementById('exames');
   
-  const radioComorbidadeNao = document.getElementById('comorbidade-nao');
-  const radioComorbidadeSim = document.getElementById('comorbidade-sim');
+  // Seletores de Comorbidades (Ajustados para o novo HTML)
+  const radioComorbidadeSim = document.querySelector('input[name="temComorbidade"][value="sim"]');
+  const radioComorbidadeNao = document.querySelector('input[name="temComorbidade"][value="nao"]');
   const listaComorbidades = document.getElementById('lista-comorbidades');
   const inputOutrasComorbidades = document.getElementById('comorbidades-outras');
   const checkboxesComorbidades = document.querySelectorAll('input[name="comorbidade_item"]');
   const btnMinimizarComorbidades = document.getElementById('btn-minimizar-comorbidades');
-  const textoBtnToggle = document.getElementById('texto-btn-toggle');
 
-  const radioAlergiaNao = document.getElementById('alergia-nao');
-  const radioAlergiaSim = document.getElementById('alergia-sim');
+  // Seletores de Alergias
+  const radioAlergiaSim = document.querySelector('input[name="temAlergia"][value="sim"]');
+  const radioAlergiaNao = document.querySelector('input[name="temAlergia"][value="nao"]');
   const inputAlergiasQuais = document.getElementById('alergias-quais');
-  const sinalizadorAlergia = document.getElementById('sinalizador-alergia'); 
 
-  const nomeMedicoInput = document.getElementById('nome-medico');
-  const telefoneMedicoInput = document.getElementById('telefone-medico');
+  // Seletores de Listas e Tabelas
   const listaMedicosPills = document.getElementById('lista-medicos-pills');
-  
-  const nomeMedicacaoInput = document.getElementById('nome-medicacao');
-  const qtdMedicacaoInput = document.getElementById('qtd-medicacao');
-  const horarioEspecificoInput = document.getElementById('horario-especifico'); 
-  const secaoTurnos = document.getElementById('secao-turnos');
-  const checkboxesHorarios = document.querySelectorAll('input[name="horario"]');
   const listaMedicacoesBody = document.getElementById('lista-medicacoes-body');
-  
-  const btnToggleMedForm = document.getElementById('btn-toggle-med-form');
   const formAddMedicacao = document.getElementById('form-add-medicacao');
+  const btnToggleMedForm = document.getElementById('btn-toggle-med-form');
 
+  // Ações
   const btnSalvarTudo = document.getElementById('btn-salvar-tudo');
   const btnDownloadPDF = document.getElementById('btn-download-pdf'); 
   const btnGerarQRCode = document.getElementById('btn-gerar-qrcode');
   const qrCodeContainer = document.getElementById('qrcode-container');
   const mensagemRetorno = document.getElementById('mensagem-retorno');
   
-  let currentMedicacoes = []; let currentMedicos = []; let currentUserId = null; 
-  const mapTurnos = { antes_cafe: 'Antes Café', depois_cafe: 'Depois Café', almoco: 'Almoço', tarde: 'Tarde', antes_jantar: 'Antes Jantar', antes_dormir: 'Antes Dormir' };
-
-  const btnLogout = document.getElementById('btn-logout-paciente');
-  if(btnLogout) { btnLogout.addEventListener('click', () => { localStorage.clear(); window.location.href = 'index.html'; }); }
+  let currentMedicacoes = []; 
+  let currentMedicos = []; 
+  let currentUserId = null; 
 
   // ============================================================
-  // LÓGICA DO TERMO (Modal + Fechar ao desmarcar)
+  // LÓGICA DO TERMO E VISIBILIDADE
   // ============================================================
 
   function toggleConteudoProntuario() { 
-      if (checkTermoAceite.checked) { 
+      if (checkTermoAceite && checkTermoAceite.checked) { 
           conteudoProntuario.style.display = 'block'; 
-          conteudoProntuario.style.animation = 'slideDown 0.5s ease-out';
-      } else { 
+      } else if (conteudoProntuario) { 
           conteudoProntuario.style.display = 'none'; 
       } 
   }
 
-  // EVENTO PARA FECHAR IMEDIATAMENTE AO DESMARCAR
-  checkTermoAceite.addEventListener('change', () => {
-      toggleConteudoProntuario();
-      if(!checkTermoAceite.checked) {
-          alert("Você retirou o aceite. O prontuário foi ocultado.");
-      }
-  });
+  if (checkTermoAceite) {
+      checkTermoAceite.addEventListener('change', () => {
+          toggleConteudoProntuario();
+          if(!checkTermoAceite.checked) alert("Você retirou o aceite. O prontuário foi ocultado.");
+      });
+  }
 
   window.abrirModalTermo = () => {
-      const nomeParaTermo = nomePacienteInput.value || userName || "____________________";
-      const rgParaTermo = rgPacienteInput.value || "____________________";
+      const nome = (nomePacienteInput ? nomePacienteInput.value : "") || userName || "____________________";
+      const rg = (rgPacienteInput ? rgPacienteInput.value : "") || "____________________";
       
-      document.getElementById('termo-nome-paciente').innerText = nomeParaTermo;
-      document.getElementById('termo-rg-paciente').innerText = rgParaTermo;
-      
-      const hoje = new Date();
-      document.getElementById('termo-data-atual').innerText = hoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+      const elNome = document.getElementById('termo-nome-paciente');
+      const elRG = document.getElementById('termo-rg-paciente');
+      if(elNome) elNome.innerText = nome;
+      if(elRG) elRG.innerText = rg;
 
       document.getElementById('modal-termo').style.display = 'flex';
   };
 
-  window.fecharModalTermo = () => {
+  window.aceitarTermo = () => {
+      if(checkTermoAceite) {
+          checkTermoAceite.checked = true;
+          checkTermoAceite.disabled = false;
+      }
+      toggleConteudoProntuario();
       document.getElementById('modal-termo').style.display = 'none';
   };
 
-  window.aceitarTermo = () => {
-      checkTermoAceite.checked = true;
-      checkTermoAceite.disabled = false;
-      toggleConteudoProntuario();
-      fecharModalTermo();
-      
-      setTimeout(() => {
-          conteudoProntuario.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-  };
-
-  function toggleAlergiaInput() { if (radioAlergiaSim.checked) { inputAlergiasQuais.style.display = 'block'; sinalizadorAlergia.style.display = 'flex'; } else { inputAlergiasQuais.style.display = 'none'; sinalizadorAlergia.style.display = 'none'; } }
+  function toggleAlergiaInput() { 
+      const display = (radioAlergiaSim && radioAlergiaSim.checked) ? 'block' : 'none';
+      if(inputAlergiasQuais) inputAlergiasQuais.style.display = display;
+  }
   
   function toggleComorbidades() { 
-      if (radioComorbidadeSim.checked) { 
-          listaComorbidades.style.display = 'block'; 
-          btnMinimizarComorbidades.style.display = 'flex'; 
-          btnMinimizarComorbidades.classList.add('aberto');
-          if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
-      } else { 
-          listaComorbidades.style.display = 'none'; 
-          btnMinimizarComorbidades.style.display = 'none';
-      } 
-  }
-  
-  if(btnMinimizarComorbidades) {
-      btnMinimizarComorbidades.addEventListener('click', () => {
-          if (listaComorbidades.style.display === 'none') {
-              listaComorbidades.style.display = 'block';
-              btnMinimizarComorbidades.classList.add('aberto');
-              if(textoBtnToggle) textoBtnToggle.innerText = 'Minimizar';
-          } else {
-              listaComorbidades.style.display = 'none';
-              btnMinimizarComorbidades.classList.remove('aberto');
-              if(textoBtnToggle) textoBtnToggle.innerText = 'Expandir';
-          }
-      });
+      const display = (radioComorbidadeSim && radioComorbidadeSim.checked) ? 'block' : 'none';
+      if(listaComorbidades) listaComorbidades.style.display = display;
   }
 
-  if (btnToggleMedForm) {
-      btnToggleMedForm.addEventListener('click', () => {
-          if (formAddMedicacao.style.display === 'none') {
-              formAddMedicacao.style.display = 'block';
-              btnToggleMedForm.innerText = 'Cancelar Adição';
-              btnToggleMedForm.classList.add('cancelar');
-          } else {
-              formAddMedicacao.style.display = 'none';
-              btnToggleMedForm.innerText = '+ Nova Medicação';
-              btnToggleMedForm.classList.remove('cancelar');
-          }
-      });
-  }
-
-  horarioEspecificoInput.addEventListener('input', () => { if(horarioEspecificoInput.value) secaoTurnos.style.display = 'block'; else secaoTurnos.style.display = 'none'; });
+  // ============================================================
+  // FETCH E SINCRONIZAÇÃO
+  // ============================================================
 
   const fetchProntuario = async () => {
     try {
-      const response = await fetch(API_URL, { headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` } });
-      if (!response.ok) { if (response.status === 401) { localStorage.clear(); window.location.href = 'login.html'; } throw new Error('Falha ao buscar dados.'); }
+      const response = await fetch(API_URL, { headers: { 'Authorization': `Bearer ${token}` } });
       const data = await response.json();
       populateForm(data); 
       currentMedicacoes = data.medicacoes || []; renderTabelaMedicacoes();
       currentMedicos = data.medicosAssistentes || []; renderMedicosList(); 
       currentUserId = data.user; 
-    } catch (error) { console.error(error); mensagemRetorno.innerText = 'Erro ao carregar.'; mensagemRetorno.style.color = '#e74c3c'; }
+    } catch (error) { console.error('Erro no fetch:', error); }
   };
 
   const populateForm = (data) => {
-    nomePacienteInput.value = data.nomePaciente || userName || '';
+    if(nomePacienteInput) nomePacienteInput.value = data.nomePaciente || userName || '';
     if(rgPacienteInput) rgPacienteInput.value = data.rg || '';
-    idadeInput.value = data.idade || '';
-    
-    if (data.mobilidade) {
-        radiosMobilidade.forEach(radio => {
-            if (radio.value === data.mobilidade) radio.checked = true;
-        });
-    }
+    if(idadeInput) idadeInput.value = data.idade || '';
+    if(patologiasInput) patologiasInput.value = data.patologias || '';
+    if(examesInput) examesInput.value = data.exames || '';
 
-    patologiasInput.value = data.patologias || '';
-    examesInput.value = data.exames || '';
+    radiosMobilidade.forEach(radio => { if (radio.value === data.mobilidade) radio.checked = true; });
 
     if (data.comorbidades && data.comorbidades.temComorbidade) {
-        radioComorbidadeSim.checked = true;
-        inputOutrasComorbidades.value = data.comorbidades.outras || '';
-        if (data.comorbidades.lista) {
-            checkboxesComorbidades.forEach(cb => {
-                if (data.comorbidades.lista.includes(cb.value)) cb.checked = true;
-            });
-        }
-    } else {
-        radioComorbidadeNao.checked = true;
-        inputOutrasComorbidades.value = '';
-        checkboxesComorbidades.forEach(cb => cb.checked = false);
+        if(radioComorbidadeSim) radioComorbidadeSim.checked = true;
+        if(inputOutrasComorbidades) inputOutrasComorbidades.value = data.comorbidades.outras || '';
+        checkboxesComorbidades.forEach(cb => { if (data.comorbidades.lista?.includes(cb.value)) cb.checked = true; });
     }
     toggleComorbidades();
     
-    if (data.termoAceite) { 
+    if (data.termoAceite && checkTermoAceite) { 
         checkTermoAceite.checked = true; 
         checkTermoAceite.disabled = false;
         toggleConteudoProntuario();
     }
 
-    if (data.alergias && data.alergias.temAlergia) { radioAlergiaSim.checked = true; inputAlergiasQuais.value = data.alergias.quais || ''; } 
-    else { radioAlergiaNao.checked = true; inputAlergiasQuais.value = ''; }
+    if (data.alergias?.temAlergia && radioAlergiaSim) { 
+        radioAlergiaSim.checked = true; 
+        if(inputAlergiasQuais) inputAlergiasQuais.value = data.alergias.quais || ''; 
+    } 
     toggleAlergiaInput();
   };
 
-  const renderMedicosList = () => { listaMedicosPills.innerHTML = ''; if (currentMedicos.length === 0) { listaMedicosPills.innerHTML = '<li style="width:100%; text-align:center; color:#ccc; font-size:0.8rem;">Nenhum médico.</li>'; return; } currentMedicos.forEach((medico, index) => { const pill = `<li class="pill-medico"><span>${medico}</span><button class="btn-deletar-medico no-print" data-index="${index}">✕</button></li>`; listaMedicosPills.insertAdjacentHTML('beforeend', pill); }); listaMedicosPills.scrollTop = listaMedicosPills.scrollHeight; };
-  const handleAddMedico = (e) => { e.preventDefault(); const nome = nomeMedicoInput.value.trim(); const tel = telefoneMedicoInput.value.trim(); if(!nome) return; const textoFinal = `${nome} ${tel ? '  (' + tel + ')' : ''}`; currentMedicos.push(textoFinal); renderMedicosList(); nomeMedicoInput.value=''; telefoneMedicoInput.value=''; };
-  const handleDeleteMedico = (e) => { if(e.target.classList.contains('btn-deletar-medico')) { currentMedicos.splice(e.target.dataset.index, 1); renderMedicosList(); }};
+  // ============================================================
+  // EVENTOS E SALVAMENTO
+  // ============================================================
 
-  const renderTabelaMedicacoes = () => { listaMedicacoesBody.innerHTML = ''; if (currentMedicacoes.length === 0) { listaMedicacoesBody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#ccc; font-size:0.8rem;">Vazio</td></tr>'; return; } const list = [...currentMedicacoes].sort((a, b) => { const horaA = a.horarioEspecifico ? a.horarioEspecifico : '23:59'; const horaB = b.horarioEspecifico ? b.horarioEspecifico : '23:59'; return horaA.localeCompare(horaB); }); list.forEach((med) => { let turnosHtml = ''; for (const [key, value] of Object.entries(med.horarios)) { if (value === true) { turnosHtml += `<span class="pill-turno">${mapTurnos[key]}</span>`; } } if (!turnosHtml) turnosHtml = '<span style="color:#ccc">-</span>'; const horarioDisplay = med.horarioEspecifico ? med.horarioEspecifico : '<span style="color:#ccc;">--:--</span>'; const qtdDisplay = med.quantidade ? med.quantidade : '-'; const row = `<tr><td style="font-weight:500;">${med.nome}</td><td class="col-qtd">${qtdDisplay}</td><td>${turnosHtml}</td><td class="col-horario">${horarioDisplay}</td><td class="no-print" style="text-align:center;"><button class="btn-deletar-medacao" data-nome="${med.nome}">✕</button></td></tr>`; listaMedicacoesBody.insertAdjacentHTML('beforeend', row); }); };
-  
-  const handleAddMedicacao = (e) => { 
-      e.preventDefault(); if(!nomeMedicacaoInput.value) return; 
-      const horarios = {}; checkboxesHorarios.forEach(cb => horarios[cb.value] = cb.checked); 
-      currentMedicacoes.push({ nome: nomeMedicacaoInput.value, quantidade: qtdMedicacaoInput.value, horarioEspecifico: horarioEspecificoInput.value, horarios }); 
-      renderTabelaMedicacoes(); document.getElementById('form-add-medicacao').reset(); secaoTurnos.style.display = 'none'; 
-      if(formAddMedicacao && btnToggleMedForm) {
-          formAddMedicacao.style.display = 'none';
-          btnToggleMedForm.innerText = '+ Nova Medicação';
-          btnToggleMedForm.classList.remove('cancelar');
-      }
-  };
-  
-  const handleDeleteMedicacao = (e) => { if(e.target.classList.contains('btn-deletar-medacao')) { currentMedicacoes = currentMedicacoes.filter(m => m.nome !== e.target.dataset.nome); renderTabelaMedicacoes(); }};
-
-  const handleSalvarTudo = async (e) => {
+  btnSalvarTudo?.addEventListener('click', async (e) => {
     e.preventDefault();
-    if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo de responsabilidade."); return; }
-    btnSalvarTudo.innerText = 'Salvando...';
+    if (!checkTermoAceite.checked) { alert("Você deve aceitar o termo."); return; }
     
-    let mobilidadeSelecionada = '';
-    const radioMobilidadeChecked = document.querySelector('input[name="mobilidade"]:checked');
-    if (radioMobilidadeChecked) { mobilidadeSelecionada = radioMobilidadeChecked.value; }
-
-    const comorbidadesSelecionadas = Array.from(document.querySelectorAll('input[name="comorbidade_item"]:checked')).map(cb => cb.value);
-    const comorbidadesDados = {
-        temComorbidade: radioComorbidadeSim.checked,
-        lista: radioComorbidadeSim.checked ? comorbidadesSelecionadas : [],
-        outras: radioComorbidadeSim.checked ? inputOutrasComorbidades.value : ''
+    btnSalvarTudo.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Salvando...';
+    
+    const payload = {
+        nomePaciente: nomePacienteInput.value,
+        rg: rgPacienteInput.value,
+        idade: idadeInput.value,
+        mobilidade: document.querySelector('input[name="mobilidade"]:checked')?.value || '',
+        patologias: patologiasInput.value,
+        exames: examesInput.value,
+        comorbidades: {
+            temComorbidade: radioComorbidadeSim.checked,
+            lista: Array.from(checkboxesComorbidades).filter(c => c.checked).map(c => c.value),
+            outras: inputOutrasComorbidades.value
+        },
+        alergias: { temAlergia: radioAlergiaSim.checked, quais: inputAlergiasQuais.value },
+        medicosAssistentes: currentMedicos,
+        medicacoes: currentMedicacoes,
+        termoAceite: true
     };
 
-    const dadosAlergia = { temAlergia: radioAlergiaSim.checked, quais: radioAlergiaSim.checked ? inputAlergiasQuais.value : '' };
     try {
       await fetch(API_URL, {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ 
-            nomePaciente: nomePacienteInput.value, 
-            rg: rgPacienteInput.value,
-            idade: idadeInput.value, 
-            mobilidade: mobilidadeSelecionada, 
-            patologias: patologiasInput.value, 
-            exames: examesInput.value,
-            comorbidades: comorbidadesDados,
-            alergias: dadosAlergia, 
-            medicosAssistentes: currentMedicos, 
-            medicacoes: currentMedicacoes, 
-            termoAceite: true 
-        })
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify(payload)
       });
-      mensagemRetorno.innerText = 'Sucesso!'; mensagemRetorno.style.color = '#2ADCA1';
-    } catch (error) { mensagemRetorno.innerText = 'Erro ao salvar.'; mensagemRetorno.style.color = '#e74c3c'; }
-    btnSalvarTudo.innerText = 'Salvar Prontuário';
-  };
+      mensagemRetorno.innerText = 'Sucesso ao salvar!';
+      mensagemRetorno.style.color = '#2ADCA1';
+    } catch (error) { console.error(error); }
+    btnSalvarTudo.innerHTML = '<i class="ph ph-floppy-disk"></i> Salvar Prontuário';
+  });
 
-  const handleDownloadPDF = () => { window.print(); };
-  const handleGerarQRCode = () => { if (!currentUserId) { alert('Erro: ID não encontrado.'); return; } const url = window.location.href.replace('perfil-paciente.html', 'prontuario-publico.html').replace('admin-dashboard.html', 'prontuario-publico.html') + `?id=${currentUserId}`; qrCodeContainer.innerHTML = ''; new QRCode(qrCodeContainer, { text: url, width: 200, height: 200, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H }); qrCodeContainer.style.display = 'block'; btnGerarQRCode.innerText = 'QR Code Gerado!'; };
-
-  radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
-  radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
-  radioComorbidadeNao.addEventListener('change', toggleComorbidades);
-  radioComorbidadeSim.addEventListener('change', toggleComorbidades);
-
-  document.getElementById('form-add-medico').addEventListener('submit', handleAddMedico);
-  listaMedicosPills.addEventListener('click', handleDeleteMedico);
-  document.getElementById('form-add-medicacao').addEventListener('submit', handleAddMedicacao);
-  listaMedicacoesBody.addEventListener('click', handleDeleteMedicacao);
-  btnSalvarTudo.addEventListener('click', handleSalvarTudo);
-  btnDownloadPDF.addEventListener('click', handleDownloadPDF); 
-  btnGerarQRCode.addEventListener('click', handleGerarQRCode); 
+  // Funções de auxílio
+  if(radioAlergiaSim) radioAlergiaSim.addEventListener('change', toggleAlergiaInput);
+  if(radioAlergiaNao) radioAlergiaNao.addEventListener('change', toggleAlergiaInput);
+  if(radioComorbidadeSim) radioComorbidadeSim.addEventListener('change', toggleComorbidades);
+  if(radioComorbidadeNao) radioComorbidadeNao.addEventListener('change', toggleComorbidades);
+  
+  if(btnGerarQRCode) btnGerarQRCode.addEventListener('click', () => {
+      const url = window.location.href.replace('perfil-paciente.html', 'prontuario-publico.html') + `?id=${currentUserId}`;
+      qrCodeContainer.innerHTML = '';
+      new QRCode(qrCodeContainer, { text: url, width: 200, height: 200 });
+      qrCodeContainer.style.display = 'block';
+  });
 
   fetchProntuario();
 });

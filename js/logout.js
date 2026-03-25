@@ -1,24 +1,19 @@
-// Arquivo: /js/logout-simples.js (Corrigido o ID do Botão)
+// Arquivo: /js/logout.js
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Pega o ID do botão de sair da página de dashboard (ID: btn-logout)
-  const btnLogoutDashboard = document.getElementById('btn-logout'); 
-  
-  // Pega o ID do botão de sair da página de edição (ID: btn-logout-admin)
-  const btnLogoutAdmin = document.getElementById('btn-logout-admin');
+  // Lista de possíveis IDs de botões de logout no projeto (Dashboard, Admin e Paciente)
+  const logoutIds = ['btn-logout', 'btn-logout-admin', 'btn-logout-paciente'];
 
   const logoutAction = () => {
-    localStorage.clear(); // Apaga o token e o role
-    window.location.href = 'login.html'; // Volta para o login
+    localStorage.clear(); // Limpa token, cargo e nome do utilizador
+    window.location.href = 'login.html'; // Redireciona para a página de login
   };
 
-  // Liga a ação ao botão do Dashboard
-  if (btnLogoutDashboard) {
-    btnLogoutDashboard.addEventListener('click', logoutAction);
-  }
-
-  // Liga a ação ao botão da Página de Edição
-  if (btnLogoutAdmin) {
-    btnLogoutAdmin.addEventListener('click', logoutAction);
-  }
+  // Atribui o evento de clique a qualquer um dos IDs encontrados na página atual
+  logoutIds.forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.addEventListener('click', logoutAction);
+    }
+  });
 });
