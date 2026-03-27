@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Perfil | Dra. Aishá Wenzinger – Geriatria</title>
-    <meta name="description" content="Acesse seu prontuário e gerencie suas medicações com segurança.">
-    
+    <title>Meu Perfil - Dra. Aisha Wenzinger</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -16,8 +14,9 @@
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: sticky; top: 0; z-index: 1000; }
         .logo img { height: 160px !important; width: auto; display: block; }
-        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; background: #fdfdfd; text-align: center; padding: 20px 40px; }
-        #qrcode-container { width: 200px; height: 200px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; }
+        .gerenciador-qrcode { border: 1px solid #e0f5ef; border-radius: 12px; margin-top: 25px; overflow: hidden; background: #fdfdfd; text-align: center; padding: 20px 40px; }
+        #qrcode-container { width: 250px; height: 250px; margin: 20px auto; border: 5px solid #e0f5ef; border-radius: 8px; padding: 10px; display: none; background: white; }
+        #qrcode-container img { width: 100% !important; height: 100% !important; margin: 0 auto; }
         #conteudo-prontuario { animation: slideDown 0.5s ease-out; }
         .input-group label { display: flex; align-items: center; gap: 8px; font-weight: 600; color: #555; margin-bottom: 8px; }
         .input-group label i { color: #2ADCA1; font-size: 1.1rem; }
@@ -30,84 +29,160 @@
             <a href="index.html" class="logo">
                 <img src="img/layout.png" alt="Logo Dra. Aisha">
             </a>
-            <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; display: flex; align-items: center; gap: 6px;"><i class="ph ph-house"></i> Início</a>
-                <button id="btn-logout-paciente" style="background-color: #ff6b6b; color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;"><i class="ph ph-sign-out"></i> Sair</button>
+            <div style="display: flex; align-items: center;">
+                <button id="btn-logout-paciente" style="background-color: #ff6b6b; color: white; border: none; padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: filter 0.2s;"><i class="ph ph-sign-out"></i> Sair</button>
             </div>
         </div>
     </header>
 
     <main>
         <div class="card-agendamento" id="prontuario-card" style="margin-top: 40px; margin-bottom: 60px;">
-            <h2 style="display: flex; align-items: center; gap: 10px; justify-content: center;"><i class="ph ph-user-circle" style="color: #2ADCA1;"></i> Minhas Informações</h2>
+            <h2 style="display: flex; align-items: center; gap: 10px; justify-content: center; color: #2c3e50;"><i class="ph ph-user-circle" style="color: #2ADCA1;"></i> Minhas Informações</h2>
             
-            <div class="box-termo-responsabilidade">
+            <div class="box-termo-responsabilidade no-print">
                 <div>
-                    <p style="font-weight: 700; color: #2c3e50; display: flex; align-items: center; gap: 8px;"><i class="ph ph-warning-circle" style="color: #f39c12;"></i> Termo de Responsabilidade</p>
-                    <p>O preenchimento deste prontuário é de responsabilidade exclusiva do paciente. O aceite é obrigatório para editar os dados.</p>
+                    <p style="font-weight: 700; font-size: 1.1rem; color: #2c3e50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><i class="ph-fill ph-warning-circle" style="color: #f39c12; font-size: 1.3rem;"></i> Termo de Responsabilidade</p>
+                    <p style="color: #555; font-size: 0.95rem; margin-bottom: 0;">O preenchimento deste prontuário é de responsabilidade exclusiva do paciente ou seu responsável legal. O aceite é obrigatório para editar os dados.</p>
                 </div>
-                <button type="button" onclick="window.abrirModalTermo()" class="btn-ler-termo"><i class="ph ph-file-text"></i> Ler Termo Completo</button>
-                <label class="check-termo-container">
+                
+                <button type="button" onclick="window.abrirModalTermo()" class="btn-ler-termo">
+                    <i class="ph ph-file-text"></i> Ler Termo Completo
+                </button>
+                
+                <div class="check-termo-container">
                     <input type="checkbox" id="check-termo-aceite" disabled> 
                     <span>Declaro que li e <strong>CONCORDO</strong> com as informações prestadas.</span>
-                </label>
+                </div>
             </div>
 
             <div id="conteudo-prontuario" style="display: none;">
                 <form id="form-prontuario-principal">
-                    <div class="input-group">
+                    <div class="input-container">
                         <label><i class="ph ph-identification-card"></i> Nome do Paciente</label>
                         <input type="text" id="nome-paciente" required>
                     </div>
-                    <div class="input-group">
-                        <label><i class="ph ph-article"></i> RG / Documento</label>
-                        <input type="text" id="rg-paciente" placeholder="RG ou CPF">
+                    <div class="form-linha-dupla">
+                        <div class="input-container">
+                            <label><i class="ph ph-article"></i> RG / Documento</label>
+                            <input type="text" id="rg-paciente" placeholder="RG ou CPF">
+                        </div>
+                        <div class="input-container">
+                            <label><i class="ph ph-calendar"></i> Idade</label>
+                            <input type="number" id="idade" required>
+                        </div>
                     </div>
+                    
                     <div class="input-group">
-                        <label><i class="ph ph-calendar"></i> Idade</label>
-                        <input type="number" id="idade" required>
+                        <label><i class="ph ph-person-arms-spread"></i> Mobilidade</label>
+                        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap; margin-top: 10px;">
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Independente"> Independente</label>
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Com Auxílio"> Com Auxílio</label>
+                            <label class="radio-label"><input type="radio" name="mobilidade" value="Dependente"> Dependente</label>
+                        </div>
                     </div>
                 </form>
 
-                <div class="gerenciador-medicacao">
+                <div class="gerenciador-patologias" style="margin-top: 35px;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #333;">
+                        <i class="ph ph-first-aid" style="color: #2ADCA1;"></i> Patologias
+                    </h3>
+                    <textarea id="patologias" rows="4" placeholder="Descreva as patologias... (Ex: Asma, Gastrite)" class="textarea-interativo"></textarea>
+                </div>
+
+                <div class="gerenciador-exames" style="margin-top: 35px;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #333;">
+                        <i class="ph ph-microscope" style="color: #2ADCA1;"></i> Exames Complementares
+                    </h3>
+                    <textarea id="exames" rows="4" placeholder="Liste exames importantes... (Ex: ECG - 01/12)" class="textarea-interativo"></textarea>
+                </div>
+
+                <div class="gerenciador-comorbidades" style="margin-top: 35px;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #2ADCA1;">
+                        <i class="ph ph-activity"></i> Possui Comorbidades?
+                    </h3>
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+                        <div class="radio-group-container">
+                            <label class="radio-label"><input type="radio" name="temComorbidade" value="nao" checked style="accent-color: #2ADCA1;"> Não Existe</label>
+                            <label class="radio-label"><input type="radio" name="temComorbidade" value="sim" style="accent-color: #2ADCA1;"> Existe</label>
+                        </div>
+                        <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
+                            <div class="grid-comorbidades" style="margin-top: 0;">
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Hipertensão"> Hipertensão</label></div>
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Diabetes"> Diabetes</label></div>
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Insuficiência Cardíaca"> Insuficiência Cardíaca</label></div>
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Artrose"> Artrose</label></div>
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Alzheimer/Demência"> Demência</label></div>
+                                <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label></div>
+                            </div>
+                            <input type="text" id="comorbidades-outras" placeholder="Outras (escreva aqui)" class="textarea-interativo" style="margin-top: 15px; height: auto;">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gerenciador-alergias" style="margin-top: 35px;">
+                    <h3 style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px; color: #C62828;">
+                        <i class="ph-fill ph-warning"></i> Possui Alergias?
+                    </h3>
+                    <div style="background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+                        <div class="radio-group-alergia">
+                            <label><input type="radio" name="temAlergia" value="nao" checked> Não possui</label>
+                            <label><input type="radio" name="temAlergia" value="sim"> Sim, possuo</label>
+                        </div>
+                        
+                        <div id="container-add-alergia" style="display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
+                            <div class="alergia-input-group no-print">
+                                <input type="text" id="input-nova-alergia" placeholder="Ex: Paracetamol, Frutos do mar...">
+                                <button type="button" id="btn-add-alergia">
+                                    <i class="ph ph-plus-circle" style="font-size: 1.2rem;"></i> Adicionar
+                                </button>
+                            </div>
+                            <ul id="lista-alergias-pills" style="list-style: none; padding: 0; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;">
+                                </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gerenciador-medicacao" style="margin-top: 35px;">
                     <h3><i class="ph ph-pill"></i> Minhas Medicações</h3>
-                    <form id="form-add-medicacao" class="form-add-medicacao no-print" style="margin-top: 15px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;"> 
-                        <div class="input-group" style="flex: 2; min-width: 200px;">
-                            <label>Nome do Medicamento</label>
+                    <form id="form-add-medicacao" class="form-add-medicacao no-print"> 
+                        <div class="input-container">
+                            <label>Medicamento</label>
                             <input type="text" id="nome-medicacao" placeholder="Ex: Losartana" required>
                         </div>
-                        <div class="input-group" style="width: 85px;">
+                        <div class="input-container">
                             <label>Qtd</label>
-                            <input type="number" id="qtd-medicacao" value="1" min="0" class="input-qtd-medicacao">
+                            <input type="text" id="qtd-medicacao" placeholder="Ex: 2 caps">
                         </div>
-                        <div class="input-group" style="width: 130px;">
+                        <div class="input-container">
                             <label>Horário</label>
                             <input type="time" id="horario-especifico" required>
                         </div>
-                        <div class="input-group" style="flex: 1; min-width: 180px;">
-                            <label>Turno (Opcional)</label>
-                            <select id="turno-medicacao" class="select-turno-medicacao">
-                                <option value="">Selecionar Turno...</option>
+                        <div class="input-container">
+                            <label>Turno</label>
+                            <select id="turno-medicacao">
+                                <option value="">Nenhum</option>
                                 <option value="Antes do café">Antes do café</option>
                                 <option value="Após café da manhã">Após café da manhã</option>
                                 <option value="Antes do almoço">Antes do almoço</option>
                                 <option value="Após almoço">Após almoço</option>
                                 <option value="Tarde">Tarde</option>
                                 <option value="Antes da janta">Antes da janta</option>
-                                <option value="Noite / Antes de dormir">Noite / Antes de dormir</option>
+                                <option value="Noite / Antes de dormir">Noite / Dormir</option>
                             </select>
                         </div>
-                        <button type="submit" id="btn-add-medicacao" style="height: 45px; margin-bottom: 2px; background-color: #2ADCA1; color: white; border: none; padding: 0 20px; border-radius: 8px; cursor: pointer; font-weight: bold;"><i class="ph ph-plus"></i></button>
+                        <button type="submit" class="btn-salvar-med-tabela">
+                            <i class="ph ph-plus-circle"></i> Salvar medicamento na tabela
+                        </button>
                     </form>
                     <div class="tabela-container">
                         <table class="tabela-medicacoes">
                             <thead>
                                 <tr>
                                     <th style="width: 35%;">Medicação</th>
-                                    <th style="width: 10%;">Qtd</th>
-                                    <th style="width: 20%;">Horário</th>
-                                    <th style="width: 25%;">Turno</th>
-                                    <th class="no-print" style="width: 10%;">Ação</th>
+                                    <th style="text-align: center;">Qtd</th>
+                                    <th style="text-align: center;">Horário</th>
+                                    <th>Turno</th>
+                                    <th class="no-print" style="text-align: center;">Ação</th>
                                 </tr>
                             </thead>
                             <tbody id="lista-medicacoes-body"></tbody>
@@ -115,25 +190,78 @@
                     </div>
                 </div>
 
-                <div class="botoes-acao-container no-print"> 
-                    <button type="button" id="btn-salvar-tudo" style="background: #2ADCA1; color: white;"><i class="ph ph-floppy-disk"></i> Salvar Prontuário</button>
+                <div class="gerenciador-medicos" style="margin-top: 35px;">
+                    <h3><i class="ph ph-stethoscope"></i> Médicos Assistentes</h3>
+                    <form id="form-add-medico" class="form-add-medico-novo no-print" style="background: #fcfcfc; padding: 20px; border-radius: 10px; border: 1px solid #eee;"> 
+                        <div class="form-linha-dupla">
+                            <div class="input-container">
+                                <label>Nome do Médico</label>
+                                <input type="text" id="nome-medico" placeholder="Ex: Dr. João Silva" required>
+                            </div>
+                            <div class="input-container">
+                                <label>CRM (Opcional)</label>
+                                <input type="text" id="crm-medico" placeholder="Ex: 12345-BA">
+                            </div>
+                        </div>
+                        <div class="form-linha-dupla">
+                            <div class="input-container">
+                                <label>Especialidade</label>
+                                <input type="text" id="especialidade-medico" placeholder="Ex: Cardiologista">
+                            </div>
+                            <div class="input-container">
+                                <label>Telefone / WhatsApp</label>
+                                <input type="text" id="telefone-medico" placeholder="Ex: 71988887777">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-salvar-med-tabela" style="width: 100%; margin-top: 5px;">
+                            <i class="ph ph-plus-circle"></i> Adicionar Médico na Lista
+                        </button>
+                    </form>
+                    <ul id="lista-medicos-pills" style="list-style: none; padding: 0; margin-top: 20px;"></ul>
+                </div>
+
+                <div class="gerenciador-qrcode no-print" style="margin-top: 35px;">
+                    <h3><i class="ph ph-qr-code"></i> QR Code de Emergência</h3>
+                    <button type="button" id="btn-gerar-qrcode" style="background: #333; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;"><i class="ph ph-gear"></i> Gerar meu QR Code</button>
+                    <div id="qrcode-container"></div>
+                </div>
+
+                <div class="botoes-acao-container no-print" style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;"> 
+                    <button type="button" id="btn-salvar-tudo" style="background: #2ADCA1; color: white; border: none; padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px;"><i class="ph ph-floppy-disk"></i> Salvar Prontuário Completo</button>
+                    <button type="button" id="btn-download-pdf" style="padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; background: #e0e0e0; color: #333; border: none;"><i class="ph ph-file-pdf"></i> Baixar PDF</button>
                 </div>
             </div>
+            <div id="mensagem-retorno" style="text-align: center; margin-top: 15px;"></div>
         </div>
     </main>
 
-    <div id="modal-termo" class="modal-overlay">
+    <div id="modal-termo" class="modal-overlay" style="display: none;">
         <div class="modal-box modal-termo-box">
-            <h3><i class="ph ph-signature"></i> Termo de Responsabilidade</h3>
-            <div class="texto-termo">
-                <p>Eu, <strong id="termo-nome-paciente">...</strong>, documento nº <strong id="termo-rg-paciente">...</strong>, declaro que as informações prestadas são verdadeiras.</p>
+            <h3 style="display: flex; align-items: center; gap: 10px; margin-top: 0;"><i class="ph ph-signature" style="color: #2ADCA1; font-size: 1.5rem;"></i> Termo de Responsabilidade</h3>
+            
+            <div class="texto-termo-scroll">
+                <h4>Termo de Declaração e Responsabilidade</h4>
+                <p>Eu, <strong id="termo-nome-paciente">...</strong>, portador(a) do documento de identificação nº <strong id="termo-rg-paciente">...</strong>, declaro para os devidos fins que:</p>
+                <ul>
+                    <li>Estou ciente de que todas as informações prestadas neste atendimento médico são de minha inteira responsabilidade, sendo necessárias para o correto encaminhamento e acompanhamento da minha condição de saúde.</li>
+                    <li>Reconheço que a veracidade e completude dos dados fornecidos são fundamentais para a adequada condução do tratamento e tomada de decisões clínicas.</li>
+                    <li>Declaro estar informado(a) de que, a qualquer momento, poderei retificar, complementar ou ratificar as informações prestadas, mediante comunicação direta ao profissional ou serviço de saúde responsável.</li>
+                    <li>Assumo plena responsabilidade pelas informações fornecidas, eximindo o profissional e a instituição de saúde de eventuais consequências decorrentes de dados incorretos, incompletos ou omissos.</li>
+                    <li>Estou ciente, desde já, de que poderá haver edição, atualização ou ajustes nas informações relacionadas a receitas médicas, atestados e demais documentos clínicos, realizados pela equipe médica e seus colaboradores, sempre que necessário para o adequado acompanhamento do tratamento.</li>
+                </ul>
+                <p>Por ser expressão da verdade, firmo o presente termo em ciência e concordância.</p>
             </div>
-            <div class="modal-btns">
-                <button type="button" class="btn-cancelar" onclick="window.fecharModalTermo()">Cancelar</button>
-                <button type="button" class="btn-aceitar" onclick="window.aceitarTermo()">Li e Aceito</button>
+
+            <div class="modal-btns" style="display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #eee; padding-top: 20px;">
+                <button type="button" class="btn-cancelar" onclick="window.fecharModalTermo()" style="background: #f5f5f5; border: 1px solid #ddd; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #555;">Cancelar</button>
+                <button type="button" class="btn-aceitar" onclick="window.aceitarTermo()" style="background: #2ADCA1; color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold;">Li e Aceito</button>
             </div>
         </div>
     </div>
+
+    <footer id="contato" class="no-print" style="text-align: center; padding: 20px;">
+        <p class="crm-info">Dra. Aisha Wenzinger | CRM/BA: 20473</p>
+    </footer>
 
     <script src="js/perfil-paciente.js"></script>
 </body>

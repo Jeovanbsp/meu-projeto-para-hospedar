@@ -1,5 +1,5 @@
 /* ============================================================ */
-/* ARQUIVO: css/prontuario.css (Versão Final Atualizada)        */
+/* ARQUIVO: css/prontuario.css (Versão Final Ajustada e Blindada) */
 /* ============================================================ */
 
 /* --- GERAL --- */
@@ -22,29 +22,181 @@ body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 .btn-excluir { background-color: #ef5350; color: white; }
 .btn-excluir:hover { background-color: #d32f2f; transform: translateY(-1px); }
 
-/* --- FORMULÁRIO --- */
+/* --- FORMULÁRIO GERAL --- */
 .form-linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 15px; }
 .input-container { display: flex; flex-direction: column; width: 100%; margin-bottom: 10px; }
 .input-container label { font-weight: 600; color: #555; margin-bottom: 5px; font-size: 0.9rem; }
-.input-container input { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; color: #333; font-family: 'Montserrat', sans-serif; }
+.input-container input, .input-container select { padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 1rem; color: #333; font-family: 'Montserrat', sans-serif; box-sizing: border-box; width: 100%; }
 
-/* --- ATUALIZAÇÃO: MEDICAÇÃO E TURNOS --- */
-.input-qtd-medicacao { width: 75px !important; padding: 8px !important; text-align: center; }
-.select-turno-medicacao { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; background-color: white; cursor: pointer; }
-.turno-badge-tabela { background-color: #e0f5ef; color: #24b685; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; display: inline-block; border: 1px solid #c3ede0; }
-.col-hora-destaque { font-weight: 700; color: #2ADCA1; display: flex; align-items: center; gap: 5px; }
-input[type=number]::-webkit-inner-spin-button { opacity: 1; }
+/* --- CAIXAS DE TEXTO INTERATIVAS (PATOLOGIAS E EXAMES) --- */
+.textarea-interativo {
+    width: 100%;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    color: #333;
+    resize: vertical;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+}
 
+.textarea-interativo:focus {
+    border-color: #2ADCA1;
+    box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.2);
+    background-color: #fdfdfd;
+}
+
+/* --- MEDICAÇÃO E TURNOS --- */
+.form-add-medicacao {
+    display: grid;
+    grid-template-columns: 1.8fr 1fr 0.8fr 1.2fr; 
+    gap: 15px;
+    background: #fcfcfc;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    align-items: end;
+}
+
+.btn-salvar-med-tabela {
+    grid-column: 1 / -1; 
+    background-color: #2ADCA1;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 45px;
+    margin-top: 10px;
+}
+
+.btn-salvar-med-tabela:hover {
+    background-color: #24b685;
+    box-shadow: 0 4px 12px rgba(42, 220, 161, 0.3);
+}
+
+.turno-badge-tabela {
+    background-color: #e0f5ef;
+    color: #24b685;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.btn-remover-linha {
+    background: none;
+    border: none;
+    color: #ef5350;
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transition: transform 0.2s;
+}
+
+.btn-remover-linha:hover { transform: scale(1.2); }
+
+/* --- TABELA --- */
 .tabela-container { border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #eee; margin-top: 15px; }
 .tabela-medicacoes { width: 100%; border-collapse: collapse; background-color: #fff; font-size: 0.9rem; }
 .tabela-medicacoes th { padding: 12px 10px; text-align: left; background-color: #2ADCA1; color: #fff; }
-.tabela-medicacoes td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #444; }
+.tabela-medicacoes td { padding: 12px 10px; border-bottom: 1px solid #f0f0f0; color: #444; vertical-align: middle; }
 
-/* --- TERMO E MODAL --- */
-.box-termo-responsabilidade { background-color: #ffffff; border-left: 5px solid #2ADCA1; padding: 25px 30px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; border: 1px solid #f0f0f0; }
-.btn-ler-termo { background-color: transparent; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 10px 20px; border-radius: 6px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; }
+/* --- ABA DE MÉDICOS --- */
+.pill-medico {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background-color: #fff;
+    padding: 18px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #eee;
+    border-left: 5px solid #2ADCA1;
+}
+
+.medico-dados { display: flex; flex-direction: column; gap: 6px; flex: 1; }
+.medico-nome-crm { font-size: 1.1rem; color: #2c3e50; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.medico-crm-tag { font-size: 0.85rem; color: #888; font-weight: 500; }
+.medico-especialidade { color: #2ADCA1; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; }
+.medico-telefone-texto { font-size: 0.85rem; color: #777; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.medico-acoes-contato { display: flex; gap: 12px; margin-top: 6px; }
+.btn-contato { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; text-decoration: none; color: white; transition: all 0.3s ease; }
+.btn-whatsapp { background-color: #25D366; }
+.btn-whatsapp:hover { background-color: #128C7E; transform: translateY(-2px); }
+.btn-ligar { background-color: #007bff; }
+.btn-ligar:hover { background-color: #0056b3; transform: translateY(-2px); }
+.btn-remover-medico { background: none; border: none; color: #ef5350; cursor: pointer; font-size: 1.4rem; padding: 0; margin-left: 15px; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; transition: transform 0.2s; flex-shrink: 0; }
+.btn-remover-medico:hover { transform: scale(1.1); }
+
+/* --- COMORBIDADES --- */
+.grid-comorbidades { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; background-color: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #eee; }
+.item-comorbidade { display: flex !important; align-items: center !important; }
+.item-comorbidade label { display: flex !important; align-items: center !important; gap: 8px !important; cursor: pointer !important; font-size: 0.95rem !important; color: #444 !important; font-weight: 500 !important; margin: 0 !important; flex-direction: row !important; }
+.item-comorbidade input[type="checkbox"] { width: 18px !important; height: 18px !important; margin: 0 !important; accent-color: #2ADCA1 !important; cursor: pointer !important; flex-shrink: 0 !important; }
+
+/* --- RADIOS GERAIS --- */
+.radio-group-container { display: flex; flex-direction: row; gap: 20px; align-items: center; }
+.radio-label { cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 0.95rem; color: #444; margin: 0; }
+.radio-label input[type="radio"] { width: 18px; height: 18px; margin: 0; cursor: pointer; }
+
+/* --- SISTEMA DE ALERGIAS --- */
+.radio-group-alergia { display: flex; flex-direction: row; gap: 25px; align-items: center; }
+.radio-group-alergia label { display: flex; align-items: center; gap: 8px; font-size: 1rem; font-weight: 600; color: #333; cursor: pointer; }
+.radio-group-alergia input[type="radio"] { width: 20px; height: 20px; margin: 0; accent-color: #C62828; cursor: pointer; }
+.alergia-input-group { display: flex; flex-direction: row; align-items: center; gap: 15px; width: 100%; }
+.alergia-input-group input { flex-grow: 1; min-width: 0; height: 48px !important; padding: 0 15px !important; border: 1px solid #ccc !important; border-radius: 8px !important; border-left: 5px solid #C62828 !important; font-size: 1rem !important; font-family: 'Montserrat', sans-serif !important; margin: 0 !important; box-sizing: border-box !important; outline: none; transition: all 0.3s ease; }
+.alergia-input-group input:focus { border-color: #C62828 !important; box-shadow: 0 0 0 3px rgba(198, 40, 40, 0.2) !important; }
+.alergia-input-group button { flex-shrink: 0; width: auto; min-width: 140px; height: 48px !important; background: #C62828 !important; color: white !important; border: none !important; padding: 0 20px !important; border-radius: 8px !important; font-weight: bold !important; cursor: pointer !important; font-size: 0.95rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 8px !important; margin: 0 !important; transition: filter 0.2s !important; }
+.alergia-input-group button:hover { filter: brightness(0.9) !important; }
+
+.pill-alergia { background-color: #ffebee; border: 1px solid #ffcdd2; padding: 8px 14px; border-radius: 20px; font-size: 0.95rem; font-weight: 600; color: #2c3e50; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 5px rgba(198, 40, 40, 0.1); line-height: 1; }
+.alergia-icone-pisca { font-size: 1.2rem; color: #C62828; animation: piscar-alerta 1.2s infinite ease-in-out; display: flex; align-items: center; }
+@keyframes piscar-alerta { 0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(198, 40, 40, 0.4)); } 50% { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(198, 40, 40, 0.9)); } 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(198, 40, 40, 0.4)); } }
+.btn-remover-alergia { background: none; border: none; color: #c62828; cursor: pointer; font-weight: bold; font-size: 1.1rem; padding: 0; margin: 0 0 0 5px; display: inline-flex; align-items: center; justify-content: center; transition: transform 0.2s; line-height: 0; }
+.btn-remover-alergia:hover { transform: scale(1.2); }
+
+/* --- TERMO DE RESPONSABILIDADE --- */
+.box-termo-responsabilidade { background-color: #ffffff; padding: 25px 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); display: flex; flex-direction: column; gap: 15px; border: 1px solid #eaeaea; }
+.btn-ler-termo { background-color: transparent; color: #2ADCA1; border: 2px solid #2ADCA1; padding: 12px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; transition: all 0.3s ease; font-size: 1rem; }
 .btn-ler-termo:hover { background-color: #2ADCA1; color: white; }
-.check-termo-container { display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #444; cursor: pointer; background-color: #f9f9f9; padding: 15px; border-radius: 6px; border: 1px solid #eee; transition: 0.2s; }
-.check-termo-container:hover { background-color: #f0fdf9; border-color: #2ADCA1; }
+.check-termo-container { display: flex; align-items: center; gap: 15px; font-size: 0.95rem; color: #333; background-color: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #eee; margin-top: 5px; }
+.check-termo-container input[type="checkbox"] { width: 20px; height: 20px; accent-color: #2ADCA1; cursor: not-allowed; }
+
+/* --- MODAL DO TERMO --- */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(2px); }
-.modal-termo-box { background: white; padding: 30px; width: 90%; max-width: 700px; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 90vh; }
+.modal-termo-box { background: white; padding: 30px; width: 90%; max-width: 750px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; max-height: 90vh; }
+.texto-termo-scroll { overflow-y: auto; padding: 15px; background: #fafafa; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 20px; flex: 1; color: #444; line-height: 1.6; font-size: 0.95rem; }
+.texto-termo-scroll h4 { color: #2c3e50; margin-top: 0; margin-bottom: 15px; text-align: center; }
+.texto-termo-scroll ul { margin-left: 20px; margin-bottom: 15px; }
+.texto-termo-scroll li { margin-bottom: 10px; }
+
+@media (max-width: 900px) {
+    .form-add-medicacao { grid-template-columns: 1fr; gap: 10px; }
+    .form-linha-dupla { grid-template-columns: 1fr; }
+    .alergia-input-group { flex-direction: column; align-items: stretch; }
+}
+
+@media print { 
+    .no-print { display: none !important; } 
+    body { background-color: white; }
+    .card-agendamento { box-shadow: none; padding: 0; margin: 0; }
+}
