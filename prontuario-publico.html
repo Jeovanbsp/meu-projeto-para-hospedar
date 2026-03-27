@@ -3,64 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ficha Médica - Dra. Aisha Wenzinger</title>
+    <title>Ficha Médica de Emergência - Dra. Aisha</title>
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/prontuario.css">
     <style>
-        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding-bottom: 50px; }
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: sticky; top: 0; z-index: 1000; }
-        .logo img { height: 160px !important; width: auto; display: block; }
-        .container-publico { max-width: 800px; margin: 30px auto; padding: 20px; }
-        .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #2ADCA1; }
-        .card-secao h3 { color: #2ADCA1; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .alerta-alergia-emergencia { background-color: #ffebee; border-left: 6px solid #c62828; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
-        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .info-item span.label { display: block; font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; }
-        .info-item span.valor { display: block; font-size: 1.05rem; color: #333; font-weight: 500; }
+        .logo img { height: 120px !important; width: auto; display: block; }
+        .container-publico { max-width: 800px; margin: 40px auto 0; padding: 0 20px; }
+        
+        .titulo-pagina { text-align: center; margin-bottom: 30px; }
+        .titulo-pagina h2 { color: #2c3e50; margin: 0 0 5px 0; font-size: 1.6rem; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .titulo-pagina p { color: #777; font-size: 0.95rem; margin: 0; }
+
+        .card-secao { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 25px; border-top: 4px solid #2ADCA1; }
+        .card-secao h3 { color: #2ADCA1; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; margin-top: 0; margin-bottom: 20px; }
+        
+        /* ALERTA CRÍTICO */
+        .card-alergia-critico { border-top: 4px solid #c62828; background-color: #fffafb; }
+        .card-alergia-critico h3 { color: #c62828; border-bottom-color: #ffcdd2; }
+        .alerta-alergia-emergencia { display: inline-flex; align-items: center; gap: 10px; background-color: #ffebee; border: 1px solid #ffcdd2; color: #c62828; padding: 12px 20px; border-radius: 8px; font-weight: 700; font-size: 1.05rem; animation: pulse-critico 1.5s infinite; }
+        @keyframes pulse-critico { 0% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(229, 57, 53, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 57, 53, 0); } }
+
+        /* GRID INFO */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .info-item { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #eee; }
+        .info-item span.label { display: block; font-size: 0.8rem; color: #888; font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .info-item span.valor { display: block; font-size: 1.05rem; color: #2c3e50; font-weight: 600; }
+        
+        .texto-longo { background: #f9f9f9; padding: 18px; border-radius: 8px; border: 1px solid #eee; color: #444; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; }
+
+        /* TABELA MEDICAÇÕES */
+        .tabela-container { border-radius: 8px; overflow: hidden; border: 1px solid #eee; }
+        .tabela-medicacoes { width: 100%; border-collapse: collapse; background-color: #fff; font-size: 0.95rem; text-align: left; }
+        .tabela-medicacoes th { padding: 15px; background-color: #f8f9fa; color: #555; font-weight: 700; border-bottom: 2px solid #eee; }
+        .tabela-medicacoes td { padding: 15px; border-bottom: 1px solid #eee; color: #333; }
+        .turno-badge { background-color: #e0f5ef; color: #1e8f69; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+
+        /* MÉDICOS E TAGS */
+        .tags-container { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-item { background-color: #e0f5ef; color: #1e8f69; padding: 8px 15px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        
+        .medico-card { background: #fff; border: 1px solid #eee; border-left: 4px solid #2ADCA1; padding: 15px 20px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .medico-info strong { display: block; font-size: 1.05rem; color: #2c3e50; margin-bottom: 3px; }
+        .medico-info span { color: #777; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .medico-contato a { display: inline-flex; align-items: center; gap: 6px; background: #25D366; color: white; padding: 8px 15px; border-radius: 20px; text-decoration: none; font-weight: 600; font-size: 0.85rem; transition: 0.2s; }
+        .medico-contato a.btn-ligar { background: #007bff; margin-left: 8px; }
+        .medico-contato a:hover { filter: brightness(0.9); transform: translateY(-2px); }
+
+        #loading, #erro-msg { text-align: center; padding: 50px; font-size: 1.1rem; color: #555; }
+        #erro-msg { color: #c62828; display: none; background: #ffebee; border-radius: 8px; margin: 20px; border: 1px solid #ffcdd2; }
+
+        @media (max-width: 600px) {
+            .info-grid { grid-template-columns: 1fr; gap: 10px; }
+            .medico-card { flex-direction: column; align-items: flex-start; }
+            .tabela-medicacoes th, .tabela-medicacoes td { padding: 10px; font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
-    <header class="header-fixo">
+    <header class="header-fixo no-print">
         <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <a href="index.html" class="logo">
+            <div class="logo">
                 <img src="img/layout.png" alt="Logo Dra. Aisha">
+            </div>
+            <a href="index.html" style="background: #2c3e50; color: white; text-decoration: none; padding: 10px 20px; border-radius: 25px; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px; transition: 0.2s;">
+                <i class="ph ph-house"></i> Voltar ao Início
             </a>
-            <a href="index.html" style="text-decoration: none; color: #555; font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;"><i class="ph ph-house"></i> Início</a>
         </div>
     </header>
 
     <div class="container-publico">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <h2 style="color: #2c3e50; margin: 0; font-size: 1.5rem;"><i class="ph ph-clipboard-text"></i> Ficha Médica de Emergência</h2>
-            <p style="color: #777; font-size: 0.9rem;">Informações vitais do paciente</p>
+        <div class="titulo-pagina">
+            <h2><i class="ph-fill ph-first-aid" style="color: #c62828;"></i> Ficha Médica de Emergência</h2>
+            <p>Informações vitais para atendimento rápido</p>
         </div>
 
-        <div id="loading" style="text-align: center; padding: 50px;">Buscando informações...</div>
+        <div id="loading"><i class="ph ph-spinner ph-spin" style="font-size: 2rem; color: #2ADCA1; margin-bottom: 10px; display: block;"></i> Carregando prontuário seguro...</div>
+        <div id="erro-msg"></div>
         
-        <div id="conteudo-prontuario" style="display: none;">
-            <div id="alerta-alergia" class="alerta-alergia-emergencia" style="display: none;">
-                <h3 style="color: #c62828; border: none;"><i class="ph ph-warning-octagon"></i> ATENÇÃO: PACIENTE ALÉRGICO</h3>
-                <p id="pub-alergias" style="color: #b71c1c; font-weight: 600; font-size: 1.1rem;"></p>
+        <div id="conteudo-prontuario" style="display: none; animation: slideDown 0.5s ease-out;">
+            
+            <div id="secao-alergias" class="card-secao card-alergia-critico" style="display: none;">
+                <h3><i class="ph-fill ph-warning"></i> Alertas de Alergia</h3>
+                <div id="pub-alergias" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
             </div>
             
             <div class="card-secao">
-                <h3><i class="ph ph-identification-card"></i> Identificação</h3>
+                <h3><i class="ph ph-identification-card"></i> Identificação do Paciente</h3>
                 <div class="info-grid">
-                    <div class="info-item"><span class="label">Nome Completo</span><span class="valor" id="pub-nome"></span></div>
-                    <div class="info-item"><span class="label">Idade</span><span class="valor" id="pub-idade"></span></div>
-                    <div class="info-item"><span class="label">Documento (RG)</span><span class="valor" id="pub-rg"></span></div>
-                    <div class="info-item"><span class="label">Mobilidade</span><span class="valor" id="pub-mobilidade"></span></div>
+                    <div class="info-item"><span class="label">Nome Completo</span><span class="valor" id="pub-nome">-</span></div>
+                    <div class="info-item"><span class="label">Documento (RG)</span><span class="valor" id="pub-rg">-</span></div>
+                    <div class="info-item"><span class="label">Idade</span><span class="valor" id="pub-idade">-</span></div>
+                    <div class="info-item"><span class="label">Mobilidade</span><span class="valor" id="pub-mobilidade">-</span></div>
                 </div>
+            </div>
+
+            <div id="secao-comorbidades" class="card-secao" style="display: none;">
+                <h3><i class="ph ph-activity"></i> Comorbidades</h3>
+                <div id="pub-comorbidades" class="tags-container"></div>
+                <div id="pub-comorbidades-outras" style="margin-top: 15px; display: none;">
+                    <span style="font-size: 0.85rem; color: #777; font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 5px;">Outras Comorbidades:</span>
+                    <div class="texto-longo" id="txt-comorbidades-outras"></div>
+                </div>
+            </div>
+
+            <div id="secao-patologias" class="card-secao" style="display: none;">
+                <h3><i class="ph ph-heartbeat"></i> Histórico de Patologias</h3>
+                <div class="texto-longo" id="pub-patologias"></div>
             </div>
 
             <div class="card-secao">
                 <h3><i class="ph ph-pill"></i> Medicações em Uso</h3>
-                <div id="pub-medicacoes" style="font-size: 1rem; color: #444;"></div>
+                <div class="tabela-container">
+                    <table class="tabela-medicacoes">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Medicamento</th>
+                                <th>Qtd / Posologia</th>
+                                <th>Horário</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pub-medicacoes-body">
+                            </tbody>
+                    </table>
+                </div>
             </div>
+
+            <div id="secao-exames" class="card-secao" style="display: none;">
+                <h3><i class="ph ph-microscope"></i> Exames Complementares Recentes</h3>
+                <div class="texto-longo" id="pub-exames"></div>
+            </div>
+
+            <div id="secao-medicos" class="card-secao" style="display: none;">
+                <h3><i class="ph ph-stethoscope"></i> Equipe Médica Assistente</h3>
+                <div id="pub-medicos-lista">
+                    </div>
+            </div>
+
         </div>
     </div>
 

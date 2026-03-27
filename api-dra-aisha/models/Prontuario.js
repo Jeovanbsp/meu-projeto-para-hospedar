@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+// --- SCHEMA DE MEDICAÇÃO (Atualizado para refletir o Frontend) ---
 const MedicacaoSchema = new Schema({
   nome: { type: String, required: true },
   quantidade: { type: String, default: '' },
   horarioEspecifico: { type: String, default: '' }, 
-  horarios: {
-    antes_cafe: { type: Boolean, default: false },
-    depois_cafe: { type: Boolean, default: false },
-    almoco: { type: Boolean, default: false },
-    tarde: { type: Boolean, default: false },
-    antes_jantar: { type: Boolean, default: false },
-    antes_dormir: { type: Boolean, default: false },
-  }
+  turno: { type: String, default: '' } // Atualizado: trocamos os booleanos antigos pelo campo "turno"
 });
 
+// --- SCHEMA DE EVOLUÇÃO ---
 const EvolucaoSchema = new Schema({
   titulo: { type: String, required: true },
   texto: { type: String, required: true },
@@ -22,13 +17,14 @@ const EvolucaoSchema = new Schema({
   autor: { type: String, default: 'Dra. Aisha' }
 });
 
+// --- SCHEMA PRINCIPAL DO PRONTUÁRIO ---
 const ProntuarioSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true, unique: true },
   termoAceite: { type: Boolean, default: false },
   nomePaciente: { type: String, default: '' },
   idade: { type: Number, default: null },
+  rg: { type: String, default: '' }, // Adicionado para garantir que o RG seja salvo
   
-  // NOVOS CAMPOS ESSENCIAIS
   mobilidade: { type: String, default: '' }, 
   patologias: { type: String, default: '' },
   exames: { type: String, default: '' },
@@ -44,7 +40,15 @@ const ProntuarioSchema = new Schema({
     quais: { type: String, default: '' }
   },
 
-  medicosAssistentes: [{ type: String }], 
+  // --- A GRANDE CORREÇÃO DOS MÉDICOS ---
+  // Antes era apenas [{ type: String }], agora é um array de Objetos:
+  medicosAssistentes: [{ 
+    nome: { type: String, required: true },
+    crm: { type: String, default: '' },
+    especialidade: { type: String, default: '' },
+    telefone: { type: String, default: '' }
+  }], 
+
   medicacoes: [MedicacaoSchema],
   evolucoes: [EvolucaoSchema] 
 
