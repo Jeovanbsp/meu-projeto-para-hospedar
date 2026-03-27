@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
     
-    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-    const API_ADMIN_BASE = isLocal ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
+    // AJUSTE AQUI: Forçando a API do Render para evitar erro de porta fechada no localhost
+    const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
 
     const API_URL = `${API_ADMIN_BASE}/api/admin/pacientes`;
     const API_DELETE_URL = `${API_ADMIN_BASE}/api/admin/paciente/`;
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Erro no fetchPacientes:", error);
             if (listaBody) {
-                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle"></i> Erro ao carregar dados.</li>`;
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;"><i class="ph ph-warning-circle"></i> Erro ao carregar dados do servidor.</li>`;
             }
         }
     };
@@ -132,8 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- EXPOSIÇÃO PARA O WINDOW (Necessário para onclick no HTML) ---
-
+    // --- EXPOSIÇÃO PARA O WINDOW ---
     window.irParaProntuario = (id) => {
         window.location.href = `admin-prontuario.html?id=${id}`;
     };
@@ -162,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- EVENTOS DE FORMULÁRIO ---
-
     const formCadastro = document.getElementById('form-cadastro-paciente');
     if (formCadastro) {
         formCadastro.addEventListener('submit', async (e) => {
@@ -193,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnLogout) {
         btnLogout.addEventListener('click', () => {
             localStorage.clear();
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
     }
 

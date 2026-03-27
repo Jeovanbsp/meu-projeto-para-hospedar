@@ -3,7 +3,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
+// Importação dos Modelos
 const User = require('./models/User');
+const Prontuario = require('./models/Prontuario'); // <-- Adicionado para a rota pública
 const app = express();
 require('dotenv').config()
 
@@ -11,7 +14,40 @@ app.use(cors());
 app.use(express.json());
 
 // ==========================================
-// IMPORTANDO AS ROTAS
+// ROTA PÚBLICA DE EMERGÊNCIA (QR CODE)
+// Fica no topo para não ser bloqueada por nenhum Token!
+// ==========================================
+app.get('/api/prontuario/publico/:paciente', async (req, res) => {
+    try {
+        const identificador = req.params.paciente;
+
+        // 1. Busca o usuário pelo nome que veio na URL
+        const user = await User.findOne({ nome: identificador });
+        
+        if (!user) {
+            return res.status(404).json({ message: 'Paciente não encontrado.' });
+        }
+
+        // 2. Busca o prontuário do paciente
+        const prontuario = await Prontuario.findOne({ user: user._id });
+
+        // 3. Trava de segurança: só mostra se o prontuário existir e o termo estiver aceito
+        if (!prontuario || !prontuario.termoAceite) {
+            return res.status(404).json({ message: 'Prontuário não disponível ou inativo.' });
+        }
+
+        // 4. Devolve os dados abertos!
+        res.json(prontuario);
+
+    } catch (error) {
+        console.error('Erro na rota pública:', error);
+        res.status(500).json({ message: 'Erro interno ao buscar prontuário público.' });
+    }
+});
+
+
+// ==========================================
+// IMPORTANDO AS ROTAS PROTEGIDAS
 // ==========================================
 const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
@@ -19,7 +55,7 @@ const pacienteRoutes = require('./routes/pacienteRoutes');
 // Rotas da Dra. Aisha (Admin)
 app.use('/api/admin', adminRoutes);
 
-// Rotas do Perfil do Paciente
+// Rotas do Perfil do Paciente (Daqui pra baixo, exige Token)
 app.use('/api/prontuario', pacienteRoutes);
 
 
