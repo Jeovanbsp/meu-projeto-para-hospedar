@@ -1,4 +1,4 @@
-// Arquivo: /js/perfil-paciente.js (Versão Final Organizada com Link no QR Code)
+// Arquivo: /js/perfil-paciente.js (Versão Final Organizada com QR e Botões de Link Oculto)
 
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
@@ -231,26 +231,23 @@ document.addEventListener('DOMContentLoaded', () => {
         e.target.reset();
     });
 
-    // --- GERADOR DE QR CODE (LINK PARA PRONTUÁRIO PÚBLICO) ---
+    // --- GERADOR DE QR CODE E BOTÕES DE LINK ---
     const btnGerarQrcode = document.getElementById('btn-gerar-qrcode');
     const qrcodeContainer = document.getElementById('qrcode-container');
+    const linkContainer = document.getElementById('link-container');
+    const btnAcessoRapido = document.getElementById('btn-acesso-rapido');
+    const btnCopiar = document.getElementById('btn-copiar-link');
 
     btnGerarQrcode?.addEventListener('click', () => {
         qrcodeContainer.innerHTML = ''; 
         
-        // Pega a URL do site atual (ex: https://seusite.com)
         const baseUrl = window.location.origin; 
-        
-        // Pega o nome/id do paciente. 
-        // Você pode trocar "userName" pelo "id do banco de dados" se o backend fornecer.
         const idPaciente = userName || 'desconhecido'; 
-        
-        // Monta o link final: https://seusite.com/prontuario-publico.html?paciente=NomeDoPaciente
         const linkProntuario = `${baseUrl}/prontuario-publico.html?paciente=${encodeURIComponent(idPaciente)}`;
 
         try {
             new QRCode(qrcodeContainer, {
-                text: linkProntuario, // AGORA É UM LINK!
+                text: linkProntuario,
                 width: 200,
                 height: 200,
                 colorDark : "#2c3e50",
@@ -258,6 +255,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 correctLevel : QRCode.CorrectLevel.L
             });
             qrcodeContainer.style.display = 'block';
+            
+            // Exibir os botões de link
+            if (btnAcessoRapido && linkContainer) {
+                btnAcessoRapido.href = linkProntuario; // O botão abrirá o link correto
+                btnCopiar.dataset.link = linkProntuario; // Salva o link no botão de copiar
+                linkContainer.style.display = 'block';
+            }
+            
         } catch(e) {
             console.error("Erro no QR Code:", e);
             qrcodeContainer.innerHTML = '<p style="color:red; font-size:0.9rem; font-weight:bold;">Erro ao gerar o QR Code.</p>';
@@ -265,9 +270,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Função de Copiar Link via botão
+    btnCopiar?.addEventListener('click', () => {
+        const link = btnCopiar.dataset.link;
+        if (!link) return;
+        
+        navigator.clipboard.writeText(link).then(() => {
+            const icone = btnCopiar.querySelector('i');
+            const textoOriginal = btnCopiar.innerHTML;
+            
+            // Feedback visual rápido
+            btnCopiar.innerHTML = '<i class="ph-fill ph-check-circle" style="color: #2ADCA1; font-size: 1.1rem;"></i> Copiado!';
+            
+            setTimeout(() => {
+                btnCopiar.innerHTML = textoOriginal;
+            }, 2000);
+        }).catch(err => {
+            console.error('Erro ao copiar', err);
+        });
+    });
+
     // --- BOTÃO DE PDF ---
     document.getElementById('btn-download-pdf')?.addEventListener('click', () => {
-        window.print(); // Abre direto a tela de impressão do navegador
+        window.print(); 
     });
 
     // --- LÓGICA DE DADOS ---

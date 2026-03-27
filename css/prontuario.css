@@ -189,6 +189,12 @@ body { font-family: 'Montserrat', sans-serif; background-color: #f4f6f8; }
 .texto-termo-scroll ul { margin-left: 20px; margin-bottom: 15px; }
 .texto-termo-scroll li { margin-bottom: 10px; }
 
+/* --- BOTÕES DO LINK QR CODE --- */
+.btn-acesso-rapido { background: #2ADCA1; color: white; padding: 12px 20px; border-radius: 8px; text-decoration: none; font-weight: bold; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: filter 0.2s; border: none; }
+.btn-acesso-rapido:hover { filter: brightness(0.9); color: white; }
+.btn-copiar-link { background: #f0f0f0; border: 1px solid #ccc; color: #333; padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 0.95rem; transition: background 0.2s; }
+.btn-copiar-link:hover { background: #e4e4e4; }
+
 @media (max-width: 900px) {
     .form-add-medicacao { grid-template-columns: 1fr; gap: 10px; }
     .form-linha-dupla { grid-template-columns: 1fr; }

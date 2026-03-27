@@ -221,9 +221,25 @@
                 </div>
 
                 <div class="gerenciador-qrcode no-print" style="margin-top: 35px;">
-                    <h3><i class="ph ph-qr-code"></i> QR Code de Emergência</h3>
-                    <button type="button" id="btn-gerar-qrcode" style="background: #333; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;"><i class="ph ph-gear"></i> Gerar meu QR Code</button>
+                    <h3><i class="ph ph-qr-code"></i> Acesso Rápido de Emergência</h3>
+                    <p style="font-size: 0.9rem; color: #555; margin-bottom: 20px;">Gere um QR Code ou copie seu link para acesso rápido aos seus dados vitais em caso de emergência.</p>
+                    
+                    <button type="button" id="btn-gerar-qrcode" style="background: #2c3e50; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: bold; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: 0.2s;"><i class="ph ph-qr-code"></i> Gerar Link e QR Code</button>
+                    
                     <div id="qrcode-container"></div>
+
+                    <div id="link-container" style="display: none; margin-top: 25px; text-align: center;">
+                        <p style="font-size: 0.95rem; color: #555; margin-bottom: 12px; font-weight: 600;">Ou acesse e compartilhe seu Prontuário Público:</p>
+                        
+                        <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                            <a id="btn-acesso-rapido" href="#" target="_blank" class="btn-acesso-rapido">
+                                <i class="ph ph-link"></i> Acessar Prontuário
+                            </a>
+                            <button type="button" id="btn-copiar-link" class="btn-copiar-link" title="Copiar Link">
+                                <i class="ph ph-copy"></i> Copiar Link
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="botoes-acao-container no-print" style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;"> 
