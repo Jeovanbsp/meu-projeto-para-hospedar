@@ -7,11 +7,15 @@ const jwt = require('jsonwebtoken');
 // Importação dos Modelos
 const User = require('./models/User');
 const Prontuario = require('./models/Prontuario');
+const Banner = require('./models/Banner'); // <-- Modelo de banners
 const app = express();
 require('dotenv').config()
 
 app.use(cors());
-app.use(express.json());
+
+// Limite aumentado para 50mb para aceitar o upload de imagens pesadas em Base64 sem erro 413
+app.use(express.json({ limit: '50mb' })); 
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // ==========================================
 // ROTA PÚBLICA DE EMERGÊNCIA (QR CODE)
@@ -19,31 +23,35 @@ app.use(express.json());
 app.get('/api/prontuario/publico/:paciente', async (req, res) => {
     try {
         const identificador = req.params.paciente;
-
-        // 1. Busca o usuário pelo nome que veio na URL
         const user = await User.findOne({ nome: identificador });
         
-        if (!user) {
-            return res.status(404).json({ message: 'Paciente não encontrado.' });
-        }
+        if (!user) return res.status(404).json({ message: 'Paciente não encontrado.' });
 
-        // 2. Busca o prontuário do paciente
         const prontuario = await Prontuario.findOne({ user: user._id });
 
-        // 3. Trava de segurança: só mostra se o prontuário existir e o termo estiver aceito
         if (!prontuario || !prontuario.termoAceite) {
             return res.status(404).json({ message: 'Prontuário não disponível ou inativo.' });
         }
 
-        // 4. Devolve os dados abertos!
         res.json(prontuario);
-
     } catch (error) {
         console.error('Erro na rota pública:', error);
         res.status(500).json({ message: 'Erro interno ao buscar prontuário público.' });
     }
 });
 
+// ==========================================
+// ROTA PÚBLICA DE BANNERS (PARA O SITE LER AS IMAGENS)
+// ==========================================
+app.get('/api/banners/publico', async (req, res) => {
+    try {
+        const banners = await Banner.find().sort({ createdAt: -1 });
+        res.json(banners);
+    } catch (error) {
+        console.error('Erro na rota pública de banners:', error);
+        res.status(500).json({ message: 'Erro ao buscar banners públicos.' });
+    }
+});
 
 // ==========================================
 // IMPORTANDO AS ROTAS PROTEGIDAS
@@ -51,12 +59,8 @@ app.get('/api/prontuario/publico/:paciente', async (req, res) => {
 const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
 
-// Rotas da Dra. Aisha (Admin) - É AQUI QUE O Render ENCONTRA A SUA ROTA DE PUT!
 app.use('/api/admin', adminRoutes);
-
-// Rotas do Perfil do Paciente (Daqui pra baixo, exige Token)
 app.use('/api/prontuario', pacienteRoutes);
-
 
 // ==========================================
 // ROTAS DE AUTENTICAÇÃO
@@ -82,13 +86,11 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// CADASTRO (ATUALIZADO PARA RECEBER TELEFONE E SALVAR A SENHA VISÍVEL)
+// CADASTRO
 app.post('/api/auth/register', async (req, res) => {
     try {
-        // PEGANDO O TELEFONE QUE VEM DO FRONT-END
         const { nome, email, password, role, telefone } = req.body;
         
-        // Verifica se o usuário já existe
         const userExists = await User.findOne({ email: email.toLowerCase().trim() });
         if (userExists) {
             return res.status(400).json({ message: 'Este e-mail já está em uso.' });
@@ -100,9 +102,9 @@ app.post('/api/auth/register', async (req, res) => {
         const newUser = new User({
             nome,
             email: email.toLowerCase().trim(),
-            password: hashedPassword, // Senha criptografada (para segurança do login)
-            senha: password, // Senha em texto limpo (Apenas para exibir no Painel Admin)
-            telefone: telefone || '', // Adicionado para o botão do WhatsApp
+            password: hashedPassword, 
+            senha: password, 
+            telefone: telefone || '', 
             role: role || 'paciente'
         });
 

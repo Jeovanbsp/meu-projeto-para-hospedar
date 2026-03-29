@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Prontuario = require('../models/Prontuario');
+const Banner = require('../models/Banner'); // <-- Importação do modelo de Banner
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 
 // Protege todas as rotas deste arquivo
 router.use(authMiddleware, adminMiddleware);
 
-// 1. DASHBOARD: Listar pacientes com idade, termo, senha e telefone (ATUALIZADO)
+// 1. DASHBOARD: Listar pacientes com idade, termo, senha e telefone
 router.get('/pacientes', async (req, res) => {
     try {
         const pacientes = await User.find({ role: 'paciente' }).lean();
@@ -20,8 +21,8 @@ router.get('/pacientes', async (req, res) => {
                 _id: pac._id,
                 nome: pac.nome,
                 email: pac.email,
-                telefone: pac.telefone || '', // Adicionado para funcionar o botão do WhatsApp
-                senha: pac.senha || pac.password || '', // Adicionado para mostrar a senha no Painel
+                telefone: pac.telefone || '', 
+                senha: pac.senha || pac.password || '', 
                 createdAt: pac.createdAt,
                 idade: prontuario ? prontuario.idade : null,
                 termoAceite: prontuario ? prontuario.termoAceite : false
@@ -103,7 +104,7 @@ router.delete('/prontuario/:id/evolucao/:evolucaoId', async (req, res) => {
     }
 });
 
-// 5. ATUALIZAR DADOS DE ACESSO DO PACIENTE (A ROTA NOVA QUE FALTAVA)
+// 5. ATUALIZAR DADOS DE ACESSO DO PACIENTE
 router.put('/paciente/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -115,16 +116,14 @@ router.put('/paciente/:id', async (req, res) => {
             return res.status(404).json({ message: "Paciente não encontrado." });
         }
 
-        // Atualiza campos básicos se enviados
         if (nome) paciente.nome = nome;
         if (email) paciente.email = email;
         if (telefone !== undefined) paciente.telefone = telefone;
 
-        // Verifica se a médica digitou uma nova senha
         const novaSenha = password || senha;
         if (novaSenha && novaSenha.trim() !== '') {
-            paciente.password = novaSenha; // Atualiza a senha oficial do model
-            paciente.senha = novaSenha; // Caso você use um campo extra para expor no front
+            paciente.password = novaSenha; 
+            paciente.senha = novaSenha; 
         }
 
         await paciente.save();
@@ -144,6 +143,38 @@ router.delete('/paciente/:id', async (req, res) => {
         res.json({ message: 'Sucesso' });
     } catch (error) { 
         res.status(500).json({ message: 'Erro ao deletar paciente.' }); 
+    }
+});
+
+// ==========================================
+// 7. ROTAS DO CARROSSEL DE IMAGENS (BANNERS)
+// ==========================================
+router.post('/banner', async (req, res) => {
+    try {
+        const { titulo, imagem } = req.body;
+        const novoBanner = new Banner({ titulo, imagem });
+        await novoBanner.save();
+        res.status(201).json({ message: 'Banner salvo com sucesso!' });
+    } catch (error) { 
+        res.status(500).json({ message: 'Erro ao salvar banner' }); 
+    }
+});
+
+router.get('/banners', async (req, res) => {
+    try {
+        const banners = await Banner.find().sort({ createdAt: -1 });
+        res.json(banners);
+    } catch (error) { 
+        res.status(500).json({ message: 'Erro ao buscar banners' }); 
+    }
+});
+
+router.delete('/banner/:id', async (req, res) => {
+    try {
+        await Banner.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Banner deletado com sucesso' });
+    } catch (error) { 
+        res.status(500).json({ message: 'Erro ao deletar banner' }); 
     }
 });
 

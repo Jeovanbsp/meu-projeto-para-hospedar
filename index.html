@@ -19,123 +19,21 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        /* CSS PARA ORGANIZAR A NAV */
-        .main-nav ul {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
+        .main-nav ul { display: flex; align-items: center; gap: 20px; list-style: none; margin: 0; padding: 0; }
+        .ficha-link { color: #2ADCA1; font-weight: 700; text-decoration: none; border: 1px solid #2ADCA1; padding: 5px 10px; border-radius: 5px; transition: background 0.3s; display: flex; align-items: center; gap: 6px; }
+        .ficha-link:hover { background-color: rgba(42, 220, 161, 0.1); }
+        .novo-header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
 
-        .ficha-link {
-            color: #2ADCA1;
-            font-weight: 700;
-            text-decoration: none;
-            border: 1px solid #2ADCA1;
-            padding: 5px 10px;
-            border-radius: 5px;
-            transition: background 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .ficha-link:hover {
-            background-color: rgba(42, 220, 161, 0.1);
-        }
-
-        .novo-header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            padding: 10px 0;
-        }
-
-        /* =========================================
-           CAIXA VERDE AMPLIADA E FRASE IMPACTANTE
-           ========================================= */
-        .sobre {
-            padding: 0 !important; 
-            background-color: #e8f7f2; 
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-        }
-
-        .sobre-container {
-            display: flex;
-            align-items: center; 
-            max-width: 1200px;
-            width: 100%;
-            min-height: 500px;
-            position: relative;
-        }
-
-        .sobre-imagem-boneca {
-            flex: 1;
-            display: flex;
-            align-items: flex-end; 
-            justify-content: center;
-            height: 500px; 
-        }
-
-        .sobre-imagem-boneca img {
-            height: 100% !important; 
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
-
-        .sobre-texto {
-            flex: 1.5;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center; 
-            text-align: center; 
-            padding: 20px;
-        }
-
-        .sobre-texto h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            color: #1a1a1a;
-            line-height: 1.2;
-        }
-
-        .sobre-texto p {
-            font-size: 1.2rem;
-            margin-bottom: 35px;
-            color: #333;
-            max-width: 600px;
-        }
-
-        .botoes-hero {
-            display: flex;
-            justify-content: center; 
-            width: 100%;
-        }
-
-        .botoes-hero .btn-agendar {
-            padding: 18px 45px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            background-color: #2ADCA1;
-            color: white;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .botoes-hero .btn-agendar:hover {
-            background-color: #24b685;
-            transform: translateY(-3px);
-        }
+        .sobre { padding: 0 !important; background-color: #e8f7f2; overflow: hidden; display: flex; justify-content: center; }
+        .sobre-container { display: flex; align-items: center; max-width: 1200px; width: 100%; min-height: 500px; position: relative; }
+        .sobre-imagem-boneca { flex: 1; display: flex; align-items: flex-end; justify-content: center; height: 500px; }
+        .sobre-imagem-boneca img { height: 100% !important; width: auto; object-fit: contain; display: block; }
+        .sobre-texto { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .sobre-texto h1 { font-size: 3rem; margin-bottom: 20px; color: #1a1a1a; line-height: 1.2; }
+        .sobre-texto p { font-size: 1.2rem; margin-bottom: 35px; color: #333; max-width: 600px; }
+        .botoes-hero { display: flex; justify-content: center; width: 100%; }
+        .botoes-hero .btn-agendar { padding: 18px 45px; font-size: 1.2rem; font-weight: 700; background-color: #2ADCA1; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); display: flex; align-items: center; gap: 10px; }
+        .botoes-hero .btn-agendar:hover { background-color: #24b685; transform: translateY(-3px); }
 
         @media (max-width: 900px) {
             .sobre-container { flex-direction: column; padding: 40px 20px; min-height: auto; }
@@ -174,10 +72,10 @@
         <section class="sobre">
             <div class="sobre-container">
                 <div class="sobre-imagem-boneca">
-                    <img src="img/perfil.png" alt="Dra. Aisha Wenzinger - Médica Geriatra em Salvador"> 
+                    <img src="img/perfil.png" alt="Dra. Aisha Wenzinger"> 
                 </div>
                 <div class="sobre-texto">
-                    <h1>Atenção Especializada para Idosos em Salvador e Lauro de Freitas</h1>
+                    <h1>Atenção Especializada para Idosos</h1>
                     <p>Cuidados humanizados e personalizados para a melhor idade, seja em casa ou em nossos consultórios.</p>
                     <div class="botoes-hero">
                         <a href="tel:+5571983943153" class="btn-agendar"><i class="ph ph-phone"></i> Agende sua consulta</a>
@@ -241,20 +139,28 @@
                 </div>
             </div>
         </section>
+
+        <section class="carrossel-section" id="anuncios-section" style="display:none; padding: 50px 20px; background: #fff;">
+            <h2 style="text-align:center; color:#2c3e50; margin-bottom: 30px; font-size: 2rem;">Avisos e Novidades</h2>
+            <div style="max-width: 1000px; margin: 0 auto; overflow: hidden; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative;">
+                <div id="slider-track" style="display: flex; transition: transform 0.6s ease-in-out;">
+                    </div>
+            </div>
+        </section>
     </main>
 
     <section class="localizacao" id="locais">
         <h2>Onde nos encontrar</h2>
         <div class="locais">
             <div class="local">
-                <h3>Unidade 1 - Estrada do Coco</h3>
-                <p>Shopping Estrada do Coco, Loja 102 - Lauro de Freitas - BA</p>
-                <a href="#" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
+                <h3>Shopping Estrada do Coco</h3>
+                <p>Av. Santos Dumont, Est do Coco, 6216 - loja 102<br>Pitangueiras, Lauro de Freitas - BA, 42701-260</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=Shopping+Estrada+do+Coco,+Lauro+de+Freitas" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
             <div class="local">
-                <h3>Unidade 2 - Salvador</h3>
-                <p>Ed. International Trade Center, Sala 1316 - STIEP, Salvador - BA</p>
-                <a href="#" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
+                <h3>International Trade Center - Salvador</h3>
+                <p>Rua Arthur de Azevedo Machado, 1459<br>Ed. International Trade Center, Sala 1316<br>STIEP, Salvador - BA, 41770-790</p>
+                <a href="https://www.google.com/maps/search/?api=1&query=International+Trade+Center+Salvador" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
         </div>
     </section>
@@ -269,32 +175,39 @@
         <p class="copyright">Dra Aisha Wenzinger © 2024. All Rights Reserved</p>
     </footer>
 
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Physician",
-      "name": "Dra. Aishá Wenzinger",
-      "image": "https://seusite.com.br/img/perfil.png",
-      "medicalSpecialty": "Geriatric",
-      "telephone": "+55-71-98394-3153",
-      "address": [
-        {
-          "@type": "PostalAddress",
-          "streetAddress": "Shopping Estrada do Coco, Loja 102",
-          "addressLocality": "Lauro de Freitas",
-          "addressRegion": "BA"
-        },
-        {
-          "@type": "PostalAddress",
-          "streetAddress": "Ed. International Trade Center, Sala 1316 - STIEP",
-          "addressLocality": "Salvador",
-          "addressRegion": "BA"
-        }
-      ]
-    }
-    </script>
-
     <script>
+        async function carregarBannersPublicos() {
+            try {
+                const res = await fetch('https://aishageriatria.onrender.com/api/banners/publico');
+                if(!res.ok) return;
+                
+                const banners = await res.json();
+                
+                if(banners && banners.length > 0) {
+                    document.getElementById('anuncios-section').style.display = 'block';
+                    const track = document.getElementById('slider-track');
+                    
+                    banners.forEach(b => {
+                        const div = document.createElement('div');
+                        div.style.minWidth = '100%';
+                        div.innerHTML = `<img src="${b.imagem}" alt="${b.titulo}" style="width: 100%; max-height: 500px; object-fit: contain; display: block; background: #f9f9f9;">`;
+                        track.appendChild(div);
+                    });
+
+                    if(banners.length > 1) {
+                        let index = 0;
+                        setInterval(() => {
+                            index = (index + 1) % banners.length;
+                            track.style.transform = `translateX(-${index * 100}%)`;
+                        }, 4000);
+                    }
+                }
+            } catch(e) { console.error("Carrossel não carregou:", e); }
+        }
+
+        carregarBannersPublicos();
+
+        // Menu Mobile (Hambúrguer)
         const hamburgerButton = document.getElementById('hamburger-button');
         const mobileMenu = document.getElementById('mobile-menu');
         hamburgerButton.addEventListener('click', () => {

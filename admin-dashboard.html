@@ -16,50 +16,14 @@
         
         .logo img { height: 160px !important; width: auto; display: block; transition: 0.3s; }
 
-        /* --- BOTÃO SAIR E TAG ADMIN (ALINHAMENTO PERFEITO) --- */
-        .header-painel-info {
-            display: flex; 
-            align-items: center; 
-            gap: 12px;
-        }
-        
-        .tag-admin {
-            color: #2c3e50; 
-            font-weight: 700; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px;
-            font-size: 0.9rem;
-            background: #f4f6f8;
-            border: 1px solid #e2e8f0;
-            height: 40px; /* Mesma altura do botão sair */
-            padding: 0 15px;
-            border-radius: 8px;
-            box-sizing: border-box;
-        }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px; }
+        .header-left { flex: 1; display: flex; justify-content: flex-start; }
+        .header-center { flex: 2; display: flex; justify-content: center; align-items: center; gap: 8px; color: #2c3e50; font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
+        .header-right { flex: 1; display: flex; justify-content: flex-end; }
 
-        .btn-header-sair {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 40px; /* Mesma altura da tag admin */
-            padding: 0 20px;
-            background-color: #ff6b6b;
-            color: white;
-            border-radius: 8px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: bold;
-            font-size: 0.85rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-            white-space: nowrap;
-        }
+        .btn-header-sair { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 15px; background-color: #ff6b6b; color: white; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
         .btn-header-sair:hover { background-color: #e05b5b; transform: translateY(-1px); }
 
-        /* --- INTERFACE EXPANDIDA --- */
         .dashboard-container { padding: 20px; max-width: 1600px; width: 95%; margin: 20px auto; }
         .titulo-secao { color: #555; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; margin-top: 0;}
         
@@ -73,87 +37,40 @@
 
         .search-container { flex-grow: 1; min-width: 250px; margin: 0 20px; position: relative; }
         .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem;}
-        .search-container input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; transition: 0.3s;}
-        .search-container input:focus { border-color: #2ADCA1; box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.1);}
+        .search-container input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.95rem;}
 
-        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
-        .btn-novo:hover { background-color: #24b685; }
+        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px;}
 
-        /* --- A MÁGICA DO ALINHAMENTO DA LISTA --- */
-        .linha-grid { 
-            display: grid; 
-            grid-template-columns: 2fr 100px 100px 200px; /* Ações tem 200px agora */
-            gap: 15px; 
-            align-items: center; 
-        }
-        
+        .linha-grid { display: grid; grid-template-columns: minmax(200px, 2fr) 110px 110px 220px; gap: 15px; align-items: center; }
         .cabecalho-lista { padding: 10px 10px 15px 10px; border-bottom: 2px solid #eee; font-weight: 700; font-size: 0.85rem; color: #888; text-transform: uppercase; margin-bottom: 10px; }
 
         .lista-pacientes { list-style: none; padding: 0; margin: 0; }
         .lista-pacientes li { padding: 15px 10px; border-bottom: 1px solid #f5f5f5; transition: 0.2s; border-radius: 8px;}
-        .lista-pacientes li:hover { background-color: #fafafa; }
         
-        /* --- BOTÕES DE AÇÃO TOTALMENTE ALINHADOS --- */
-        .acoes-container { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
-
-        .btn-acao { 
-            height: 36px; /* ALTURA FIXA PARA TODOS */
-            border-radius: 8px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 600; 
-            font-size: 0.85rem; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            box-sizing: border-box; 
-            border: 1px solid transparent;
-            text-decoration: none;
-        }
-        .btn-acao i { font-size: 1.1rem; }
-
-        .btn-wpp { width: 36px; background: #e8f9f4; color: #25D366; border-color: #25D366; }
-        .btn-wpp:hover { background: #25D366; color: white; }
-        
-        .btn-ver { padding: 0 12px; background: #f0fdf9; color: #2ADCA1; border-color: #2ADCA1; gap: 5px; white-space: nowrap;}
+        .acoes-container { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: nowrap; }
+        .btn-acao { height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; cursor: pointer; transition: 0.2s; box-sizing: border-box; border: 1px solid transparent; text-decoration: none; }
+        .btn-ver { padding: 0 12px; background: #f0fdf9; color: #2ADCA1; border-color: #2ADCA1; white-space: nowrap;}
         .btn-ver:hover { background: #2ADCA1; color: white; }
-        
-        .btn-edit { width: 36px; background: #f4f8fc; color: #007bff; border-color: #007bff; }
-        .btn-edit:hover { background: #007bff; color: white; }
+        .btn-edit { width: 34px; background: #f4f8fc; color: #007bff; border-color: #007bff; }
+        .btn-delete { width: 34px; background: #fff0f0; color: #ff6b6b; border-color: #ff6b6b; }
 
-        .btn-delete { width: 36px; background: #fff0f0; color: #ff6b6b; border-color: #ff6b6b; }
-        .btn-delete:hover { background: #ff6b6b; color: white; }
+        .btn-wpp-inline { display: inline-flex; align-items: center; gap: 5px; background-color: #e8f9f4; color: #25D366; font-size: 0.7rem; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-decoration: none; margin-top: 8px; transition: 0.2s; border: 1px solid #25D366; width: fit-content; }
 
         .status-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;}
         .status-ok { background-color: #e8f9f4; color: #2ADCA1; }
         .status-pendente { background-color: #fff4e5; color: #f39c12; }
 
-        /* Modal */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px);}
         .modal-box { background: white; padding: 35px; border-radius: 15px; width: 90%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
-        .modal-box h3 { color: #2c3e50; margin-top: 0; margin-bottom: 20px;}
-
-        /* --- RESPONSIVIDADE (MOBILE) --- */
-        @media (max-width: 1024px) {
-            .dashboard-grid { grid-template-columns: 1fr; }
-            .search-container { min-width: 150px; }
-            .linha-grid { grid-template-columns: 1fr 100px 100px 220px; }
-        }
 
         @media (max-width: 768px) {
-            .header-container { flex-direction: column; gap: 15px; padding: 15px !important; }
+            .header-container { flex-direction: column; gap: 10px; padding: 15px !important; }
+            .header-left, .header-center, .header-right { justify-content: center; width: 100%; flex: none; }
             .logo img { height: 80px !important; }
-            .header-painel-info { width: 100%; justify-content: space-between; }
-            
             .header-card { flex-direction: column; align-items: stretch; gap: 15px; }
-            .search-container { margin: 0; width: 100%; box-sizing: border-box;}
-            
-            .linha-grid { 
-                grid-template-columns: 1fr; 
-                gap: 10px; text-align: center; background: #fff; border: 1px solid #eee; padding: 15px !important; margin-bottom: 10px; border-radius: 8px;
-            }
+            .search-container { margin: 0; width: 100%; }
+            .linha-grid { grid-template-columns: 1fr; gap: 10px; text-align: center; background: #fff; border: 1px solid #eee; padding: 15px !important; margin-bottom: 10px; border-radius: 8px;}
             .cabecalho-lista { display: none; } 
-            
             .acoes-container { justify-content: center; margin-top: 10px; flex-wrap: wrap;}
             .btn-ver { flex-grow: 1; justify-content: center; } 
         }
@@ -161,15 +78,15 @@
 </head>
 <body>
     <header class="header-fixo no-print">
-        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px;">
-            <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logo Dra. Aisha">
-            </a>
-            <div class="header-painel-info">
-                <span class="tag-admin"><i class="ph ph-shield-check"></i> Painel Admin</span>
-                <button id="btn-logout" class="btn-header-sair">
-                    <i class="ph ph-sign-out"></i> Sair
-                </button>
+        <div class="header-container">
+            <div class="header-left">
+                <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo Dra. Aisha"></a>
+            </div>
+            <div class="header-center">
+                <i class="ph ph-shield-check" style="color: #2ADCA1;"></i> Painel Admin
+            </div>
+            <div class="header-right">
+                <button id="btn-logout" class="btn-header-sair"><i class="ph ph-sign-out"></i> Sair</button>
             </div>
         </div>
     </header>      
@@ -195,15 +112,15 @@
                     </div>
                     
                     <div style="display: flex; gap: 10px;">
-                        <button onclick="carregarLista()" style="background:#f5f5f5; border:1px solid #ddd; color:#555; cursor:pointer; padding: 10px; border-radius: 8px; transition: 0.2s;" title="Atualizar Lista"><i class="ph ph-arrows-clockwise" style="font-size: 1.2rem;"></i></button>
-                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-user-plus" style="font-size: 1.2rem;"></i> Cadastrar Paciente</button>
+                        <button onclick="carregarLista()" style="background:#f5f5f5; border:1px solid #ddd; color:#555; cursor:pointer; padding: 10px; border-radius: 8px;" title="Atualizar Lista"><i class="ph ph-arrows-clockwise" style="font-size: 1.2rem;"></i></button>
+                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-user-plus" style="font-size: 1.2rem;"></i> Novo</button>
                     </div>
                 </div>
                 
                 <div class="linha-grid cabecalho-lista">
-                    <div>Identificação do Paciente</div>
-                    <div style="text-align: center;">Termo de Resp.</div>
-                    <div style="text-align: center;">Data de Cadastro</div>
+                    <div>Paciente</div>
+                    <div style="text-align: center;">Termo</div>
+                    <div style="text-align: center;">Cadastro</div>
                     <div style="text-align: right; padding-right: 5px;">Ações</div>
                 </div>
                 
@@ -211,28 +128,40 @@
                     <li style="text-align:center; padding: 40px; color:#999;"><i class="ph ph-spinner-gap ph-spin" style="font-size: 2.5rem; color: #2ADCA1;"></i></li>
                 </ul>
             </div>
+
+            <div class="card-lista" style="margin-top: 30px; grid-column: 1 / -1;">
+                <div class="header-card">
+                    <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0; display: flex; align-items: center;"><i class="ph ph-image" style="color:#2ADCA1; margin-right: 8px;"></i> Banners e Anúncios do Site</h3>
+                    <button onclick="abrirModalBanner()" class="btn-novo" style="background-color: #007bff;"><i class="ph ph-upload-simple" style="font-size: 1.2rem;"></i> Enviar Imagem</button>
+                </div>
+                
+                <div class="linha-grid cabecalho-lista" style="grid-template-columns: 2fr 1fr 100px;">
+                    <div>Título (Controle Interno)</div>
+                    <div style="text-align: center;">Miniatura</div>
+                    <div style="text-align: right; padding-right: 5px;">Ações</div>
+                </div>
+                
+                <ul id="lista-banners" class="lista-pacientes"></ul>
+            </div>
+
         </div>
     </main>
 
     <div id="modal-cadastro" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-user-plus" style="color: #2ADCA1;"></i> Cadastrar Novo</h3>
+            <h3>Cadastrar Novo</h3>
             <form id="form-cadastro-paciente">
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nome Completo</label>
-                <input type="text" id="novo-nome" placeholder="Ex: Maria Oliveira" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required>
-                
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">E-mail do Paciente/Responsável</label>
-                <input type="email" id="novo-email" placeholder="maria@email.com" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required>
-                
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">WhatsApp (Opcional)</label>
-                <input type="text" id="novo-telefone" placeholder="Ex: 71999998888" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
-
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Senha Provisória</label>
-                <input type="text" id="novo-senha" value="123456" style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required> 
-                
+                <label>Nome Completo</label>
+                <input type="text" id="novo-nome" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>E-mail</label>
+                <input type="email" id="novo-email" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>WhatsApp</label>
+                <input type="text" id="novo-telefone" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>Senha Provisória</label>
+                <input type="text" id="novo-senha" value="123456" required style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px;">
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button type="button" onclick="fecharModalCadastro()" style="background: #f0f0f0; color: #555; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Cancelar</button>
-                    <button type="submit" style="background: #2ADCA1; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Concluir Cadastro</button>
+                    <button type="button" onclick="fecharModalCadastro()">Cancelar</button>
+                    <button type="submit" style="background:#2ADCA1; color:white; border:none; padding:10px 20px; border-radius:8px;">Cadastrar</button>
                 </div>
             </form>
         </div>
@@ -240,25 +169,38 @@
 
     <div id="modal-editar" class="modal-overlay">
         <div class="modal-box">
-            <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-pencil" style="color: #007bff;"></i> Editar Acesso do Paciente</h3>
+            <h3>Editar Paciente</h3>
             <form id="form-editar-paciente">
                 <input type="hidden" id="edit-id">
-                
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nome Completo</label>
-                <input type="text" id="edit-nome" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
-                
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">E-mail</label>
-                <input type="email" id="edit-email" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
-                
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">WhatsApp</label>
-                <input type="text" id="edit-telefone" placeholder="Somente números..." style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
+                <label>Nome</label>
+                <input type="text" id="edit-nome" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>E-mail</label>
+                <input type="email" id="edit-email" required style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>WhatsApp</label>
+                <input type="text" id="edit-telefone" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;">
+                <label>Nova Senha (opcional)</label>
+                <input type="text" id="edit-senha" style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px;">
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="fecharModalEditar()">Cancelar</button>
+                    <button type="submit" style="background:#007bff; color:white; border:none; padding:10px 20px; border-radius:8px;">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nova Senha (Deixe em branco para manter)</label>
-                <input type="text" id="edit-senha" placeholder="Digite uma nova senha para resetar..." style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';"> 
+    <div id="modal-banner" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-upload-simple" style="color: #007bff;"></i> Enviar Nova Imagem</h3>
+            <form id="form-banner">
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Título Interno (ex: Aviso de Férias)</label>
+                <input type="text" id="banner-titulo" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat';">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Selecione a Imagem (Max: 5MB)</label>
+                <input type="file" id="banner-imagem" accept="image/*" required style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat';">
                 
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button type="button" onclick="fecharModalEditar()" style="background: #f0f0f0; color: #555; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Cancelar</button>
-                    <button type="submit" style="background: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Salvar Alterações</button>
+                    <button type="button" onclick="fecharModalBanner()" style="background: #f0f0f0; color: #555; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
+                    <button type="submit" id="btn-salvar-banner" style="background: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">Fazer Upload</button>
                 </div>
             </form>
         </div>
