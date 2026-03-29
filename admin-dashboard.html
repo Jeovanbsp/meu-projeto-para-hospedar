@@ -14,169 +14,201 @@
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0;}
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: relative; z-index: 100;}
         
-        /* LOGO VOLTOU AO TAMANHO ORIGINAL DE DESTAQUE */
-        .logo img { height: 160px !important; width: auto; display: block; }
+        .logo img { height: 160px !important; width: auto; display: block; transition: 0.3s; }
 
-        .dashboard-container { padding: 20px; max-width: 1300px; margin: 10px auto; }
-        .titulo-secao { color: #555; font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; margin-bottom: 15px; margin-top: 0;}
+        /* --- BOTÃO SAIR E TAG ADMIN (ALINHAMENTO PERFEITO) --- */
+        .header-painel-info {
+            display: flex; 
+            align-items: center; 
+            gap: 12px;
+        }
         
-        .dashboard-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 30px; } 
-        @media (max-width: 900px) { .dashboard-grid { grid-template-columns: 1fr; } }
+        .tag-admin {
+            color: #2c3e50; 
+            font-weight: 700; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px;
+            font-size: 0.9rem;
+            background: #f4f6f8;
+            border: 1px solid #e2e8f0;
+            height: 40px; /* Mesma altura do botão sair */
+            padding: 0 15px;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+
+        .btn-header-sair {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 40px; /* Mesma altura da tag admin */
+            padding: 0 20px;
+            background-color: #ff6b6b;
+            color: white;
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: bold;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            white-space: nowrap;
+        }
+        .btn-header-sair:hover { background-color: #e05b5b; transform: translateY(-1px); }
+
+        /* --- INTERFACE EXPANDIDA --- */
+        .dashboard-container { padding: 20px; max-width: 1600px; width: 95%; margin: 20px auto; }
+        .titulo-secao { color: #555; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; margin-top: 0;}
         
-        .card-grafico { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); height: fit-content; }
+        .dashboard-grid { display: grid; grid-template-columns: 1fr 2.5fr; gap: 30px; align-items: start;} 
+        
+        .card-grafico { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
         
-        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;}
-        .total-badge { background-color: #e8f9f4; color: #2ADCA1; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; }
+        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;}
+        .total-badge { background-color: #e8f9f4; color: #2ADCA1; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; margin-left: 8px;}
 
-        .search-container { flex-grow: 1; min-width: 200px; margin: 0 20px; position: relative; }
-        .search-container i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #888; }
-        .search-container input { width: 100%; padding: 10px 10px 10px 38px; border: 1px solid #ddd; border-radius: 8px; outline: none;}
+        .search-container { flex-grow: 1; min-width: 250px; margin: 0 20px; position: relative; }
+        .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem;}
+        .search-container input { width: 100%; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; transition: 0.3s;}
+        .search-container input:focus { border-color: #2ADCA1; box-shadow: 0 0 0 3px rgba(42, 220, 161, 0.1);}
 
-        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;}
+        .btn-novo { background-color: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s;}
+        .btn-novo:hover { background-color: #24b685; }
 
-        /* --- A MÁGICA DO ALINHAMENTO ESTÁ AQUI --- */
+        /* --- A MÁGICA DO ALINHAMENTO DA LISTA --- */
         .linha-grid { 
             display: grid; 
-            grid-template-columns: 1fr 130px 140px 180px; /* Larguras fixas e travadas */
+            grid-template-columns: 2fr 100px 100px 200px; /* Ações tem 200px agora */
             gap: 15px; 
             align-items: center; 
         }
         
-        .cabecalho-lista { 
-            padding: 10px 10px 15px 10px; 
-            border-bottom: 2px solid #eee; 
-            font-weight: 600; 
-            font-size: 0.8rem; 
-            color: #888; 
-            text-transform: uppercase; 
-            margin-bottom: 10px;
-        }
+        .cabecalho-lista { padding: 10px 10px 15px 10px; border-bottom: 2px solid #eee; font-weight: 700; font-size: 0.85rem; color: #888; text-transform: uppercase; margin-bottom: 10px; }
 
         .lista-pacientes { list-style: none; padding: 0; margin: 0; }
-        .lista-pacientes li { padding: 15px 10px; border-bottom: 1px solid #f5f5f5; }
+        .lista-pacientes li { padding: 15px 10px; border-bottom: 1px solid #f5f5f5; transition: 0.2s; border-radius: 8px;}
+        .lista-pacientes li:hover { background-color: #fafafa; }
         
-        /* BOTÕES ESTILIZADOS */
-        .acoes-container {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
-        }
+        /* --- BOTÕES DE AÇÃO TOTALMENTE ALINHADOS --- */
+        .acoes-container { display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
 
-        .btn-ver { 
-            background: #f0fdf9; 
-            color: #2ADCA1; 
-            border: 1px solid #2ADCA1; 
-            font-size: 0.8rem; 
-            padding: 8px 14px; 
+        .btn-acao { 
+            height: 36px; /* ALTURA FIXA PARA TODOS */
             border-radius: 8px; 
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            white-space: nowrap;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-weight: 600; 
+            font-size: 0.85rem; 
+            cursor: pointer; 
+            transition: 0.2s; 
+            box-sizing: border-box; 
+            border: 1px solid transparent;
+            text-decoration: none;
         }
+        .btn-acao i { font-size: 1.1rem; }
 
-        /* LIXEIRA MINIMALISTA E ALINHADA */
-        .btn-excluir { 
-            background: #fff0f0; 
-            color: #ff6b6b; 
-            border: 1px solid #ff6b6b; 
-            width: 38px; 
-            height: 38px; 
-            border-radius: 8px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .btn-excluir:hover { background: #ff6b6b; color: white; }
+        .btn-wpp { width: 36px; background: #e8f9f4; color: #25D366; border-color: #25D366; }
+        .btn-wpp:hover { background: #25D366; color: white; }
+        
+        .btn-ver { padding: 0 12px; background: #f0fdf9; color: #2ADCA1; border-color: #2ADCA1; gap: 5px; white-space: nowrap;}
+        .btn-ver:hover { background: #2ADCA1; color: white; }
+        
+        .btn-edit { width: 36px; background: #f4f8fc; color: #007bff; border-color: #007bff; }
+        .btn-edit:hover { background: #007bff; color: white; }
 
-        /* STATUS E DATA */
-        .status-badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;}
+        .btn-delete { width: 36px; background: #fff0f0; color: #ff6b6b; border-color: #ff6b6b; }
+        .btn-delete:hover { background: #ff6b6b; color: white; }
+
+        .status-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;}
         .status-ok { background-color: #e8f9f4; color: #2ADCA1; }
         .status-pendente { background-color: #fff4e5; color: #f39c12; }
 
-        /* TOOLTIP (O BALÃOZINHO AO PASSAR O MOUSE) */
-        [data-tooltip] { position: relative; }
-        [data-tooltip]::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 130%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: #fff;
-            padding: 5px 10px;
-            font-size: 0.7rem;
-            border-radius: 4px;
-            visibility: hidden;
-            opacity: 0;
-            transition: 0.2s;
-            z-index: 1000;
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px);}
+        .modal-box { background: white; padding: 35px; border-radius: 15px; width: 90%; max-width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);}
+        .modal-box h3 { color: #2c3e50; margin-top: 0; margin-bottom: 20px;}
+
+        /* --- RESPONSIVIDADE (MOBILE) --- */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; }
+            .search-container { min-width: 150px; }
+            .linha-grid { grid-template-columns: 1fr 100px 100px 220px; }
         }
-        [data-tooltip]:hover::after { visibility: visible; opacity: 1; }
 
-        .btn-user-controls { display: flex; gap: 15px; align-items: center; justify-content: flex-end;}
-        #btn-logout { background-color: transparent; border: 1px solid #ff6b6b; padding: 8px 18px; color: #ff6b6b; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;}
-        #btn-logout:hover { background-color: #ff6b6b; color: white; }
-
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
-        .modal-box { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; }
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; gap: 15px; padding: 15px !important; }
+            .logo img { height: 80px !important; }
+            .header-painel-info { width: 100%; justify-content: space-between; }
+            
+            .header-card { flex-direction: column; align-items: stretch; gap: 15px; }
+            .search-container { margin: 0; width: 100%; box-sizing: border-box;}
+            
+            .linha-grid { 
+                grid-template-columns: 1fr; 
+                gap: 10px; text-align: center; background: #fff; border: 1px solid #eee; padding: 15px !important; margin-bottom: 10px; border-radius: 8px;
+            }
+            .cabecalho-lista { display: none; } 
+            
+            .acoes-container { justify-content: center; margin-top: 10px; flex-wrap: wrap;}
+            .btn-ver { flex-grow: 1; justify-content: center; } 
+        }
     </style>
 </head>
 <body>
     <header class="header-fixo no-print">
-        <div class="header-container" style="justify-content: space-between; align-items: center; padding: 0 20px;">
+        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px;">
             <a href="index.html" class="logo">
                 <img src="img/layout.png" alt="Logo Dra. Aisha">
             </a>
-            <div class="btn-user-controls">
-                <span style="color: #2ADCA1; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                    <i class="ph ph-shield-check" style="font-size: 1.3rem;"></i> Painel Admin
-                </span>
-                <button id="btn-logout"><i class="ph ph-sign-out" style="font-size: 1.15rem;"></i> Sair</button>
+            <div class="header-painel-info">
+                <span class="tag-admin"><i class="ph ph-shield-check"></i> Painel Admin</span>
+                <button id="btn-logout" class="btn-header-sair">
+                    <i class="ph ph-sign-out"></i> Sair
+                </button>
             </div>
         </div>
     </header>      
 
     <main class="dashboard-container">
-        <h2 class="titulo-secao">Gestão de Pacientes</h2>
+        <h2 class="titulo-secao"><i class="ph ph-squares-four" style="vertical-align: middle;"></i> Visão Geral</h2>
         
         <div class="dashboard-grid">
             <div class="card-grafico">
                 <div class="header-card" style="border-bottom: none; margin-bottom: 10px;">
-                    <h3 style="font-size: 1rem;"><i class="ph ph-chart-pie-slice" style="color:#2ADCA1;"></i> Idades</h3>
+                    <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0;"><i class="ph ph-chart-pie-slice" style="color:#2ADCA1;"></i> Faixa Etária</h3>
                 </div>
-                <div style="height: 250px; width: 100%;"><canvas id="graficoIdades"></canvas></div>
+                <div style="height: 300px; width: 100%;"><canvas id="graficoIdades"></canvas></div>
             </div>
 
             <div class="card-lista">
-                <div class="header-card" style="flex-wrap: wrap; gap: 15px;">
-                    <h3 style="font-size: 1rem;"><i class="ph ph-users" style="color:#2ADCA1;"></i> Pacientes <span class="total-badge" id="texto-total">0</span></h3>
+                <div class="header-card">
+                    <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0; display: flex; align-items: center;"><i class="ph ph-users" style="color:#2ADCA1; margin-right: 8px;"></i> Pacientes <span class="total-badge" id="texto-total">0</span></h3>
+                    
                     <div class="search-container">
                         <i class="ph ph-magnifying-glass"></i>
-                        <input type="text" id="input-pesquisa" placeholder="Buscar por nome...">
+                        <input type="text" id="input-pesquisa" placeholder="Buscar por nome ou e-mail...">
                     </div>
+                    
                     <div style="display: flex; gap: 10px;">
-                        <button onclick="carregarLista()" style="background:#f5f5f5; border:none; color:#555; cursor:pointer; padding: 8px; border-radius: 8px;"><i class="ph ph-arrows-clockwise" style="font-size: 1.2rem;"></i></button>
-                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-user-plus" style="font-size: 1.1rem;"></i> Novo</button>
+                        <button onclick="carregarLista()" style="background:#f5f5f5; border:1px solid #ddd; color:#555; cursor:pointer; padding: 10px; border-radius: 8px; transition: 0.2s;" title="Atualizar Lista"><i class="ph ph-arrows-clockwise" style="font-size: 1.2rem;"></i></button>
+                        <button onclick="abrirModalCadastro()" class="btn-novo"><i class="ph ph-user-plus" style="font-size: 1.2rem;"></i> Cadastrar Paciente</button>
                     </div>
                 </div>
                 
                 <div class="linha-grid cabecalho-lista">
-                    <div>Paciente</div>
-                    <div style="text-align: center;">Termo</div>
-                    <div style="text-align: center;">Cadastro</div>
-                    <div style="text-align: right; padding-right: 10px;">Ações</div>
+                    <div>Identificação do Paciente</div>
+                    <div style="text-align: center;">Termo de Resp.</div>
+                    <div style="text-align: center;">Data de Cadastro</div>
+                    <div style="text-align: right; padding-right: 5px;">Ações</div>
                 </div>
                 
                 <ul id="lista-pacientes" class="lista-pacientes">
-                    <li style="text-align:center; padding: 30px; color:#999;"><i class="ph ph-spinner-gap ph-spin" style="font-size: 2rem;"></i></li>
+                    <li style="text-align:center; padding: 40px; color:#999;"><i class="ph ph-spinner-gap ph-spin" style="font-size: 2.5rem; color: #2ADCA1;"></i></li>
                 </ul>
             </div>
         </div>
@@ -184,22 +216,54 @@
 
     <div id="modal-cadastro" class="modal-overlay">
         <div class="modal-box">
-            <h3>Novo Paciente</h3>
+            <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-user-plus" style="color: #2ADCA1;"></i> Cadastrar Novo</h3>
             <form id="form-cadastro-paciente">
                 <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nome Completo</label>
-                <input type="text" id="novo-nome" placeholder="Ex: João da Silva" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;" required>
-                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">E-mail</label>
-                <input type="email" id="novo-email" placeholder="joao@email.com" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;" required>
+                <input type="text" id="novo-nome" placeholder="Ex: Maria Oliveira" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required>
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">E-mail do Paciente/Responsável</label>
+                <input type="email" id="novo-email" placeholder="maria@email.com" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required>
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">WhatsApp (Opcional)</label>
+                <input type="text" id="novo-telefone" placeholder="Ex: 71999998888" style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
+
                 <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Senha Provisória</label>
-                <input type="text" id="novo-senha" value="123456" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px;" required> 
+                <input type="text" id="novo-senha" value="123456" style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';" required> 
+                
                 <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                    <button type="button" onclick="fecharModalCadastro()" style="background: #f0f0f0; color: #555; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">Cancelar</button>
-                    <button type="submit" style="background: #2ADCA1; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600;">Cadastrar</button>
+                    <button type="button" onclick="fecharModalCadastro()" style="background: #f0f0f0; color: #555; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Cancelar</button>
+                    <button type="submit" style="background: #2ADCA1; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Concluir Cadastro</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="modal-editar" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="display: flex; align-items: center; gap: 8px;"><i class="ph ph-pencil" style="color: #007bff;"></i> Editar Acesso do Paciente</h3>
+            <form id="form-editar-paciente">
+                <input type="hidden" id="edit-id">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nome Completo</label>
+                <input type="text" id="edit-nome" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">E-mail</label>
+                <input type="email" id="edit-email" required style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
+                
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">WhatsApp</label>
+                <input type="text" id="edit-telefone" placeholder="Somente números..." style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';">
+
+                <label style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 5px; display: block;">Nova Senha (Deixe em branco para manter)</label>
+                <input type="text" id="edit-senha" placeholder="Digite uma nova senha para resetar..." style="width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-family: 'Montserrat';"> 
+                
+                <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" onclick="fecharModalEditar()" style="background: #f0f0f0; color: #555; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Cancelar</button>
+                    <button type="submit" style="background: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s;">Salvar Alterações</button>
                 </div>
             </form>
         </div>
     </div>
     
-    <script src="js/admin-dashboard.js?v=12"></script>
+    <script src="js/admin-dashboard.js"></script>
 </body>
 </html>

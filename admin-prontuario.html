@@ -16,28 +16,7 @@
     <style>
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: sticky; top: 0; z-index: 1000; }
-        .logo img { height: 160px !important; width: auto; display: block; }
-        
-        /* --- AJUSTE DOS BOTÕES DO CABEÇALHO (CORRIGIDO) --- */
-        .btn-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            height: 42px; /* Altura fixa igual para ambos */
-            padding: 0 20px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            white-space: nowrap; /* Impede o texto de quebrar linha e entortar */
-            transition: all 0.2s ease;
-        }
-
-        .btn-voltar-admin { background-color: #2c3e50; color: white; }
-        .btn-sair-admin { background-color: #ff6b6b; color: white; }
+        .logo img { height: 140px !important; width: auto; display: block; transition: 0.3s; }
         
         /* --- AJUSTE DE TELA CHEIA --- */
         main {
@@ -53,60 +32,121 @@
             padding: 30px !important;
         }
 
-        @media (min-width: 1024px) {
-            .form-linha-dupla-topo {
-                display: grid;
-                grid-template-columns: 2fr 1fr 1fr;
-                gap: 20px;
-            }
+        /* --- BOTÕES DO CABEÇALHO --- */
+        .header-acoes {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
         }
 
-        /* Estilos Evolução Accordion */
+        .btn-header-topo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            height: 40px;
+            width: 180px; 
+            border-radius: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .btn-voltar-admin { background-color: #2c3e50; color: white; }
+        .btn-voltar-admin:hover { background-color: #1a252f; transform: translateY(-1px); }
+        .btn-sair-admin { background-color: #ff6b6b; color: white; }
+        .btn-sair-admin:hover { background-color: #e05b5b; transform: translateY(-1px); }
+
+        /* Grid Responsivo para Dados Pessoais */
+        @media (min-width: 1024px) {
+            .form-linha-dupla-topo { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 20px; }
+        }
+
+        /* Evolução Accordion */
         .box-evolucao { background: #fff; border-left: 5px solid #007bff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 15px; border-top: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee; overflow: hidden; }
-        .box-evolucao-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #fff; transition: background 0.2s; }
+        .box-evolucao-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; cursor: pointer; background: #fff; }
         .box-evolucao-header:hover { background: #f8f9fa; }
         .box-evolucao-titulo { font-weight: 700; color: #2c3e50; font-size: 1.1rem; }
         .box-evolucao-data { font-size: 0.85rem; color: #888; }
-        .box-evolucao-content { display: none; padding: 0 20px 20px 20px; } 
-        
-        .box-evolucao-texto { 
-            color: #444; 
-            font-size: 1rem; 
-            line-height: 1.6; 
-            padding-top: 10px; 
-            border-top: 1px solid #eee;
-            white-space: pre-wrap; 
-            word-wrap: break-word;
-        }
+        .box-evolucao-content { display: none; padding: 20px; border-top: 1px solid #eee; }
+        .box-evolucao-texto { color: #444; font-size: 1rem; line-height: 1.6; white-space: pre-wrap; word-wrap: break-word; }
         
         .evolucao-acoes-btn { display: flex; gap: 15px; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #eee; }
-        .btn-editar-evolucao-btn-js { background: none; border: none; color: #007bff; cursor: pointer; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
-        .btn-remover-evolucao { background: none; border: none; color: #ef5350; cursor: pointer; font-size: 0.85rem; font-weight: bold; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .btn-editar-evolucao-trigger-js { background: none; border: none; color: #007bff; cursor: pointer; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .btn-remover-evolucao { background: none; border: none; color: #ef5350; cursor: pointer; font-size: 0.9rem; font-weight: bold; display: flex; align-items: center; gap: 5px; }
 
         #editor-container { min-height: 350px; background: white; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px; font-family: 'Montserrat', sans-serif; }
         .ql-toolbar { border-top-left-radius: 8px; border-top-right-radius: 8px; background: #f8f9fa; border-color: #ccc !important; }
         .ql-container { border-color: #ccc !important; font-size: 1rem; }
 
+        /* --- NOTIFICADOR DE ALTERAÇÕES NÃO SALVAS --- */
+        .aviso-flutuante {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #f39c12;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: none; /* Escondido por padrão */
+            z-index: 9999;
+            align-items: center;
+            gap: 10px;
+            animation: slideInAviso 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid #fff;
+        }
+        .aviso-flutuante.mostrar { display: flex !important; }
+        @keyframes slideInAviso { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* --- AJUSTES DEFINITIVOS PARA CELULAR (COMPACTO E LEGÍVEL) --- */
         @media (max-width: 600px) {
             main { width: 100%; margin: 10px 0; }
+            .header-container { flex-direction: column; gap: 15px; padding: 15px !important; }
+            .logo img { height: 80px !important; } /* LOGO MENOR NO CELULAR */
+            .header-acoes { width: 100%; align-items: center; flex-direction: row; justify-content: space-between; }
+            .btn-header-topo { width: 48%; height: 45px; font-size: 0.8rem; } /* Botões dividem a tela no topo */
             .card-agendamento { padding: 15px !important; border-radius: 0; }
             .form-linha-dupla-topo { grid-template-columns: 1fr; }
-            .header-container { flex-direction: column; gap: 15px; }
+            h2, h3 { font-size: 1.2rem !important; }
+            #editor-container { min-height: 200px; } /* Editor menor no celular */
+            .tabela-container { overflow-x: auto; } /* Impede a tabela de quebrar a tela */
+            .tabela-medicacoes th, .tabela-medicacoes td { padding: 8px; font-size: 0.85rem; }
+            .radio-group-container, .radio-group-alergia { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .aviso-flutuante { bottom: 15px; right: 15px; left: 15px; text-align: center; justify-content: center; font-size: 0.85rem; }
+        }
+
+        @media print {
+            .no-print, .ql-toolbar, .evolucao-acoes-btn, .aviso-flutuante { display: none !important; }
+            .box-evolucao-content { display: block !important; }
+            body { background-color: white; }
+            .card-agendamento { box-shadow: none; padding: 0 !important; }
+            .box-evolucao-header i { display: none !important; }
         }
     </style>
 </head>
 <body>
     <header class="header-fixo no-print"> 
         <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <a href="admin.html" class="logo">
+            <a href="admin-dashboard.html" class="logo">
                 <img src="img/layout.png" alt="Logo Dra. Aisha">
             </a>
             
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <a href="admin.html" class="btn-header btn-voltar-admin">
+            <div class="header-acoes">
+                <a href="admin-dashboard.html" class="btn-header-topo btn-voltar-admin">
                     <i class="ph ph-arrow-left"></i> Voltar ao Painel
                 </a>
-                <button id="btn-logout-admin" class="btn-header btn-sair-admin">
+                <button id="btn-logout-admin" class="btn-header-topo btn-sair-admin">
                     <i class="ph ph-sign-out"></i> Sair
                 </button>
             </div>
@@ -121,15 +161,10 @@
             <p style="text-align: center; color: #777; font-weight: 600; margin-bottom: 30px; font-size: 1.1rem;" id="admin-nome-paciente-topo">Carregando paciente...</p>
 
             <div class="box-termo-responsabilidade no-print" style="border-left-color: #007bff;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <p style="font-weight: 700; font-size: 1.1rem; color: #2c3e50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><i class="ph-fill ph-shield-check" style="color: #007bff; font-size: 1.3rem;"></i> Status do Paciente</p>
-                        <p style="color: #555; font-size: 0.95rem; margin-bottom: 0;">Verifique se o paciente já assinou o Termo de Responsabilidade.</p>
-                    </div>
-                </div>
+                <p style="font-weight: 700; color: #2c3e50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;"><i class="ph-fill ph-shield-check" style="color: #007bff;"></i> Status do Paciente</p>
                 <div class="check-termo-container">
                     <input type="checkbox" id="check-termo-aceite" disabled> 
-                    <span id="status-termo-texto">O paciente <strong>AINDA NÃO</strong> aceitou o termo de responsabilidade.</span>
+                    <span id="status-termo-texto">Verificando...</span>
                 </div>
             </div>
 
@@ -180,8 +215,8 @@
                     </h3>
                     <div style="background: #fff; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
                         <div class="radio-group-container">
-                            <label class="radio-label"><input type="radio" name="temComorbidade" value="nao" checked> Não Existe</label>
-                            <label class="radio-label"><input type="radio" name="temComorbidade" value="sim"> Existe</label>
+                            <label class="radio-label"><input type="radio" name="temComorbidade" value="nao" checked style="accent-color: #2ADCA1;"> Não Existe</label>
+                            <label class="radio-label"><input type="radio" name="temComorbidade" value="sim" style="accent-color: #2ADCA1;"> Existe</label>
                         </div>
                         <div id="lista-comorbidades" style="display: none; border-top: 1px solid #eee; padding-top: 20px; margin-top: 20px;">
                             <div class="grid-comorbidades">
@@ -192,7 +227,7 @@
                                 <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="Alzheimer/Demência"> Demência</label></div>
                                 <div class="item-comorbidade"><label><input type="checkbox" name="comorbidade_item" value="AVC Prévio"> AVC Prévio</label></div>
                             </div>
-                            <input type="text" id="comorbidades-outras" placeholder="Outras (escreva aqui)" class="textarea-interativo" style="margin-top: 15px; height: auto;">
+                            <input type="text" id="comorbidades-outras" placeholder="Outras..." class="textarea-interativo" style="margin-top: 15px;">
                         </div>
                     </div>
                 </div>
@@ -209,9 +244,7 @@
                         <div id="container-add-alergia" style="display: none; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px;">
                             <div class="alergia-input-group no-print">
                                 <input type="text" id="input-nova-alergia" placeholder="Ex: Dipirona...">
-                                <button type="button" id="btn-add-alergia">
-                                    <i class="ph ph-plus-circle" style="font-size: 1.2rem;"></i> Adicionar
-                                </button>
+                                <button type="button" id="btn-add-alergia">Adicionar</button>
                             </div>
                             <ul id="lista-alergias-pills" style="list-style: none; padding: 0; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px;"></ul>
                         </div>
@@ -237,19 +270,11 @@
                                 <option value="Noite / Antes de dormir">Noite / Dormir</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn-salvar-med-tabela">Salvar medicamento na tabela</button>
+                        <button type="submit" class="btn-salvar-med-tabela">Salvar na Tabela</button>
                     </form>
                     <div class="tabela-container">
                         <table class="tabela-medicacoes">
-                            <thead>
-                                <tr>
-                                    <th style="width: 35%;">Medicação</th>
-                                    <th style="text-align: center;">Qtd</th>
-                                    <th style="text-align: center;">Horário</th>
-                                    <th>Turno</th>
-                                    <th class="no-print" style="text-align: center;">Ação</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th style="width: 35%;">Medicação</th><th style="text-align: center;">Qtd</th><th style="text-align: center;">Horário</th><th>Turno</th><th class="no-print">Ação</th></tr></thead>
                             <tbody id="lista-medicacoes-body"></tbody>
                         </table>
                     </div>
@@ -257,14 +282,14 @@
 
                 <div class="gerenciador-medicos" style="margin-top: 35px;">
                     <h3><i class="ph ph-stethoscope"></i> Médicos Assistentes</h3>
-                    <form id="form-add-medico" class="form-add-medico-novo no-print" style="background: #fcfcfc; padding: 20px; border-radius: 10px; border: 1px solid #eee;"> 
+                    <form id="form-add-medico" class="form-add-medico-novo no-print"> 
                         <div class="form-linha-dupla">
                             <div class="input-container"><label>Nome do Médico</label><input type="text" id="nome-medico" required></div>
                             <div class="input-container"><label>CRM</label><input type="text" id="crm-medico"></div>
                         </div>
                         <div class="form-linha-dupla">
                             <div class="input-container"><label>Especialidade</label><input type="text" id="especialidade-medico"></div>
-                            <div class="input-container"><label>Telefone</label><input type="text" id="telefone-medico"></div>
+                            <div class="input-container"><label>Telefone / WhatsApp</label><input type="text" id="telefone-medico"></div>
                         </div>
                         <button type="submit" class="btn-salvar-med-tabela" style="width: 100%;">Adicionar Médico na Lista</button>
                     </form>
@@ -299,7 +324,7 @@
                     <div id="lista-evolucoes-body"></div>
                 </div>
 
-                <div class="botoes-acao-container no-print" style="margin-top: 40px; display: flex; gap: 15px; justify-content: center;"> 
+                <div class="botoes-acao-container no-print" style="margin-top: 40px; display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;"> 
                     <button type="button" id="btn-salvar-tudo" style="background: #2ADCA1; color: white; border: none; padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px;"><i class="ph ph-floppy-disk"></i> Salvar e Atualizar Prontuário</button>
                     <button type="button" id="btn-download-pdf" style="padding: 15px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 10px; background: #e0e0e0; color: #333; border: none;"><i class="ph ph-file-pdf"></i> Baixar PDF</button>
                 </div>
@@ -307,6 +332,11 @@
             <div id="mensagem-retorno" style="text-align: center; margin-top: 15px; font-weight: bold;"></div>
         </div>
     </main>
+
+    <div id="aviso-salvar" class="aviso-flutuante no-print">
+        <i class="ph-fill ph-warning" style="font-size: 1.3rem;"></i> 
+        Existem alterações não salvas! Lembre-se de clicar em "Salvar e Atualizar".
+    </div>
 
     <footer id="contato" class="no-print" style="text-align: center; padding: 20px;">
         <p class="crm-info">Dra. Aisha Wenzinger | CRM/BA: 20473</p>
