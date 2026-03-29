@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
     const API_URL = `${API_ADMIN_BASE}/api/admin/pacientes`;
-    const API_PACIENTE_URL = `${API_ADMIN_BASE}/api/admin/paciente/`; // Usado para PUT e DELETE
+    const API_PACIENTE_URL = `${API_ADMIN_BASE}/api/admin/paciente/`;
 
     if (!token || role !== 'admin') {
         localStorage.clear();
@@ -64,7 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 : '<span class="status-badge status-pendente"><i class="ph-fill ph-clock"></i> Pendente</span>';
 
             const telLimpo = p.telefone ? p.telefone.replace(/\D/g, '') : '';
-            const senhaDisplay = p.senha ? p.senha : 'Oculta/Padrão'; 
+            const temContato = telLimpo.length >= 8;
+            
+            // Oculta o hash do bcrypt e exibe uma mensagem amigável
+            const senhaDisplay = 'Protegida (Edite para resetar)'; 
 
             const li = document.createElement('li');
             li.className = 'linha-grid'; 
@@ -76,12 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
                     <strong style="color:#2c3e50; font-size: 1.05rem;">${p.nome}</strong><br>
                     <span style="color: #888; font-size: 0.85rem;"><i class="ph ph-envelope-simple"></i> ${p.email}</span><br>
-                    <span style="color: #007bff; font-size: 0.80rem;"><i class="ph ph-lock-key"></i> Senha Cadastrada: <strong>${senhaDisplay}</strong></span>
+                    <span style="color: #007bff; font-size: 0.80rem;"><i class="ph ph-lock-key"></i> Senha: <strong>${senhaDisplay}</strong></span>
                 </div>
                 <div style="text-align: center;">${mobileLabelStatus}${statusBadge}</div>
                 <div style="text-align: center; color: #666; font-weight: 500;">${mobileLabelData}${dataStr}</div>
                 <div class="acoes-container">
-                    ${telLimpo ? `<a href="https://wa.me/55${telLimpo}" target="_blank" class="btn-acao btn-wpp" title="Chamar no WhatsApp"><i class="ph-fill ph-whatsapp-logo"></i></a>` : ''}
+                    ${temContato ? `<a href="https://wa.me/55${telLimpo}" target="_blank" class="btn-acao btn-wpp" title="Chamar no WhatsApp"><i class="ph-fill ph-whatsapp-logo"></i></a>` : ''}
                     <button class="btn-acao btn-ver" onclick="irParaProntuario('${p._id}')">
                         <i class="ph ph-clipboard-text"></i> Prontuário
                     </button>
@@ -220,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(payload)
                 });
                 if (response.ok) { window.fecharModalEditar(); fetchPacientes(); } 
-                else { alert('Erro ao atualizar cadastro (Verifique se o backend tem a rota PUT).'); }
+                else { alert('Erro ao atualizar cadastro. Verifique a rota no Backend.'); }
             } catch (error) { alert('Erro de conexão.'); }
         });
     }

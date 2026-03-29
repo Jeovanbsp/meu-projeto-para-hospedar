@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 // Importação dos Modelos
 const User = require('./models/User');
-const Prontuario = require('./models/Prontuario'); // <-- Adicionado para a rota pública
+const Prontuario = require('./models/Prontuario');
 const app = express();
 require('dotenv').config()
 
@@ -15,7 +15,6 @@ app.use(express.json());
 
 // ==========================================
 // ROTA PÚBLICA DE EMERGÊNCIA (QR CODE)
-// Fica no topo para não ser bloqueada por nenhum Token!
 // ==========================================
 app.get('/api/prontuario/publico/:paciente', async (req, res) => {
     try {
@@ -52,7 +51,7 @@ app.get('/api/prontuario/publico/:paciente', async (req, res) => {
 const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
 
-// Rotas da Dra. Aisha (Admin)
+// Rotas da Dra. Aisha (Admin) - É AQUI QUE O Render ENCONTRA A SUA ROTA DE PUT!
 app.use('/api/admin', adminRoutes);
 
 // Rotas do Perfil do Paciente (Daqui pra baixo, exige Token)
@@ -76,7 +75,6 @@ app.post('/api/auth/login', async (req, res) => {
 
         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-        // Retornando 'name' para manter consistência com o que o front-end espera
         res.json({ token, user: { name: user.nome, role: user.role } });
     } catch (err) {
         console.error(err)
@@ -84,10 +82,11 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// CADASTRO
+// CADASTRO (ATUALIZADO PARA RECEBER TELEFONE E SALVAR A SENHA VISÍVEL)
 app.post('/api/auth/register', async (req, res) => {
     try {
-        const { nome, email, password, role } = req.body;
+        // PEGANDO O TELEFONE QUE VEM DO FRONT-END
+        const { nome, email, password, role, telefone } = req.body;
         
         // Verifica se o usuário já existe
         const userExists = await User.findOne({ email: email.toLowerCase().trim() });
@@ -101,7 +100,9 @@ app.post('/api/auth/register', async (req, res) => {
         const newUser = new User({
             nome,
             email: email.toLowerCase().trim(),
-            password: hashedPassword,
+            password: hashedPassword, // Senha criptografada (para segurança do login)
+            senha: password, // Senha em texto limpo (Apenas para exibir no Painel Admin)
+            telefone: telefone || '', // Adicionado para o botão do WhatsApp
             role: role || 'paciente'
         });
 
