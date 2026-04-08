@@ -103,7 +103,6 @@ app.post('/api/auth/register', async (req, res) => {
             nome,
             email: email.toLowerCase().trim(),
             password: hashedPassword, 
-            senha: password, 
             telefone: telefone || '', 
             role: role || 'paciente'
         });

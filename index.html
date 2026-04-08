@@ -155,12 +155,12 @@
             <div class="local">
                 <h3>Shopping Estrada do Coco</h3>
                 <p>Av. Santos Dumont, Est do Coco, 6216 - loja 102<br>Pitangueiras, Lauro de Freitas - BA, 42701-260</p>
-                <a href="https://www.google.com/maps/search/?api=1&query=Shopping+Estrada+do+Coco,+Lauro+de+Freitas" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Centro+Médico+New+Life+Lauro+de+Freitas+BA" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
             <div class="local">
                 <h3>International Trade Center - Salvador</h3>
                 <p>Rua Arthur de Azevedo Machado, 1459<br>Ed. International Trade Center, Sala 1316<br>STIEP, Salvador - BA, 41770-790</p>
-                <a href="https://www.google.com/maps/search/?api=1&query=International+Trade+Center+Salvador" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Centro+Médico+Salute+Salvador+BA" target="_blank" class="btn-maps"><i class="ph ph-map-pin"></i> Ver no Google Maps</a>
             </div>
         </div>
     </section>
@@ -213,6 +213,27 @@
         hamburgerButton.addEventListener('click', () => {
             hamburgerButton.classList.toggle('is-active');
             mobileMenu.classList.toggle('is-active');
+        });
+
+        // ==========================================
+        // NOVO: EFEITO DO CABEÇALHO (SMART HEADER)
+        // ==========================================
+        let ultimoScroll = window.scrollY;
+        const topo = document.querySelector('.novo-header'); 
+
+        window.addEventListener('scroll', () => {
+            let scrollAtual = window.scrollY;
+
+            // Se rolou para baixo e já desceu mais de 100px, esconde o topo
+            if (scrollAtual > ultimoScroll && scrollAtual > 100) {
+                topo.classList.add('esconder-topo');
+            } 
+            // Se rolou para cima, mostra o topo
+            else {
+                topo.classList.remove('esconder-topo');
+            }
+
+            ultimoScroll = scrollAtual; // Atualiza a posição de rolagem
         });
     </script>
 </body>
