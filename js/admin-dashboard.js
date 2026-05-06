@@ -129,6 +129,28 @@ document.addEventListener('DOMContentLoaded', () => {
     window.carregarLista = () => fetchPacientes();
     window.abrirModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'flex'; };
     window.fecharModalCadastro = () => { document.getElementById('modal-cadastro').style.display = 'none'; document.getElementById('form-cadastro-paciente').reset(); };
+    
+    window.abrirModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'flex'; };
+    window.fecharModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'none'; document.getElementById('form-cadastro-secretaria').reset(); };
+    
+    document.getElementById('form-cadastro-secretaria').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('secretaria-nome').value;
+        const usuario = document.getElementById('secretaria-usuario').value;
+        const senha = document.getElementById('secretaria-senha').value;
+        
+        // Salvar no localStorage
+        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+        if (secretarias.find(s => s.usuario === usuario)) {
+            alert('Usuário já existe!');
+            return;
+        }
+        secretarias.push({ id: Date.now(), nome, usuario, senha, createdAt: new Date().toISOString() });
+        localStorage.setItem('secretarias', JSON.stringify(secretarias));
+        
+        alert('Secretária cadastrada com sucesso!');
+        fecharModalSecretaria();
+    });
     window.abrirModalEditar = (id, nome, email, telefone) => {
         document.getElementById('edit-id').value = id;
         document.getElementById('edit-nome').value = nome;
