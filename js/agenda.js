@@ -214,6 +214,11 @@ function renderAvailabilityTable() {
     let filtered = [...disponibilidade];
     if (filterMonth) filtered = filtered.filter(d => d.date.startsWith(filterMonth));
     if (filterLocation) filtered = filtered.filter(d => d.location.includes(filterLocation));
+    
+    // Contador de disponiveis
+    const countEl = document.getElementById('count-disponiveis');
+    if (countEl) countEl.textContent = filtered.length;
+    
     filtered.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
     tbody.innerHTML = filtered.length === 0 ? 
         '<tr><td colspan="4" style="text-align: center; color: #999; padding: 40px;">Nenhuma disponibilidade</td></tr>' :

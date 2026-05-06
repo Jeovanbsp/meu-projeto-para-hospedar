@@ -248,10 +248,12 @@ function carregarStats() {
     const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
     const historico = JSON.parse(localStorage.getItem('historico') || '[]');
     const pacientes = JSON.parse(localStorage.getItem('pacientes') || '[]');
+    const disponibilidade = JSON.parse(localStorage.getItem('disponibilidade') || '[]');
     
     // Totais
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
     document.getElementById('total-consultas').textContent = historico.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-disponiveis').textContent = disponibilidade.length;
     document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
@@ -281,13 +283,15 @@ function atualizarStats() {
     
     // Atualizar totais filtrados
     const historico = JSON.parse(localStorage.getItem('historico') || '[]');
-    const histFiltrado = historico.filter(h => {
-        if (ano && h.data && !h.data.startsWith(ano)) return false;
-        if (mes && h.data && !h.data.substring(5, 7).startsWith(mes)) return false;
+    const disponibilidade = JSON.parse(localStorage.getItem('disponibilidade') || '[]');
+    const dispFiltrada = disponibilidade.filter(d => {
+        if (ano && d.date && !d.date.startsWith(ano)) return false;
+        if (mes && d.date && !d.date.substring(5, 7).startsWith(mes)) return false;
         return true;
     });
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
     document.getElementById('total-consultas').textContent = histFiltrado.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-disponiveis').textContent = dispFiltrada.length;
     document.getElementById('total-mensagens').textContent = histFiltrado.filter(h => h.tipo === 'mensagem').length;
     
     // Grafico por mes
