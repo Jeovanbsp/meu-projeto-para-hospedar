@@ -67,8 +67,13 @@ function renderCalendar() {
         if (disponibilidade.some(d => d.date === dateStr)) dayEl.classList.add('has-slots');
         if (selectedDate === dateStr) dayEl.classList.add('selected');
         const dateObj = new Date(year, month, day);
-        if (dateObj < today) { dayEl.classList.add('past'); }
-        else { dayEl.onclick = () => selectDate(dateStr); }
+        if (dateObj < today) {
+            dayEl.classList.add('past');
+            dayEl.onclick = () => selectPastDate(dateStr); // Data passada - agendar retroativo
+            if (agendamentos.some(a => a.date === dateStr)) dayEl.classList.add('has-slots');
+        } else {
+            dayEl.onclick = () => selectDate(dateStr);
+        }
         calendarDays.appendChild(dayEl);
     }
 }
@@ -96,6 +101,21 @@ function selectDate(dateStr) {
         el.classList.remove('selected');
         el.querySelector('input').checked = false;
     });
+}
+
+function selectPastDate(dateStr) {
+    // Data passada - abrir modal para consulta retroativa
+    selectedDate = dateStr;
+    document.getElementById('selected-date-title').textContent = 'Data: ' + formatDate(dateStr);
+    document.getElementById('agendar-date').value = dateStr;
+    document.getElementById('agendar-time').value = '';
+    document.getElementById('agendar-location').value = 'Salvador';
+    document.getElementById('agendar-datahora').value = formatDate(dateStr);
+    document.getElementById('agendar-nome').value = '';
+    document.getElementById('agendar-whatsapp').value = '';
+    document.getElementById('agendar-endereco').value = '';
+    document.getElementById('agendar-time').placeholder = 'Hora da consulta';
+    document.getElementById('modal-agendar').classList.add('active');
 }
 
 function renderBlocks() {
@@ -392,7 +412,7 @@ function renderPacientesLista() {
         const consultas = agendamentos.filter(a => a.patientName === p.nome);
         const ultimaConsulta = consultas.length > 0 ? consultas[consultas.length - 1].date : null;
         const pacienteTags = tags.filter(t => t.paciente === p.nome);
-        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666; margin-top: 5px;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div><div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button><button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
+        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div>' + (p.responsavel ? '<div style="font-size: 0.85rem; color: #007bff;">Responsavel: ' + p.responsavel + '</div>' : '') + (p.obs ? '<div style="font-size: 0.85rem; color: #f39c12;">Obs: ' + p.obs + '</div>' : '') + '<div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button><button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
     }).join('');
 }
 
@@ -400,12 +420,16 @@ function cadastrarPaciente() {
     const nome = document.getElementById('novo-paciente-nome').value;
     const whatsapp = document.getElementById('novo-paciente-whatsapp').value;
     const endereco = document.getElementById('novo-paciente-endereco').value;
+    const responsavel = document.getElementById('novo-paciente-responsavel').value;
+    const obs = document.getElementById('novo-paciente-obs').value;
     if (!nome) return alert('Informe o nome do paciente.');
-    pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
+    pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, responsavel: responsavel, obs: obs, createdAt: new Date().toISOString() });
     localStorage.setItem('pacientes', JSON.stringify(pacientes));
     document.getElementById('novo-paciente-nome').value = '';
     document.getElementById('novo-paciente-whatsapp').value = '';
     document.getElementById('novo-paciente-endereco').value = '';
+    document.getElementById('novo-paciente-responsavel').value = '';
+    document.getElementById('novo-paciente-obs').value = '';
     renderPacientesLista();
     carregarPacientesSelect();
     alert('Paciente cadastrado!');
