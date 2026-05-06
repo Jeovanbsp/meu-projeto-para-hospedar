@@ -1,5 +1,13 @@
 // Agenda System - Dra. Aisha
 
+const API_BASE = 'https://aishageriatria.onrender.com';
+const API_ENDPOINTS = {
+    disponibilidade: `${API_BASE}/api/disponibilidade`,
+    agendamentos: `${API_BASE}/api/appointments`,
+    pacientes: `${API_BASE}/api/pacientes`,
+    historico: `${API_BASE}/api/historico`
+};
+
 let currentDate = new Date();
 let selectedDate = null;
 let selectedBlocks = [];
@@ -11,19 +19,52 @@ let tags = [];
 let mensagens = [];
 let historico = [];
 
-function init() {
-    const disp = localStorage.getItem('disponibilidade');
-    if (disp) disponibilidade = JSON.parse(disp);
-    const agend = localStorage.getItem('agendamentos');
-    if (agend) agendamentos = JSON.parse(agend);
-    const pats = localStorage.getItem('pacientes');
-    if (pats) pacientes = JSON.parse(pats);
+async function loadFromAPI(key) {
+    const token = localStorage.getItem('authToken');
+    if (!token) return null;
+    try {
+        const res = await fetch(API_ENDPOINTS[key], { headers: { 'Authorization': `Bearer ${token}` } });
+        return res.ok ? await res.json() : null;
+    } catch { return null; }
+}
+
+async function saveToAPI(key, data) {
+    const token = localStorage.getItem('authToken');
+    if (!token) return;
+    try {
+        await fetch(API_ENDPOINTS[key], {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(data)
+        });
+    } catch {}
+}
+
+async function init() {
+    // Try load from API, fallback to localStorage
+    const [apiDisp, apiAgend, apiPats, apiHist] = await Promise.all([
+        loadFromAPI('disponibilidade'),
+        loadFromAPI('agendamentos'),
+        loadFromAPI('pacientes'),
+        loadFromAPI('historico')
+    ]);
+    
+    if (apiDisp) { disponibilidade = apiDisp; localStorage.setItem('disponibilidade', JSON.stringify(apiDisp)); }
+    else { const d = localStorage.getItem('disponibilidade'); if (d) disponibilidade = JSON.parse(d); }
+    
+    if (apiAgend) { agendamentos = apiAgend; localStorage.setItem('agendamentos', JSON.stringify(apiAgend)); }
+    else { const a = localStorage.getItem('agendamentos'); if (a) agendamentos = JSON.parse(a); }
+    
+    if (apiPats) { pacientes = apiPats; localStorage.setItem('pacientes', JSON.stringify(apiPats)); }
+    else { const p = localStorage.getItem('pacientes'); if (p) pacientes = JSON.parse(p); }
+    
+    if (apiHist) { historico = apiHist; localStorage.setItem('historico', JSON.stringify(apiHist)); }
+    else { const h = localStorage.getItem('historico'); if (h) historico = JSON.parse(h); }
+    
     const tgs = localStorage.getItem('tags');
     if (tgs) tags = JSON.parse(tgs);
     const msgs = localStorage.getItem('mensagens');
     if (msgs) mensagens = JSON.parse(msgs);
-    const hist = localStorage.getItem('historico');
-    if (hist) historico = JSON.parse(hist);
     
     renderCalendar();
     renderAvailabilityTable();
@@ -34,9 +75,12 @@ function init() {
     renderMensagens();
     renderTags();
     renderHistoricoConsultas();
+    renderHistorico();
     atualizarContador();
-
-    document.getElementById('btn-logout').addEventListener('click', () => window.location.href = 'index.html');
+    // Contador
+    if (c) c.textContent = agendamentos.length;
+    
+    document.getElementById('btn-logout').addEventListener('click', () => { atualizarContador(); window.location.href = 'index.html' }); /// atualizarContador();('click', () => window.location.href = 'index.html');
 }
 
 // CALENDAR
