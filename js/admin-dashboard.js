@@ -381,5 +381,24 @@ function excluirAgendamentos() {
         localStorage.removeItem('disponibilidade');
         alert('Agendamentos limpos!');
         carregarStats();
+        renderListaDados();
+    }
+}
+
+function excluirPacientes() {
+    if (confirm('Deseja limpar todos os pacientes? Esta acao e irreversivel.')) {
+        localStorage.removeItem('pacientes');
+        alert('Pacientes limpos!');
+        carregarStats();
+        renderListaDados();
+    }
+}
+
+function excluirTudo() {
+    if (confirm('Deseja limpar TODOS os dados? Esta acao e irreversivel.')) {
+        localStorage.clear();
+        alert('Todos os dados foram limpos!');
+        carregarStats();
+        renderListaDados();
     }
 }
