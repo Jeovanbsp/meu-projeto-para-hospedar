@@ -114,6 +114,87 @@
         </div>
 
         <h2 class="titulo-secao"><i class="ph ph-squares-four" style="vertical-align: middle;"></i> Visão Geral</h2>
+
+        <div class="dashboard-grid" style="grid-template-columns: repeat(4, 1fr); gap: 15px;">
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #007bff;" id="total-agendamentos">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Total Agendamentos</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #2ADCA1;" id="total-consultas">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Consultas Realizadas</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #25c095;" id="total-mensagens">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Mensagens Enviadas</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #f39c12;" id="total-pacientes">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Pacientes</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div style="background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center;">
+                <select id="filtro-ano" onchange="atualizarStats()" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="">Todos os Anos</option>
+                </select>
+                <select id="filtro-mes" onchange="atualizarStats()" style="padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    <option value="">Todos os Meses</option>
+                    <option value="01">Janeiro</option>
+                    <option value="02">Fevereiro</option>
+                    <option value="03">Marco</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Maio</option>
+                    <option value="06">Junho</option>
+                    <option value="07">Julho</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
+                </select>
+                <button onclick="limparFiltros()" style="padding: 10px 20px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">Limpar</button>
+            </div>
+        </div>
+
+        <!-- Graficos -->
+        <div class="dashboard-grid" style="margin-top: 20px;">
+            <div class="card-grafico">
+                <div class="header-card" style="border-bottom: none; margin-bottom: 10px;">
+                    <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0;"><i class="ph ph-chart-bar" style="color:#2ADCA1;"></i> Agendamentos por Mês</h3>
+                </div>
+                <div style="height: 250px; width: 100%;"><canvas id="graficoMensal"></canvas></div>
+            </div>
+
+            <div class="card-grafico">
+                <div class="header-card" style="border-bottom: none; margin-bottom: 10px;">
+                    <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0;"><i class="ph ph-chart-pie-slice" style="color:#2ADCA1;"></i> Por Local</h3>
+                </div>
+                <div style="height: 250px; width: 100%;"><canvas id="graficoLocal"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Lista de Dados com Acao Excluir -->
+        <div class="card-lista" style="margin-top: 30px;">
+            <div class="header-card">
+                <h3 style="font-size: 1.1rem; color: #2c3e50; margin: 0; display: flex; align-items: center;"><i class="ph ph-trash" style="color:#ff6b6b; margin-right: 8px;"></i> Gerenciar Dados</h3>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="excluirHistorico()" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 15px; border-radius: 8px; cursor: pointer;">Limpar Historico</button>
+                    <button onclick="excluirAgendamentos()" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 15px; border-radius: 8px; cursor: pointer;">Limpar Agendamentos</button>
+                </div>
+            </div>
+            <div class="linha-grid cabecalho-lista" style="grid-template-columns: 2fr 1fr 1fr 100px;">
+                <div>Paciente</div>
+                <div>Tipo</div>
+                <div>Data</div>
+                <div>Ação</div>
+            </div>
+            <ul id="lista-dados" class="lista-pacientes">
+                <li style="text-align:center; padding: 40px; color:#999;">Carregando...</li>
+            </ul>
+        </div>
         
         <div class="dashboard-grid">
             <div class="card-grafico">

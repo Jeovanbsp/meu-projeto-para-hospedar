@@ -237,4 +237,149 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchPacientes();
     carregarBannersAdmin();
+    carregarStats();
 });
+
+// NOVAS FUNCOES DE ESTATISTICAS
+let chartMensal = null;
+let chartLocal = null;
+
+function carregarStats() {
+    const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    const historico = JSON.parse(localStorage.getItem('historico') || '[]');
+    const pacientes = JSON.parse(localStorage.getItem('pacientes') || '[]');
+    
+    // Totais
+    document.getElementById('total-agendamentos').textContent = agendamentos.length;
+    document.getElementById('total-consultas').textContent = historico.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
+    document.getElementById('total-pacientes').textContent = pacientes.length;
+    
+    // Popular select de anos
+    const anos = new Set();
+    agendamentos.forEach(a => { if (a.date) anos.add(a.date.substring(0, 4)); });
+    historico.forEach(h => { if (h.data) anos.add(h.data.substring(0, 4)); });
+    const selectAno = document.getElementById('filtro-ano');
+    selectAno.innerHTML = '<option value="">Todos os Anos</option>';
+    Array.from(anos).sort().forEach(ano => {
+        selectAno.innerHTML += '<option value="' + ano + '">' + ano + '</option>';
+    });
+    
+    atualizarStats();
+    renderListaDados();
+}
+
+function atualizarStats() {
+    const ano = document.getElementById('filtro-ano').value;
+    const mes = document.getElementById('filtro-mes').value;
+    const filtrar = (a) => {
+        if (ano && a.date && !a.date.startsWith(ano)) return false;
+        if (mes && a.date && !a.date.substring(5, 7).startsWith(mes)) return false;
+        return true;
+    };
+    const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]').filter(filtrar);
+    
+    // Atualizar totais filtrados
+    const historico = JSON.parse(localStorage.getItem('historico') || '[]');
+    const histFiltrado = historico.filter(h => {
+        if (ano && h.data && !h.data.startsWith(ano)) return false;
+        if (mes && h.data && !h.data.substring(5, 7).startsWith(mes)) return false;
+        return true;
+    });
+    document.getElementById('total-agendamentos').textContent = agendamentos.length;
+    document.getElementById('total-consultas').textContent = histFiltrado.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-mensagens').textContent = histFiltrado.filter(h => h.tipo === 'mensagem').length;
+    
+    // Grafico por mes
+    const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const dadosMes = new Array(12).fill(0);
+    agendamentos.forEach(a => {
+        if (a.date) dadosMes[parseInt(a.date.substring(5, 7)) - 1]++;
+    });
+    
+    if (chartMensal) chartMensal.destroy();
+    chartMensal = new Chart(document.getElementById('graficoMensal'), {
+        type: 'bar',
+        data: {
+            labels: meses,
+            datasets: [{
+                label: 'Agendamentos',
+                data: dadosMes,
+                backgroundColor: '#2ADCA1'
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+    
+    // Grafico por local
+    const locais = { 'Salvador': 0, 'Lauro': 0, 'Domiciliar': 0 };
+    agendamentos.forEach(a => {
+        if (a.location) {
+            if (a.location.includes('Salvador')) locais['Salvador']++;
+            if (a.location.includes('Lauro')) locais['Lauro']++;
+            if (a.location.includes('Domiciliar')) locais['Domiciliar']++;
+        }
+    });
+    
+    if (chartLocal) chartLocal.destroy();
+    chartLocal = new Chart(document.getElementById('graficoLocal'), {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(locais),
+            datasets: [{
+                data: Object.values(locais),
+                backgroundColor: ['#007bff', '#2ADCA1', '#f39c12']
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false }
+    });
+}
+
+function limparFiltros() {
+    document.getElementById('filtro-ano').value = '';
+    document.getElementById('filtro-mes').value = '';
+    atualizarStats();
+}
+
+function renderListaDados() {
+    const historico = JSON.parse(localStorage.getItem('historico') || '[]');
+    const lista = document.getElementById('lista-dados');
+    
+    if (historico.length === 0) {
+        lista.innerHTML = '<li style="text-align:center; padding: 40px; color:#999;">Nenhum dado registrado</li>';
+        return;
+    }
+    
+    historico.sort((a, b) => b.data.localeCompare(a.data));
+    lista.innerHTML = historico.slice(0, 50).map((h, idx) => {
+        const dataFmt = h.data ? new Date(h.data).toLocaleDateString('pt-BR') : '-';
+        return '<li class="linha-grid"><div>' + h.paciente + '</div><div>' + h.tipo + '</div><div>' + dataFmt + '</div><div><button onclick="excluirItem(' + idx + ')" style="background:#fff0f0; color:#ff6b6b; border:1px solid #ff6b6b; padding:5px 8px; border-radius:5px; cursor:pointer;">X</button></div></li>';
+    }).join('');
+}
+
+function excluirItem(idx) {
+    if (confirm('Deseja excluir este item?')) {
+        const historico = JSON.parse(localStorage.getItem('historico') || '[]');
+        historico.splice(idx, 1);
+        localStorage.setItem('historico', JSON.stringify(historico));
+        renderListaDados();
+        carregarStats();
+    }
+}
+
+function excluirHistorico() {
+    if (confirm('Deseja limpar todo o historico? Esta acao e irreversivel.')) {
+        localStorage.removeItem('historico');
+        alert('Historico limpo!');
+        carregarStats();
+    }
+}
+
+function excluirAgendamentos() {
+    if (confirm('Deseja limpar todos os agendamentos? Esta acao e irreversivel.')) {
+        localStorage.removeItem('agendamentos');
+        localStorage.removeItem('disponibilidade');
+        alert('Agendamentos limpos!');
+        carregarStats();
+    }
+}
