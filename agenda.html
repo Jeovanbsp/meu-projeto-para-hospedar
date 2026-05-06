@@ -225,7 +225,6 @@
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="disponibilidade">Disponibilidade</button>
             <button class="tab-btn" data-tab="agendamentos">Agendamentos</button>
-            <button class="tab-btn" data-tab="historico">Historico</button>
             <button class="tab-btn" data-tab="pacientes">Pacientes</button>
             <button class="tab-btn" data-tab="tags">Tags & Mensagens</button>
         </div>
@@ -336,6 +335,7 @@
             <div class="appointments-card">
                 <div class="availability-header">
                     <div class="availability-title">Consultas Agendadas</div>
+                    <button class="tab-btn" onclick="document.getElementById('historico-section').style.display=document.getElementById('historico-section').style.display==='none'?'block':'none'">Historico</button>
                 </div>
 
                 <div class="filters-row">
@@ -353,10 +353,8 @@
                     <div class="empty-state">Nenhuma consulta agendada</div>
                 </div>
             </div>
-        </div>
-
-        <div id="tab-historico" class="tab-content">
-            <div class="availability-card">
+            
+            <div id="historico-section" class="appointments-card" style="display:none; margin-top:20px;">
                 <div class="availability-header">
                     <div class="availability-title">Historico de Consultas Realizadas</div>
                 </div>

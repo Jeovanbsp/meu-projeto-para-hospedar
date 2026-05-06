@@ -33,6 +33,7 @@ function init() {
     carregarPacientesSelect();
     renderMensagens();
     renderTags();
+    renderHistoricoConsultas();
     renderHistorico();
     atualizarContador();
     // Contador
@@ -513,6 +514,7 @@ function salvarTag() {
     document.getElementById('tag-observacao').value = '';
     mostrarTagDetalhes(novaTag);
     renderTags();
+    renderHistoricoConsultas();
     renderPacientesLista();
 }
 
@@ -560,6 +562,7 @@ function excluirTag(id) {
         tags = tags.filter(t => t.id !== id);
         localStorage.setItem('tags', JSON.stringify(tags));
         renderTags();
+    renderHistoricoConsultas();
         renderPacientesLista();
     }
 }
