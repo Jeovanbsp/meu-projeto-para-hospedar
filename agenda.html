@@ -193,6 +193,7 @@
         @media (max-width: 900px) {
             .calendar-section { grid-template-columns: 1fr; }
             #tab-tags > div { grid-template-columns: 1fr; }
+            .form-group input, .form-group textarea, .form-group select { font-size: 1.1rem; }
         }
         @media (max-width: 768px) {
             body { padding-top: 130px; }
@@ -224,6 +225,7 @@
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="disponibilidade">Disponibilidade</button>
             <button class="tab-btn" data-tab="agendamentos">Agendamentos</button>
+            <button class="tab-btn" data-tab="pacientes">Pacientes</button>
             <button class="tab-btn" data-tab="tags">Tags & Mensagens</button>
         </div>
 
@@ -346,7 +348,41 @@
             </div>
         </div>
 
-        <!-- TAB 3: TAGS E MENSAGENS -->
+        <!-- TAB PACIENTES -->
+        <div id="tab-pacientes" class="tab-content">
+            <div class="availability-card">
+                <div class="availability-header">
+                    <div class="availability-title">Cadastrar Novo Paciente</div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label>Nome Completo</label>
+                        <input type="text" id="novo-paciente-nome" placeholder="Nome completo">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="tel" id="novo-paciente-whatsapp" placeholder="(71) 99999-9999">
+                    </div>
+                    <div class="form-group">
+                        <label>Endereço</label>
+                        <input type="text" id="novo-paciente-endereco" placeholder="Rua, número, bairro...">
+                    </div>
+                </div>
+                
+                <button class="btn-salvar" onclick="cadastrarPaciente()" style="background: #007bff;">Cadastrar Paciente</button>
+            </div>
+            
+            <div class="availability-card" style="margin-top: 25px;">
+                <div class="availability-header">
+                    <div class="availability-title">Lista de Pacientes</div>
+                </div>
+                
+                <div id="pacientes-lista" class="blocks-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;"></div>
+            </div>
+        </div>
+
+        <!-- TAB 4: TAGS E MENSAGENS -->
         <div id="tab-tags" class="tab-content">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
                 <!-- Criar Tag -->
@@ -365,6 +401,18 @@
                     <div class="form-group">
                         <label>Título da Tag</label>
                         <input type="text" id="tag-titulo" placeholder="Ex: Revisão de medicamentos, Retorno em 30 dias...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Cor da Tag</label>
+                        <select id="tag-cor" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="#2ADCA1">Verde</option>
+                            <option value="#007bff">Azul</option>
+                            <option value="#f57c00">Laranja</option>
+                            <option value="#e91e63">Rosa</option>
+                            <option value="#9c27b0">Roxo</option>
+                            <option value="#00bcd4">Ciano</option>
+                        </select>
                     </div>
                     
                     <div class="form-group">
