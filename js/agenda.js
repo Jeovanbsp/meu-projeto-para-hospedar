@@ -166,13 +166,13 @@ function salvarDisponibilidade() {
         return;
     }
     
+    // Criar UM registro para todos os locais selecionados (unidos)
     selectedBlocks.forEach(block => {
-        selectedLocations.forEach(location => {
-            disponibilidade.push({
-                date: selectedDate,
-                time: `${block.inicio} - ${block.fim}`,
-                location: location
-            });
+        const locationsText = selectedLocations.join(', ');
+        disponibilidade.push({
+            date: selectedDate,
+            time: `${block.inicio} - ${block.fim}`,
+            location: locationsText  // Ex: "Salvador, Domiciliar"
         });
     });
     
@@ -199,6 +199,9 @@ function formatDate(dateStr) {
 }
 
 function getLocationLabel(location) {
+    if (location.includes(',')) {
+        return location; // Já vem unido, ex: "Salvador, Domiciliar"
+    }
     const labels = {
         'Salvador': 'Salvador',
         'Lauro': 'Lauro de Freitas',
@@ -219,7 +222,7 @@ function renderAvailabilityTable() {
     let filtered = [...disponibilidade];
     
     if (filterMonth) filtered = filtered.filter(d => d.date.startsWith(filterMonth));
-    if (filterLocation) filtered = filtered.filter(d => d.location === filterLocation);
+    if (filterLocation) filtered = filtered.filter(d => d.location.includes(filterLocation));
     
     filtered.sort((a, b) => {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
@@ -233,11 +236,12 @@ function renderAvailabilityTable() {
     
     tbody.innerHTML = filtered.map((d, idx) => {
         const realIndex = disponibilidade.indexOf(d);
+        const badgeClass = d.location.includes(',') ? 'misto' : d.location.toLowerCase();
         return `
             <tr>
                 <td>${formatDate(d.date)}</td>
                 <td>${d.time}</td>
-                <td><span class="location-badge ${d.location.toLowerCase()}">${getLocationLabel(d.location)}</span></td>
+                <td><span class="location-badge ${badgeClass}">${getLocationLabel(d.location)}</span></td>
                 <td class="action-btns">
                     <button class="btn-agendar" onclick="abrirModalAgendar('${d.date}', '${d.time}', '${d.location}')">Agendar</button>
                     <button class="btn-editar" onclick="abrirModalEditar(${realIndex})">✎</button>
