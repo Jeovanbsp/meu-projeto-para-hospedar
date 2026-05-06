@@ -274,10 +274,11 @@ function carregarStats() {
     const tags = JSON.parse(localStorage.getItem('tags') || '[]');
     
     // Totais
+    const consultasRealizadas = historico.filter(h => h.status === 'realizado').length;
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
-    document.getElementById('total-consultas').textContent = historico.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-consultas').textContent = consultasRealizadas;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
+    document.getElementById('total-mensagens').textContent = JSON.parse(localStorage.getItem('mensagens') || '[]').length;
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
     // Alerta de mensagens pendentes (tags)
@@ -317,9 +318,11 @@ function atualizarStats() {
     const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]').filter(filtrar);
     
     // Atualizar totais filtrados
-    const historico = JSON.parse(localStorage.getItem('historico') || '[]').filter(h => {
-        if (ano && h.data && !h.data.startsWith(ano)) return false;
-        if (mes && h.data && !h.data.substring(5, 7).startsWith(mes)) return false;
+    const historico = JSON.parse(localStorage.getItem('historico') || '[]');
+    const consultasRealizadasFiltradas = historico.filter(h => {
+        if (h.status !== 'realizado') return false;
+        if (ano && h.realizadoEm && !h.realizadoEm.startsWith(ano)) return false;
+        if (mes && h.realizadoEm && !h.realizadoEm.substring(5, 7).startsWith(mes)) return false;
         return true;
     });
     const disponibilidade = JSON.parse(localStorage.getItem('disponibilidade') || '[]');
@@ -329,9 +332,9 @@ function atualizarStats() {
         return true;
     });
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
-    document.getElementById('total-consultas').textContent = historico.filter(h => h.tipo === 'consulta_realizada').length;
+    document.getElementById('total-consultas').textContent = consultasRealizadasFiltradas.length;
     document.getElementById('total-disponiveis').textContent = dispFiltrada.length;
-    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
+    document.getElementById('total-mensagens').textContent = JSON.parse(localStorage.getItem('mensagens') || '[]').length;
     
     // Grafico por mes
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -341,15 +344,19 @@ function atualizarStats() {
     });
     
     if (chartMensal) chartMensal.destroy();
+    // Contagem de historico com status realizado
+    const historicoCount = new Array(12).fill(0);
+    historico.forEach(h => {
+        if (h.realizadoEm) historicoCount[parseInt(h.realizadoEm.substring(5, 7)) - 1]++;
+    });
     chartMensal = new Chart(document.getElementById('graficoMensal'), {
         type: 'bar',
         data: {
             labels: meses,
-            datasets: [{
-                label: 'Agendamentos',
-                data: dadosMes,
-                backgroundColor: '#2ADCA1'
-            }]
+            datasets: [
+                { label: 'Agendamentos', data: dadosMes, backgroundColor: '#007bff' },
+                { label: 'Consultas Realizadas', data: historicoCount, backgroundColor: '#2ADCA1' }
+            ]
         },
         options: { responsive: true, maintainAspectRatio: false }
     });
