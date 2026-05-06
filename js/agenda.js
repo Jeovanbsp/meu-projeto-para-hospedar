@@ -373,6 +373,12 @@ function atualizarContador() {
     if (c1) c1.textContent = agendamentos.length;
     const c2 = document.getElementById('contador-disponibilidade');
     if (c2) c2.textContent = disponibilidade.length;
+    
+    // Contador de tags pendentes (tags que não foram confirmadas no histórico)
+    const tagsConfirmadas = historico.filter(h => h.tagId).map(h => h.tagId);
+    const tagsPendentes = tags.filter(t => !tagsConfirmadas.includes(t.id));
+    const c3 = document.getElementById('contador-tags-pendentes');
+    if (c3) c3.textContent = tagsPendentes.length;
 }
 
 function excluirAgendamento(index) {
@@ -712,24 +718,39 @@ function renderHistoricoConsultas() {
     if (filterPaciente) filtered = filtered.filter(h => h.paciente === filterPaciente);
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
-    container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095;"><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div>').join('');
+    container.innerHTML = filtered.map((h, i) => {
+        const color = h.color || '#25c095';
+        const dataFormatada = h.data ? new Date(h.data).toLocaleDateString('pt-BR') : '-';
+        const obs = h.observacao ? '<div style="font-size: 0.75rem; color: #666; margin-top: 5px;">' + h.observacao + '</div>' : '';
+        return '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid ' + color + ';"><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: ' + color + ';">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888; margin-top: 5px;"><strong>Data:</strong> ' + dataFormatada + '</div>' + obs + '<button onclick="excluirHistorico(' + i + ')" style="margin-top: 8px; background: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Excluir</button></div>';
+    }).join('');
 }
 
 function marcarContato(paciente) {
+    // Buscar a tag mais recente deste paciente
+    const pacienteTags = tags.filter(t => t.paciente === paciente);
+    if (pacienteTags.length === 0) return alert('Nenhuma tag encontrada para este paciente.');
+    const tag = pacienteTags[pacienteTags.length - 1]; // Última tag
+    
+    // Usar a dataContato da tag se existir, senão usar data atual
+    const dataContato = tag.dataContato || new Date().toISOString();
+    
     historico.push({
         id: Date.now(),
         paciente: paciente,
         tipo: 'contato',
-        titulo: 'Contato realizado',
-        data: new Date().toISOString()
+        titulo: tag.titulo,
+        data: dataContato,
+        tagId: tag.id,
+        observacao: tag.observacao || '',
+        color: tag.color
     });
     localStorage.setItem('historico', JSON.stringify(historico));
-    alert('Contato registrado no historico!');
+    saveToAPI('historico', historico);
+    alert('Contato registrado no histórico!');
     fecharModalVerTag();
-    renderHistorico();
+    renderHistoricoConsultas();
     atualizarContador();
-    // Contador
-    if (c) c.textContent = agendamentos.length;
 }
 
 init();
@@ -752,4 +773,15 @@ function salvarObsPaciente() {
         renderPacientesLista();
     }
     document.getElementById('modal-obs-paciente').classList.remove('active');
+}
+
+// Excluir histórico
+function excluirHistorico(index) {
+    if (confirm('Deseja excluir este registro do histórico?')) {
+        historico.splice(index, 1);
+        localStorage.setItem('historico', JSON.stringify(historico));
+        saveToAPI('historico', historico);
+        renderHistoricoConsultas();
+        atualizarContador();
+    }
 }

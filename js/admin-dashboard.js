@@ -288,7 +288,7 @@ function carregarStats() {
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
     document.getElementById('total-consultas').textContent = consultasRealizadas;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    document.getElementById('total-mensagens').textContent = JSON.parse(localStorage.getItem('mensagens') || '[]').length;
+    document.getElementById('total-mensagens').textContent = tags.length;
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
     // Alerta de mensagens pendentes (tags)
@@ -297,8 +297,9 @@ function carregarStats() {
     if (tags.length > 0) {
         // Mostrar info das tags pendentes
         const primeiraTag = tags[0];
+        const dataTag = primeiraTag.dataContato ? new Date(primeiraTag.dataContato).toLocaleDateString('pt-BR') : 'Sem data';
         alerta.style.display = 'block';
-        texto.innerHTML = '<strong>' + primeiraTag.paciente + '</strong> - ' + primeiraTag.titulo + ' (Data: ' + new Date(primeiraTag.data || primeiraTag.createdAt).toLocaleDateString('pt-BR') + ') - e mais ' + (tags.length - 1) + ' outro(s)';
+        texto.innerHTML = '<span style="font-weight: 700; font-size: 1.1rem;">DATA: ' + dataTag + '</span><br>' + primeiraTag.paciente + ' - ' + primeiraTag.titulo + ' (e mais ' + (tags.length - 1) + ' outro(s))';
     } else {
         alerta.style.display = 'none';
     }
