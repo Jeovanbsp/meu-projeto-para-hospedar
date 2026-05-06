@@ -34,11 +34,11 @@ function init() {
     renderMensagens();
     renderTags();
     renderHistorico();
+    atualizarContador();
     // Contador
-    const c = document.getElementById('contador-consultas');
     if (c) c.textContent = agendamentos.length;
     
-    document.getElementById('btn-logout').addEventListener('click', () => window.location.href = 'index.html');
+    document.getElementById('btn-logout').addEventListener('click', () => { atualizarContador(); window.location.href = 'index.html' }); /// atualizarContador();('click', () => window.location.href = 'index.html');
 }
 
 // CALENDAR
@@ -253,6 +253,7 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
     disponibilidade = disponibilidade.filter(d => !(d.date === date && d.time === time && d.location === location));
     agendamentos.push({ date: date, time: time, location: location, patientName: nome, whatsapp: whatsapp, endereco: endereco, status: 'pendente' });
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        atualizarContador();
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
     if (!pacientes.find(p => p.nome === nome)) {
         pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
@@ -297,14 +298,21 @@ function toggleStatus(index) {
         historico = historico.filter(h => h !== a);
     }
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        atualizarContador();
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
     localStorage.setItem('historico', JSON.stringify(historico));
     renderAppointmentsList();
     renderHistorico();
+    atualizarContador();
     renderAvailabilityTable();
 }
 
 function renderHistoricoConsultas() {
+
+function atualizarContador() {
+    const c = document.getElementById('contador-consultas');
+    if (c) c.textContent = agendamentos.length;
+}
     const container = document.getElementById('historico-list');
     if (!container) return;
     container.innerHTML = historico.length === 0 ? '<div class="empty-state">Nenhuma consulta realizada</div>' :
@@ -316,6 +324,7 @@ function excluirHistorico(index) {
         historico.splice(index, 1);
         localStorage.setItem('historico', JSON.stringify(historico));
         renderHistorico();
+    atualizarContador();
     }
 }
 
@@ -325,6 +334,7 @@ function excluirAgendamento(index) {
         disponibilidade.push({ date: a.date, time: a.time, location: a.location });
         agendamentos.splice(index, 1);
         localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        atualizarContador();
         localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
         renderAvailabilityTable();
         renderAppointmentsList();
@@ -618,6 +628,11 @@ function excluirMensagem(id) {
 
 // HISTORICO
 function renderHistoricoConsultas() {
+
+function atualizarContador() {
+    const c = document.getElementById('contador-consultas');
+    if (c) c.textContent = agendamentos.length;
+}
     const container = document.getElementById('historico-lista');
     if (!container) return;
     if (historico.length === 0) {
@@ -644,8 +659,8 @@ function marcarContato(paciente) {
     alert('Contato registrado no historico!');
     fecharModalVerTag();
     renderHistorico();
+    atualizarContador();
     // Contador
-    const c = document.getElementById('contador-consultas');
     if (c) c.textContent = agendamentos.length;
 }
 
