@@ -287,32 +287,17 @@ function filtrarAgendamentos() { renderAppointmentsList(); }
 function toggleStatus(index) {
     const a = agendamentos[index];
     if (a.status === 'pendente') {
-        // Marcar como realizado - mover para historico
         a.status = 'realizado';
         a.realizadoEm = new Date().toISOString();
-        historico.push(a);
     } else {
-        // Voltar para pendente - mover para disponibilidade
         a.status = 'pendente';
-        disponibilidade.push({ date: a.date, time: a.time, location: a.location });
-        historico = historico.filter(h => h !== a);
     }
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
-        atualizarContador();
-    localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
-    localStorage.setItem('historico', JSON.stringify(historico));
-    renderAppointmentsList();
-    renderHistorico();
     atualizarContador();
-    renderAvailabilityTable();
+    renderAppointmentsList();
 }
 
 function renderHistoricoConsultas() {
-
-function atualizarContador() {
-    const c = document.getElementById('contador-consultas');
-    if (c) c.textContent = agendamentos.length;
-}
     const container = document.getElementById('historico-list');
     if (!container) return;
     container.innerHTML = historico.length === 0 ? '<div class="empty-state">Nenhuma consulta realizada</div>' :
@@ -323,9 +308,13 @@ function excluirHistorico(index) {
     if (confirm('Remover do historico?')) {
         historico.splice(index, 1);
         localStorage.setItem('historico', JSON.stringify(historico));
-        renderHistorico();
-    atualizarContador();
+        renderHistoricoConsultas();
     }
+}
+
+function atualizarContador() {
+    const c = document.getElementById('contador-consultas');
+    if (c) c.textContent = agendamentos.length;
 }
 
 function excluirAgendamento(index) {
