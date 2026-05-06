@@ -548,10 +548,16 @@ function criarTagPaciente(nome) {
 function mostrarTagDetalhes(tag) {
     tagDetalhesAtual = tag;
     const detalhes = document.getElementById('tag-detalhes');
-    detalhes.innerHTML = '<div style="font-size: 1.5rem; font-weight: 700; color: ' + tag.color + ';">' + tag.titulo + '</div><div style="font-size: 1.2rem; margin-top: 10px;">' + tag.paciente + '</div>' + 
-        (tag.dataContato ? '<div style="color: #666; margin-top: 10px;">Contato: ' + formatDate(tag.dataContato) + '</div>' : '') +
-        (tag.observacao ? '<div style="color: #666; margin-top: 10px;">' + tag.observacao + '</div>') +
-        '<button onclick="fecharModalVerTag()" style="margin-top: 20px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>';
+    var html = '<div style="font-size: 1.5rem; font-weight: 700; color: ' + tag.color + ';">' + tag.titulo + '</div>';
+    html += '<div style="font-size: 1.2rem; margin-top: 10px;">' + tag.paciente + '</div>';
+    if (tag.dataContato) {
+        html += '<div style="color: #666; margin-top: 10px;">Contato: ' + formatDate(tag.dataContato) + '</div>';
+    }
+    if (tag.observacao) {
+        html += '<div style="color: #666; margin-top: 10px;">' + tag.observacao + '</div>';
+    }
+    html += '<button onclick="fecharModalVerTag()" style="margin-top: 20px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>';
+    detalhes.innerHTML = html;
     document.getElementById('modal-ver-tag').classList.add('active');
 }
 
