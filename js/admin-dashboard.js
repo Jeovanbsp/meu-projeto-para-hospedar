@@ -345,6 +345,11 @@ function limparFiltros() {
     atualizarStats();
 }
 
+function abrirGerenciar() {
+    document.getElementById('modal-gerenciar').style.display = 'flex';
+    renderListaDados();
+}
+
 function renderListaDados() {
     const historico = JSON.parse(localStorage.getItem('historico') || '[]');
     const lista = document.getElementById('lista-dados');

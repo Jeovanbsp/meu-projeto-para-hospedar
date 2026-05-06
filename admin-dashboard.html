@@ -182,7 +182,8 @@
 
         <!-- Botao Gerenciar Dados (Popup) -->
         <div style="margin-top: 25px; text-align: center;">
-            <button onclick="document.getElementById('modal-gerenciar').style.display='flex'" style="background: #fff0f0; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;"><i class="ph ph-gear"></i> Gerenciar Dados</button>
+            <button onclick="abrirGerenciar()" style="background: #fff0f0; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;"><i class="ph ph-gear"></i> Gerenciar Dados</button>
+            <button onclick="carregarStats(); atualizarStats()" style="background: #2ADCA1; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-left: 10px;"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
         </div>
 
         <!-- Divisorio Visual -->
