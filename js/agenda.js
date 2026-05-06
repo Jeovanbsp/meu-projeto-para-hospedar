@@ -34,12 +34,9 @@ function init() {
     renderMensagens();
     renderTags();
     renderHistoricoConsultas();
-    renderHistorico();
     atualizarContador();
-    // Contador
-    if (c) c.textContent = agendamentos.length;
-    
-    document.getElementById('btn-logout').addEventListener('click', () => { atualizarContador(); window.location.href = 'index.html' }); /// atualizarContador();('click', () => window.location.href = 'index.html');
+
+    document.getElementById('btn-logout').addEventListener('click', () => window.location.href = 'index.html');
 }
 
 // CALENDAR
