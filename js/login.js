@@ -10,9 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (btnEntrar) { btnEntrar.disabled = true; btnEntrar.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Entrando...'; }
       if (msgErro) msgErro.style.display = 'none';
       
-      // Verificar Secretária local
+      // Verificar Secretária local - aceita usuario OU email
       const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-      const secretaria = secretarias.find(s => s.usuario === email && s.senha === password);
+      const secretaria = secretarias.find(s => (s.usuario === email || s.email === email) && s.senha === password);
       if (secretaria) { localStorage.setItem('usuarioLogado', JSON.stringify(secretaria)); window.location.href = 'agenda.html'; return; }
 
       // API externa

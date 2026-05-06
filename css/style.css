@@ -897,3 +897,12 @@ footer .copyright {
     transform: translateY(-3px);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
+/* =========================================
+   Action buttons na tabela disponibilidade
+   ========================================= */
+.action-btns { display: flex; gap: 5px; justify-content: center; }
+.action-btns button { padding: 6px 10px; font-size: 12px; margin: 0; }
+.btn-editar { background: #FF9800; color: white; border: none; border-radius: 4px; cursor: pointer; }
+.btn-editar:hover { background: #E68900; }
+.btn-excluir { background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer; }
+.btn-excluir:hover { background: #d32f2f; }
