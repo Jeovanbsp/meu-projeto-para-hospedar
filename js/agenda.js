@@ -240,6 +240,10 @@ function abrirModalAgendar(date, time, location) {
     document.getElementById('agendar-nome').value = '';
     document.getElementById('agendar-whatsapp').value = '';
     document.getElementById('agendar-endereco').value = '';
+    document.getElementById('agendar-responsavel').value = '';
+    document.getElementById('agendar-obs').value = '';
+    document.getElementById('agendar-busca').value = '';
+    document.getElementById('agendar-suggestions').style.display = 'none';
     
     // Preencher select com pacientes existentes
     const nomeInput = document.getElementById('agendar-nome');
@@ -249,7 +253,7 @@ function abrirModalAgendar(date, time, location) {
         if (val.length > 0) {
             const found = pacientes.filter(p => p.nome.toLowerCase().includes(val));
             if (found.length > 0) {
-                suggestions.innerHTML = found.slice(0, 5).map(p => '<div onclick="selecionarPaciente(\'' + p.nome + '\', \'' + (p.whatsapp || '') + '\', \'' + (p.endereco || '') + '\')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' + p.nome + '</div>').join('');
+                suggestions.innerHTML = found.slice(0, 5).map(p => '<div onclick="selecionarPaciente(\'' + p.nome.replace(/'/g, "\\'") + '\', \'' + (p.whatsapp || '') + '\', \'' + (p.endereco || '').replace(/'/g, "\\'") + '\', \'' + (p.responsavel || '').replace(/'/g, "\\'") + '\', \'' + (p.obs || '').replace(/'/g, "\\'") + '\')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' + p.nome + '</div>').join('');
                 suggestions.style.display = 'block';
             } else {
                 suggestions.style.display = 'none';
@@ -262,10 +266,27 @@ function abrirModalAgendar(date, time, location) {
     document.getElementById('modal-agendar').classList.add('active');
 }
 
-function selecionarPaciente(nome, whatsapp, endereco) {
+function buscarPacientes(val) {
+    const suggestions = document.getElementById('agendar-suggestions');
+    if (val.length > 0) {
+        const found = pacientes.filter(p => p.nome.toLowerCase().includes(val.toLowerCase()));
+        if (found.length > 0) {
+            suggestions.innerHTML = found.slice(0, 5).map(p => '<div onclick="selecionarPaciente(\'' + p.nome.replace(/'/g, "\\'") + '\', \'' + (p.whatsapp || '') + '\', \'' + (p.endereco || '').replace(/'/g, "\\'") + '\', \'' + (p.responsavel || '').replace(/'/g, "\\'") + '\', \'' + (p.obs || '').replace(/'/g, "\\'") + '\')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' + p.nome + '</div>').join('');
+            suggestions.style.display = 'block';
+        } else {
+            suggestions.style.display = 'none';
+        }
+    } else {
+        suggestions.style.display = 'none';
+    }
+}
+
+function selecionarPaciente(nome, whatsapp, endereco, responsavel, obs) {
     document.getElementById('agendar-nome').value = nome;
     document.getElementById('agendar-whatsapp').value = whatsapp;
     document.getElementById('agendar-endereco').value = endereco;
+    document.getElementById('agendar-responsavel').value = responsavel || '';
+    document.getElementById('agendar-obs').value = obs || '';
     document.getElementById('agendar-suggestions').style.display = 'none';
 }
 
@@ -417,7 +438,7 @@ function renderPacientesLista() {
         const consultas = agendamentos.filter(a => a.patientName === p.nome);
         const ultimaConsulta = consultas.length > 0 ? consultas[consultas.length - 1].date : null;
         const pacienteTags = tags.filter(t => t.paciente === p.nome);
-        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div>' + (p.responsavel ? '<div style="font-size: 0.85rem; color: #007bff;">Responsavel: ' + p.responsavel + '</div>' : '') + (p.obs ? '<div style="font-size: 0.85rem; color: #f39c12;">Obs: ' + p.obs + '</div>' : '') + '<div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button><button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
+        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div>' + (p.responsavel ? '<div style="font-size: 0.85rem; color: #007bff;">Responsavel: ' + p.responsavel + '</div>' : '') + (p.obs ? '<div style="font-size: 0.85rem; color: #f39c12;">Obs: ' + p.obs + '</div>' : '') + '<div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button><button onclick="editarPaciente(\'' + p.nome + '\')" style="background: #f39c12; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Edit</button><button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
     }).join('');
 }
 
@@ -438,6 +459,21 @@ function cadastrarPaciente() {
     renderPacientesLista();
     carregarPacientesSelect();
     alert('Paciente cadastrado!');
+}
+
+function editarPaciente(nome) {
+    const p = pacientes.find(p => p.nome === nome);
+    if (!p) return;
+    document.getElementById('novo-paciente-nome').value = p.nome;
+    document.getElementById('novo-paciente-whatsapp').value = p.whatsapp || '';
+    document.getElementById('novo-paciente-endereco').value = p.endereco || '';
+    document.getElementById('novo-paciente-responsavel').value = p.responsavel || '';
+    document.getElementById('novo-paciente-obs').value = p.obs || '';
+    // Remove o paciente antigo
+    pacientes = pacientes.filter(pac => pac.nome !== nome);
+    localStorage.setItem('pacientes', JSON.stringify(pacientes));
+    document.getElementById('novo-paciente-nome').focus();
+    alert('Dados carregados! Edite e clique em Cadastrar para atualizar.');
 }
 
 function agendarPaciente(nome) {
@@ -643,7 +679,7 @@ function renderHistorico() {
     if (filterPaciente) filtered = filtered.filter(h => h.paciente === filterPaciente);
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
-    container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div><button onclick="excluirItem(' + h.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div>').join('');
+    container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div><button onclick="excluirItem(' + h.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 0.65rem; width: 20px; height: 20px; line-height: 1;">X</button></div>').join('');
 }
 
 function excluirItem(id) {
