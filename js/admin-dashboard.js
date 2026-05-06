@@ -262,8 +262,10 @@ function carregarStats() {
     const alerta = document.getElementById('alerta-mensagens');
     const texto = document.getElementById('alerta-texto');
     if (tags.length > 0) {
+        // Mostrar info das tags pendentes
+        const primeiraTag = tags[0];
         alerta.style.display = 'block';
-        texto.textContent = 'Você tem ' + tags.length + ' paciente(s) para enviar mensagem!';
+        texto.innerHTML = '<strong>' + primeiraTag.paciente + '</strong> - ' + primeiraTag.titulo + ' (Data: ' + new Date(primeiraTag.data || primeiraTag.createdAt).toLocaleDateString('pt-BR') + ') - e mais ' + (tags.length - 1) + ' outro(s)';
     } else {
         alerta.style.display = 'none';
     }
@@ -363,6 +365,10 @@ function limparFiltros() {
 function abrirGerenciar() {
     document.getElementById('modal-gerenciar').style.display = 'flex';
     renderListaDados();
+}
+
+function irParaTags() {
+    window.location.href = 'agenda.html?tab=tags';
 }
 
 function renderListaDados() {

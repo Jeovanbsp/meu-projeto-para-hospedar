@@ -1,5 +1,32 @@
 // Agenda System - Dra. Aisha
 
+// Verificar login ao iniciar
+function verificarLogin() {
+    const user = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+    if (!user) {
+        window.location.href = 'login.html';
+        return false;
+    }
+    return user;
+}
+
+// INIT
+document.addEventListener('DOMContentLoaded', function() {
+    const user = verificarLogin();
+    if (!user) return;
+    
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if (tab === 'tags') {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.getElementById('tab-btn-tags')?.classList.add('active');
+        document.getElementById('tab-tags')?.classList.add('active');
+    }
+    
+    init();
+});
+
 let currentDate = new Date();
 let selectedDate = null;
 let selectedBlocks = [];
@@ -704,4 +731,4 @@ function excluirItem(id) {
     }
 }
 
-init();
+// Removed - now handled by DOMContentLoaded event
