@@ -1,27 +1,13 @@
-let perfilSelecionado = 'admin';
-
-function selecionarPerfil(perfil) {
-    perfilSelecionado = perfil;
-    document.getElementById('btn-admin').classList.toggle('active', perfil === 'admin');
-    document.getElementById('btn-secretaria').classList.toggle('active', perfil === 'secretaria');
-}
-
 document.addEventListener('DOMContentLoaded', () => {
     const formLogin = document.getElementById('form-login');
     
     if (formLogin) {
-        formLogin.addEventListener('submit', async (e) => {
+        formLogin.addEventListener('submit', (e) => {
             e.preventDefault();
             
             const usuario = document.getElementById('usuario').value.trim();
             const senha = document.getElementById('senha').value;
             const msgErro = document.getElementById('msg-erro');
-            const btnEntrar = e.submitter;
-            
-            if (btnEntrar) {
-                btnEntrar.disabled = true;
-                btnEntrar.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Entrando...';
-            }
             
             if (msgErro) msgErro.style.display = 'none';
             
@@ -31,22 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (user) {
                 localStorage.setItem('usuarioLogado', JSON.stringify(user));
-                
-                if (user.perfil === 'secretaria') {
-                    window.location.href = 'agenda.html';
-                } else {
-                    window.location.href = 'admin-dashboard.html';
-                }
+                // Todos vão para agenda
+                window.location.href = 'agenda.html';
             } else {
                 if (msgErro) {
                     msgErro.innerText = "Usuário ou senha incorretos.";
                     msgErro.style.display = 'block';
                 }
-            }
-            
-            if (btnEntrar) {
-                btnEntrar.disabled = false;
-                btnEntrar.innerHTML = 'Entrar <i class="ph ph-sign-in"></i>';
             }
         });
     }
@@ -66,23 +43,7 @@ function criarConta() {
         return;
     }
     
-    usuarios.push({ id: Date.now(), usuario: usuario, senha: senha, nome: nome, perfil: perfilSelecionado, createdAt: new Date().toISOString() });
+    usuarios.push({ id: Date.now(), usuario: usuario, senha: senha, nome: nome, createdAt: new Date().toISOString() });
     localStorage.setItem('usuarios', JSON.stringify(usuarios));
     alert('Conta criada! Agora faça login.');
-}
-
-// Header scroll effect
-let ultimoScroll = window.scrollY;
-const topo = document.querySelector('header'); 
-
-if (topo) {
-    window.addEventListener('scroll', () => {
-        let scrollAtual = window.scrollY;
-        if (scrollAtual > ultimoScroll && scrollAtual > 100) {
-            topo.classList.add('esconder-topo');
-        } else {
-            topo.classList.remove('esconder-topo');
-        }
-        ultimoScroll = scrollAtual;
-    });
 }

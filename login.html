@@ -47,10 +47,7 @@
             <h2 style="color: #333; margin-bottom: 20px;">Acesso ao Prontuário</h2>
             <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Área restrita para pacientes cadastrados e administração.</p>
             
-            <div class="tabs-perfil" style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button type="button" id="btn-admin" class="btn-tab active" onclick="selecionarPerfil('admin')">Médica</button>
-            <button type="button" id="btn-secretaria" class="btn-tab" onclick="selecionarPerfil('secretaria')">Secretária</button>
-        </div>
+            <div class="tabs-perfil" style="display: none;"></div>
         
         <form id="form-login">
             <div class="input-group">
@@ -69,22 +66,5 @@
     </main>
 
     <script src="js/login.js"></script>
-
-    <script>
-        let ultimoScroll = window.scrollY;
-        const topo = document.querySelector('header'); 
-
-        if (topo) {
-            window.addEventListener('scroll', () => {
-                let scrollAtual = window.scrollY;
-                if (scrollAtual > ultimoScroll && scrollAtual > 100) {
-                    topo.classList.add('esconder-topo');
-                } else {
-                    topo.classList.remove('esconder-topo');
-                }
-                ultimoScroll = scrollAtual;
-            });
-        }
-    </script>
 </body>
 </html>

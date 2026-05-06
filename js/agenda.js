@@ -1,19 +1,15 @@
 // Agenda System - Dra. Aisha
 
-// Verificar login ao iniciar
+// Verificar login (opcional)
 function verificarLogin() {
     const user = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
-    if (!user) {
-        window.location.href = 'login.html';
-        return false;
-    }
-    return user;
+    // Se não tiver login, ainda permite acesso
+    return user || { usuario: 'visitante' };
 }
 
 // INIT
 document.addEventListener('DOMContentLoaded', function() {
-    const user = verificarLogin();
-    if (!user) return;
+    verificarLogin();
     
     const params = new URLSearchParams(window.location.search);
     const tab = params.get('tab');
@@ -269,28 +265,26 @@ function abrirModalAgendar(date, time, location) {
     document.getElementById('agendar-endereco').value = '';
     document.getElementById('agendar-responsavel').value = '';
     document.getElementById('agendar-obs').value = '';
-    document.getElementById('agendar-busca').value = '';
-    document.getElementById('agendar-suggestions').style.display = 'none';
+    document.getElementById('agendar-paciente-select').value = '';
     
     // Preencher select com pacientes existentes
-    const nomeInput = document.getElementById('agendar-nome');
-    nomeInput.onkeyup = function() {
-        const val = this.value.toLowerCase();
-        const suggestions = document.getElementById('agendar-suggestions');
-        if (val.length > 0) {
-            const found = pacientes.filter(p => p.nome.toLowerCase().includes(val));
-            if (found.length > 0) {
-                suggestions.innerHTML = found.slice(0, 5).map(p => '<div onclick="selecionarPaciente(\'' + p.nome.replace(/'/g, "\\'") + '\', \'' + (p.whatsapp || '') + '\', \'' + (p.endereco || '').replace(/'/g, "\\'") + '\', \'' + (p.responsavel || '').replace(/'/g, "\\'") + '\', \'' + (p.obs || '').replace(/'/g, "\\'") + '\')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' + p.nome + '</div>').join('');
-                suggestions.style.display = 'block';
-            } else {
-                suggestions.style.display = 'none';
-            }
-        } else {
-            suggestions.style.display = 'none';
-        }
-    };
+    const select = document.getElementById('agendar-paciente-select');
+    select.innerHTML = '<option value="">Selecione um paciente...</option>' + 
+        pacientes.map(p => '<option value="' + p.nome + '">' + p.nome + '</option>').join('');
     
     document.getElementById('modal-agendar').classList.add('active');
+}
+
+function preencherPacienteSelect(nome) {
+    if (!nome) return;
+    const p = pacientes.find(pac => pac.nome === nome);
+    if (p) {
+        document.getElementById('agendar-nome').value = p.nome;
+        document.getElementById('agendar-whatsapp').value = p.whatsapp || '';
+        document.getElementById('agendar-endereco').value = p.endereco || '';
+        document.getElementById('agendar-responsavel').value = p.responsavel || '';
+        document.getElementById('agendar-obs').value = p.obs || '';
+    }
 }
 
 function buscarPacientes(val) {
