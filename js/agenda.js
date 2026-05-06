@@ -1,6 +1,5 @@
 // Agenda System - Dra. Aisha
 
-// === STATE ===
 let currentDate = new Date();
 let selectedDate = null;
 let selectedBlocks = [];
@@ -12,7 +11,6 @@ let tags = [];
 let mensagens = [];
 
 function init() {
-    // Carregar dados do localStorage
     const disp = localStorage.getItem('disponibilidade');
     if (disp) disponibilidade = JSON.parse(disp);
     
@@ -33,23 +31,22 @@ function init() {
     renderAppointmentsList();
     setupLocationCheckboxes();
     renderPacientesLista();
+    carregarPacientesSelect();
     renderMensagens();
     renderTags();
     
     document.getElementById('btn-logout').addEventListener('click', () => window.location.href = 'index.html');
 }
 
-// === CALENDAR ===
+// CALENDAR
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
-    
-    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-    document.getElementById('calendar-title').textContent = `${monthNames[month]} ${year}`;
+    const monthNames = ['Janeiro', 'Fevereiro', 'Marco', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    document.getElementById('calendar-title').textContent = monthNames[month] + ' ' + year;
     
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-    
     const calendarDays = document.getElementById('calendar-days');
     calendarDays.innerHTML = '';
     
@@ -63,7 +60,7 @@ function renderCalendar() {
     today.setHours(0, 0, 0, 0);
     
     for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
         const dayEl = document.createElement('div');
         dayEl.className = 'calendar-day';
         dayEl.textContent = day;
@@ -77,7 +74,6 @@ function renderCalendar() {
         } else {
             dayEl.onclick = () => selectDate(dateStr);
         }
-        
         calendarDays.appendChild(dayEl);
     }
 }
@@ -96,14 +92,11 @@ function selectDate(dateStr) {
     selectedDate = dateStr;
     selectedBlocks = [];
     selectedLocations = [];
-    
-    document.getElementById('selected-date-title').textContent = `Data: ${formatDate(dateStr)}`;
+    document.getElementById('selected-date-title').textContent = 'Data: ' + formatDate(dateStr);
     document.getElementById('location-section').style.display = 'none';
     document.getElementById('btn-salvar').disabled = true;
-    
     renderBlocks();
     renderCalendar();
-    
     document.querySelectorAll('.location-checkbox').forEach(el => {
         el.classList.remove('selected');
         el.querySelector('input').checked = false;
@@ -113,11 +106,10 @@ function selectDate(dateStr) {
 function renderBlocks() {
     const list = document.getElementById('blocks-list');
     list.innerHTML = selectedBlocks.length === 0 ? '<span style="color: #999;">Nenhum bloco adicionado</span>' : '';
-    
     selectedBlocks.forEach((block, idx) => {
         const chip = document.createElement('div');
         chip.className = 'block-chip';
-        chip.innerHTML = `${block.inicio} - ${block.fim} <span class="remove" onclick="removerBloco(${idx})">×</span>`;
+        chip.innerHTML = block.inicio + ' - ' + block.fim + ' <span class="remove" onclick="removerBloco(' + idx + ')">x</span>';
         list.appendChild(chip);
     });
 }
@@ -125,11 +117,9 @@ function renderBlocks() {
 function adicionarBloco() {
     const inicio = document.getElementById('block-inicio').value;
     const fim = document.getElementById('block-fim').value;
-    
-    if (!inicio || !fim) return alert('Preencha os horários.');
-    if (inicio >= fim) return alert('Horário de início deve ser menor que o fim.');
-    
-    selectedBlocks.push({ inicio, fim });
+    if (!inicio || !fim) return alert('Preencha os horarios.');
+    if (inicio >= fim) return alert('Horario de inicio deve ser menor que o fim.');
+    selectedBlocks.push({ inicio: inicio, fim: fim });
     renderBlocks();
     showLocationSection();
 }
@@ -141,8 +131,7 @@ function removerBloco(idx) {
 }
 
 function showLocationSection() {
-    const section = document.getElementById('location-section');
-    section.style.display = selectedBlocks.length > 0 ? 'block' : 'none';
+    document.getElementById('location-section').style.display = selectedBlocks.length > 0 ? 'block' : 'none';
     updateSaveButton();
 }
 
@@ -150,7 +139,6 @@ function setupLocationCheckboxes() {
     document.querySelectorAll('.location-checkbox').forEach(label => {
         const checkbox = label.querySelector('input');
         const value = checkbox.value;
-        
         checkbox.addEventListener('change', () => {
             if (checkbox.checked) {
                 label.classList.add('selected');
@@ -170,19 +158,16 @@ function updateSaveButton() {
 
 function salvarDisponibilidade() {
     if (!selectedDate || selectedBlocks.length === 0 || selectedLocations.length === 0) {
-        return alert('Selecione a data, adicione blocos de horário e selecione o local.');
+        return alert('Selecione a data, adicione blocos de horario e selecione o local.');
     }
-    
     selectedBlocks.forEach(block => {
         disponibilidade.push({
             date: selectedDate,
-            time: `${block.inicio} - ${block.fim}`,
+            time: block.inicio + ' - ' + block.fim,
             location: selectedLocations.join(', ')
         });
     });
-    
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
-    
     selectedBlocks = [];
     selectedLocations = [];
     document.querySelectorAll('.location-checkbox').forEach(el => {
@@ -191,7 +176,6 @@ function salvarDisponibilidade() {
     });
     document.getElementById('location-section').style.display = 'none';
     document.getElementById('btn-salvar').disabled = true;
-    
     renderCalendar();
     renderAvailabilityTable();
     alert('Disponibilidade salva!');
@@ -200,7 +184,7 @@ function salvarDisponibilidade() {
 function formatDate(dateStr) {
     const [year, month, day] = dateStr.split('-');
     const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
-    return `${day}/${months[parseInt(month) - 1]}/${year}`;
+    return day + '/' + months[parseInt(month) - 1] + '/' + year;
 }
 
 function getLocationLabel(location) {
@@ -212,50 +196,31 @@ function getLocationLabel(location) {
 function renderAvailabilityTable() {
     const tbody = document.getElementById('availability-table-body');
     if (!tbody) return;
-    
     const today = new Date().toISOString().split('T')[0];
     disponibilidade = disponibilidade.filter(d => d.date >= today);
-    
     const filterMonth = document.getElementById('filter-month').value;
     const filterLocation = document.getElementById('filter-location').value;
-    
     let filtered = [...disponibilidade];
     if (filterMonth) filtered = filtered.filter(d => d.date.startsWith(filterMonth));
     if (filterLocation) filtered = filtered.filter(d => d.location.includes(filterLocation));
-    
-    filtered.sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return a.time.localeCompare(b.time);
-    });
-    
+    filtered.sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time));
     tbody.innerHTML = filtered.length === 0 ? 
         '<tr><td colspan="4" style="text-align: center; color: #999; padding: 40px;">Nenhuma disponibilidade</td></tr>' :
         filtered.map((d, idx) => {
             const realIndex = disponibilidade.indexOf(d);
             const badgeClass = d.location.includes(',') ? 'misto' : d.location.toLowerCase().trim();
-            return `
-                <tr>
-                    <td>${formatDate(d.date)}</td>
-                    <td>${d.time}</td>
-                    <td><span class="location-badge ${badgeClass}">${getLocationLabel(d.location)}</span></td>
-                    <td class="action-btns">
-                        <button class="btn-agendar" onclick="abrirModalAgendar('${d.date}', '${d.time}', '${d.location}')">Agendar</button>
-                        <button class="btn-editar" onclick="abrirModalEditar(${realIndex})">✎</button>
-                        <button class="btn-excluir" onclick="excluirDisponibilidade(${realIndex})">✕</button>
-                    </td>
-                </tr>
-            `;
+            return '<tr><td>' + formatDate(d.date) + '</td><td>' + d.time + '</td><td><span class="location-badge ' + badgeClass + '">' + getLocationLabel(d.location) + '</span></td><td class="action-btns"><button class="btn-agendar" onclick="abrirModalAgendar(\'' + d.date + '\', \'' + d.time + '\', \'' + d.location + '\')">Agendar</button><button class="btn-editar" onclick="abrirModalEditar(' + realIndex + ')">E</button><button class="btn-excluir" onclick="excluirDisponibilidade(' + realIndex + ')">X</button></td></tr>';
         }).join('');
 }
 
 function filtrarDisponibilidade() { renderAvailabilityTable(); }
 
-// === APPOINTMENTS ===
+// APPOINTMENTS
 function abrirModalAgendar(date, time, location) {
     document.getElementById('agendar-date').value = date;
     document.getElementById('agendar-time').value = time;
     document.getElementById('agendar-location').value = location;
-    document.getElementById('agendar-datahora').value = `${formatDate(date)} - ${time} - ${getLocationLabel(location)}`;
+    document.getElementById('agendar-datahora').value = formatDate(date) + ' - ' + time + ' - ' + getLocationLabel(location);
     document.getElementById('agendar-nome').value = '';
     document.getElementById('agendar-whatsapp').value = '';
     document.getElementById('agendar-endereco').value = '';
@@ -268,34 +233,22 @@ function fecharModalAgendar() {
 
 document.getElementById('form-agendar').addEventListener('submit', function(e) {
     e.preventDefault();
-    
     const date = document.getElementById('agendar-date').value;
     const time = document.getElementById('agendar-time').value;
     const location = document.getElementById('agendar-location').value;
     const nome = document.getElementById('agendar-nome').value;
     const whatsapp = document.getElementById('agendar-whatsapp').value;
     const endereco = document.getElementById('agendar-endereco').value;
-    
     disponibilidade = disponibilidade.filter(d => !(d.date === date && d.time === time && d.location === location));
-    
-    agendamentos.push({
-        date, time, location,
-        patientName: nome,
-        whatsapp,
-        endereco,
-        status: 'pendente'
-    });
-    
+    agendamentos.push({ date: date, time: time, location: location, patientName: nome, whatsapp: whatsapp, endereco: endereco, status: 'pendente' });
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
-    
-    // Adicionar paciente se não existir
     if (!pacientes.find(p => p.nome === nome)) {
-        pacientes.push({ id: Date.now(), nome, whatsapp, endereco, createdAt: new Date().toISOString() });
+        pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
         localStorage.setItem('pacientes', JSON.stringify(pacientes));
         renderPacientesLista();
+        carregarPacientesSelect();
     }
-    
     fecharModalAgendar();
     renderAvailabilityTable();
     renderAppointmentsList();
@@ -305,33 +258,15 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
 function renderAppointmentsList() {
     const container = document.getElementById('appointments-list');
     if (!container) return;
-    
     const filterMonth = document.getElementById('filter-appointment-month').value;
     const filterStatus = document.getElementById('filter-appointment-status').value;
-    
     let filtered = [...agendamentos];
     if (filterMonth) filtered = filtered.filter(a => a.date.startsWith(filterMonth));
     if (filterStatus) filtered = filtered.filter(a => a.status === filterStatus);
-    
-    container.innerHTML = filtered.length === 0 ? 
-        '<div class="empty-state">Nenhuma consulta agendada</div>' :
+    container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma consulta agendada</div>' :
         filtered.map((a, idx) => {
             const realIndex = agendamentos.indexOf(a);
-            return `
-                <div class="appointment-row ${a.status === 'realizado' ? 'realizado' : ''}">
-                    <input type="checkbox" class="status-checkbox" ${a.status === 'realizado' ? 'checked' : ''} 
-                           onchange="toggleStatus(${realIndex})">
-                    <div class="appointment-info">
-                        <div class="appointment-name">${a.patientName}</div>
-                        <div class="appointment-details">
-                            <span>${formatDate(a.date)}</span>
-                            <span>${a.time}</span>
-                            <span>${a.whatsapp}</span>
-                        </div>
-                    </div>
-                    <button class="btn-excluir" onclick="excluirAgendamento(${realIndex})">✕</button>
-                </div>
-            `;
+            return '<div class="appointment-row ' + (a.status === 'realizado' ? 'realizado' : '') + '"><input type="checkbox" class="status-checkbox" ' + (a.status === 'realizado' ? 'checked' : '') + ' onchange="toggleStatus(' + realIndex + ')"><div class="appointment-info"><div class="appointment-name">' + a.patientName + '</div><div class="appointment-details"><span>' + formatDate(a.date) + '</span><span>' + a.time + '</span><span>' + a.whatsapp + '</span></div></div><button class="btn-excluir" onclick="excluirAgendamento(' + realIndex + ')">X</button></div>';
         }).join('');
 }
 
@@ -348,10 +283,8 @@ function excluirAgendamento(index) {
         const a = agendamentos[index];
         disponibilidade.push({ date: a.date, time: a.time, location: a.location });
         agendamentos.splice(index, 1);
-        
         localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
         localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
-        
         renderAvailabilityTable();
         renderAppointmentsList();
     }
@@ -363,7 +296,7 @@ function abrirModalEditar(index) {
     document.getElementById('editar-data').value = d.date;
     const [inicio, fim] = d.time.split(' - ');
     document.getElementById('editar-inicio').value = inicio;
-    document.getElementById('editar-fim').value =fim;
+    document.getElementById('editar-fim').value = fim;
     document.getElementById('editar-local').value = d.location;
     document.getElementById('modal-editar').classList.add('active');
 }
@@ -386,13 +319,7 @@ document.getElementById('form-editar').addEventListener('submit', function(e) {
     const index = parseInt(document.getElementById('editar-index').value);
     const inicio = document.getElementById('editar-inicio').value;
     const fim = document.getElementById('editar-fim').value;
-    
-    disponibilidade[index] = {
-        date: document.getElementById('editar-data').value,
-        time: `${inicio} - ${fim}`,
-        location: document.getElementById('editar-local').value
-    };
-    
+    disponibilidade[index] = { date: document.getElementById('editar-data').value, time: inicio + ' - ' + fim, location: document.getElementById('editar-local').value };
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
     fecharModalEditar();
     renderAvailabilityTable();
@@ -400,42 +327,59 @@ document.getElementById('form-editar').addEventListener('submit', function(e) {
     alert('Disponibilidade atualizada!');
 });
 
-// === PACIENTES ===
+// PACIENTES
+function carregarPacientesSelect() {
+    const select = document.getElementById('tag-paciente');
+    const filterSelect = document.getElementById('filter-tag-paciente');
+    if (select) {
+        select.innerHTML = '<option value="">Selecione um paciente...</option>';
+        pacientes.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.nome;
+            option.textContent = p.nome;
+            select.appendChild(option);
+        });
+    }
+    if (filterSelect) {
+        filterSelect.innerHTML = '<option value="">Todos os Pacientes</option>';
+        pacientes.forEach(p => {
+            const option = document.createElement('option');
+            option.value = p.nome;
+            option.textContent = p.nome;
+            filterSelect.appendChild(option);
+        });
+    }
+}
+
 function renderPacientesLista() {
     const container = document.getElementById('pacientes-lista');
     if (!container) return;
-    
-    container.innerHTML = pacientes.length === 0 ?
-        '<div class="empty-state" style="grid-column: 1/-1;">Nenhum paciente cadastrado</div>' :
-        pacientes.map(p => `
-            <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;">
-                <div style="font-weight: 700; color: #2c3e50;">${p.nome}</div>
-                <div style="font-size: 0.9rem; color: #666; margin-top: 5px;">📱 ${p.whatsapp || 'Não informado'}</div>
-                <div style="font-size: 0.9rem; color: #666;">📍 ${p.endereco || 'Não informado'}</div>
-                <div style="display: flex; gap: 8px; margin-top: 10px;">
-                    <button onclick="agendarPaciente('${p.nome}')" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Agendar</button>
-                    <button onclick="criarTagPaciente('${p.nome}')" style="background: #2ADCA1; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Criar Tag</button>
-                    <button onclick="excluirPaciente('${p.nome}')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">✕</button>
-                </div>
-            </div>
-        `).join('');
+    const total = pacientes.length;
+    container.innerHTML = '<div style="grid-column: 1/-1; margin-bottom: 15px; padding: 15px; background: #e8f9f4; border-radius: 8px;"><strong style="color: #2ADCA1;">' + total + ' paciente' + (total !== 1 ? 's' : '') + ' cadastrado' + (total !== 1 ? 's' : '') + '</strong></div>';
+    if (pacientes.length === 0) {
+        container.innerHTML += '<div class="empty-state" style="grid-column: 1/-1;">Nenhum paciente cadastrado</div>';
+        return;
+    }
+    container.innerHTML += pacientes.map(p => {
+        const consultas = agendamentos.filter(a => a.patientName === p.nome);
+        const ultimaConsulta = consultas.length > 0 ? consultas[consultas.length - 1].date : null;
+        const pacienteTags = tags.filter(t => t.paciente === p.nome);
+        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666; margin-top: 5px;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div><div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 8px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">Msg</button><button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;">X</button></div></div>';
+    }).join('');
 }
 
 function cadastrarPaciente() {
     const nome = document.getElementById('novo-paciente-nome').value;
     const whatsapp = document.getElementById('novo-paciente-whatsapp').value;
     const endereco = document.getElementById('novo-paciente-endereco').value;
-    
     if (!nome) return alert('Informe o nome do paciente.');
-    
-    pacientes.push({ id: Date.now(), nome, whatsapp, endereco, createdAt: new Date().toISOString() });
+    pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
     localStorage.setItem('pacientes', JSON.stringify(pacientes));
-    
     document.getElementById('novo-paciente-nome').value = '';
     document.getElementById('novo-paciente-whatsapp').value = '';
     document.getElementById('novo-paciente-endereco').value = '';
-    
     renderPacientesLista();
+    carregarPacientesSelect();
     alert('Paciente cadastrado!');
 }
 
@@ -445,7 +389,7 @@ function agendarPaciente(nome) {
     document.querySelector('[data-tab="disponibilidade"]').classList.add('active');
     document.getElementById('tab-disponibilidade').classList.add('active');
     document.getElementById('agendar-nome').value = nome;
-    alert('Paciente selecionado! Agora agende o horário.');
+    alert('Paciente selecionado! Agora agende o horario.');
 }
 
 function criarTagPaciente(nome) {
@@ -457,68 +401,54 @@ function criarTagPaciente(nome) {
     alert('Paciente selecionado! Agora crie a tag.');
 }
 
+function enviarMsgPaciente(nome) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('[data-tab="tags"]').classList.add('active');
+    document.getElementById('tab-tags').classList.add('active');
+    if (mensagens.length > 0) {
+        alert('Selecione uma mensagem abaixo e clique para copiar, depois envie no WhatsApp do paciente.');
+    } else {
+        alert('Nenhuma mensagem salva. Crie primeiro em Mensagens WhatsApp.');
+    }
+}
+
 function excluirPaciente(nome) {
     if (confirm('Deseja excluir este paciente?')) {
         pacientes = pacientes.filter(p => p.nome !== nome);
         localStorage.setItem('pacientes', JSON.stringify(pacientes));
         renderPacientesLista();
+        carregarPacientesSelect();
     }
 }
 
-// === TAGS ===
+// TAGS
 function salvarTag() {
     const paciente = document.getElementById('tag-paciente').value;
     const titulo = document.getElementById('tag-titulo').value;
     const dataContato = document.getElementById('tag-data-contato').value;
     const observacao = document.getElementById('tag-observacao').value;
     const tagColor = document.getElementById('tag-cor').value;
-    
-    if (!paciente || !titulo) return alert('Selecione o paciente e informe o título da tag.');
-    
-    tags.push({
-        id: Date.now(),
-        paciente,
-        titulo,
-        dataContato: dataContato || null,
-        observacao,
-        color: tagColor,
-        createdAt: new Date().toISOString()
-    });
-    
+    if (!paciente || !titulo) return alert('Selecione o paciente e informe o titulo da tag.');
+    tags.push({ id: Date.now(), paciente: paciente, titulo: titulo, dataContato: dataContato || null, observacao: observacao, color: tagColor, createdAt: new Date().toISOString() });
     localStorage.setItem('tags', JSON.stringify(tags));
-    
     document.getElementById('tag-paciente').value = '';
     document.getElementById('tag-titulo').value = '';
     document.getElementById('tag-data-contato').value = '';
     document.getElementById('tag-observacao').value = '';
-    
     renderTags();
+    renderPacientesLista();
     alert('Tag criada com sucesso!');
 }
 
 function renderTags() {
     const container = document.getElementById('tags-lista');
     if (!container) return;
-    
     const filterPaciente = document.getElementById('filter-tag-paciente').value;
     let filtered = [...tags];
     if (filterPaciente) filtered = filtered.filter(t => t.paciente === filterPaciente);
-    
-    container.innerHTML = filtered.length === 0 ?
-        '<div class="empty-state">Nenhuma tag criada</div>' :
-        filtered.map(t => `
-            <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ${t.color};">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <strong>${t.paciente}</strong>
-                        <div style="color: ${t.color}; font-weight: 600; margin-top: 5px;">${t.titulo}</div>
-                        ${t.dataContato ? `<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">📅 Contato: ${formatDate(t.dataContato)}</div>` : ''}
-                        ${t.observacao ? `<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">${t.observacao}</div>` : ''}
-                    </div>
-                    <button onclick="excluirTag(${t.id})" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✕</button>
-                </div>
-            </div>
-        `).join('');
+    container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma tag criada</div>' :
+        filtered.map(t => '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + ';"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>' + (t.dataContato ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>' : '') + (t.observacao ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>' : '') + '</div><button onclick="excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 10px; border-radius: 5px; cursor: pointer;">X</button></div></div>').join('');
 }
 
 function filtrarTags() { renderTags(); }
@@ -528,22 +458,19 @@ function excluirTag(id) {
         tags = tags.filter(t => t.id !== id);
         localStorage.setItem('tags', JSON.stringify(tags));
         renderTags();
+        renderPacientesLista();
     }
 }
 
-// === MENSAGENS ===
+// MENSAGENS
 function salvarMensagem() {
     const titulo = document.getElementById('msg-titulo').value;
     const texto = document.getElementById('msg-texto').value;
-    
-    if (!titulo || !texto) return alert('Informe o título e a mensagem.');
-    
-    mensagens.push({ id: Date.now(), titulo, texto });
+    if (!titulo || !texto) return alert('Informe o titulo e a mensagem.');
+    mensagens.push({ id: Date.now(), titulo: titulo, texto: texto });
     localStorage.setItem('mensagens', JSON.stringify(mensagens));
-    
     document.getElementById('msg-titulo').value = '';
     document.getElementById('msg-texto').value = '';
-    
     renderMensagens();
     alert('Mensagem salva!');
 }
@@ -551,21 +478,15 @@ function salvarMensagem() {
 function renderMensagens() {
     const container = document.getElementById('mensagens-lista');
     if (!container) return;
-    
-    container.innerHTML = mensagens.length === 0 ?
-        '<span style="color: #999;">Nenhuma mensagem salva</span>' :
-        mensagens.map(m => `
-            <div class="block-chip" style="cursor: pointer;" onclick="copiarMensagem(${m.id})" title="Clique para copiar">
-                ${m.titulo} <span class="remove" onclick="event.stopPropagation(); excluirMensagem(${m.id})">×</span>
-            </div>
-        `).join('');
+    container.innerHTML = mensagens.length === 0 ? '<span style="color: #999;">Nenhuma mensagem salva</span>' :
+        mensagens.map(m => '<div class="block-chip" style="cursor: pointer;" onclick="copiarMensagem(' + m.id + ')" title="Clique para copiar">' + m.titulo + ' <span class="remove" onclick="event.stopPropagation(); excluirMensagem(' + m.id + ')">x</span></div>').join('');
 }
 
 function copiarMensagem(id) {
     const msg = mensagens.find(m => m.id === id);
     if (msg) {
         navigator.clipboard.writeText(msg.texto).then(() => {
-            alert('Mensagem copiada! Agora você pode colar no WhatsApp.');
+            alert('Mensagem copiada! Agora voce pode colar no WhatsApp.');
         });
     }
 }
@@ -578,5 +499,4 @@ function excluirMensagem(id) {
     }
 }
 
-// Iniciar
 init();
