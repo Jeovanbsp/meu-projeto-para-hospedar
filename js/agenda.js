@@ -614,7 +614,15 @@ function renderHistorico() {
     if (filterPaciente) filtered = filtered.filter(h => h.paciente === filterPaciente);
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
-    container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095;"><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div>').join('');
+    container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095; display: flex; justify-content: space-between; align-items: center;"><div><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div><button onclick="excluirItem(' + h.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div>').join('');
+}
+
+function excluirItem(id) {
+    if (confirm('Deseja excluir este item?')) {
+        historico = historico.filter(h => h.id !== id);
+        localStorage.setItem('historico', JSON.stringify(historico));
+        renderHistorico();
+    }
 }
 
 init();

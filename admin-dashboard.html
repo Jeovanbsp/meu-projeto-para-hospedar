@@ -178,14 +178,14 @@
 
         <!-- Botao Gerenciar Dados (Popup) -->
         <div style="margin-top: 25px; text-align: center;">
-            <button onclick="document.getElementById('modal-gerenciar').classList.add('active')" style="background: #fff0f0; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;"><i class="ph ph-gear"></i> Gerenciar Dados</button>
+            <button onclick="document.getElementById('modal-gerenciar').style.display='flex'" style="background: #fff0f0; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;"><i class="ph ph-gear"></i> Gerenciar Dados</button>
         </div>
 
-        <!-- Divisorio Prontuario -->
-        <div style="margin: 40px 0; border-top: 2px dashed #ddd; position: relative;">
-            <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #f4f6f8; padding: 0 20px;">
-                <span style="font-size: 1.1rem; font-weight: 700; color: #2c3e50; background: #f4f6f8; padding: 0 15px;">----------------- Prontuario dos Pacientes -------------------</span>
-            </div>
+        <!-- Divisorio Visual -->
+        <div style="margin: 50px 0 30px 0; display: flex; align-items: center; gap: 20px;">
+            <div style="flex: 1; height: 2px; background: linear-gradient(90deg, transparent, #2ADCA1);"></div>
+            <div style="font-size: 0.9rem; font-weight: 600; color: #2ADCA1; white-space: nowrap;">Prontuario dos Pacientes</div>
+            <div style="flex: 1; height: 2px; background: linear-gradient(90deg, #2ADCA1, transparent);"></div>
         </div>
 
         <!-- Sistema Existente -->
@@ -242,11 +242,11 @@
         </div>
 
     <!-- Modal Gerenciar Dados -->
-    <div class="modal-overlay" id="modal-gerenciar">
+    <div class="modal-overlay" id="modal-gerenciar" style="display: none;">
         <div class="modal-box" style="max-width: 700px;">
             <div class="modal-header">
                 <h3><i class="ph ph-gear" style="color:#ff6b6b; margin-right:8px;"></i> Gerenciar Dados</h3>
-                <button class="modal-close" onclick="document.getElementById('modal-gerenciar').classList.remove('active')">x</button>
+                <button class="modal-close" onclick="document.getElementById('modal-gerenciar').style.display='none'">x</button>
             </div>
             
             <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
