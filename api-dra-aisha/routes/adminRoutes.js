@@ -179,3 +179,71 @@ router.delete('/banner/:id', async (req, res) => {
 });
 
 module.exports = router;
+// 8. DISPONIBILIDADE
+router.post('/disponibilidade', async (req, res) => {
+    try {
+        const data = req.body;
+        if (Array.isArray(data)) {
+            await require('../models/Config').findOneAndUpdate({ key: 'disponibilidade' }, { key: 'disponibilidade', value: data }, { upsert: true });
+        }
+        res.json({ message: 'Salvo' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
+});
+router.get('/disponibilidade', async (req, res) => {
+    try {
+        const config = await require('../models/Config').findOne({ key: 'disponibilidade' });
+        res.json(config?.value || []);
+    } catch (error) { res.status(500).json([]); }
+});
+
+// 9. AGENDAMENTOS
+router.post('/appointments', async (req, res) => {
+    try {
+        const data = req.body;
+        if (Array.isArray(data)) {
+            await require('../models/Config').findOneAndUpdate({ key: 'agendamentos' }, { key: 'agendamentos', value: data }, { upsert: true });
+        }
+        res.json({ message: 'Salvo' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
+});
+router.get('/appointments', async (req, res) => {
+    try {
+        const config = await require('../models/Config').findOne({ key: 'agendamentos' });
+        res.json(config?.value || []);
+    } catch (error) { res.status(500).json([]); }
+});
+
+// 10. PACIENTES
+router.post('/pacientes', async (req, res) => {
+    try {
+        const data = req.body;
+        if (Array.isArray(data)) {
+            await require('../models/Config').findOneAndUpdate({ key: 'pacientes' }, { key: 'pacientes', value: data }, { upsert: true });
+        }
+        res.json({ message: 'Salvo' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
+});
+router.get('/pacientes', async (req, res) => {
+    try {
+        const config = await require('../models/Config').findOne({ key: 'pacientes' });
+        res.json(config?.value || []);
+    } catch (error) { res.status(500).json([]); }
+});
+
+// 11. HISTORICO
+router.post('/historico', async (req, res) => {
+    try {
+        const data = req.body;
+        if (Array.isArray(data)) {
+            await require('../models/Config').findOneAndUpdate({ key: 'historico' }, { key: 'historico', value: data }, { upsert: true });
+        }
+        res.json({ message: 'Salvo' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
+});
+router.get('/historico', async (req, res) => {
+    try {
+        const config = await require('../models/Config').findOne({ key: 'historico' });
+        res.json(config?.value || []);
+    } catch (error) { res.status(500).json([]); }
+});
+

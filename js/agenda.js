@@ -204,6 +204,7 @@ function salvarDisponibilidade() {
         disponibilidade.push({ date: selectedDate, time: block.inicio + ' - ' + block.fim, location: selectedLocations.join(', ') });
     });
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        saveToAPI('disponibilidade', disponibilidade);
     selectedBlocks = [];
     selectedLocations = [];
     document.querySelectorAll('.location-checkbox').forEach(el => {
@@ -295,11 +296,14 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
     disponibilidade = disponibilidade.filter(d => !(d.date === date && d.time === time && d.location === location));
     agendamentos.push({ date: date, time: time, location: location, patientName: nome, whatsapp: whatsapp, endereco: endereco, status: 'pendente' });
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        saveToAPI('agendamentos', agendamentos);
         atualizarContador();
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        saveToAPI('disponibilidade', disponibilidade);
     if (!pacientes.find(p => p.nome === nome)) {
         pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
         localStorage.setItem('pacientes', JSON.stringify(pacientes));
+        saveToAPI('pacientes', pacientes);
         renderPacientesLista();
         carregarPacientesSelect();
     }
@@ -335,6 +339,7 @@ function toggleStatus(index) {
         a.status = 'pendente';
     }
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        saveToAPI('agendamentos', agendamentos);
     atualizarContador();
     renderAppointmentsList();
 }
@@ -365,8 +370,10 @@ function excluirAgendamento(index) {
         disponibilidade.push({ date: a.date, time: a.time, location: a.location });
         agendamentos.splice(index, 1);
         localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        saveToAPI('agendamentos', agendamentos);
         atualizarContador();
         localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        saveToAPI('disponibilidade', disponibilidade);
         renderAvailabilityTable();
         renderAppointmentsList();
     }
@@ -391,6 +398,7 @@ function excluirDisponibilidade(index) {
     if (confirm('Deseja excluir esta disponibilidade?')) {
         disponibilidade.splice(index, 1);
         localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        saveToAPI('disponibilidade', disponibilidade);
         renderAvailabilityTable();
         renderCalendar();
     }
@@ -403,6 +411,7 @@ document.getElementById('form-editar').addEventListener('submit', function(e) {
     const fim = document.getElementById('editar-fim').value;
     disponibilidade[index] = { date: document.getElementById('editar-data').value, time: inicio + ' - ' + fim, location: document.getElementById('editar-local').value };
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        saveToAPI('disponibilidade', disponibilidade);
     fecharModalEditar();
     renderAvailabilityTable();
     renderCalendar();
@@ -460,6 +469,7 @@ function cadastrarPaciente() {
     if (!nome) return alert('Informe o nome do paciente.');
     pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, responsavel: responsavel, obs: obs, createdAt: new Date().toISOString() });
     localStorage.setItem('pacientes', JSON.stringify(pacientes));
+        saveToAPI('pacientes', pacientes);
     document.getElementById('novo-paciente-nome').value = '';
     document.getElementById('novo-paciente-whatsapp').value = '';
     document.getElementById('novo-paciente-endereco').value = '';
@@ -533,6 +543,7 @@ function excluirPaciente(nome) {
     if (confirm('Deseja excluir este paciente?')) {
         pacientes = pacientes.filter(p => p.nome !== nome);
         localStorage.setItem('pacientes', JSON.stringify(pacientes));
+        saveToAPI('pacientes', pacientes);
         renderPacientesLista();
         carregarPacientesSelect();
     }
