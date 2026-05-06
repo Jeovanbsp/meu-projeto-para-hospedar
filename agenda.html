@@ -14,7 +14,7 @@
         
         .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
         
-        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px; height: 160px; box-sizing: border-box; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 10px 20px; height: auto; box-sizing: border-box; }
         .header-left { flex: 0 0 auto; }
         .header-center { flex: 1; display: flex; justify-content: center; align-items: center; gap: 8px; color: #2c3e50; font-weight: 700; font-size: 1.1rem; }
         .header-right { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
@@ -37,8 +37,9 @@
             cursor: pointer; 
             text-decoration: none;
             white-space: nowrap;
+            margin-top: 0;
         }
-        .btn-header-voltar { background-color: #007bff; }
+        .btn-header-voltar { background-color: #007bff; margin-top: 0; }
 
         .dashboard-container { padding: 20px; max-width: 1600px; width: 95%; margin: 20px auto; }
         
@@ -191,6 +192,7 @@
 
         @media (max-width: 900px) {
             .calendar-section { grid-template-columns: 1fr; }
+            #tab-tags > div { grid-template-columns: 1fr; }
         }
         @media (max-width: 768px) {
             body { padding-top: 130px; }
@@ -222,6 +224,7 @@
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="disponibilidade">Disponibilidade</button>
             <button class="tab-btn" data-tab="agendamentos">Agendamentos</button>
+            <button class="tab-btn" data-tab="tags">Tags & Mensagens</button>
         </div>
 
         <div id="tab-disponibilidade" class="tab-content active">
@@ -339,6 +342,84 @@
 
                 <div id="appointments-list">
                     <div class="empty-state">Nenhuma consulta agendada</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: TAGS E MENSAGENS -->
+        <div id="tab-tags" class="tab-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px;">
+                <!-- Criar Tag -->
+                <div class="availability-card">
+                    <div class="availability-header">
+                        <div class="availability-title">Criar Nova Tag</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Selecionar Paciente</label>
+                        <select id="tag-paciente" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="">Selecione um paciente...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Título da Tag</label>
+                        <input type="text" id="tag-titulo" placeholder="Ex: Revisão de medicamentos, Retorno em 30 dias...">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Data para contato</label>
+                        <input type="date" id="tag-data-contato">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Observação</label>
+                        <textarea id="tag-observacao" rows="3" placeholder="Observações sobre o paciente..."></textarea>
+                    </div>
+                    
+                    <button class="btn-salvar" onclick="salvarTag()" style="background: #007bff;">Criar Tag</button>
+                </div>
+
+                <!-- Mensagens Pré-definidas -->
+                <div class="availability-card">
+                    <div class="availability-header">
+                        <div class="availability-title">Mensagens WhatsApp</div>
+                        <button class="btn-salvar" onclick="abrirModalMensagem()" style="background: #25c095; padding: 8px 15px; font-size: 0.9rem;">+ Nova Mensagem</button>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Criar Mensagem Rápida</label>
+                        <input type="text" id="msg-titulo" placeholder="Ex: Retorno em 30 dias">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Mensagem</label>
+                        <textarea id="msg-texto" rows="3" placeholder="Digite a mensagem..."></textarea>
+                    </div>
+                    
+                    <button class="btn-salvar" onclick="salvarMensagem()" style="background: #007bff;">Salvar Mensagem</button>
+                    
+                    <div style="margin-top: 20px;">
+                        <label style="font-weight: 600; margin-bottom: 10px; display: block;">Mensagens Salvas:</label>
+                        <div id="mensagens-lista" class="blocks-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lista de Tags -->
+            <div class="availability-card" style="margin-top: 25px;">
+                <div class="availability-header">
+                    <div class="availability-title">Tags Criadas</div>
+                </div>
+                
+                <div class="filters-row">
+                    <select class="filter-select" id="filter-tag-paciente" onchange="filtrarTags()">
+                        <option value="">Todos os Pacientes</option>
+                    </select>
+                </div>
+                
+                <div id="tags-lista">
+                    <div class="empty-state">Nenhuma tag criada</div>
                 </div>
             </div>
         </div>

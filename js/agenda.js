@@ -438,7 +438,200 @@ renderCalendar();
 renderAvailabilityTable();
 renderAppointmentsList();
 setupLocationCheckboxes();
+carregarPacientes();
+carregarMensagens();
+carregarTags();
 
 document.getElementById('btn-logout').addEventListener('click', () => {
     window.location.href = 'index.html';
 });
+
+// === PACIENTES ===
+let pacientes = [];
+
+function carregarPacientes() {
+    // Carregar do localStorage ou usar dados padrão
+    const salvos = localStorage.getItem('pacientes');
+    if (salvos) {
+        pacientes = JSON.parse(salvos);
+    }
+    
+    const select = document.getElementById('tag-paciente');
+    select.innerHTML = '<option value="">Selecione um paciente...</option>';
+    
+    pacientes.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.nome;
+        option.textContent = p.nome;
+        select.appendChild(option);
+    });
+    
+    // Atualizar filtro
+    const filterSelect = document.getElementById('filter-tag-paciente');
+    filterSelect.innerHTML = '<option value="">Todos os Pacientes</option>';
+    pacientes.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.nome;
+        option.textContent = p.nome;
+        filterSelect.appendChild(option);
+    });
+}
+
+// === TAGS ===
+let tags = [];
+
+function salvarTag() {
+    const paciente = document.getElementById('tag-paciente').value;
+    const titulo = document.getElementById('tag-titulo').value;
+    const dataContato = document.getElementById('tag-data-contato').value;
+    const observacao = document.getElementById('tag-observacao').value;
+    
+    if (!paciente || !titulo) {
+        alert('Selecione o paciente e informe o título da tag.');
+        return;
+    }
+    
+    tags.push({
+        id: Date.now(),
+        paciente,
+        titulo,
+        dataContato: dataContato || null,
+        observacao,
+        createdAt: new Date().toISOString()
+    });
+    
+    // Limpar form
+    document.getElementById('tag-paciente').value = '';
+    document.getElementById('tag-titulo').value = '';
+    document.getElementById('tag-data-contato').value = '';
+    document.getElementById('tag-observacao').value = '';
+    
+    renderTags();
+    alert('Tag criada com sucesso!');
+}
+
+function renderTags() {
+    const container = document.getElementById('tags-lista');
+    const filterPaciente = document.getElementById('filter-tag-paciente').value;
+    
+    let filtered = [...tags];
+    if (filterPaciente) {
+        filtered = filtered.filter(t => t.paciente === filterPaciente);
+    }
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">Nenhuma tag criada</div>';
+        return;
+    }
+    
+    container.innerHTML = filtered.map(t => `
+        <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #eee;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <strong>${t.paciente}</strong>
+                    <div style="color: #2ADCA1; font-weight: 600; margin-top: 5px;">${t.titulo}</div>
+                    ${t.dataContato ? `<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">📅 Contato: ${formatDate(t.dataContato)}</div>` : ''}
+                    ${t.observacao ? `<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">${t.observacao}</div>` : ''}
+                </div>
+                <button onclick="excluirTag(${t.id})" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 10px; border-radius: 5px; cursor: pointer;">✕</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function filtrarTags() {
+    renderTags();
+}
+
+function excluirTag(id) {
+    if (confirm('Deseja excluir esta tag?')) {
+        tags = tags.filter(t => t.id !== id);
+        renderTags();
+    }
+}
+
+// === MENSAGENS PRÉ-DEFINIDAS ===
+let mensagens = [];
+
+function salvarMensagem() {
+    const titulo = document.getElementById('msg-titulo').value;
+    const texto = document.getElementById('msg-texto').value;
+    
+    if (!titulo || !texto) {
+        alert('Informe o título e a mensagem.');
+        return;
+    }
+    
+    mensagens.push({
+        id: Date.now(),
+        titulo,
+        texto
+    });
+    
+    // Limpar form
+    document.getElementById('msg-titulo').value = '';
+    document.getElementById('msg-texto').value = '';
+    
+    renderMensagens();
+    alert('Mensagem salva!');
+}
+
+function renderMensagens() {
+    const container = document.getElementById('mensagens-lista');
+    
+    if (mensagens.length === 0) {
+        container.innerHTML = '<span style="color: #999;">Nenhuma mensagem salva</span>';
+        return;
+    }
+    
+    container.innerHTML = mensagens.map(m => `
+        <div class="block-chip" style="cursor: pointer;" onclick="copiarMensagem('${m.id}')" title="Clique para copiar">
+            ${m.titulo} <span class="remove" onclick="event.stopPropagation(); excluirMensagem(${m.id})">×</span>
+        </div>
+    `).join('');
+}
+
+function copiarMensagem(id) {
+    const msg = mensagens.find(m => m.id === id);
+    if (msg) {
+        navigator.clipboard.writeText(msg.texto).then(() => {
+            alert('Mensagem copiada! Agora você pode colar no WhatsApp.');
+        });
+    }
+}
+
+function excluirMensagem(id) {
+    if (confirm('Deseja excluir esta mensagem?')) {
+        mensagens = mensagens.filter(m => m.id !== id);
+        renderMensagens();
+    }
+}
+
+function carregarMensagens() {
+    const salvas = localStorage.getItem('mensagens');
+    if (salvas) {
+        mensagens = JSON.parse(salvos);
+    }
+    renderMensagens();
+}
+
+function carregarTags() {
+    const salvas = localStorage.getItem('tags');
+    if (salvas) {
+        tags = JSON.parse(salvos);
+    }
+    renderTags();
+}
+
+// Salvar no localStorage ao mudar
+const originalRenderTags = renderTags;
+renderTags = function() {
+    originalRenderTags();
+    localStorage.setItem('tags', JSON.stringify(tags));
+}
+
+const originalRenderMensagens = renderMensagens;
+renderMensagens = function() {
+    originalRenderMensagens();
+    localStorage.setItem('mensagens', JSON.stringify(mensagens));
+}
