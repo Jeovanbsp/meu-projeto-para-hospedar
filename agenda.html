@@ -215,7 +215,7 @@
                 <i class="ph ph-calendar-check" style="color: #2ADCA1;"></i> Agenda
             </div>
             <div class="header-right">
-                <a href="admin-dashboard.html" class="btn-header-voltar">Voltar</a>
+                <a href="admin-dashboard.html" class="btn-header-voltar">Voltar ao Dashboard</a>
                 <button id="btn-logout" class="btn-header-sair">Sair</button>
             </div>
         </div>
@@ -498,7 +498,8 @@
                 
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <input type="text" id="agendar-nome" required>
+                    <input type="text" id="agendar-nome" required autocomplete="off">
+                    <div id="agendar-suggestions" style="display:none;border:1px solid #ddd;max-height:150px;overflow-y:auto;background:white;position:absolute;z-index:1000;width:90%;"></div>
                 </div>
                 
                 <div class="form-group">

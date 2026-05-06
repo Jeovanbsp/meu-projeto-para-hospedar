@@ -200,7 +200,7 @@ function renderAvailabilityTable() {
         filtered.map((d, idx) => {
             const realIndex = disponibilidade.indexOf(d);
             const badgeClass = d.location.includes(',') ? 'misto' : d.location.toLowerCase().trim();
-            return '<tr><td>' + formatDate(d.date) + '</td><td>' + d.time + '</td><td><span class="location-badge ' + badgeClass + '">' + getLocationLabel(d.location) + '</span></td><td class="action-btns"><button class="btn-agendar" onclick="abrirModalAgendar(\'' + d.date + '\', \'' + d.time + '\', \'' + d.location + '\')">Agendar</button><button class="btn-editar" onclick="abrirModalEditar(' + realIndex + ')">E</button><button class="btn-excluir" onclick="excluirDisponibilidade(' + realIndex + ')">X</button></td></tr>';
+            return '<tr><td>' + formatDate(d.date) + '</td><td>' + d.time + '</td><td><span class="location-badge ' + badgeClass + '">' + getLocationLabel(d.location) + '</span></td><td class="action-btns" style="display: flex; gap: 5px; align-items: center;"><button class="btn-agendar" onclick="abrirModalAgendar(\'' + d.date + '\', \'' + d.time + '\', \'' + d.location + '\')">Agendar</button><button class="btn-editar" onclick="abrirModalEditar(' + realIndex + ')">E</button><button class="btn-excluir" onclick="excluirDisponibilidade(' + realIndex + ')">X</button></td></tr>';
         }).join('');
 }
 
@@ -215,7 +215,33 @@ function abrirModalAgendar(date, time, location) {
     document.getElementById('agendar-nome').value = '';
     document.getElementById('agendar-whatsapp').value = '';
     document.getElementById('agendar-endereco').value = '';
+    
+    // Preencher select com pacientes existentes
+    const nomeInput = document.getElementById('agendar-nome');
+    nomeInput.onkeyup = function() {
+        const val = this.value.toLowerCase();
+        const suggestions = document.getElementById('agendar-suggestions');
+        if (val.length > 0) {
+            const found = pacientes.filter(p => p.nome.toLowerCase().includes(val));
+            if (found.length > 0) {
+                suggestions.innerHTML = found.slice(0, 5).map(p => '<div onclick="selecionarPaciente(\'' + p.nome + '\', \'' + (p.whatsapp || '') + '\', \'' + (p.endereco || '') + '\')" style="padding: 8px; cursor: pointer; border-bottom: 1px solid #eee;">' + p.nome + '</div>').join('');
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+        } else {
+            suggestions.style.display = 'none';
+        }
+    };
+    
     document.getElementById('modal-agendar').classList.add('active');
+}
+
+function selecionarPaciente(nome, whatsapp, endereco) {
+    document.getElementById('agendar-nome').value = nome;
+    document.getElementById('agendar-whatsapp').value = whatsapp;
+    document.getElementById('agendar-endereco').value = endereco;
+    document.getElementById('agendar-suggestions').style.display = 'none';
 }
 
 function fecharModalAgendar() {
@@ -231,15 +257,19 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
     const whatsapp = document.getElementById('agendar-whatsapp').value;
     const endereco = document.getElementById('agendar-endereco').value;
     disponibilidade = disponibilidade.filter(d => !(d.date === date && d.time === time && d.location === location));
+    // Contato registrado
+    historico.push({ id: Date.now(), paciente: nome, tipo: 'consulta', titulo: location, data: new Date().toISOString() });
     agendamentos.push({ date: date, time: time, location: location, patientName: nome, whatsapp: whatsapp, endereco: endereco, status: 'pendente' });
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
     localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+    localStorage.setItem('historico', JSON.stringify(historico));
     if (!pacientes.find(p => p.nome === nome)) {
         pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, createdAt: new Date().toISOString() });
         localStorage.setItem('pacientes', JSON.stringify(pacientes));
         renderPacientesLista();
         carregarPacientesSelect();
     }
+    if (document.getElementById('historico-lista')) renderHistorico();
     fecharModalAgendar();
     renderAvailabilityTable();
     renderAppointmentsList();
@@ -264,7 +294,14 @@ function renderAppointmentsList() {
 function filtrarAgendamentos() { renderAppointmentsList(); }
 
 function toggleStatus(index) {
-    agendamentos[index].status = agendamentos[index].status === 'pendente' ? 'realizado' : 'pendente';
+    const a = agendamentos[index];
+    a.status = a.status === 'pendente' ? 'realizado' : 'pendente';
+    // Se realizado, registrar no historico
+    if (a.status === 'realizado') {
+        historico.push({ id: Date.now(), paciente: a.patientName, tipo: 'consulta_realizada', titulo: a.location, data: new Date().toISOString() });
+        localStorage.setItem('historico', JSON.stringify(historico));
+        if (document.getElementById('historico-lista')) renderHistorico();
+    }
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
     renderAppointmentsList();
 }
@@ -379,8 +416,14 @@ function agendarPaciente(nome) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     document.querySelector('[data-tab="disponibilidade"]').classList.add('active');
     document.getElementById('tab-disponibilidade').classList.add('active');
-    document.getElementById('agendar-nome').value = nome;
-    alert('Paciente selecionado! Agora agende o horario.');
+    // Ja preencher os dados
+    const p = pacientes.find(x => x.nome === nome);
+    if (p) {
+        document.getElementById('agendar-nome').value = p.nome;
+        document.getElementById('agendar-whatsapp').value = p.whatsapp || '';
+        document.getElementById('agendar-endereco').value = p.endereco || '';
+    }
+    alert('Paciente selecionado! Clique em um horario para agendar.');
 }
 
 function criarTagPaciente(nome) {
@@ -414,18 +457,10 @@ function enviarMsgPacienteSelecionada(id) {
         const texto = encodeURIComponent(msg.texto);
         const tel = pacienteMsgAtual.whatsapp.replace(/\D/g, '');
         window.open('https://wa.me/' + tel + '?text=' + texto, '_blank');
-        
-        // Salvar no historico
-        historico.push({
-            id: Date.now(),
-            paciente: pacienteMsgAtual.nome,
-            tipo: 'mensagem',
-            titulo: msg.titulo,
-            data: new Date().toISOString()
-        });
+        historico.push({ id: Date.now(), paciente: pacienteMsgAtual.nome, tipo: 'mensagem', titulo: msg.titulo, data: new Date().toISOString() });
         localStorage.setItem('historico', JSON.stringify(historico));
-        
         document.getElementById('modal-selecionar-msg').classList.remove('active');
+        renderHistorico();
     }
 }
 
@@ -473,7 +508,7 @@ function renderTags() {
             var html = '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + '; cursor: pointer;" onclick="mostrarTagDetalhesById(' + t.id + ')"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>';
             if (t.dataContato) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>';
             if (t.observacao) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>';
-            html += '</div><div style="display: flex; flex-direction: column; gap: 5px;"><button onclick="event.stopPropagation(); enviarMsgPaciente(\'' + t.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Msg</button><button onclick="event.stopPropagation(); marcarContato(\'' + t.paciente + '\')" style="background: #2ADCA1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">OK</button><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div></div></div>';
+            html += '</div><div style="display: flex; flex-direction: column; gap: 5px;"><button onclick="event.stopPropagation(); enviarMsgPaciente(\'' + t.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Msg</button><button onclick="event.stopPropagation(); marcarContato(\'' + t.paciente + '\', \'' + t.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">OK</button><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div></div></div>';
             return html;
         }).join('');
 }
@@ -489,7 +524,7 @@ function mostrarTagDetalhes(tag) {
     html += '<div style="font-size: 1.2rem; margin-top: 10px;">' + tag.paciente + '</div>';
     if (tag.dataContato) html += '<div style="color: #666; margin-top: 10px;">Contato: ' + formatDate(tag.dataContato) + '</div>';
     if (tag.observacao) html += '<div style="color: #666; margin-top: 10px;">' + tag.observacao + '</div>';
-    html += '<div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;"><button onclick="enviarMsgPaciente(\'' + tag.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Enviar Msg</button><button onclick="marcarContato(\'' + tag.paciente + '\')" style="background: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Marcar OK</button></div>';
+    html += '<div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;"><button onclick="enviarMsgPaciente(\'' + tag.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Enviar Msg</button><button onclick="marcarContato(\'' + tag.paciente + '\', \'' + tag.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Marcar OK</button></div>';
     html += '<button onclick="fecharModalVerTag()" style="margin-top: 10px; padding: 10px 20px; background: #ccc; color: #333; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>';
     detalhes.innerHTML = html;
     document.getElementById('modal-ver-tag').classList.add('active');
@@ -508,6 +543,25 @@ function excluirTag(id) {
         renderTags();
         renderPacientesLista();
     }
+}
+
+function marcarContato(paciente, titulo) {
+    historico.push({
+        id: Date.now(),
+        paciente: paciente,
+        tipo: 'contato',
+        titulo: titulo || 'Contato realizado',
+        data: new Date().toISOString()
+    });
+    localStorage.setItem('historico', JSON.stringify(historico));
+    // Remover tag
+    tags = tags.filter(t => t.paciente !== paciente);
+    localStorage.setItem('tags', JSON.stringify(tags));
+    alert('Contato registrado! Tag removida da lista.');
+    fecharModalVerTag();
+    renderHistorico();
+    renderTags();
+    renderPacientesLista();
 }
 
 // MENSAGENS
@@ -561,20 +615,6 @@ function renderHistorico() {
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
     container.innerHTML = filtered.map(h => '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid #25c095;"><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: #25c095;">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888;">' + new Date(h.data).toLocaleDateString('pt-BR') + '</div></div>').join('');
-}
-
-function marcarContato(paciente) {
-    historico.push({
-        id: Date.now(),
-        paciente: paciente,
-        tipo: 'contato',
-        titulo: 'Contato realizado',
-        data: new Date().toISOString()
-    });
-    localStorage.setItem('historico', JSON.stringify(historico));
-    alert('Contato registrado no historico!');
-    fecharModalVerTag();
-    renderHistorico();
 }
 
 init();
