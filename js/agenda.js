@@ -430,15 +430,18 @@ function salvarTag() {
     const observacao = document.getElementById('tag-observacao').value;
     const tagColor = document.getElementById('tag-cor').value;
     if (!paciente || !titulo) return alert('Selecione o paciente e informe o titulo da tag.');
-    tags.push({ id: Date.now(), paciente: paciente, titulo: titulo, dataContato: dataContato || null, observacao: observacao, color: tagColor, createdAt: new Date().toISOString() });
+    const novaTag = { id: Date.now(), paciente: paciente, titulo: titulo, dataContato: dataContato || null, observacao: observacao, color: tagColor, createdAt: new Date().toISOString() };
+    tags.push(novaTag);
     localStorage.setItem('tags', JSON.stringify(tags));
     document.getElementById('tag-paciente').value = '';
     document.getElementById('tag-titulo').value = '';
     document.getElementById('tag-data-contato').value = '';
     document.getElementById('tag-observacao').value = '';
+    
+    // Mostrar modal de tag criada
+    mostrarTagDetalhes(novaTag);
     renderTags();
     renderPacientesLista();
-    alert('Tag criada com sucesso!');
 }
 
 function renderTags() {
@@ -448,7 +451,12 @@ function renderTags() {
     let filtered = [...tags];
     if (filterPaciente) filtered = filtered.filter(t => t.paciente === filterPaciente);
     container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma tag criada</div>' :
-        filtered.map(t => '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + ';"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>' + (t.dataContato ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>' : '') + (t.observacao ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>' : '') + '</div><button onclick="excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 10px; border-radius: 5px; cursor: pointer;">X</button></div></div>').join('');
+        filtered.map(t => '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + '; cursor: pointer;" onclick="mostrarTagDetalhesById(' + t.id + ')"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>' + (t.dataContato ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>' : '') + (t.observacao ? '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>' : '') + '</div><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 10px; border-radius: 5px; cursor: pointer;">X</button></div></div>').join('');
+}
+
+function mostrarTagDetalhesById(id) {
+    const tag = tags.find(t => t.id === id);
+    if (tag) mostrarTagDetalhes(tag);
 }
 
 function filtrarTags() { renderTags(); }
@@ -489,6 +497,66 @@ function copiarMensagem(id) {
             alert('Mensagem copiada! Agora voce pode colar no WhatsApp.');
         });
     }
+}
+
+//.NOVIDADE: Abrir modal para selecionar mensagem e enviar para paciente
+let pacienteMsgAtual = null;
+
+function enviarMsgPaciente(nome) {
+    const paciente = pacientes.find(p => p.nome === nome);
+    if (!paciente || !paciente.whatsapp) {
+        alert('Paciente sem WhatsApp cadastrado. Cadastre primeiro.');
+        return;
+    }
+    pacienteMsgAtual = { nome: nome, whatsapp: paciente.whatsapp };
+    
+    // Mostrar modal com mensagens
+    const lista = document.getElementById('msg-selecionar-lista');
+    lista.innerHTML = mensagens.length === 0 ? 
+        '<div class="empty-state">Nenhuma mensagem salva. Crie primeiro.</div>' :
+        mensagens.map(m => '<div class="block-chip" style="cursor: pointer; padding: 12px 15px;" onclick="enviarMsgPacienteSelecionada(' + m.id + ')">' + m.titulo + '</div>').join('');
+    
+    document.getElementById('modal-selecionar-msg').classList.add('active');
+}
+
+function enviarMsgPacienteSelecionada(id) {
+    const msg = mensagens.find(m => m.id === id);
+    if (msg && pacienteMsgAtual) {
+        const texto = encodeURIComponent(msg.texto);
+        const tel = pacienteMsgAtual.whatsapp.replace(/\D/g, '');
+        window.open('https://wa.me/' + tel + '?text=' + texto, '_blank');
+        document.getElementById('modal-selecionar-msg').classList.remove('active');
+    }
+}
+
+function fecharModalMsg() {
+    document.getElementById('modal-selecionar-msg').classList.remove('active');
+}
+
+// Tag details modal
+let tagDetalhesAtual = null;
+
+function criarTagPaciente(nome) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector('[data-tab="tags"]').classList.add('active');
+    document.getElementById('tab-tags').classList.add('active');
+    document.getElementById('tag-paciente').value = nome;
+    alert('Paciente selecionado! Agora crie a tag.');
+}
+
+function mostrarTagDetalhes(tag) {
+    tagDetalhesAtual = tag;
+    const detalhes = document.getElementById('tag-detalhes');
+    detalhes.innerHTML = '<div style="font-size: 1.5rem; font-weight: 700; color: ' + tag.color + ';">' + tag.titulo + '</div><div style="font-size: 1.2rem; margin-top: 10px;">' + tag.paciente + '</div>' + 
+        (tag.dataContato ? '<div style="color: #666; margin-top: 10px;">Contato: ' + formatDate(tag.dataContato) + '</div>' : '') +
+        (tag.observacao ? '<div style="color: #666; margin-top: 10px;">' + tag.observacao + '</div>') +
+        '<button onclick="fecharModalVerTag()" style="margin-top: 20px; padding: 10px 20px; background: #2ADCA1; color: white; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>';
+    document.getElementById('modal-ver-tag').classList.add('active');
+}
+
+function fecharModalVerTag() {
+    document.getElementById('modal-ver-tag').classList.remove('active');
 }
 
 function excluirMensagem(id) {
