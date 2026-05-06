@@ -249,6 +249,7 @@ function carregarStats() {
     const historico = JSON.parse(localStorage.getItem('historico') || '[]');
     const pacientes = JSON.parse(localStorage.getItem('pacientes') || '[]');
     const disponibilidade = JSON.parse(localStorage.getItem('disponibilidade') || '[]');
+    const tags = JSON.parse(localStorage.getItem('tags') || '[]');
     
     // Totais
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
@@ -256,6 +257,16 @@ function carregarStats() {
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
     document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
     document.getElementById('total-pacientes').textContent = pacientes.length;
+    
+    // Alerta de mensagens pendentes (tags)
+    const alerta = document.getElementById('alerta-mensagens');
+    const texto = document.getElementById('alerta-texto');
+    if (tags.length > 0) {
+        alerta.style.display = 'block';
+        texto.textContent = 'Você tem ' + tags.length + ' paciente(s) para enviar mensagem!';
+    } else {
+        alerta.style.display = 'none';
+    }
     
     // Popular select de anos
     const anos = new Set();

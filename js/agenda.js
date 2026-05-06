@@ -341,15 +341,23 @@ function filtrarAgendamentos() { renderAppointmentsList(); }
 
 function toggleStatus(index) {
     const a = agendamentos[index];
-    a.status = a.status === 'pendente' ? 'realizado' : 'pendente';
-    // Se realizado, registrar no historico
-    if (a.status === 'realizado') {
-        historico.push({ id: Date.now(), paciente: a.patientName, tipo: 'consulta_realizada', titulo: a.location, data: new Date().toISOString() });
-        localStorage.setItem('historico', JSON.stringify(historico));
-        if (document.getElementById('historico-lista')) renderHistorico();
-    }
+    // Marcar como realizado e remover da lista de agendamentos ativos
+    historico.push({ id: Date.now(), paciente: a.patientName, tipo: 'consulta_realizada', titulo: a.location, data: new Date().toISOString() });
+    localStorage.setItem('historico', JSON.stringify(historico));
+    
+    // Excluir da lista de agendamentos ativos
+    agendamentos.splice(index, 1);
     localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+    
+    alert('Consulta marcada como realizada! Pode ver em: Histórico de Consultas');
     renderAppointmentsList();
+    renderHistorico();
+}
+
+function verHistoricoConsultas() {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('tab-consultas').classList.add('active');
 }
 
 function excluirAgendamento(index) {
@@ -573,7 +581,7 @@ function renderTags() {
             var html = '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + '; cursor: pointer;" onclick="mostrarTagDetalhesById(' + t.id + ')"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>';
             if (t.dataContato) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>';
             if (t.observacao) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>';
-            html += '</div><div style="display: flex; flex-direction: column; gap: 5px;"><button onclick="event.stopPropagation(); enviarMsgPaciente(\'' + t.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Msg</button><button onclick="event.stopPropagation(); marcarContato(\'' + t.paciente + '\', \'' + t.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">OK</button><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div></div></div>';
+            html += '</div><div style="display: flex; flex-direction: column; gap: 5px;"><button onclick="abrirMsgPaciente(event, \'' + t.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Msg</button><button onclick="marcarContato(\'' + t.paciente + '\', \'' + t.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">OK</button><button onclick="excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div></div></div>';
             return html;
         }).join('');
 }
@@ -589,10 +597,15 @@ function mostrarTagDetalhes(tag) {
     html += '<div style="font-size: 1.2rem; margin-top: 10px;">' + tag.paciente + '</div>';
     if (tag.dataContato) html += '<div style="color: #666; margin-top: 10px;">Contato: ' + formatDate(tag.dataContato) + '</div>';
     if (tag.observacao) html += '<div style="color: #666; margin-top: 10px;">' + tag.observacao + '</div>';
-    html += '<div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;"><button onclick="enviarMsgPaciente(\'' + tag.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Enviar Msg</button><button onclick="marcarContato(\'' + tag.paciente + '\', \'' + tag.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Marcar OK</button></div>';
+    html += '<div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;"><button onclick="abrirMsgPaciente(event, \'' + tag.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Enviar Msg</button><button onclick="marcarContato(\'' + tag.paciente + '\', \'' + tag.titulo + '\')" style="background: #2ADCA1; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">Marcar OK</button></div>';
     html += '<button onclick="fecharModalVerTag()" style="margin-top: 10px; padding: 10px 20px; background: #ccc; color: #333; border: none; border-radius: 8px; cursor: pointer;">Fechar</button>';
     detalhes.innerHTML = html;
     document.getElementById('modal-ver-tag').classList.add('active');
+}
+
+function abrirMsgPaciente(e, nome) {
+    e.stopPropagation();
+    enviarMsgPaciente(nome);
 }
 
 function fecharModalVerTag() {
@@ -611,11 +624,13 @@ function excluirTag(id) {
 }
 
 function marcarContato(paciente, titulo) {
+    const motivo = prompt('Qual o motivo do contato?');
+    if (motivo === null) return; // Cancelado
     historico.push({
         id: Date.now(),
         paciente: paciente,
         tipo: 'contato',
-        titulo: titulo || 'Contato realizado',
+        titulo: (titulo || 'Contato') + (motivo ? ' - ' + motivo : ''),
         data: new Date().toISOString()
     });
     localStorage.setItem('historico', JSON.stringify(historico));
@@ -623,7 +638,6 @@ function marcarContato(paciente, titulo) {
     tags = tags.filter(t => t.paciente !== paciente);
     localStorage.setItem('tags', JSON.stringify(tags));
     alert('Contato registrado! Tag removida da lista.');
-    fecharModalVerTag();
     renderHistorico();
     renderTags();
     renderPacientesLista();
