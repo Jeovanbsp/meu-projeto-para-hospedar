@@ -10,11 +10,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/prontuario.css">
     <style>
-        /* === BASE STYLES === */
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; padding-top: 180px;}
         
-        /* === HEADER FIXO === */
-        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; transition: transform 0.3s ease-in-out;}
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0, 0, 0.05); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; transition: transform 0.3s ease-in-out;}
         .esconder-topo { transform: translateY(-100%); }
         
         .logo img { height: 160px !important; width: auto; display: block; transition: 0.3s; }
@@ -22,16 +20,18 @@
         .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px; }
         .header-left { flex: 1; display: flex; justify-content: flex-start; }
         .header-center { flex: 2; display: flex; justify-content: center; align-items: center; gap: 8px; color: #2c3e50; font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
-        .header-right { flex: 1; display: flex; justify-content: flex-end; }
+        .header-right { flex: 1; display: flex; justify-content: flex-end; gap: 10px; }
 
         .btn-header-sair { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 15px; background-color: #ff6b6b; color: white; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
         .btn-header-sair:hover { background-color: #e05b5b; transform: translateY(-1px); }
+        
+        .btn-header-voltar { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 15px; background-color: #007bff; color: white; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; text-decoration: none; }
+        .btn-header-voltar:hover { background-color: #0056b3; transform: translateY(-1px); }
 
         .dashboard-container { padding: 20px; max-width: 1600px; width: 95%; margin: 20px auto; }
         .titulo-secao { color: #555; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; margin-top: 0;}
         
-        /* === TABS === */
-        .tabs-container { display: flex; gap: 5px; margin-bottom: 25px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: fit-content; }
+        .tabs-container { display: flex; gap: 5px; margin-bottom: 25px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); width: fit-content; }
         .tab-btn { padding: 12px 25px; border: none; background: transparent; color: #666; font-weight: 600; font-family: 'Montserrat', sans-serif; cursor: pointer; border-radius: 8px; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
         .tab-btn:hover { background: #f5f5f5; }
         .tab-btn.active { background: #2ADCA1; color: white; }
@@ -39,48 +39,55 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* === CALENDAR === */
-        .calendar-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-section { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+        
+        .calendar-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
         .calendar-nav { display: flex; align-items: center; gap: 15px; }
-        .calendar-nav button { background: #f5f5f5; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
-        .calendar-nav button:hover { background: #e0e0e0; }
+        .calendar-nav button { background: #2ADCA1; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; color: white; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+        .calendar-nav button:hover { background: #25c095; transform: scale(1.05); }
+        .calendar-nav button.today-btn { width: auto; padding: 0 15px; font-size: 0.9rem; font-weight: 600; background: #007bff; }
+        .calendar-nav button.today-btn:hover { background: #0056b3; }
         .calendar-title { font-size: 1.3rem; font-weight: 700; color: #2c3e50; }
         
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
         .calendar-day-header { text-align: center; font-weight: 600; color: #888; font-size: 0.85rem; padding: 10px; }
-        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; position: relative; }
-        .calendar-day:hover { background: #f0fdf9; }
-        .calendar-day.empty { cursor: default; }
-        .calendar-day.empty:hover { background: transparent; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; position: relative; background: #f5f5f5; color: #333; }
+        .calendar-day:hover { background: #2ADCA1; color: white; }
+        .calendar-day.empty { cursor: default; background: transparent; }
         .calendar-day.selected { background: #2ADCA1; color: white; }
-        .calendar-day.has-slots { background: #e8f9f4; color: #2ADCA1; }
-        .calendar-day.has-slots::after { content: ''; position: absolute; bottom: 5px; width: 6px; height: 6px; background: #2ADCA1; border-radius: 50%; }
-        .calendar-day.has-slots.selected::after { background: white; }
+        .calendar-day.has-slots { background: #e8f9f4; color: #2ADCA1; border: 2px solid #2ADCA1; }
+        .calendar-day.has-slots:hover { background: #2ADCA1; color: white; }
+        .calendar-day.has-slots.selected { background: #2ADCA1; color: white; }
+        .calendar-day.past { opacity: 0.4; cursor: not-allowed; }
         
-        /* === TIME SLOTS === */
-        .time-slots-section { margin-top: 25px; display: none; }
-        .time-slots-section.active { display: block; }
-        .time-slots-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .times-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
+        .times-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
         .selected-date-title { font-weight: 700; color: #2c3e50; font-size: 1.1rem; }
         
-        .time-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
-        .time-slot { padding: 12px; text-align: center; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
-        .time-slot:hover { border-color: #2ADCA1; }
+        .custom-time-input { display: flex; gap: 10px; align-items: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .custom-time-input label { font-weight: 600; color: #555; }
+        .custom-time-input input { padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat'; width: 80px; }
+        .custom-time-input .btn-add-range { background: #007bff; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .custom-time-input .btn-add-range:hover { background: #0056b3; }
+        
+        .time-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; }
+        .time-slot { padding: 10px 8px; text-align: center; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; font-size: 0.9rem; }
+        .time-slot:hover { border-color: #2ADCA1; background: #f0fdf9; }
         .time-slot.selected { background: #2ADCA1; border-color: #2ADCA1; color: white; }
         
-        /* === LOCATION OPTIONS === */
+        .location-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .location-label { font-weight: 600; color: #555; margin-bottom: 10px; display: block; }
         .location-options { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .location-option { padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
         .location-option:hover { border-color: #2ADCA1; }
         .location-option.selected { background: #2ADCA1; border-color: #2ADCA1; color: white; }
         
-        .btn-salvarDisponibilidade { background: #2ADCA1; color: white; border: none; padding: 14px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
-        .btn-salvarDisponibilidade:hover { background: #25c095; transform: translateY(-2px); }
-        .btn-salvarDisponibilidade:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-salvar { background: #2ADCA1; color: white; border: none; padding: 14px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-salvar:hover { background: #25c095; transform: translateY(-2px); }
+        .btn-salvar:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
-        /* === AVAILABILITY TABLE === */
-        .availability-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 25px; }
+        .availability-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
         .availability-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .availability-title { font-weight: 700; color: #2c3e50; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
         
@@ -97,48 +104,50 @@
         .location-badge.lauro { background: #fff3e0; color: #f57c00; }
         .location-badge.domiciliar { background: #f3e5f5; color: #7b1fa2; }
         
+        .action-btns { display: flex; gap: 8px; }
         .btn-agendar { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
         .btn-agendar:hover { background: #0056b3; }
+        .btn-editar { background: #fff3e0; color: #f57c00; border: 1px solid #f57c00; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-editar:hover { background: #f57c00; color: white; }
+        .btn-excluir { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-excluir:hover { background: #ff6b6b; color: white; }
 
-        /* === APPOINTMENTS === */
-        .appointments-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 25px; }
+        .appointments-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); margin-top: 25px; }
         .appointments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         
         .status-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: #2ADCA1; }
         
         .appointment-row { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f5f5f5; }
         .appointment-row:hover { background: #fafafa; }
+        .appointment-row.realizado { opacity: 0.5; }
         .appointment-info { flex: 1; }
         .appointment-name { font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
         .appointment-details { font-size: 0.9rem; color: #666; display: flex; gap: 15px; flex-wrap: wrap; }
         .appointment-location { padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
-        
-        .btn-excluir { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-        .btn-excluir:hover { background: #ff6b6b; color: white; }
 
-        /* === MODAL === */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px);}
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px);}
         .modal-overlay.active { display: flex; }
-        .modal-box { background: white; padding: 35px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-box { background: white; padding: 35px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); max-height: 90vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .modal-header h3 { margin: 0; color: #2c3e50; font-size: 1.3rem; }
         .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; }
         
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-weight: 600; color: #555; margin-bottom: 8px; font-size: 0.9rem; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2ADCA1; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: #2ADCA1; }
         
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
         .btn-cancelar { background: #f0f0f0; color: #555; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; }
-        .btn-salvar { background: #2ADCA1; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .btn-salvar:hover { background: #25c095; }
+        .btn-salvar-modal { background: #2ADCA1; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-salvar-modal:hover { background: #25c095; }
 
-        /* === EMPTY STATE === */
         .empty-state { text-align: center; padding: 50px 20px; color: #999; }
         .empty-state i { font-size: 3rem; margin-bottom: 15px; color: #ddd; }
 
-        /* === RESPONSIVE === */
+        @media (max-width: 900px) {
+            .calendar-section { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
             body { padding-top: 130px; }
             .logo img { height: 80px !important; }
@@ -150,7 +159,6 @@
             .time-slots-grid { grid-template-columns: repeat(3, 1fr); }
             .location-options { flex-direction: column; }
             .availability-table { font-size: 0.85rem; }
-            .availability-table th, .availability-table td { padding: 10px 5px; }
         }
     </style>
 </head>
@@ -164,13 +172,13 @@
                 <i class="ph ph-calendar-check" style="color: #2ADCA1;"></i> Agenda
             </div>
             <div class="header-right">
+                <a href="admin-dashboard.html" class="btn-header-voltar"><i class="ph ph-arrow-left"></i> Voltar</a>
                 <button id="btn-logout" class="btn-header-sair"><i class="ph ph-sign-out"></i> Sair</button>
             </div>
         </div>
     </header>
 
     <main class="dashboard-container">
-        <!-- TABS -->
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="disponibilidade">
                 <i class="ph ph-calendar-blank"></i> Disponibilidade
@@ -180,56 +188,71 @@
             </button>
         </div>
 
-        <!-- TAB 1: DISPONIBILIDADE -->
         <div id="tab-disponibilidade" class="tab-content active">
-            <!-- Calendário -->
-            <div class="calendar-card">
-                <div class="calendar-header">
-                    <div class="calendar-nav">
-                        <button onclick="changeMonth(-1)"><i class="ph ph-caret-left"></i></button>
-                        <span class="calendar-title" id="calendar-title">Maio 2026</span>
-                        <button onclick="changeMonth(1)"><i class="ph ph-caret-right"></i></button>
+            <div class="calendar-section">
+                <div class="calendar-card">
+                    <div class="calendar-header">
+                        <div class="calendar-nav">
+                            <button onclick="changeMonth(-1)"><i class="ph ph-caret-left"></i></button>
+                            <span class="calendar-title" id="calendar-title">Maio 2026</span>
+                            <button onclick="changeMonth(1)"><i class="ph ph-caret-right"></i></button>
+                        </div>
+                        <button onclick="goToToday()" class="calendar-nav today-btn">Hoje</button>
                     </div>
-                    <button onclick="goToToday()" style="background: #f5f5f5; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Hoje</button>
+                    <div class="calendar-grid">
+                        <div class="calendar-day-header">Dom</div>
+                        <div class="calendar-day-header">Seg</div>
+                        <div class="calendar-day-header">Ter</div>
+                        <div class="calendar-day-header">Qua</div>
+                        <div class="calendar-day-header">Qui</div>
+                        <div class="calendar-day-header">Sex</div>
+                        <div class="calendar-day-header">Sáb</div>
+                    </div>
+                    <div class="calendar-grid" id="calendar-days"></div>
                 </div>
-                <div class="calendar-grid">
-                    <div class="calendar-day-header">Dom</div>
-                    <div class="calendar-day-header">Seg</div>
-                    <div class="calendar-day-header">Ter</div>
-                    <div class="calendar-day-header">Qua</div>
-                    <div class="calendar-day-header">Qui</div>
-                    <div class="calendar-day-header">Sex</div>
-                    <div class="calendar-day-header">Sáb</div>
-                </div>
-                <div class="calendar-grid" id="calendar-days"></div>
 
-                <!-- Time Slots Selection -->
-                <div class="time-slots-section" id="time-slots-section">
-                    <div class="time-slots-header">
-                        <span class="selected-date-title" id="selected-date-title">Selecione os horários</span>
-                    </div>
-                    <div class="time-slots-grid" id="time-slots-grid"></div>
-                    
-                    <label style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Local de Atendimento:</label>
-                    <div class="location-options" id="location-options">
-                        <div class="location-option" data-location="Salvador" onclick="selectLocation(this)">
-                            <i class="ph ph-buildings"></i> Salvador
-                        </div>
-                        <div class="location-option" data-location="Lauro" onclick="selectLocation(this)">
-                            <i class="ph ph-tree"></i> Lauro de Freitas
-                        </div>
-                        <div class="location-option" data-location="Domiciliar" onclick="selectLocation(this)">
-                            <i class="ph ph-house-line"></i> Domiciliar
-                        </div>
+                <div class="times-card">
+                    <div class="times-header">
+                        <span class="selected-date-title" id="selected-date-title">Selecione uma data</span>
                     </div>
                     
-                    <button class="btn-salvarDisponibilidade" onclick="salvarDisponibilidade()" id="btn-salvar" disabled>
-                        <i class="ph ph-check"></i> Salvar Disponibilidade
-                    </button>
+                    <div class="custom-time-input" id="custom-time-section">
+                        <label>Horário:</label>
+                        <input type="time" id="time-inicio" value="08:00">
+                        <span>até</span>
+                        <input type="time" id="time-fim" value="18:00">
+                        <button class="btn-add-range" onclick="adicionarRange()">
+                            <i class="ph ph-plus"></i> Adicionar
+                        </button>
+                    </div>
+                    
+                    <div class="time-slots-grid" id="time-slots-grid">
+                        <div style="color: #999; text-align: center; grid-column: 1/-1;">
+                            Selecione uma data no calendário
+                        </div>
+                    </div>
+                    
+                    <div class="location-section" id="location-section" style="display: none;">
+                        <label class="location-label">Local de Atendimento:</label>
+                        <div class="location-options" id="location-options">
+                            <div class="location-option" data-location="Salvador" onclick="selectLocation(this)">
+                                <i class="ph ph-buildings"></i> Salvador
+                            </div>
+                            <div class="location-option" data-location="Lauro" onclick="selectLocation(this)">
+                                <i class="ph ph-tree"></i> Lauro de Freitas
+                            </div>
+                            <div class="location-option" data-location="Domiciliar" onclick="selectLocation(this)">
+                                <i class="ph ph-house-line"></i> Domiciliar
+                            </div>
+                        </div>
+                        
+                        <button class="btn-salvar" onclick="salvarDisponibilidade()" id="btn-salvar" disabled>
+                            <i class="ph ph-check"></i> Salvar Disponibilidade
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <!-- Tabela de Disponibilidade -->
             <div class="availability-card">
                 <div class="availability-header">
                     <div class="availability-title">
@@ -256,7 +279,7 @@
                             <th>Data</th>
                             <th>Horário</th>
                             <th>Local</th>
-                            <th>Ação</th>
+                            <th>Ações</th>
                         </tr>
                     </thead>
                     <tbody id="availability-table-body">
@@ -266,12 +289,11 @@
                                 Nenhuma disponibilidade cadastrada
                             </td>
                         </tr>
-                    </tbody>
+                    </thead>
                 </table>
             </div>
         </div>
 
-        <!-- TAB 2: AGENDAMENTOS -->
         <div id="tab-agendamentos" class="tab-content">
             <div class="appointments-card">
                 <div class="appointments-header">
@@ -302,7 +324,6 @@
         </div>
     </main>
 
-    <!-- MODAL AGENDAR CONSULTA -->
     <div class="modal-overlay" id="modal-agendar">
         <div class="modal-box">
             <div class="modal-header">
@@ -327,7 +348,7 @@
                 
                 <div class="form-group">
                     <label>Endereço (para consulta domiciliar)</label>
-                    <textarea id="agendar-endereco" rows="3" placeholder="Rua, número, bairro, cidade..."></textarea>
+                    <textarea id="agendar-endereco" rows="3" placeholder="Rua, número, bairro..."></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -337,7 +358,44 @@
                 
                 <div class="modal-actions">
                     <button type="button" class="btn-cancelar" onclick="fecharModalAgendar()">Cancelar</button>
-                    <button type="submit" class="btn-salvar"><i class="ph ph-check"></i> Confirmar Agendamento</button>
+                    <button type="submit" class="btn-salvar-modal"><i class="ph ph-check"></i> Confirmar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-editar">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="ph ph-pencil" style="color: #f57c00;"></i> Editar Disponibilidade</h3>
+                <button class="modal-close" onclick="fecharModalEditar()">&times;</button>
+            </div>
+            
+            <form id="form-editar">
+                <input type="hidden" id="editar-index">
+                
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="editar-data" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Horário</label>
+                    <input type="time" id="editar-horario" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Local</label>
+                    <select id="editar-local" required>
+                        <option value="Salvador">Salvador</option>
+                        <option value="Lauro">Lauro de Freitas</option>
+                        <option value="Domiciliar">Domiciliar</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalEditar()">Cancelar</button>
+                    <button type="submit" class="btn-salvar-modal" style="background: #f57c00;"><i class="ph ph-check"></i> Salvar</button>
                 </div>
             </form>
         </div>
@@ -361,7 +419,6 @@
             });
         }
 
-        // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
