@@ -5,15 +5,15 @@ let currentDate = new Date();
 let selectedDate = null;
 let selectedTimeSlots = [];
 let selectedLocation = null;
-let disponibilidade = []; // Array of {date, time, location}
-let agendamentos = []; // Array of {date, time, location, patientName, whatsapp, endereco, status}
+let disponibilidade = [];
+let agendamentos = [];
 
 // === CALENDAR ===
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     
-    const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+    const monthNames = ['Janeiro', 'Feveriro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     document.getElementById('calendar-title').textContent = `${monthNames[month]} ${year}`;
     
     const firstDay = new Date(year, month, 1).getDay();
@@ -22,39 +22,30 @@ function renderCalendar() {
     const calendarDays = document.getElementById('calendar-days');
     calendarDays.innerHTML = '';
     
-    // Empty cells before first day
     for (let i = 0; i < firstDay; i++) {
         const emptyDay = document.createElement('div');
         emptyDay.className = 'calendar-day empty';
         calendarDays.appendChild(emptyDay);
     }
     
-    // Days of month
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayEl = document.createElement('div');
         dayEl.className = 'calendar-day';
         dayEl.textContent = day;
         
-        // Check if has availability
         const hasSlots = disponibilidade.some(d => d.date === dateStr);
-        if (hasSlots) {
-            dayEl.classList.add('has-slots');
-        }
+        if (hasSlots) dayEl.classList.add('has-slots');
         
-        // Check if selected
-        if (selectedDate === dateStr) {
-            dayEl.classList.add('selected');
-        }
+        if (selectedDate === dateStr) dayEl.classList.add('selected');
         
-        // Check if date is in past
         const dateObj = new Date(year, month, day);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
         
         if (dateObj < today) {
-            dayEl.style.opacity = '0.4';
-            dayEl.style.cursor = 'not-allowed';
+            dayEl.classList.add('past');
         } else {
             dayEl.onclick = () => selectDate(dateStr);
         }
@@ -80,20 +71,14 @@ function selectDate(dateStr) {
     selectedTimeSlots = [];
     selectedLocation = null;
     
-    // Update UI
-    document.getElementById('time-slots-section').classList.add('active');
     document.getElementById('selected-date-title').textContent = `Selecione os horários para ${formatDate(dateStr)}`;
+    document.getElementById('location-section').style.display = 'none';
     
-    // Render time slots (8h as 18h)
     renderTimeSlots();
     
-    // Clear location selection
     document.querySelectorAll('.location-option').forEach(el => el.classList.remove('selected'));
-    
-    // Enable/disable save button
     updateSaveButton();
     
-    // Update calendar highlight
     renderCalendar();
 }
 
@@ -113,10 +98,7 @@ function renderTimeSlots() {
         slot.textContent = time;
         slot.dataset.time = time;
         
-        // Check if already selected
-        if (selectedTimeSlots.includes(time)) {
-            slot.classList.add('selected');
-        }
+        if (selectedTimeSlots.includes(time)) slot.classList.add('selected');
         
         slot.onclick = () => toggleTimeSlot(time);
         grid.appendChild(slot);
@@ -135,6 +117,40 @@ function toggleTimeSlot(time) {
     updateSaveButton();
 }
 
+function adicionarRange() {
+    const inicio = document.getElementById('time-inicio').value;
+    const fim = document.getElementById('time-fim').value;
+    
+    if (!inicio || !fim) {
+        alert('Preencha os horários de início e fim.');
+        return;
+    }
+    
+    if (inicio >= fim) {
+        alert('O horário de início deve ser menor que o horário de fim.');
+        return;
+    }
+    
+    // Add times in 30 min intervals
+    let current = inicio;
+    while (current < fim) {
+        if (!selectedTimeSlots.includes(current)) {
+            selectedTimeSlots.push(current);
+        }
+        
+        // Add 30 minutes
+        const [h, m] = current.split(':').map(Number);
+        if (m === 30) {
+            current = `${String(h + 1).padStart(2, '0')}:00`;
+        } else {
+            current = `${String(h).padStart(2, '0')}:30`;
+        }
+    }
+    
+    renderTimeSlots();
+    updateSaveButton();
+}
+
 function selectLocation(el) {
     document.querySelectorAll('.location-option').forEach(opt => opt.classList.remove('selected'));
     el.classList.add('selected');
@@ -144,7 +160,15 @@ function selectLocation(el) {
 
 function updateSaveButton() {
     const btn = document.getElementById('btn-salvar');
-    btn.disabled = !(selectedDate && selectedTimeSlots.length > 0 && selectedLocation);
+    const locationSection = document.getElementById('location-section');
+    
+    if (selectedDate && selectedTimeSlots.length > 0) {
+        locationSection.style.display = 'block';
+        btn.disabled = !(selectedTimeSlots.length > 0 && selectedLocation);
+    } else {
+        locationSection.style.display = 'none';
+        btn.disabled = true;
+    }
 }
 
 function salvarDisponibilidade() {
@@ -153,9 +177,7 @@ function salvarDisponibilidade() {
         return;
     }
     
-    // Add new availability
     selectedTimeSlots.forEach(time => {
-        // Remove existing for same date/time if any
         disponibilidade = disponibilidade.filter(d => !(d.date === selectedDate && d.time === time));
         
         disponibilidade.push({
@@ -165,13 +187,12 @@ function salvarDisponibilidade() {
         });
     });
     
-    // Clear selection
     selectedTimeSlots = [];
     selectedLocation = null;
     document.querySelectorAll('.location-option').forEach(el => el.classList.remove('selected'));
     document.getElementById('btn-salvar').disabled = true;
+    document.getElementById('location-section').style.display = 'none';
     
-    // Re-render
     renderCalendar();
     renderAvailabilityTable();
     
@@ -197,7 +218,10 @@ function getLocationLabel(location) {
 function renderAvailabilityTable() {
     const tbody = document.getElementById('availability-table-body');
     
-    // Apply filters
+    // Remove past dates automatically
+    const today = new Date().toISOString().split('T')[0];
+    disponibilidade = disponibilidade.filter(d => d.date >= today);
+    
     const filterMonth = document.getElementById('filter-month').value;
     const filterLocation = document.getElementById('filter-location').value;
     
@@ -211,7 +235,6 @@ function renderAvailabilityTable() {
         filtered = filtered.filter(d => d.location === filterLocation);
     }
     
-    // Sort by date and time
     filtered.sort((a, b) => {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
         return a.time.localeCompare(b.time);
@@ -229,18 +252,27 @@ function renderAvailabilityTable() {
         return;
     }
     
-    tbody.innerHTML = filtered.map(d => `
-        <tr>
-            <td>${formatDate(d.date)}</td>
-            <td>${d.time}</td>
-            <td><span class="location-badge ${d.location.toLowerCase()}">${getLocationLabel(d.location)}</span></td>
-            <td>
-                <button class="btn-agendar" onclick="abrirModalAgendar('${d.date}', '${d.time}', '${d.location}')">
-                    <i class="ph ph-calendar-plus"></i> Agendar
-                </button>
-            </td>
-        </tr>
-    `).join('');
+    tbody.innerHTML = filtered.map((d, idx) => {
+        const realIndex = disponibilidade.indexOf(d);
+        return `
+            <tr>
+                <td>${formatDate(d.date)}</td>
+                <td>${d.time}</td>
+                <td><span class="location-badge ${d.location.toLowerCase()}">${getLocationLabel(d.location)}</span></td>
+                <td class="action-btns">
+                    <button class="btn-agendar" onclick="abrirModalAgendar('${d.date}', '${d.time}', '${d.location}')">
+                        <i class="ph ph-calendar-plus"></i> Agendar
+                    </button>
+                    <button class="btn-editar" onclick="abrirModalEditar(${realIndex})">
+                        <i class="ph ph-pencil"></i>
+                    </button>
+                    <button class="btn-excluir" onclick="excluirDisponibilidade(${realIndex})">
+                        <i class="ph ph-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
 }
 
 function filtrarDisponibilidade() {
@@ -251,7 +283,6 @@ function updateFilterOptions() {
     const filterMonth = document.getElementById('filter-month');
     const filterAppointment = document.getElementById('filter-appointment-month');
     
-    // Get unique months from disponibilidade and agendamentos
     const months = new Set();
     [...disponibilidade, ...agendamentos].forEach(d => {
         const month = d.date.substring(0, 7);
@@ -267,6 +298,50 @@ function updateFilterOptions() {
     filterMonth.innerHTML = '<option value="">Todos os Meses</option>' + options.join('');
     filterAppointment.innerHTML = '<option value="">Todos os Meses</option>' + options.join('');
 }
+
+// === EDIT/DELETE ===
+function abrirModalEditar(index) {
+    const d = disponibilidade[index];
+    document.getElementById('editar-index').value = index;
+    document.getElementById('editar-data').value = d.date;
+    document.getElementById('editar-horario').value = d.time;
+    document.getElementById('editar-local').value = d.location;
+    document.getElementById('modal-editar').classList.add('active');
+}
+
+function fecharModalEditar() {
+    document.getElementById('modal-editar').classList.remove('active');
+}
+
+function excluirDisponibilidade(index) {
+    if (confirm('Deseja excluir esta disponibilidade?')) {
+        disponibilidade.splice(index, 1);
+        renderAvailabilityTable();
+        renderCalendar();
+    }
+}
+
+document.getElementById('form-editar').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const index = parseInt(document.getElementById('editar-index').value);
+    
+    disponibilidade[index] = {
+        date: document.getElementById('editar-data').value,
+        time: document.getElementById('editar-horario').value,
+        location: document.getElementById('editar-local').value
+    };
+    
+    disponibilidade.sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.time.localeCompare(b.time);
+    });
+    
+    fecharModalEditar();
+    renderAvailabilityTable();
+    renderCalendar();
+    
+    alert('Disponibilidade atualizada!');
+});
 
 // === APPOINTMENTS ===
 function abrirModalAgendar(date, time, location) {
@@ -285,7 +360,6 @@ function fecharModalAgendar() {
     document.getElementById('modal-agendar').classList.remove('active');
 }
 
-// Handle form submit
 document.getElementById('form-agendar').addEventListener('submit', function(e) {
     e.preventDefault();
     
@@ -296,10 +370,8 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
     const whatsapp = document.getElementById('agendar-whatsapp').value;
     const endereco = document.getElementById('agendar-endereco').value;
     
-    // Remove from disponibilidade
     disponibilidade = disponibilidade.filter(d => !(d.date === date && d.time === time && d.location === location));
     
-    // Add to agendamentos
     agendamentos.push({
         date,
         time,
@@ -310,7 +382,6 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
         status: 'pendente'
     });
     
-    // Sort agendamentos
     agendamentos.sort((a, b) => {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
         return a.time.localeCompare(b.time);
@@ -326,7 +397,6 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
 function renderAppointmentsList() {
     const container = document.getElementById('appointments-list');
     
-    // Apply filters
     const filterMonth = document.getElementById('filter-appointment-month').value;
     const filterStatus = document.getElementById('filter-appointment-status').value;
     
@@ -350,29 +420,32 @@ function renderAppointmentsList() {
         return;
     }
     
-    container.innerHTML = filtered.map((a, index) => `
-        <div class="appointment-row" style="opacity: ${a.status === 'realizado' ? '0.6' : '1'};">
-            <input type="checkbox" class="status-checkbox" ${a.status === 'realizado' ? 'checked' : ''} 
-                   onchange="toggleStatus(${agendamentos.indexOf(a)})" title="Marcar como realizado">
-            <div class="appointment-info">
-                <div class="appointment-name">
-                    ${a.patientName}
-                    <span class="appointment-location location-badge ${a.location.toLowerCase()}" style="margin-left: 10px;">
-                        ${getLocationLabel(a.location)}
-                    </span>
+    container.innerHTML = filtered.map((a, idx) => {
+        const realIndex = agendamentos.indexOf(a);
+        return `
+            <div class="appointment-row ${a.status === 'realizado' ? 'realizado' : ''}">
+                <input type="checkbox" class="status-checkbox" ${a.status === 'realizado' ? 'checked' : ''} 
+                       onchange="toggleStatus(${realIndex})" title="Marcar como realizado">
+                <div class="appointment-info">
+                    <div class="appointment-name">
+                        ${a.patientName}
+                        <span class="appointment-location location-badge ${a.location.toLowerCase()}" style="margin-left: 10px;">
+                            ${getLocationLabel(a.location)}
+                        </span>
+                    </div>
+                    <div class="appointment-details">
+                        <span><i class="ph ph-calendar"></i> ${formatDate(a.date)}</span>
+                        <span><i class="ph ph-clock"></i> ${a.time}</span>
+                        <span><i class="ph ph-phone"></i> ${a.whatsapp}</span>
+                        ${a.endereco ? `<span><i class="ph ph-map-pin"></i> ${a.endereco}</span>` : ''}
+                    </div>
                 </div>
-                <div class="appointment-details">
-                    <span><i class="ph ph-calendar"></i> ${formatDate(a.date)}</span>
-                    <span><i class="ph ph-clock"></i> ${a.time}</span>
-                    <span><i class="ph ph-phone"></i> ${a.whatsapp}</span>
-                    ${a.endereco ? `<span><i class="ph ph-map-pin"></i> ${a.endereco}</span>` : ''}
-                </div>
+                <button class="btn-excluir" onclick="excluirAgendamento(${realIndex})" title="Cancelar">
+                    <i class="ph ph-trash"></i>
+                </button>
             </div>
-            <button class="btn-excluir" onclick="excluirAgendamento(${agendamentos.indexOf(a)})" title="Cancelar">
-                <i class="ph ph-trash"></i>
-            </button>
-        </div>
-    `).join('');
+        `;
+    }).join('');
 }
 
 function filtrarAgendamentos() {
@@ -381,11 +454,7 @@ function filtrarAgendamentos() {
 
 function toggleStatus(index) {
     const a = agendamentos[index];
-    if (a.status === 'pendente') {
-        a.status = 'realizado';
-    } else {
-        a.status = 'pendente';
-    }
+    a.status = a.status === 'pendente' ? 'realizado' : 'pendente';
     renderAppointmentsList();
 }
 
@@ -393,7 +462,6 @@ function excluirAgendamento(index) {
     if (confirm('Deseja cancelar esta consulta?')) {
         const a = agendamentos[index];
         
-        // Optionally return to disponibilidade
         disponibilidade.push({
             date: a.date,
             time: a.time,
@@ -412,7 +480,6 @@ renderCalendar();
 renderAvailabilityTable();
 renderAppointmentsList();
 
-// Logout
 document.getElementById('btn-logout').addEventListener('click', () => {
     window.location.href = 'index.html';
 });
