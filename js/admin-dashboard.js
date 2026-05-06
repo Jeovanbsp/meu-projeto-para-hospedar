@@ -29,12 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
             if (!response.ok) throw new Error(`Erro ${response.status}`);
-            pacientesGlobais = await response.json(); 
+            pacientesGlobais = await response.json();
             renderTabela(pacientesGlobais);
             renderGrafico(pacientesGlobais);
         } catch (error) {
             console.error("Erro:", error);
-            if (listaBody) listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar dados.</li>`;
+            pacientesGlobais = JSON.parse(localStorage.getItem('pacientes') || '[]');
+            if (pacientesGlobais.length > 0) {
+                renderTabela(pacientesGlobais);
+                renderGrafico(pacientesGlobais);
+            } else if (listaBody) {
+                listaBody.innerHTML = `<li style="text-align:center; color:#ff6b6b; padding:40px;">Erro ao carregar dados.</li>`;
+            }
         }
     };
 
@@ -267,13 +273,17 @@ let chartMensal = null;
 let chartLocal = null;
 
 function carregarStats() {
-    const agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
-    const historico = JSON.parse(localStorage.getItem('historico') || '[]');
-    const pacientes = JSON.parse(localStorage.getItem('pacientes') || '[]');
+    let agendamentos = JSON.parse(localStorage.getItem('agendamentos') || '[]');
+    let historico = JSON.parse(localStorage.getItem('historico') || '[]');
+    let pacientes = JSON.parse(localStorage.getItem('pacientes') || '[]');
     const disponibilidade = JSON.parse(localStorage.getItem('disponibilidade') || '[]');
     const tags = JSON.parse(localStorage.getItem('tags') || '[]');
     
-    // Totais
+    if (typeof pacientesGlobais !== 'undefined' && pacientesGlobais.length > 0) {
+        pacientes = pacientesGlobais;
+        localStorage.setItem('pacientes', JSON.stringify(pacientes));
+    }
+
     const consultasRealizadas = historico.filter(h => h.status === 'realizado').length;
     document.getElementById('total-agendamentos').textContent = agendamentos.length;
     document.getElementById('total-consultas').textContent = consultasRealizadas;
