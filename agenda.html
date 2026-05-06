@@ -225,11 +225,17 @@
         <div class="tabs-container">
             <button class="tab-btn active" data-tab="disponibilidade">Disponibilidade</button>
             <button class="tab-btn" data-tab="agendamentos">Agendamentos</button>
+            <button class="tab-btn" data-tab="historico">Historico</button>
             <button class="tab-btn" data-tab="pacientes">Pacientes</button>
             <button class="tab-btn" data-tab="tags">Tags & Mensagens</button>
         </div>
 
         <div id="tab-disponibilidade" class="tab-content active">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <div style="background:#e8f9f4; padding:10px 20px; border-radius:8px;">
+                    <strong style="color:#2ADCA1;"><span id="contador-consultas">0</span> Consultas Agendadas</strong>
+                </div>
+            </div>
             <div class="calendar-section">
                 <div class="calendar-card">
                     <div class="calendar-header">
@@ -345,6 +351,17 @@
 
                 <div id="appointments-list">
                     <div class="empty-state">Nenhuma consulta agendada</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-historico" class="tab-content">
+            <div class="availability-card">
+                <div class="availability-header">
+                    <div class="availability-title">Historico de Consultas Realizadas</div>
+                </div>
+                <div id="historico-list">
+                    <div class="empty-state">Nenhuma consulta realizada</div>
                 </div>
             </div>
         </div>
