@@ -28,8 +28,6 @@
         .btn-entrar:hover { background-color: #24b685; }
         .erro-msg { color: #ef5350; font-size: 0.9rem; margin-top: 15px; display: none; }
         .btn-voltar { text-decoration: none; color: #555; font-weight: 600; padding: 8px 15px; border: 1px solid #ccc; border-radius: 20px; display: flex; align-items: center; gap: 6px; }
-        .btn-tab { flex: 1; padding: 12px; border: 2px solid #ddd; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; }
-        .btn-tab.active { border-color: #2ADCA1; background: #2ADCA1; color: white; }
     </style>
 </head>
 <body>
@@ -47,24 +45,18 @@
             <h2 style="color: #333; margin-bottom: 20px;">Acesso ao Prontuário</h2>
             <p style="color: #777; margin-bottom: 30px; font-size: 0.9rem;">Área restrita para pacientes cadastrados e administração.</p>
             
-            <div class="tabs-perfil" style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <button type="button" id="btn-admin" class="btn-tab active" onclick="selecionarPerfil('admin')">Médica</button>
-            <button type="button" id="btn-secretaria" class="btn-tab" onclick="selecionarPerfil('secretaria')">Secretária</button>
-        </div>
-        
-        <form id="form-login">
-            <div class="input-group">
-                <label><i class="ph ph-user"></i> Usuário</label>
-                <input type="text" id="usuario" required placeholder="Digite seu usuário">
-            </div>
-            <div class="input-group">
-                <label><i class="ph ph-lock"></i> Senha</label>
-                <input type="password" id="senha" required placeholder="********">
-            </div>
-            <button type="submit" class="btn-entrar">Entrar <i class="ph ph-sign-in"></i></button>
-            <button type="button" class="btn-entrar" style="background: #007bff; margin-top: 10px;" onclick="criarConta()">Criar Conta</button>
-            <p id="msg-erro" class="erro-msg"></p>
-        </form>
+            <form id="form-login">
+                <div class="input-group">
+                    <label><i class="ph ph-envelope"></i> E-mail</label>
+                    <input type="email" id="email" required placeholder="seu@email.com">
+                </div>
+                <div class="input-group">
+                    <label><i class="ph ph-lock"></i> Senha</label>
+                    <input type="password" id="senha" required placeholder="********">
+                </div>
+                <button type="submit" class="btn-entrar">Entrar <i class="ph ph-sign-in"></i></button>
+                <p id="msg-erro" class="erro-msg"></p>
+            </form>
         </div>
     </main>
 
