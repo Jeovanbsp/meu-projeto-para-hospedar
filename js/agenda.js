@@ -725,4 +725,4 @@ function excluirItem(id) {
     }
 }
 
-// Removed - now handled by DOMContentLoaded event
+init();
