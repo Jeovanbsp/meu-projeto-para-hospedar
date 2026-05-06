@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda - Dra. Aisha</title>
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/prontuario.css">
+    <style>
+        /* === BASE STYLES === */
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; padding-top: 180px;}
+        
+        /* === HEADER FIXO === */
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; transition: transform 0.3s ease-in-out;}
+        .esconder-topo { transform: translateY(-100%); }
+        
+        .logo img { height: 160px !important; width: auto; display: block; transition: 0.3s; }
+
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px; }
+        .header-left { flex: 1; display: flex; justify-content: flex-start; }
+        .header-center { flex: 2; display: flex; justify-content: center; align-items: center; gap: 8px; color: #2c3e50; font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
+        .header-right { flex: 1; display: flex; justify-content: flex-end; }
+
+        .btn-header-sair { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 15px; background-color: #ff6b6b; color: white; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
+        .btn-header-sair:hover { background-color: #e05b5b; transform: translateY(-1px); }
+
+        .dashboard-container { padding: 20px; max-width: 1600px; width: 95%; margin: 20px auto; }
+        .titulo-secao { color: #555; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; margin-top: 0;}
+        
+        /* === TABS === */
+        .tabs-container { display: flex; gap: 5px; margin-bottom: 25px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: fit-content; }
+        .tab-btn { padding: 12px 25px; border: none; background: transparent; color: #666; font-weight: 600; font-family: 'Montserrat', sans-serif; cursor: pointer; border-radius: 8px; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .tab-btn:hover { background: #f5f5f5; }
+        .tab-btn.active { background: #2ADCA1; color: white; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* === CALENDAR === */
+        .calendar-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .calendar-nav { display: flex; align-items: center; gap: 15px; }
+        .calendar-nav button { background: #f5f5f5; border: none; width: 40px; height: 40px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; transition: 0.2s; }
+        .calendar-nav button:hover { background: #e0e0e0; }
+        .calendar-title { font-size: 1.3rem; font-weight: 700; color: #2c3e50; }
+        
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .calendar-day-header { text-align: center; font-weight: 600; color: #888; font-size: 0.85rem; padding: 10px; }
+        .calendar-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; position: relative; }
+        .calendar-day:hover { background: #f0fdf9; }
+        .calendar-day.empty { cursor: default; }
+        .calendar-day.empty:hover { background: transparent; }
+        .calendar-day.selected { background: #2ADCA1; color: white; }
+        .calendar-day.has-slots { background: #e8f9f4; color: #2ADCA1; }
+        .calendar-day.has-slots::after { content: ''; position: absolute; bottom: 5px; width: 6px; height: 6px; background: #2ADCA1; border-radius: 50%; }
+        .calendar-day.has-slots.selected::after { background: white; }
+        
+        /* === TIME SLOTS === */
+        .time-slots-section { margin-top: 25px; display: none; }
+        .time-slots-section.active { display: block; }
+        .time-slots-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #eee; }
+        .selected-date-title { font-weight: 700; color: #2c3e50; font-size: 1.1rem; }
+        
+        .time-slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; margin-bottom: 20px; }
+        .time-slot { padding: 12px; text-align: center; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; }
+        .time-slot:hover { border-color: #2ADCA1; }
+        .time-slot.selected { background: #2ADCA1; border-color: #2ADCA1; color: white; }
+        
+        /* === LOCATION OPTIONS === */
+        .location-options { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .location-option { padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: 600; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .location-option:hover { border-color: #2ADCA1; }
+        .location-option.selected { background: #2ADCA1; border-color: #2ADCA1; color: white; }
+        
+        .btn-salvarDisponibilidade { background: #2ADCA1; color: white; border: none; padding: 14px 30px; border-radius: 8px; font-weight: 700; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 1rem; transition: 0.2s; display: flex; align-items: center; gap: 8px; }
+        .btn-salvarDisponibilidade:hover { background: #25c095; transform: translateY(-2px); }
+        .btn-salvarDisponibilidade:disabled { background: #ccc; cursor: not-allowed; }
+
+        /* === AVAILABILITY TABLE === */
+        .availability-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 25px; }
+        .availability-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .availability-title { font-weight: 700; color: #2c3e50; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        
+        .filters-row { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
+        .filter-select { padding: 10px 15px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; min-width: 180px; }
+        
+        .availability-table { width: 100%; border-collapse: collapse; }
+        .availability-table th { text-align: left; padding: 12px; border-bottom: 2px solid #eee; font-size: 0.85rem; color: #888; font-weight: 700; text-transform: uppercase; }
+        .availability-table td { padding: 15px 12px; border-bottom: 1px solid #f5f5f5; }
+        .availability-table tr:hover { background: #fafafa; }
+        
+        .location-badge { padding: 5px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+        .location-badge.salvador { background: #e3f2fd; color: #1976d2; }
+        .location-badge.lauro { background: #fff3e0; color: #f57c00; }
+        .location-badge.domiciliar { background: #f3e5f5; color: #7b1fa2; }
+        
+        .btn-agendar { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; gap: 5px; }
+        .btn-agendar:hover { background: #0056b3; }
+
+        /* === APPOINTMENTS === */
+        .appointments-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 25px; }
+        .appointments-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        
+        .status-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: #2ADCA1; }
+        
+        .appointment-row { display: flex; align-items: center; gap: 15px; padding: 15px; border-bottom: 1px solid #f5f5f5; }
+        .appointment-row:hover { background: #fafafa; }
+        .appointment-info { flex: 1; }
+        .appointment-name { font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
+        .appointment-details { font-size: 0.9rem; color: #666; display: flex; gap: 15px; flex-wrap: wrap; }
+        .appointment-location { padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        
+        .btn-excluir { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+        .btn-excluir:hover { background: #ff6b6b; color: white; }
+
+        /* === MODAL === */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px);}
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; padding: 35px; border-radius: 15px; width: 90%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); max-height: 90vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-header h3 { margin: 0; color: #2c3e50; font-size: 1.3rem; }
+        .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #888; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-weight: 600; color: #555; margin-bottom: 8px; font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-family: 'Montserrat', sans-serif; font-size: 1rem; box-sizing: border-box; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2ADCA1; }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px; }
+        .btn-cancelar { background: #f0f0f0; color: #555; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+        .btn-salvar { background: #2ADCA1; color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .btn-salvar:hover { background: #25c095; }
+
+        /* === EMPTY STATE === */
+        .empty-state { text-align: center; padding: 50px 20px; color: #999; }
+        .empty-state i { font-size: 3rem; margin-bottom: 15px; color: #ddd; }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            body { padding-top: 130px; }
+            .logo img { height: 80px !important; }
+            .header-container { flex-direction: column; gap: 10px; padding: 15px !important; }
+            .header-left, .header-center, .header-right { justify-content: center; width: 100%; flex: none; }
+            .tabs-container { width: 100%; overflow-x: auto; }
+            .tab-btn { padding: 10px 15px; font-size: 0.9rem; white-space: nowrap; }
+            .calendar-grid { gap: 2px; }
+            .time-slots-grid { grid-template-columns: repeat(3, 1fr); }
+            .location-options { flex-direction: column; }
+            .availability-table { font-size: 0.85rem; }
+            .availability-table th, .availability-table td { padding: 10px 5px; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-fixo no-print">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="index.html" class="logo"><img src="img/layout.png" alt="Logo Dra. Aisha"></a>
+            </div>
+            <div class="header-center">
+                <i class="ph ph-calendar-check" style="color: #2ADCA1;"></i> Agenda
+            </div>
+            <div class="header-right">
+                <button id="btn-logout" class="btn-header-sair"><i class="ph ph-sign-out"></i> Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- TABS -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="disponibilidade">
+                <i class="ph ph-calendar-blank"></i> Disponibilidade
+            </button>
+            <button class="tab-btn" data-tab="agendamentos">
+                <i class="ph ph-calendar-check"></i> Agendamentos
+            </button>
+        </div>
+
+        <!-- TAB 1: DISPONIBILIDADE -->
+        <div id="tab-disponibilidade" class="tab-content active">
+            <!-- Calendário -->
+            <div class="calendar-card">
+                <div class="calendar-header">
+                    <div class="calendar-nav">
+                        <button onclick="changeMonth(-1)"><i class="ph ph-caret-left"></i></button>
+                        <span class="calendar-title" id="calendar-title">Maio 2026</span>
+                        <button onclick="changeMonth(1)"><i class="ph ph-caret-right"></i></button>
+                    </div>
+                    <button onclick="goToToday()" style="background: #f5f5f5; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer;">Hoje</button>
+                </div>
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Dom</div>
+                    <div class="calendar-day-header">Seg</div>
+                    <div class="calendar-day-header">Ter</div>
+                    <div class="calendar-day-header">Qua</div>
+                    <div class="calendar-day-header">Qui</div>
+                    <div class="calendar-day-header">Sex</div>
+                    <div class="calendar-day-header">Sáb</div>
+                </div>
+                <div class="calendar-grid" id="calendar-days"></div>
+
+                <!-- Time Slots Selection -->
+                <div class="time-slots-section" id="time-slots-section">
+                    <div class="time-slots-header">
+                        <span class="selected-date-title" id="selected-date-title">Selecione os horários</span>
+                    </div>
+                    <div class="time-slots-grid" id="time-slots-grid"></div>
+                    
+                    <label style="font-weight: 600; color: #555; margin-bottom: 10px; display: block;">Local de Atendimento:</label>
+                    <div class="location-options" id="location-options">
+                        <div class="location-option" data-location="Salvador" onclick="selectLocation(this)">
+                            <i class="ph ph-buildings"></i> Salvador
+                        </div>
+                        <div class="location-option" data-location="Lauro" onclick="selectLocation(this)">
+                            <i class="ph ph-tree"></i> Lauro de Freitas
+                        </div>
+                        <div class="location-option" data-location="Domiciliar" onclick="selectLocation(this)">
+                            <i class="ph ph-house-line"></i> Domiciliar
+                        </div>
+                    </div>
+                    
+                    <button class="btn-salvarDisponibilidade" onclick="salvarDisponibilidade()" id="btn-salvar" disabled>
+                        <i class="ph ph-check"></i> Salvar Disponibilidade
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabela de Disponibilidade -->
+            <div class="availability-card">
+                <div class="availability-header">
+                    <div class="availability-title">
+                        <i class="ph ph-list-checks" style="color: #2ADCA1;"></i>
+                        Horários Disponíveis
+                    </div>
+                </div>
+                
+                <div class="filters-row">
+                    <select class="filter-select" id="filter-month" onchange="filtrarDisponibilidade()">
+                        <option value="">Todos os Meses</option>
+                    </select>
+                    <select class="filter-select" id="filter-location" onchange="filtrarDisponibilidade()">
+                        <option value="">Todos os Locais</option>
+                        <option value="Salvador">Salvador</option>
+                        <option value="Lauro">Lauro de Freitas</option>
+                        <option value="Domiciliar">Domiciliar</option>
+                    </select>
+                </div>
+
+                <table class="availability-table">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Horário</th>
+                            <th>Local</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="availability-table-body">
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #999; padding: 40px;">
+                                <i class="ph ph-calendar-blank" style="font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.3;"></i>
+                                Nenhuma disponibilidade cadastrada
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: AGENDAMENTOS -->
+        <div id="tab-agendamentos" class="tab-content">
+            <div class="appointments-card">
+                <div class="appointments-header">
+                    <div class="availability-title">
+                        <i class="ph ph-calendar-check" style="color: #2ADCA1;"></i>
+                        Consultas Agendadas
+                    </div>
+                </div>
+
+                <div class="filters-row">
+                    <select class="filter-select" id="filter-appointment-month" onchange="filtrarAgendamentos()">
+                        <option value="">Todos os Meses</option>
+                    </select>
+                    <select class="filter-select" id="filter-appointment-status" onchange="filtrarAgendamentos()">
+                        <option value="">Todos os Status</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="realizado">Realizado</option>
+                    </select>
+                </div>
+
+                <div id="appointments-list">
+                    <div class="empty-state">
+                        <i class="ph ph-calendar-x"></i>
+                        <p>Nenhuma consulta agendada</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL AGENDAR CONSULTA -->
+    <div class="modal-overlay" id="modal-agendar">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3><i class="ph ph-calendar-plus" style="color: #2ADCA1;"></i> Agendar Consulta</h3>
+                <button class="modal-close" onclick="fecharModalAgendar()">&times;</button>
+            </div>
+            
+            <form id="form-agendar">
+                <input type="hidden" id="agendar-date">
+                <input type="hidden" id="agendar-time">
+                <input type="hidden" id="agendar-location">
+                
+                <div class="form-group">
+                    <label>Nome Completo do Paciente</label>
+                    <input type="text" id="agendar-nome" required placeholder="Ex: Maria da Silva Santos">
+                </div>
+                
+                <div class="form-group">
+                    <label>WhatsApp</label>
+                    <input type="tel" id="agendar-whatsapp" required placeholder="(71) 99999-9999">
+                </div>
+                
+                <div class="form-group">
+                    <label>Endereço (para consulta domiciliar)</label>
+                    <textarea id="agendar-endereco" rows="3" placeholder="Rua, número, bairro, cidade..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Data/Hora</label>
+                    <input type="text" id="agendar-datahora" readonly style="background: #f5f5f5;">
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalAgendar()">Cancelar</button>
+                    <button type="submit" class="btn-salvar"><i class="ph ph-check"></i> Confirmar Agendamento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/agenda.js"></script>
+
+    <script>
+        let ultimoScroll = window.scrollY;
+        const topo = document.querySelector('header'); 
+
+        if (topo) {
+            window.addEventListener('scroll', () => {
+                let scrollAtual = window.scrollY;
+                if (scrollAtual > ultimoScroll && scrollAtual > 100) {
+                    topo.classList.add('esconder-topo');
+                } else {
+                    topo.classList.remove('esconder-topo');
+                }
+                ultimoScroll = scrollAtual;
+            });
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
