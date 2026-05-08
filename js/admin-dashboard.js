@@ -1,4 +1,4 @@
-# formatoDate antes do DOMContentLoaded
+// Função para formatar data
 function formatDate(dateStr) {
     if (!dateStr) return "-";
     const [year, month, day] = dateStr.split("-");
