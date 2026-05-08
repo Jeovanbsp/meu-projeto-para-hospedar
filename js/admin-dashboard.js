@@ -410,7 +410,7 @@ function carregarStats() {
             const dataTag = tag.dataContato ? formatDate(tag.dataContato) : 'Sem data';
             const jaPassou = tag.dataContato && new Date(tag.dataContato) < new Date();
             const corData = jaPassou ? '#ff6b6b' : '#2ADCA1';
-            const icone = i === 0 ? '🔔' : '📌';
+            const icone = i === 0 ? '<i class="ph ph-bell" style="color:#f39c12;font-size:1.2rem;"></i>' : '<i class="ph ph-pin" style="color:#f39c12;font-size:1rem;"></i>';
             listaHtml += '<div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #eee;">';
             listaHtml += '<span style="font-size:1.2rem;">' + icone + '</span>';
             listaHtml += '<div><span style="font-weight:700; color:' + corData + ';">DATA: ' + dataTag + '</span><br>';

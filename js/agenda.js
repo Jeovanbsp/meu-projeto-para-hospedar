@@ -438,6 +438,10 @@ function atualizarContador() {
     if (c1) c1.textContent = agendamentos.length;
     const c2 = document.getElementById('contador-disponibilidade');
     if (c2) c2.textContent = disponibilidade.length;
+    const cL = document.getElementById('count-disponiveis');
+    if (cL) cL.textContent = disponibilidade.length;
+
+    
     
     // Contador de tags pendentes (tags que não foram confirmadas no histórico)
     const tagsConfirmadas = historico.filter(h => h.tagId).map(h => h.tagId);
