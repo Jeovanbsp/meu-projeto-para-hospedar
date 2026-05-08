@@ -32,12 +32,18 @@ async function saveToAPI(key, data) {
     const token = localStorage.getItem('authToken');
     if (!token) return;
     try {
-        await fetch(API_ENDPOINTS[key], {
+        const res = await fetch(API_ENDPOINTS[key], {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(data)
         });
-    } catch {}
+        // Se API retornar 404, apenas ignora (funciona offline)
+        if (!res.ok) { 
+            console.log('API não disponível para ' + key + ', funcionando offline');
+        }
+    } catch (err) {
+        console.log('Erro ao salvar na API: ' + key, err);
+    }
 }
 
 async function init() {
@@ -341,14 +347,29 @@ function toggleStatus(index) {
     if (a.status === 'pendente') {
         a.status = 'realizado';
         a.realizadoEm = new Date().toISOString();
-        // Add to historico
-        historico.push({ ...a });
+        
+        // Adicionar ao histórico com campos corretos
+        historico.push({
+            id: Date.now(),
+            paciente: a.patientName || a.paciente || 'Paciente',
+            tipo: 'consulta',
+            titulo: a.location || 'Consulta',
+            data: a.date,
+            time: a.time,
+            patientName: a.patientName,
+            date: a.date,
+            whatsapp: a.whatsapp,
+            location: a.location,
+            status: 'realizado',
+            realizadoEm: a.realizadoEm,
+            color: '#2ADCA1'
+        });
         localStorage.setItem('historico', JSON.stringify(historico));
         saveToAPI('historico', historico);
     } else {
         a.status = 'pendente';
         // Remove from historico
-        historico = historico.filter(h => h.date !== a.date || h.time !== a.time);
+        historico = historico.filter(h => !(h.patientName === a.patientName && h.date === a.date && h.time === a.time));
         localStorage.setItem('historico', JSON.stringify(historico));
         saveToAPI('historico', historico);
     }
@@ -813,3 +834,24 @@ function excluirHistorico(index) {
         atualizarContador();
     }
 }
+
+
+// Função para renderizar Histórico de Contatos (na aba Tags)
+function renderHistorico() {
+    const container = document.getElementById("historico-lista");
+    if (!container) return;
+    if (historico.length === 0) {
+        container.innerHTML = "<div class=\"empty-state\">Nenhum contato registrado</div>";
+        return;
+    }
+    let filtered = [...historico];
+    filtered.sort((a, b) => b.data.localeCompare(a.data));
+    
+    container.innerHTML = filtered.map((h, i) => {
+        const color = h.color || "#25c095";
+        const dataFormatada = h.data ? new Date(h.data).toLocaleDateString("pt-BR") : "-";
+        const obs = h.observacao ? "<div style=\"font-size: 0.75rem; color: #666; margin-top: 5px;\">" + h.observacao + "</div>" : "";
+        return "<div style=\"background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid " + color + ";\"><div style=\"font-weight: 600;\">" + h.paciente + "</div><div style=\"font-size: 0.85rem; color: " + color + ";\">" + h.tipo + ": " + h.titulo + "</div><div style=\"font-size: 0.75rem; color: #888; margin-top: 5px;\"><strong>Data:</strong> " + dataFormatada + "</div>" + obs + "</div>";
+    }).join("");
+}
+
