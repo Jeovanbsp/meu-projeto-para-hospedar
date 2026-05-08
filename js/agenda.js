@@ -395,7 +395,7 @@ function renderHistoricoConsultas() {
     if (!container) return;
     
     const filterMes = document.getElementById('filter-historico-mes')?.value || '';
-    let filtered = historico.filter(h => h.tipo === 'contato');
+    let filtered = historico.filter(h => h.tipo === 'contato' || h.tipo === 'consulta');
     
     // Filtrar por mês se selecionado
     if (filterMes) {
@@ -787,7 +787,7 @@ function renderHistoricoConsultas() {
         return;
     }
     const filterPaciente = document.getElementById('filter-tag-paciente').value;
-    let filtered = historico.filter(h => h.tipo === 'contato');
+    let filtered = historico.filter(h => h.tipo === 'contato' || h.tipo === 'consulta');
     if (filterPaciente) filtered = filtered.filter(h => h.paciente === filterPaciente);
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
@@ -892,7 +892,7 @@ function renderHistorico() {
         container.innerHTML = "<div class=\"empty-state\">Nenhum contato registrado</div>";
         return;
     }
-    let filtered = historico.filter(h => h.tipo === 'contato');
+    let filtered = historico.filter(h => h.tipo === 'contato' || h.tipo === 'consulta');
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
     container.innerHTML = filtered.map((h, i) => {
