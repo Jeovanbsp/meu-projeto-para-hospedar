@@ -172,8 +172,8 @@ function renderBlocks() {
 function adicionarBloco() {
     const inicio = document.getElementById('block-inicio').value;
     const fim = document.getElementById('block-fim').value;
-    if (!inicio || !fim) return alert('Preencha os horarios.');
-    if (inicio >= fim) return alert('Horario de inicio deve ser menor que o fim.');
+    if (!inicio || !fim) return mostrarAlerta('Preencha os horarios.', 'aviso');
+    if (inicio >= fim) return mostrarAlerta('Horario de inicio deve ser menor que o fim.', 'aviso');
     selectedBlocks.push({ inicio: inicio, fim: fim });
     renderBlocks();
     showLocationSection();
@@ -213,7 +213,7 @@ function updateSaveButton() {
 
 function salvarDisponibilidade() {
     if (!selectedDate || selectedBlocks.length === 0 || selectedLocations.length === 0) {
-        return alert('Selecione a data, adicione blocos de horario e selecione o local.');
+        return mostrarAlerta('Selecione a data, adicione blocos de horario e selecione o local.', 'aviso');
     }
     selectedBlocks.forEach(block => {
         disponibilidade.push({ date: selectedDate, time: block.inicio + ' - ' + block.fim, location: selectedLocations.join(', ') });
@@ -230,7 +230,7 @@ function salvarDisponibilidade() {
     document.getElementById('btn-salvar').disabled = true;
     renderCalendar();
     renderAvailabilityTable();
-    alert('Disponibilidade salva!');
+    mostrarAlerta('Disponibilidade salva com sucesso!', 'sucesso');
 }
 
 function formatDate(dateStr) {
@@ -328,7 +328,7 @@ document.getElementById('form-agendar').addEventListener('submit', function(e) {
     fecharModalAgendar();
     renderAvailabilityTable();
     renderAppointmentsList();
-    alert('Consulta agendada!');
+    mostrarAlerta('Consulta agendada com sucesso!', 'sucesso');
 });
 
 function renderAppointmentsList() {
@@ -352,7 +352,7 @@ function toggleStatus(index) {
     const a = agendamentos[index];
     if (a.status === 'pendente') {
         a.status = 'realizado';
-        a.realizadoEm = new Date().toISOString();
+        a.realizadoEm = a.date;
         
         // Adicionar ao histórico com campos corretos
         historico.push({
@@ -495,7 +495,7 @@ document.getElementById('form-editar').addEventListener('submit', function(e) {
     fecharModalEditar();
     renderAvailabilityTable();
     renderCalendar();
-    alert('Disponibilidade atualizada!');
+    mostrarAlerta('Disponibilidade atualizada!', 'sucesso');
 });
 
 // PACIENTES
@@ -536,7 +536,7 @@ function renderPacientesLista() {
         const ultimaConsulta = consultas.length > 0 ? consultas[consultas.length - 1].date : null;
         const pacienteTags = tags.filter(t => t.paciente === p.nome);
         const obsBtn = '<button onclick="abrirObsPaciente(\'' + p.nome + '\')" style="background: #6c757d; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Obs</button>';
-        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666; margin-top: 5px;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Responsavel: ' + (p.responsavel || 'Nao Informado') + '</div><div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div><div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button>' + obsBtn + '<button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
+        return '<div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #eee;"><div style="font-weight: 700; color: #2c3e50; font-size: 1.1rem;">' + p.nome + '</div><div style="font-size: 0.9rem; color: #666; margin-top: 5px;">WhatsApp: ' + (p.whatsapp || 'Nao Informado') + '</div>' + (p.responsavel ? '<div style="font-size: 0.9rem; color: #007bff; font-weight: 600;">Responsavel: ' + p.responsavel + '</div>' : '<div style="font-size: 0.9rem; color: #666;">Responsavel: ' + (p.responsavel || 'Nao Informado') + '</div>') + '<div style="font-size: 0.9rem; color: #666;">Endereco: ' + (p.endereco || 'Nao Informado') + '</div><div style="font-size: 0.8rem; color: #888; margin-top: 8px; padding-top: 8px; border-top: 1px solid #eee;">Consultas: ' + consultas.length + ' | Ultima: ' + (ultimaConsulta ? formatDate(ultimaConsulta) : '-') + ' | Tags: ' + pacienteTags.length + '</div><div style="display: flex; gap: 5px; margin-top: 10px;"><button onclick="agendarPaciente(\'' + p.nome + '\')" style="background: #007bff; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Agendar</button><button onclick="criarTagPaciente(\'' + p.nome + '\')" style="background: #2ADCA1; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Tag</button><button onclick="enviarMsgPaciente(\'' + p.nome + '\')" style="background: #25c095; color: white; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">Msg</button>' + obsBtn + '<button onclick="excluirPaciente(\'' + p.nome + '\')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem;">X</button></div></div>';
     }).join('');
 }
 
@@ -546,7 +546,7 @@ function cadastrarPaciente() {
     const endereco = document.getElementById('novo-paciente-endereco').value;
     const responsavel = document.getElementById('novo-paciente-responsavel').value;
     const obs = document.getElementById('novo-paciente-obs').value;
-    if (!nome) return alert('Informe o nome do paciente.');
+    if (!nome) return mostrarAlerta('Informe o nome do paciente.', 'aviso');
     pacientes.push({ id: Date.now(), nome: nome, whatsapp: whatsapp, endereco: endereco, responsavel: responsavel, obs: obs, createdAt: new Date().toISOString() });
     localStorage.setItem('pacientes', JSON.stringify(pacientes));
         saveToAPI('pacientes', pacientes);
@@ -557,7 +557,7 @@ function cadastrarPaciente() {
     document.getElementById('novo-paciente-obs').value = '';
     renderPacientesLista();
     carregarPacientesSelect();
-    alert('Paciente cadastrado!');
+    mostrarAlerta('Paciente cadastrado com sucesso!', 'sucesso');
 }
 
 function agendarPaciente(nome) {
@@ -585,7 +585,7 @@ function criarTagPaciente(nome) {
     document.querySelector('[data-tab="tags"]').classList.add('active');
     document.getElementById('tab-tags').classList.add('active');
     document.getElementById('tag-paciente').value = nome;
-    alert('Paciente selecionado! Agora crie a tag.');
+    mostrarAlerta('Paciente selecionado! Agora crie a tag.', 'sucesso');
 }
 
 let pacienteMsgAtual = null;
@@ -593,7 +593,7 @@ let pacienteMsgAtual = null;
 function enviarMsgPaciente(nome) {
     const paciente = pacientes.find(p => p.nome === nome);
     if (!paciente || !paciente.whatsapp) {
-        alert('Paciente sem WhatsApp cadastrado. Cadastre primeiro.');
+        mostrarAlerta('Paciente sem WhatsApp cadastrado. Cadastre primeiro.', 'erro');
         return;
     }
     pacienteMsgAtual = { nome: nome, whatsapp: paciente.whatsapp };
@@ -646,7 +646,7 @@ function salvarTag() {
     const dataContato = document.getElementById('tag-data-contato').value;
     const observacao = document.getElementById('tag-observacao').value;
     const tagColor = document.getElementById('tag-cor').value;
-    if (!paciente || !titulo) return alert('Selecione o paciente e informe o titulo da tag.');
+    if (!paciente || !titulo) return mostrarAlerta('Selecione o paciente e informe o titulo da tag.', 'aviso');
     const novaTag = { id: Date.now(), paciente: paciente, titulo: titulo, dataContato: dataContato || null, observacao: observacao, color: tagColor, createdAt: new Date().toISOString() };
     tags.push(novaTag);
     localStorage.setItem('tags', JSON.stringify(tags));
@@ -715,14 +715,14 @@ function excluirTag(id) {
 function salvarMensagem() {
     const titulo = document.getElementById('msg-titulo').value;
     const texto = document.getElementById('msg-texto').value;
-    if (!titulo || !texto) return alert('Informe o titulo e a mensagem.');
+    if (!titulo || !texto) return mostrarAlerta('Informe o titulo e a mensagem.', 'aviso');
     mensagens.push({ id: Date.now(), titulo: titulo, texto: texto });
     localStorage.setItem('mensagens', JSON.stringify(mensagens));
     saveToAPI('mensagens', mensagens);
     document.getElementById('msg-titulo').value = '';
     document.getElementById('msg-texto').value = '';
     renderMensagens();
-    alert('Mensagem salva!');
+    mostrarAlerta('Mensagem salva!', 'sucesso');
 }
 
 function renderMensagens() {
@@ -751,14 +751,14 @@ function salvarEditarMensagem() {
         renderMensagens();
     }
     document.getElementById('modal-editar-mensagem').classList.remove('active');
-    alert('Mensagem atualizada!');
+    mostrarAlerta('Mensagem atualizada!', 'sucesso');
 }
 
 function copiarMensagem(id) {
     const msg = mensagens.find(m => m.id === id);
     if (msg) {
         navigator.clipboard.writeText(msg.texto).then(() => {
-            alert('Mensagem copiada! Agora voce pode colar no WhatsApp.');
+            mostrarAlerta('Mensagem copiada! Agora voce pode colar no WhatsApp.', 'sucesso');
         });
     }
 }
@@ -795,7 +795,7 @@ function renderHistoricoConsultas() {
 function marcarContato(paciente) {
     // Buscar a tag mais recente deste paciente
     const pacienteTags = tags.filter(t => t.paciente === paciente);
-    if (pacienteTags.length === 0) return alert('Nenhuma tag encontrada para este paciente.');
+    if (pacienteTags.length === 0) return mostrarAlerta('Nenhuma tag encontrada para este paciente.', 'aviso');
     const tag = pacienteTags[pacienteTags.length - 1]; // Última tag
     
     // Usar a dataContato da tag se existir, senão usar data atual
@@ -813,7 +813,7 @@ function marcarContato(paciente) {
     });
     localStorage.setItem('historico', JSON.stringify(historico));
     saveToAPI('historico', historico);
-    alert('Contato registrado no histórico!');
+    mostrarAlerta('Contato registrado no historico!', 'sucesso');
     
     // Remover a tag da lista de tags pendentes
     tags = tags.filter(t => t.id !== tag.id);
@@ -904,5 +904,35 @@ function excluirDoHistorico(index) {
         renderHistoricoConsultas();
         atualizarContador();
     }
+}
+
+
+// Modal de Alerta Personalizado
+function mostrarAlerta(mensagem, tipo = "info") {
+    const overlay = document.getElementById("modal-alerta");
+    const titulo = document.getElementById("alerta-titulo");
+    const msg = document.getElementById("alerta-mensagem");
+    const icone = document.getElementById("alerta-icone");
+    const botao = document.getElementById("alerta-botao");
+    
+    const configs = {
+        sucesso: { titulo: "Sucesso!", icone: "✅", cor: "#2ADCA1" },
+        erro: { titulo: "Erro!", icone: "❌", cor: "#ff6b6b" },
+        info: { titulo: "Atenção!", icone: "ℹ️", cor: "#007bff" },
+        aviso: { titulo: "Aviso!", icone: "⚠️", cor: "#f57c00" }
+    };
+    
+    const config = configs[tipo] || configs.info;
+    titulo.textContent = config.titulo;
+    titulo.style.color = config.cor;
+    msg.textContent = mensagem;
+    icone.textContent = config.icone;
+    botao.style.background = config.cor;
+    
+    overlay.classList.add("active");
+}
+
+function fecharAlerta() {
+    document.getElementById("modal-alerta").classList.remove("active");
 }
 
