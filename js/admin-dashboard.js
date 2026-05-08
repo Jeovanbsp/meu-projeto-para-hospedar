@@ -1,3 +1,11 @@
+# formatoDate antes do DOMContentLoaded
+function formatDate(dateStr) {
+    if (!dateStr) return "-";
+    const [year, month, day] = dateStr.split("-");
+    const months = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    return day + "/" + months[parseInt(month) - 1] + "/" + year;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
@@ -378,21 +386,39 @@ function carregarStats() {
     }
 
     const consultasRealizadas = historico.filter(h => h.status === 'realizado').length;
-    document.getElementById('total-agendamentos').textContent = agendamentos.length;
+    document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadas;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    document.getElementById('total-mensagens').textContent = tags.length;
+    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
-    // Alerta de mensagens pendentes (tags)
+    // Alerta de mensagens pendentes (tags) - Mostrar organizado por data
     const alerta = document.getElementById('alerta-mensagens');
     const texto = document.getElementById('alerta-texto');
+    
     if (tags.length > 0) {
-        // Mostrar info das tags pendentes
-        const primeiraTag = tags[0];
-        const dataTag = primeiraTag.dataContato ? new Date(primeiraTag.dataContato).toLocaleDateString('pt-BR') : 'Sem data';
+        // Ordenar tags por data de contato
+        const tagsOrdenadas = [...tags].sort((a, b) => {
+            if (!a.dataContato) return 1;
+            if (!b.dataContato) return -1;
+            return new Date(a.dataContato) - new Date(b.dataContato);
+        });
+        
+        // Criar lista organizada por data
+        let listaHtml = '';
+        tagsOrdenadas.forEach((tag, i) => {
+            const dataTag = tag.dataContato ? formatDate(tag.dataContato) : 'Sem data';
+            const jaPassou = tag.dataContato && new Date(tag.dataContato) < new Date();
+            const corData = jaPassou ? '#ff6b6b' : '#2ADCA1';
+            const icone = i === 0 ? '🔔' : '📌';
+            listaHtml += '<div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #eee;">';
+            listaHtml += '<span style="font-size:1.2rem;">' + icone + '</span>';
+            listaHtml += '<div><span style="font-weight:700; color:' + corData + ';">DATA: ' + dataTag + '</span><br>';
+            listaHtml += '<span style="color:#555;">' + tag.paciente + ' - ' + tag.titulo + '</span></div></div>';
+        });
+        
         alerta.style.display = 'block';
-        texto.innerHTML = '<span style="font-weight: 700; font-size: 1.1rem;">DATA: ' + dataTag + '</span><br>' + primeiraTag.paciente + ' - ' + primeiraTag.titulo + ' (e mais ' + (tags.length - 1) + ' outro(s))';
+        texto.innerHTML = '<div style="max-height: 200px; overflow-y: auto;">' + listaHtml + '</div>';
     } else {
         alerta.style.display = 'none';
     }
@@ -435,10 +461,10 @@ function atualizarStats() {
         if (mes && d.date && !d.date.substring(5, 7).startsWith(mes)) return false;
         return true;
     });
-    document.getElementById('total-agendamentos').textContent = agendamentos.length;
+    document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadasFiltradas.length;
-    document.getElementById('total-disponiveis').textContent = dispFiltrada.length;
-    document.getElementById('total-mensagens').textContent = JSON.parse(localStorage.getItem('mensagens') || '[]').length;
+    document.getElementById('total-disponiveis').textContent = disponibilidade.length;
+    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
     
     // Grafico por mes
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
