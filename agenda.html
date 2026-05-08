@@ -332,37 +332,48 @@
         </div>
 
         <div id="tab-agendamentos" class="tab-content">
-            <div class="appointments-card">
-                <div class="availability-header">
-                    <div class="availability-title">Consultas Agendadas</div>
-                    <button class="tab-btn" onclick="toggleHistorico()">Historico</button>
-                </div>
+            <!-- Layout lado a lado: Consultas Agendadas | Histórico -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                
+                <!-- Coluna Esquerda: Consultas Agendadas -->
+                <div class="appointments-card">
+                    <div class="availability-header">
+                        <div class="availability-title">Consultas Agendadas</div>
+                    </div>
 
-                <div class="filters-row">
-                    <select class="filter-select" id="filter-appointment-month" onchange="filtrarAgendamentos()">
-                        <option value="">Todos os Meses</option>
-                    </select>
-                    <select class="filter-select" id="filter-appointment-status" onchange="filtrarAgendamentos()">
-                        <option value="pendente" selected>Pendente</option>
-                        <option value="">Todos os Status</option>
-                        <option value="realizado">Realizado</option>
-                    </select>
-                </div>
+                    <div class="filters-row">
+                        <select class="filter-select" id="filter-appointment-month" onchange="filtrarAgendamentos()">
+                            <option value="">Todos os Meses</option>
+                        </select>
+                        <select class="filter-select" id="filter-appointment-status" onchange="filtrarAgendamentos()">
+                            <option value="pendente" selected>Pendente</option>
+                            <option value="">Todos os Status</option>
+                            <option value="realizado">Realizado</option>
+                        </select>
+                    </div>
 
-                <div id="appointments-list">
-                    <div class="empty-state">Nenhuma consulta agendada</div>
+                    <div id="appointments-list">
+                        <div class="empty-state">Nenhuma consulta agendada</div>
+                    </div>
+                </div>
+                
+                <!-- Coluna Direita: Histórico de Consultas Realizadas -->
+                <div id="historico-section" class="appointments-card">
+                    <div class="availability-header">
+                        <div class="availability-title"><i class="ph ph-clock-counter-clockwise"></i> Histórico de Consultas</div>
+                    </div>
+                    <div id="historico-list">
+                        <div class="empty-state">Nenhuma consulta realizada</div>
+                    </div>
                 </div>
             </div>
             
-            <!-- Seção de Histórico que agora fica sempre visível -->
-            <div id="historico-section" class="appointments-card" style="margin-top:20px;">
-                <div class="availability-header">
-                    <div class="availability-title"><i class="ph ph-clock-counter-clockwise"></i> Historico de Consultas Realizadas</div>
-                </div>
-                <div id="historico-list">
-                    <div class="empty-state">Nenhuma consulta realizada</div>
-                </div>
-            </div>
+            <!-- Responsividade: empilhar em telas menores -->
+            <style>
+                @media (max-width: 900px) {
+                    #tab-agendamentos > div { grid-template-columns: 1fr !important; }
+                }
+            </style>
         </div>
 
         <!-- TAB PACIENTES -->

@@ -111,9 +111,11 @@ function renderCalendar() {
         dayEl.textContent = day;
         if (disponibilidade.some(d => d.date === dateStr)) dayEl.classList.add('has-slots');
         if (selectedDate === dateStr) dayEl.classList.add('selected');
-        // Remover a verificação de data passada - permitir qualquer data
-        // const dateObj = new Date(year, month, day);
-        // if (dateObj < today) { dayEl.classList.add('past'); }
+        
+        // Manter estilo visual para datas passadas (branquinho), mas permitir clique
+        const dateObj = new Date(year, month, day);
+        if (dateObj < today) { dayEl.classList.add('past'); }
+        
         dayEl.onclick = () => selectDate(dateStr);
         calendarDays.appendChild(dayEl);
     }
@@ -234,8 +236,11 @@ function getLocationLabel(location) {
 function renderAvailabilityTable() {
     const tbody = document.getElementById('availability-table-body');
     if (!tbody) return;
-    const today = new Date().toISOString().split('T')[0];
-    disponibilidade = disponibilidade.filter(d => d.date >= today);
+    
+    // Não filtrar datas passadas - permitir visualizar todas as disponibilidades
+    // Removido: const today = new Date().toISOString().split('T')[0];
+    // Removido: disponibilidade = disponibilidade.filter(d => d.date >= today);
+    
     const filterMonth = document.getElementById('filter-month').value;
     const filterLocation = document.getElementById('filter-location').value;
     let filtered = [...disponibilidade];
