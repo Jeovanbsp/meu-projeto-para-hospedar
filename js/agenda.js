@@ -111,8 +111,9 @@ function renderCalendar() {
         dayEl.textContent = day;
         if (disponibilidade.some(d => d.date === dateStr)) dayEl.classList.add('has-slots');
         if (selectedDate === dateStr) dayEl.classList.add('selected');
-        const dateObj = new Date(year, month, day);
-        if (dateObj < today) { dayEl.classList.add('past'); }
+        // Remover a verificação de data passada - permitir qualquer data
+        // const dateObj = new Date(year, month, day);
+        // if (dateObj < today) { dayEl.classList.add('past'); }
         dayEl.onclick = () => selectDate(dateStr);
         calendarDays.appendChild(dayEl);
     }
