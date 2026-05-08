@@ -37,12 +37,13 @@ async function saveToAPI(key, data) {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(data)
         });
-        // Se API retornar 404, apenas ignora (funciona offline)
+        // Se API retornar 404 ou outro erro, usa apenas localStorage
         if (!res.ok) { 
-            console.log('API não disponível para ' + key + ', funcionando offline');
+            console.log('API indisponível, salva localmente');
         }
     } catch (err) {
-        console.log('Erro ao salvar na API: ' + key, err);
+        // API offline, mas localStorage funciona
+        console.log('API offline, dados salvos localmente');
     }
 }
 
