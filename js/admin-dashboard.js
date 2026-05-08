@@ -1,12 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     const role = localStorage.getItem('userRole');
+    const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
     
     const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
     const API_URL = `${API_ADMIN_BASE}/api/admin/pacientes`;
     const API_PACIENTE_URL = `${API_ADMIN_BASE}/api/admin/paciente/`; 
 
-    if (!token || role !== 'admin') {
+    // Allow admin and secretary, but secretária goes to agenda.html
+    if (!token) {
+        localStorage.clear();
+        window.location.href = 'login.html';
+        return;
+    }
+    
+    // Check if it's a secretary logging in directly - redirect to agenda
+    if (role === 'secretary') {
+        window.location.href = 'agenda.html';
+        return;
+    }
+    
+    if (role !== 'admin') {
         localStorage.clear();
         window.location.href = 'login.html';
         return;
@@ -46,11 +60,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderTabela = (pacientes) => {
         if (!listaBody) return;
+        
+        // Also load and render secretarias
+        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+        
         listaBody.innerHTML = ''; 
-        if (totalSpan) totalSpan.innerText = pacientes.length;
+        if (totalSpan) totalSpan.innerText = pacientes.length + secretarias.length;
 
-        if (pacientes.length === 0) {
-            listaBody.innerHTML = '<li style="text-align:center; padding:40px; color:#777;">Nenhum paciente encontrado.</li>';
+        // Render secretarias first with tag "SECRETÁRIA"
+        if (secretarias.length > 0) {
+            secretarias.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(s => {
+                const dataStr = s.createdAt ? new Date(s.createdAt).toLocaleDateString('pt-BR') : '-';
+                const li = document.createElement('li');
+                li.className = 'linha-grid'; 
+                li.style.background = '#e8f4fd'; // Light blue background for secretaries
+                li.innerHTML = `
+                    <div style="display: flex; flex-direction: column; align-items: flex-start; overflow: hidden;">
+                        <strong style="color:#007bff; font-size: 1.05rem; white-space: nowrap; text-overflow: ellipsis; width: 100%;">${s.nome} <span style="background: #007bff; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-left: 5px;">SECRETÁRIA</span></strong>
+                        <span style="color: #888; font-size: 0.85rem; margin-top: 2px;">Usuário: ${s.usuario}</span>
+                    </div>
+                    <div style="text-align: center;"><span class="status-badge status-ok" style="background: #e3f2fd; color: #007bff;"><i class="ph-fill ph-user"></i> Ativo</span></div>
+                    <div style="text-align: center; color: #666; font-size: 0.85rem;">${dataStr}</div>
+                    <div class="acoes-container">
+                        <button class="btn-acao btn-edit" onclick="editarSecretaria('${s.id}', '${s.nome}', '${s.usuario}')">
+                            <i class="ph ph-pencil"></i>
+                        </button>
+                        <button class="btn-acao btn-delete" onclick="excluirSecretaria('${s.id}', '${s.nome}')">
+                            <i class="ph ph-trash"></i>
+                        </button>
+                    </div>
+                `;
+                listaBody.appendChild(li);
+            });
+        }
+
+        if (pacientes.length === 0 && secretarias.length === 0) {
+            listaBody.innerHTML = '<li style="text-align:center; padding:40px; color:#777;">Nenhum registro encontrado.</li>';
             return;
         }
 
@@ -156,7 +201,33 @@ document.addEventListener('DOMContentLoaded', () => {
         
         alert('Secretária cadastrada com sucesso!');
         fecharModalSecretaria();
+        fetchPacientes(); // Refresh list
     });
+    
+    // Funções para editar e excluir secretária
+    window.editarSecretaria = (id, nome, usuario) => {
+        if (!confirm(`Editar "${nome}"?`)) return;
+        const novaSenha = prompt('Nova senha para ' + nome + ':');
+        if (!novaSenha) return;
+        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+        const idx = secretarias.findIndex(s => s.id === id);
+        if (idx >= 0) {
+            secretarias[idx].senha = novaSenha;
+            localStorage.setItem('secretarias', JSON.stringify(secretarias));
+            alert('Senha atualizada!');
+            fetchPacientes();
+        }
+    };
+    
+    window.excluirSecretaria = (id, nome) => {
+        if (!confirm(`Excluir secretária "${nome}"?`)) return;
+        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+        const filtered = secretarias.filter(s => s.id !== id);
+        localStorage.setItem('secretarias', JSON.stringify(filtered));
+        alert('Secretária excluída!');
+        fetchPacientes();
+    };
+    
     window.abrirModalEditar = (id, nome, email, telefone) => {
         document.getElementById('edit-id').value = id;
         document.getElementById('edit-nome').value = nome;

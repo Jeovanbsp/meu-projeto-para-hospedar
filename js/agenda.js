@@ -743,13 +743,15 @@ function marcarContato(paciente) {
         data: dataContato,
         tagId: tag.id,
         observacao: tag.observacao || '',
-        color: tag.color
+        color: tag.color || '#2ADCA1'
     });
     localStorage.setItem('historico', JSON.stringify(historico));
     saveToAPI('historico', historico);
     alert('Contato registrado no histórico!');
-    fecharModalVerTag();
+    
+    // Atualizar interface
     renderHistoricoConsultas();
+    renderTags();
     atualizarContador();
 }
 

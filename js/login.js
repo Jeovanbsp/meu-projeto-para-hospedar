@@ -13,7 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // Verificar Secretária local - aceita usuario OU email
       const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
       const secretaria = secretarias.find(s => (s.usuario === email || s.email === email) && s.senha === password);
-      if (secretaria) { localStorage.setItem('usuarioLogado', JSON.stringify(secretaria)); window.location.href = 'agenda.html'; return; }
+      if (secretaria) { 
+        localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
+        localStorage.setItem('userRole', 'secretary'); 
+        localStorage.setItem('userName', secretaria.nome);
+        window.location.href = 'agenda.html'; 
+        return; 
+      }
 
       // API externa
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
