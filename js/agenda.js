@@ -394,7 +394,7 @@ function renderHistoricoConsultas() {
     if (!container) return;
     
     const filterMes = document.getElementById('filter-historico-mes')?.value || '';
-    let filtered = [...historico];
+    let filtered = historico.filter(h => h.tipo === 'contato');
     
     // Filtrar por mês se selecionado
     if (filterMes) {
@@ -786,7 +786,7 @@ function renderHistoricoConsultas() {
         return;
     }
     const filterPaciente = document.getElementById('filter-tag-paciente').value;
-    let filtered = [...historico];
+    let filtered = historico.filter(h => h.tipo === 'contato');
     if (filterPaciente) filtered = filtered.filter(h => h.paciente === filterPaciente);
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
@@ -884,13 +884,14 @@ function excluirHistorico(index) {
 
 // Função para renderizar Histórico de Contatos (na aba Tags)
 function renderHistorico() {
+    // Filtrar apenas contatos (tags confirmadas)
     const container = document.getElementById("historico-lista");
     if (!container) return;
     if (historico.length === 0) {
         container.innerHTML = "<div class=\"empty-state\">Nenhum contato registrado</div>";
         return;
     }
-    let filtered = [...historico];
+    let filtered = historico.filter(h => h.tipo === 'contato');
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
     container.innerHTML = filtered.map((h, i) => {
