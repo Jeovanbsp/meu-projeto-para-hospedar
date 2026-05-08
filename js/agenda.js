@@ -1,4 +1,5 @@
 // Agenda System - Dra. Aisha
+const getDataLocal = () => new Date().getFullYear() + "-" + String(new Date().getMonth() + 1).padStart(2, "0") + "-" + String(new Date().getDate()).padStart(2, "0");
 
 const API_BASE = 'https://aishageriatria.onrender.com';
 const API_ENDPOINTS = {
@@ -250,7 +251,7 @@ function renderAvailabilityTable() {
     if (!tbody) return;
     
     // Não filtrar datas passadas - permitir visualizar todas as disponibilidades
-    // Removido: const today = new Date().toISOString().split('T')[0];
+    // Removido: const today = getDataLocal();
     // Removido: disponibilidade = disponibilidade.filter(d => d.date >= today);
     
     const filterMonth = document.getElementById('filter-month').value;
@@ -617,7 +618,7 @@ function enviarMsgPacienteSelecionada(id) {
             paciente: pacienteMsgAtual.nome,
             tipo: 'mensagem',
             titulo: msg.titulo,
-            data: new Date().toISOString()
+            data: getDataLocal()
         });
         localStorage.setItem('historico', JSON.stringify(historico));
         
@@ -799,7 +800,7 @@ function marcarContato(paciente) {
     const tag = pacienteTags[pacienteTags.length - 1]; // Última tag
     
     // Usar a dataContato da tag se existir, senão usar data atual
-    const dataContato = tag.dataContato || new Date().toISOString();
+    const dataContato = tag.dataContato || getDataLocal();
     
     historico.push({
         id: Date.now(),
