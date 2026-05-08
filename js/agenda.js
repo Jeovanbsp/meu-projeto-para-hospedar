@@ -670,10 +670,10 @@ function renderTags() {
     if (filterPaciente) filtered = filtered.filter(t => t.paciente === filterPaciente);
     container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma tag criada</div>' :
         filtered.map(t => {
-            var html = '<div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid ' + t.color + '; cursor: pointer;" onclick="mostrarTagDetalhesById(' + t.id + ')"><div style="display: flex; justify-content: space-between;"><div><strong>' + t.paciente + '</strong><div style="color: ' + t.color + '; font-weight: 600; margin-top: 5px;">' + t.titulo + '</div>';
-            if (t.dataContato) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">Contato: ' + formatDate(t.dataContato) + '</div>';
-            if (t.observacao) html += '<div style="font-size: 0.9rem; color: #666; margin-top: 5px;">' + t.observacao + '</div>';
-            html += '</div><div style="display: flex; flex-direction: column; gap: 5px;"><button onclick="event.stopPropagation(); enviarMsgPaciente(\'' + t.paciente + '\')" style="background: #25c095; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Msg</button><button onclick="event.stopPropagation(); marcarContato(\'' + t.paciente + '\')" style="background: #2ADCA1; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">OK</button><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" style="background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">X</button></div></div></div>';
+            var html = '<div class="tag-card" style="border-left: 4px solid ' + t.color + ';" onclick="mostrarTagDetalhesById(' + t.id + ')"><div class="tag-content"><div class="tag-paciente">' + t.paciente + '</div><div class="tag-titulo" style="color: ' + t.color + ';">' + t.titulo + '</div>';
+            if (t.dataContato) html += '<div class="tag-data">Contato: ' + formatDate(t.dataContato) + '</div>';
+            if (t.observacao) html += '<div class="tag-obs">' + t.observacao + '</div>';
+            html += '</div><div class="tag-actions"><button onclick="event.stopPropagation(); enviarMsgPaciente(\'' + t.paciente + '\')" class="btn-msg-tag" title="Mensagem"><i class="ph ph-chat-circle"></i></button><button onclick="event.stopPropagation(); marcarContato(\'' + t.paciente + '\')" class="btn-ok-tag" title="Confirmar"><i class="ph ph-check"></i></button><button onclick="event.stopPropagation(); excluirTag(' + t.id + ')" class="btn-excluir-tag" title="Excluir"><i class="ph ph-trash"></i></button></div></div>';
             return html;
         }).join('');
 }
@@ -730,7 +730,7 @@ function renderMensagens() {
     const container = document.getElementById('mensagens-lista');
     if (!container) return;
     container.innerHTML = mensagens.length === 0 ? '<span style="color: #999;">Nenhuma mensagem salva</span>' :
-        mensagens.map(m => '<div class="block-chip" style="cursor: pointer; padding: 12px 15px;" onclick="copiarMensagem(' + m.id + ')" title="Clique para copiar">' + m.titulo + '</div><div style="display: flex; gap: 8px; margin-top: 8px;"><button onclick="editarMensagem(' + m.id + ')" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;"><i class="ph ph-pencil"></i> Editar</button><button onclick="excluirMensagem(' + m.id + ')" style="background: #ff6b6b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;"><i class="ph ph-trash"></i> Excluir</button></div>').join('');
+        mensagens.map(m => '<div class="mensagem-card"><div class="mensagem-content"><div class="mensagem-titulo">' + m.titulo + '</div><div class="mensagem-preview">' + (m.texto?.substring(0, 50) || '') + '...</div></div><div class="mensagem-actions"><button onclick="editarMensagem(' + m.id + ')" class="btn-editar-msg" title="Editar"><i class="ph ph-pencil"></i></button><button onclick="excluirMensagem(' + m.id + ')" class="btn-excluir-msg" title="Excluir"><i class="ph ph-trash"></i></button></div></div>').join('');
 }
 
 function editarMensagem(id) {
