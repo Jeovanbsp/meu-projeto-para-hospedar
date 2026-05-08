@@ -85,12 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 li.innerHTML = `
                     <div style="display: flex; flex-direction: column; align-items: flex-start; overflow: hidden;">
                         <strong style="color:#007bff; font-size: 1.05rem; white-space: nowrap; text-overflow: ellipsis; width: 100%;">${s.nome} <span style="background: #007bff; color: white; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; margin-left: 5px;">SECRETÁRIA</span></strong>
-                        <span style="color: #888; font-size: 0.85rem; margin-top: 2px;">Usuário: ${s.usuario}</span>
+                        <span style="color: #888; font-size: 0.85rem; margin-top: 2px;">Usuário: ${s.email}</span>
                     </div>
                     <div style="text-align: center;"><span class="status-badge status-ok" style="background: #e3f2fd; color: #007bff;"><i class="ph-fill ph-user"></i> Ativo</span></div>
                     <div style="text-align: center; color: #666; font-size: 0.85rem;">${dataStr}</div>
                     <div class="acoes-container">
-                        <button class="btn-acao btn-edit" onclick="editarSecretaria('${s.id}', '${s.nome}', '${s.usuario}')">
+                        <button class="btn-acao btn-edit" onclick="editarSecretaria('${s.id}', '${s.nome}', '${s.email}')">
                             <i class="ph ph-pencil"></i>
                         </button>
                         <button class="btn-acao btn-delete" onclick="excluirSecretaria('${s.id}', '${s.nome}')">
@@ -195,16 +195,17 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('form-cadastro-secretaria').addEventListener('submit', (e) => {
         e.preventDefault();
         const nome = document.getElementById('secretaria-nome').value;
-        const usuario = document.getElementById('secretaria-usuario').value;
+        const email = document.getElementById('secretaria-email').value;
+        if (!email.includes('@') || !email.includes('.')) { alert('Email inválido!'); return; }
         const senha = document.getElementById('secretaria-senha').value;
         
         // Salvar no localStorage
         const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-        if (secretarias.find(s => s.usuario === usuario)) {
-            alert('Usuário já existe!');
+        if (secretarias.find(s => s.email === email)) {
+            alert('Email já cadastrado!');
             return;
         }
-        secretarias.push({ id: Date.now(), nome, usuario, senha, createdAt: new Date().toISOString() });
+        secretarias.push({ id: Date.now(), nome, email, senha, createdAt: new Date().toISOString() });
         localStorage.setItem('secretarias', JSON.stringify(secretarias));
         
         alert('Secretária cadastrada com sucesso!');
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Abrir modal de edição
         document.getElementById('edit-secretaria-id').value = id;
         document.getElementById('edit-secretaria-nome').value = nome;
-        document.getElementById('edit-secretaria-usuario').value = usuario;
+        document.getElementById('edit-secretaria-email').value = usuario;
         document.getElementById('edit-secretaria-senha').value = '';
         document.getElementById('modal-editar-secretaria').style.display = 'flex';
     };
@@ -250,12 +251,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     window.excluirSecretaria = (id, nome) => {
-        if (!confirm(`Excluir secretária "${nome}"?`)) return;
-        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-        const filtered = secretarias.filter(s => s.id !== id);
-        localStorage.setItem('secretarias', JSON.stringify(filtered));
-        alert('Secretária excluída!');
-        fetchPacientes();
+        document.getElementById('alerta-titulo').textContent = 'Excluir Secretária';
+        document.getElementById('alerta-mensagem').textContent = `Tem certeza que deseja excluir "${nome}"?`;
+        document.getElementById('alerta-icone').className = 'ph-fill ph-warning';
+        document.getElementById('alerta-icone').style.color = '#ff6b6b';
+        document.getElementById('modal-alerta').style.display = 'flex';
+        
+        const btn = document.getElementById('alerta-botao');
+        btn.onclick = function() {
+            const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+            const filtered = secretarias.filter(s => s.id !== id);
+            localStorage.setItem('secretarias', JSON.stringify(filtered));
+            document.getElementById('modal-alerta').style.display = 'none';
+            document.getElementById('alerta-titulo').textContent = 'Sucesso';
+            document.getElementById('alerta-mensagem').textContent = 'Secretária excluída!';
+            document.getElementById('alerta-icone').className = 'ph-fill ph-check-circle';
+            document.getElementById('alerta-icone').style.color = '#2ADCA1';
+            document.getElementById('modal-alerta').style.display = 'flex';
+            btn.onclick = function() { document.getElementById('modal-alerta').style.display = 'none'; };
+            fetchPacientes();
+        };
     };
     
     window.abrirModalEditar = (id, nome, email, telefone) => {
