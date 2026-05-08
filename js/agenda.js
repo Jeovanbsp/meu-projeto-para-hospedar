@@ -917,17 +917,18 @@ function mostrarAlerta(mensagem, tipo = "info") {
     const botao = document.getElementById("alerta-botao");
     
     const configs = {
-        sucesso: { titulo: "Sucesso!", icone: "✅", cor: "#2ADCA1" },
-        erro: { titulo: "Erro!", icone: "❌", cor: "#ff6b6b" },
-        info: { titulo: "Atenção!", icone: "ℹ️", cor: "#007bff" },
-        aviso: { titulo: "Aviso!", icone: "⚠️", cor: "#f57c00" }
+        sucesso: { titulo: "Sucesso!", icone: "ph-fill ph-check-circle", cor: "#2ADCA1" },
+        erro: { titulo: "Erro!", icone: "ph-fill ph-x-circle", cor: "#ff6b6b" },
+        info: { titulo: "Atenção!", icone: "ph-fill ph-info", cor: "#007bff" },
+        aviso: { titulo: "Aviso!", icone: "ph-fill ph-warning", cor: "#f57c00" },
     };
     
     const config = configs[tipo] || configs.info;
     titulo.textContent = config.titulo;
     titulo.style.color = config.cor;
     msg.textContent = mensagem;
-    icone.textContent = config.icone;
+    icone.className = config.icone;
+    icone.style.color = config.cor;
     botao.style.background = config.cor;
     
     overlay.classList.add("active");
