@@ -51,29 +51,32 @@ async function saveToAPI(key, data) {
 
 async function init() {
     // Try load from API, fallback to localStorage
-    const [apiDisp, apiAgend, apiPats, apiHist] = await Promise.all([
+    const [apiDisp, apiAgend, apiPats, apiHist, apiTags, apiMsgs] = await Promise.all([
         loadFromAPI('disponibilidade'),
         loadFromAPI('agendamentos'),
         loadFromAPI('pacientes'),
-        loadFromAPI('historico')
+        loadFromAPI('historico'),
+        loadFromAPI('tags'),
+        loadFromAPI('mensagens')
     ]);
-    
+
     if (apiDisp) { disponibilidade = apiDisp; localStorage.setItem('disponibilidade', JSON.stringify(apiDisp)); }
     else { const d = localStorage.getItem('disponibilidade'); if (d) disponibilidade = JSON.parse(d); }
-    
+
     if (apiAgend) { agendamentos = apiAgend; localStorage.setItem('agendamentos', JSON.stringify(apiAgend)); }
     else { const a = localStorage.getItem('agendamentos'); if (a) agendamentos = JSON.parse(a); }
-    
+
     if (apiPats) { pacientes = apiPats; localStorage.setItem('pacientes', JSON.stringify(apiPats)); }
     else { const p = localStorage.getItem('pacientes'); if (p) pacientes = JSON.parse(p); }
-    
+
     if (apiHist) { historico = apiHist; localStorage.setItem('historico', JSON.stringify(apiHist)); }
     else { const h = localStorage.getItem('historico'); if (h) historico = JSON.parse(h); }
-    
-    const tgs = localStorage.getItem('tags');
-    if (tgs) tags = JSON.parse(tgs);
-    const msgs = localStorage.getItem('mensagens');
-    if (msgs) mensagens = JSON.parse(msgs);
+
+    if (apiTags) { tags = apiTags; localStorage.setItem('tags', JSON.stringify(apiTags)); }
+    else { const tgs = localStorage.getItem('tags'); if (tgs) tags = JSON.parse(tgs); }
+
+    if (apiMsgs) { mensagens = apiMsgs; localStorage.setItem('mensagens', JSON.stringify(apiMsgs)); }
+    else { const msgs = localStorage.getItem('mensagens'); if (msgs) mensagens = JSON.parse(msgs); }
     
     renderCalendar();
     renderAvailabilityTable();
