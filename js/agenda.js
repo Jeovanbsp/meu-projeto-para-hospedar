@@ -749,13 +749,33 @@ function marcarContato(paciente) {
     saveToAPI('historico', historico);
     alert('Contato registrado no histórico!');
     
+    // Remover a tag da lista de tags pendentes
+    tags = tags.filter(t => t.id !== tag.id);
+    localStorage.setItem('tags', JSON.stringify(tags));
+    
     // Atualizar interface
     renderHistoricoConsultas();
     renderTags();
+    renderHistorico(); // Atualiza Histórico de Contatos também
     atualizarContador();
+    fecharModalVerTag();
 }
 
 init();
+
+// Toggle para mostrar/ocultar histórico
+function toggleHistorico() {
+    const section = document.getElementById('historico-section');
+    if (section) {
+        if (section.style.display === 'none') {
+            section.style.display = 'block';
+            renderHistoricoConsultas();
+        } else {
+            section.style.display = 'none';
+        }
+    }
+}
+
 // Observation modal functions
 function abrirObsPaciente(nome) {
     document.getElementById('obs-paciente-nome').value = nome;

@@ -335,7 +335,7 @@
             <div class="appointments-card">
                 <div class="availability-header">
                     <div class="availability-title">Consultas Agendadas</div>
-                    <button class="tab-btn" onclick="document.getElementById('historico-section').style.display=document.getElementById('historico-section').style.display==='none'?'block':'none'">Historico</button>
+                    <button class="tab-btn" onclick="toggleHistorico()">Historico</button>
                 </div>
 
                 <div class="filters-row">
@@ -354,9 +354,10 @@
                 </div>
             </div>
             
-            <div id="historico-section" class="appointments-card" style="display:none; margin-top:20px;">
+            <!-- Seção de Histórico que agora fica sempre visível -->
+            <div id="historico-section" class="appointments-card" style="margin-top:20px;">
                 <div class="availability-header">
-                    <div class="availability-title">Historico de Consultas Realizadas</div>
+                    <div class="availability-title"><i class="ph ph-clock-counter-clockwise"></i> Historico de Consultas Realizadas</div>
                 </div>
                 <div id="historico-list">
                     <div class="empty-state">Nenhuma consulta realizada</div>

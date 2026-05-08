@@ -206,18 +206,40 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Funções para editar e excluir secretária
     window.editarSecretaria = (id, nome, usuario) => {
-        if (!confirm(`Editar "${nome}"?`)) return;
-        const novaSenha = prompt('Nova senha para ' + nome + ':');
-        if (!novaSenha) return;
+        // Abrir modal de edição
+        document.getElementById('edit-secretaria-id').value = id;
+        document.getElementById('edit-secretaria-nome').value = nome;
+        document.getElementById('edit-secretaria-usuario').value = usuario;
+        document.getElementById('edit-secretaria-senha').value = '';
+        document.getElementById('modal-editar-secretaria').style.display = 'flex';
+    };
+    
+    window.fecharModalEditarSecretaria = () => {
+        document.getElementById('modal-editar-secretaria').style.display = 'none';
+        document.getElementById('form-editar-secretaria').reset();
+    };
+    
+    // Formulário de edição de secretária
+    document.getElementById('form-editar-secretaria').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = parseInt(document.getElementById('edit-secretaria-id').value);
+        const novaSenha = document.getElementById('edit-secretaria-senha').value;
+        
+        if (!novaSenha) {
+            alert('Por favor, digite uma nova senha!');
+            return;
+        }
+        
         const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
         const idx = secretarias.findIndex(s => s.id === id);
         if (idx >= 0) {
             secretarias[idx].senha = novaSenha;
             localStorage.setItem('secretarias', JSON.stringify(secretarias));
-            alert('Senha atualizada!');
+            alert('Senha atualizada com sucesso!');
+            fecharModalEditarSecretaria();
             fetchPacientes();
         }
-    };
+    });
     
     window.excluirSecretaria = (id, nome) => {
         if (!confirm(`Excluir secretária "${nome}"?`)) return;
