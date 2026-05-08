@@ -421,7 +421,6 @@ function renderHistoricoConsultas() {
     
     filtered.sort((a, b) => b.data?.localeCompare(a.data || '') || 0);
     
-    } catch(e) { console.error('renderAppointmentsList error:', e); }
     container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma consulta realizada</div>' :
         filtered.map((h, idx) => '<div class="appointment-row realizado"><div class="appointment-info"><div class="appointment-name">' + (h.patientName || h.paciente) + '</div><div class="appointment-details"><span>' + formatDate(h.date || h.data) + '</span><span>' + (h.time || '-') + '</span></div></div><button class="btn-excluir" onclick="excluirHistorico(' + idx + ')">X</button></div>').join('');
 }
@@ -674,7 +673,6 @@ function renderTags() {
     const filterPaciente = document.getElementById('filter-tag-paciente').value;
     let filtered = [...tags];
     if (filterPaciente) filtered = filtered.filter(t => t.paciente === filterPaciente);
-    } catch(e) { console.error('renderAppointmentsList error:', e); }
     container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma tag criada</div>' :
         filtered.map(t => {
             var html = '<div class="tag-card" style="border-left: 4px solid ' + t.color + ';" onclick="mostrarTagDetalhesById(' + t.id + ')"><div class="tag-content"><div class="tag-paciente">' + t.paciente + '</div><div class="tag-titulo" style="color: ' + t.color + ';">' + t.titulo + '</div>';
