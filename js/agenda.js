@@ -787,7 +787,7 @@ function renderHistoricoConsultas() {
     
     container.innerHTML = filtered.map((h, i) => {
         const color = h.color || '#25c095';
-        const dataFormatada = h.data ? new Date(h.data).toLocaleDateString('pt-BR') : '-';
+        const dataFormatada = h.data ? formatDate(h.data) : '-';
         const obs = h.observacao ? '<div style="font-size: 0.75rem; color: #666; margin-top: 5px;">' + h.observacao + '</div>' : '';
         return '<div style="background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid ' + color + ';"><div style="font-weight: 600;">' + h.paciente + '</div><div style="font-size: 0.85rem; color: ' + color + ';">' + h.tipo + ': ' + h.titulo + '</div><div style="font-size: 0.75rem; color: #888; margin-top: 5px;"><strong>Data:</strong> ' + dataFormatada + '</div>' + obs + '<button onclick="excluirHistorico(' + i + ')" style="margin-top: 8px; background: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Excluir</button></div>';
     }).join('');
@@ -890,7 +890,7 @@ function renderHistorico() {
     
     container.innerHTML = filtered.map((h, i) => {
         const color = h.color || "#25c095";
-        const dataFormatada = h.data ? new Date(h.data).toLocaleDateString("pt-BR") : "-";
+        const dataFormatada = h.data ? formatDate(h.data) : "-";
         const obs = h.observacao ? "<div style=\"font-size: 0.75rem; color: #666; margin-top: 5px;\">" + h.observacao + "</div>" : "";
         return "<div style=\"background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid " + color + ";\"><div style=\"font-weight: 600;\">" + h.paciente + "</div><div style=\"font-size: 0.85rem; color: " + color + ";\">" + h.tipo + ": " + h.titulo + "</div><div style=\"font-size: 0.75rem; color: #888; margin-top: 5px;\"><strong>Data:</strong> " + dataFormatada + "</div>" + obs + '<button onclick="excluirDoHistorico(' + i + ')" style="margin-top: 8px; background: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Excluir</button></div>';
     }).join("");
