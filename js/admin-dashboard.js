@@ -506,13 +506,14 @@ function atualizarStats() {
         options: { responsive: true, maintainAspectRatio: false }
     });
     
-    // Grafico por local
-    const locais = { 'Salvador': 0, 'Lauro': 0, 'Domiciliar': 0 };
-    agendamentos.forEach(a => {
-        if (a.location) {
-            if (a.location.includes('Salvador')) locais['Salvador']++;
-            if (a.location.includes('Lauro')) locais['Lauro']++;
-            if (a.location.includes('Domiciliar')) locais['Domiciliar']++;
+    // Grafico por local - apenas consultas confirmadas (historico)
+    const locais = { 'Presencial': 0, 'Online': 0, 'Domiciliar': 0 };
+    historico.forEach(h => {
+        if (h.tipo === 'consulta' || h.tipo === 'contato') {
+            const local = h.location || h.titulo || '';
+            if (local.includes('Online')) locais['Online']++;
+            else if (local.includes('Domiciliar')) locais['Domiciliar']++;
+            else if (!local.includes('contato')) locais['Presencial']++; // Default: presencial
         }
     });
     
