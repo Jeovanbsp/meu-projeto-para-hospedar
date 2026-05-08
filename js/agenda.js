@@ -6,7 +6,8 @@ const API_ENDPOINTS = {
     agendamentos: `${API_BASE}/api/admin/appointments`,
     pacientes: `${API_BASE}/api/admin/pacientes`,
     historico: `${API_BASE}/api/admin/historico`,
-    mensagens: `${API_BASE}/api/admin/mensagens`
+    mensagens: `${API_BASE}/api/admin/mensagens`,
+    tags: `${API_BASE}/api/admin/tags`
 };
 
 let currentDate = new Date();
@@ -646,6 +647,7 @@ function salvarTag() {
     const novaTag = { id: Date.now(), paciente: paciente, titulo: titulo, dataContato: dataContato || null, observacao: observacao, color: tagColor, createdAt: new Date().toISOString() };
     tags.push(novaTag);
     localStorage.setItem('tags', JSON.stringify(tags));
+    saveToAPI('tags', tags);
     document.getElementById('tag-paciente').value = '';
     document.getElementById('tag-titulo').value = '';
     document.getElementById('tag-data-contato').value = '';
@@ -699,6 +701,7 @@ function excluirTag(id) {
     if (confirm('Deseja excluir esta tag?')) {
         tags = tags.filter(t => t.id !== id);
         localStorage.setItem('tags', JSON.stringify(tags));
+    saveToAPI('tags', tags);
         renderTags();
     renderHistoricoConsultas();
         renderPacientesLista();
@@ -812,6 +815,7 @@ function marcarContato(paciente) {
     // Remover a tag da lista de tags pendentes
     tags = tags.filter(t => t.id !== tag.id);
     localStorage.setItem('tags', JSON.stringify(tags));
+    saveToAPI('tags', tags);
     
     // Atualizar interface
     renderHistoricoConsultas();

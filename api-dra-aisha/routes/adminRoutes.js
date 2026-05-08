@@ -264,3 +264,20 @@ router.get('/mensagens', async (req, res) => {
         res.json(config?.value || []);
     } catch (error) { res.status(500).json([]); }
 });
+
+// 13. TAGS
+router.post('/tags', async (req, res) => {
+    try {
+        const data = req.body;
+        if (Array.isArray(data)) {
+            await require('../models/Config').findOneAndUpdate({ key: 'tags' }, { key: 'tags', value: data }, { upsert: true });
+        }
+        res.json({ message: 'Salvo' });
+    } catch (error) { res.status(500).json({ message: 'Erro' }); }
+});
+router.get('/tags', async (req, res) => {
+    try {
+        const config = await require('../models/Config').findOne({ key: 'tags' });
+        res.json(config?.value || []);
+    } catch (error) { res.status(500).json([]); }
+});
