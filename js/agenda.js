@@ -2,10 +2,10 @@
 
 const API_BASE = 'https://aishageriatria.onrender.com';
 const API_ENDPOINTS = {
-    disponibilidade: `${API_BASE}/api/disponibilidade`,
-    agendamentos: `${API_BASE}/api/appointments`,
-    pacientes: `${API_BASE}/api/pacientes`,
-    historico: `${API_BASE}/api/historico`
+    disponibilidade: `${API_BASE}/api/admin/disponibilidade`,
+    agendamentos: `${API_BASE}/api/admin/appointments`,
+    pacientes: `${API_BASE}/api/admin/pacientes`,
+    historico: `${API_BASE}/api/admin/historico`
 };
 
 let currentDate = new Date();
