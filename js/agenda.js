@@ -481,14 +481,23 @@ function fecharModalEditar() {
     document.getElementById('modal-editar').classList.remove('active');
 }
 
+function abrirModalConfirm(msg, onConfirm) {
+    document.getElementById('modal-confirm-msg').innerText = msg;
+    document.getElementById('modal-confirm').classList.add('active');
+    document.getElementById('modal-confirm-btn').onclick = () => { onConfirm(); fecharModalConfirm(); };
+}
+function fecharModalConfirm() {
+    document.getElementById('modal-confirm').classList.remove('active');
+}
+
 function excluirDisponibilidade(index) {
-    if (confirm('Deseja excluir esta disponibilidade?')) {
+    abrirModalConfirm('Deseja excluir esta disponibilidade?', () => {
         disponibilidade.splice(index, 1);
         localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
         saveToAPI('disponibilidade', disponibilidade);
         renderAvailabilityTable();
         renderCalendar();
-    }
+    });
 }
 
 document.getElementById('form-editar').addEventListener('submit', function(e) {

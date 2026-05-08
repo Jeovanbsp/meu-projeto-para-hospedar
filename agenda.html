@@ -729,5 +729,19 @@
             });
         });
     </script>
+        <!-- Modal de Confirmacao -->
+        <div class="modal-overlay" id="modal-confirm">
+            <div class="modal-box" style="max-width: 400px;">
+                <div class="modal-header">
+                    <h3>Confirmar</h3>
+                    <button class="modal-close" onclick="fecharModalConfirm()">×</button>
+                </div>
+                <p id="modal-confirm-msg" style="font-size: 1.1rem; color: #555; margin: 20px 0;">Deseja continuar?</p>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModalConfirm()">Cancelar</button>
+                    <button type="button" class="btn-salvar-modal" id="modal-confirm-btn">Confirmar</button>
+                </div>
+            </div>
+        </div>
 </body>
 </html>

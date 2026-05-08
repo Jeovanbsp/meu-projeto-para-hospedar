@@ -404,7 +404,10 @@ function carregarStats() {
     document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadas;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
+    // Contar tags: pendentes (sem dataContato) + confirmadas (com dataContato)
+    const tagsPendentes = tags.filter(t => !t.dataContato).length;
+    const tagsConfirmadas = tags.filter(t => t.dataContato).length;
+    document.getElementById('total-mensagens').textContent = tagsPendentes + ' pend / ' + tagsConfirmadas + ' conf';
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
     // Alerta de mensagens pendentes (tags) - Mostrar organizado por data
@@ -479,7 +482,9 @@ function atualizarStats() {
     document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadasFiltradas.length;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    document.getElementById('total-mensagens').textContent = historico.filter(h => h.tipo === 'mensagem').length;
+    const tagsP = tags.filter(t => !t.dataContato).length;
+    const tagsC = tags.filter(t => t.dataContato).length;
+    document.getElementById('total-mensagens').textContent = tagsP + ' pend / ' + tagsC + ' conf';
     
     // Grafico por mes
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
