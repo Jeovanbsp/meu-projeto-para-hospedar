@@ -3,12 +3,12 @@ const getDataLocal = () => new Date().getFullYear() + "-" + String(new Date().ge
 
 const API_BASE = 'https://aishageriatria.onrender.com';
 const API_ENDPOINTS = {
-    disponibilidade: `${API_BASE}/api/admin/disponibilidade`,
-    agendamentos: `${API_BASE}/api/admin/appointments`,
-    pacientes: `${API_BASE}/api/admin/pacientes`,
-    historico: `${API_BASE}/api/admin/historico`,
-    mensagens: `${API_BASE}/api/admin/mensagens`,
-    tags: `${API_BASE}/api/admin/tags`
+    disponibilidade: `${API_BASE}/api/config/disponibilidade`,
+    agendamentos: `${API_BASE}/api/config/appointments`,
+    pacientes: `${API_BASE}/api/config/pacientes`,
+    historico: `${API_BASE}/api/config/historico`,
+    mensagens: `${API_BASE}/api/config/mensagens`,
+    tags: `${API_BASE}/api/config/tags`
 };
 
 let currentDate = new Date();

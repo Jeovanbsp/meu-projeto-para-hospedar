@@ -61,7 +61,7 @@ const pacienteRoutes = require('./routes/pacienteRoutes');
 const configRoutes = require('./routes/configRoutes');
 
 app.use('/api/admin', adminRoutes);
-app.use('/api/admin', configRoutes); // Rotas pública para dados
+app.use('/api/config', configRoutes); // Rotas pública para dados
 app.use('/api/prontuario', pacienteRoutes);
 
 // ==========================================
