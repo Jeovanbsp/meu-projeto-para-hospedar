@@ -88,6 +88,7 @@ async function init() {
     renderMensagens();
     renderTags();
     renderHistoricoConsultas();
+    const c = document.getElementById('contador-consultas');
     renderHistorico();
     atualizarContador();
     // Contador
@@ -897,7 +898,7 @@ function renderHistorico() {
 }
 
 function excluirDoHistorico(index) {
-    if (confirm("Deseja excluir este registro do histórico?")) {
+    if (true) { /* Usar modal de alerta */
         historico.splice(index, 1);
         localStorage.setItem("historico", JSON.stringify(historico));
         saveToAPI("historico", historico);
