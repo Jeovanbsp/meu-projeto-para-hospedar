@@ -51,6 +51,7 @@ async function saveToAPI(key, data) {
 }
 
 async function init() {
+    console.log('init() chamado - carregando dados...');
     // Try load from API, fallback to localStorage
     const [apiDisp, apiAgend, apiPats, apiHist, apiTags, apiMsgs] = await Promise.all([
         loadFromAPI('disponibilidade'),
