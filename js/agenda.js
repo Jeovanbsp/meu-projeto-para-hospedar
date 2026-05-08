@@ -5,7 +5,8 @@ const API_ENDPOINTS = {
     disponibilidade: `${API_BASE}/api/admin/disponibilidade`,
     agendamentos: `${API_BASE}/api/admin/appointments`,
     pacientes: `${API_BASE}/api/admin/pacientes`,
-    historico: `${API_BASE}/api/admin/historico`
+    historico: `${API_BASE}/api/admin/historico`,
+    mensagens: `${API_BASE}/api/admin/mensagens`
 };
 
 let currentDate = new Date();
@@ -383,9 +384,39 @@ function toggleStatus(index) {
 
 function renderHistoricoConsultas() {
     const container = document.getElementById('historico-list');
+    const graficoContainer = document.getElementById('historico-grafico');
     if (!container) return;
-    container.innerHTML = historico.length === 0 ? '<div class="empty-state">Nenhuma consulta realizada</div>' :
-        historico.map((h, idx) => '<div class="appointment-row realizado"><div class="appointment-info"><div class="appointment-name">' + h.patientName + '</div><div class="appointment-details"><span>' + formatDate(h.date) + '</span><span>' + h.time + '</span></div></div><button class="btn-excluir" onclick="excluirHistorico(' + idx + ')">X</button></div>').join('');
+    
+    const filterMes = document.getElementById('filter-historico-mes')?.value || '';
+    let filtered = [...historico];
+    
+    // Filtrar por mês se selecionado
+    if (filterMes) {
+        filtered = filtered.filter(h => h.data && h.data.substring(5, 7) === filterMes);
+    }
+    
+    // Renderizar mini gráfico de barras por mês
+    if (graficoContainer) {
+        const mesesStats = { '01': 0, '02': 0, '03': 0, '04': 0, '05': 0, '06': 0, '07': 0, '08': 0, '09': 0, '10': 0, '11': 0, '12': 0 };
+        historico.forEach(h => {
+            if (h.data && h.data.substring(5, 7)) {
+                mesesStats[h.data.substring(5, 7)]++;
+            }
+        });
+        const maxVal = Math.max(...Object.values(mesesStats)) || 1;
+        const nomesMeses = ['J', 'F', 'M', 'A', 'Ma', 'Jn', 'Jl', 'A', 'S', 'O', 'N', 'D'];
+        
+        graficoContainer.innerHTML = Object.entries(mesesStats).map(([mes, count], i) => {
+            const height = maxVal > 0 ? (count / maxVal * 60) : 0;
+            const color = count > 0 ? '#2ADCA1' : '#e0e0e0';
+            return '<div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px;"><div style="width: 100%; height: ' + height + 'px; background: ' + color + '; border-radius: 3px 3px 0 0;"></div><span style="font-size: 0.6rem; color: #888;">' + nomesMeses[i] + '</span></div>';
+        }).join('');
+    }
+    
+    filtered.sort((a, b) => b.data?.localeCompare(a.data || '') || 0);
+    
+    container.innerHTML = filtered.length === 0 ? '<div class="empty-state">Nenhuma consulta realizada</div>' :
+        filtered.map((h, idx) => '<div class="appointment-row realizado"><div class="appointment-info"><div class="appointment-name">' + (h.patientName || h.paciente) + '</div><div class="appointment-details"><span>' + formatDate(h.date || h.data) + '</span><span>' + (h.time || '-') + '</span></div></div><button class="btn-excluir" onclick="excluirHistorico(' + idx + ')">X</button></div>').join('');
 }
 
 function excluirHistorico(index) {
@@ -681,6 +712,7 @@ function salvarMensagem() {
     if (!titulo || !texto) return alert('Informe o titulo e a mensagem.');
     mensagens.push({ id: Date.now(), titulo: titulo, texto: texto });
     localStorage.setItem('mensagens', JSON.stringify(mensagens));
+    saveToAPI('mensagens', mensagens);
     document.getElementById('msg-titulo').value = '';
     document.getElementById('msg-texto').value = '';
     renderMensagens();
@@ -691,7 +723,7 @@ function renderMensagens() {
     const container = document.getElementById('mensagens-lista');
     if (!container) return;
     container.innerHTML = mensagens.length === 0 ? '<span style="color: #999;">Nenhuma mensagem salva</span>' :
-        mensagens.map(m => '<div class="block-chip" style="cursor: pointer;" onclick="copiarMensagem(' + m.id + ')" title="Clique para copiar">' + m.titulo + ' <span class="remove" onclick="event.stopPropagation(); editarMensagem(' + m.id + ')">&#9998;</span><span class="remove" onclick="event.stopPropagation(); excluirMensagem(' + m.id + ')">x</span></div>').join('');
+        mensagens.map(m => '<div class="block-chip" style="cursor: pointer; padding: 12px 15px;" onclick="copiarMensagem(' + m.id + ')" title="Clique para copiar">' + m.titulo + '</div><div style="display: flex; gap: 8px; margin-top: 8px;"><button onclick="editarMensagem(' + m.id + ')" style="background: #007bff; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;"><i class="ph ph-pencil"></i> Editar</button><button onclick="excluirMensagem(' + m.id + ')" style="background: #ff6b6b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem;"><i class="ph ph-trash"></i> Excluir</button></div>').join('');
 }
 
 function editarMensagem(id) {
@@ -852,7 +884,18 @@ function renderHistorico() {
         const color = h.color || "#25c095";
         const dataFormatada = h.data ? new Date(h.data).toLocaleDateString("pt-BR") : "-";
         const obs = h.observacao ? "<div style=\"font-size: 0.75rem; color: #666; margin-top: 5px;\">" + h.observacao + "</div>" : "";
-        return "<div style=\"background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid " + color + ";\"><div style=\"font-weight: 600;\">" + h.paciente + "</div><div style=\"font-size: 0.85rem; color: " + color + ";\">" + h.tipo + ": " + h.titulo + "</div><div style=\"font-size: 0.75rem; color: #888; margin-top: 5px;\"><strong>Data:</strong> " + dataFormatada + "</div>" + obs + "</div>";
+        return "<div style=\"background: white; padding: 12px; border-radius: 6px; margin-bottom: 8px; border-left: 3px solid " + color + ";\"><div style=\"font-weight: 600;\">" + h.paciente + "</div><div style=\"font-size: 0.85rem; color: " + color + ";\">" + h.tipo + ": " + h.titulo + "</div><div style=\"font-size: 0.75rem; color: #888; margin-top: 5px;\"><strong>Data:</strong> " + dataFormatada + "</div>" + obs + '<button onclick="excluirDoHistorico(' + i + ')" style="margin-top: 8px; background: #ffebee; color: #c62828; border: 1px solid #c62828; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.7rem;">Excluir</button></div>';
     }).join("");
+}
+
+function excluirDoHistorico(index) {
+    if (confirm("Deseja excluir este registro do histórico?")) {
+        historico.splice(index, 1);
+        localStorage.setItem("historico", JSON.stringify(historico));
+        saveToAPI("historico", historico);
+        renderHistorico();
+        renderHistoricoConsultas();
+        atualizarContador();
+    }
 }
 
