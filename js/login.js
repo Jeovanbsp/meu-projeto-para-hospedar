@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
       
       // ========== PRIMEIRO: TENTAR LOCAL ==========
-      const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-      const secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
+      let secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+      let secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
       if (secretaria) { 
         localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
         localStorage.setItem('userRole', 'secretary'); 
@@ -24,6 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ========== SEGUNDO: TENTAR API ==========
+      let loginOk = false;
+      let userRole = '';
+      let userName = '';
+      let token = '';
+      
       try {
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { 
           method: 'POST', 
@@ -33,32 +38,39 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (res.ok) {
           const data = await res.json();
-          localStorage.setItem('authToken', data.token);
-          localStorage.setItem('userRole', data.user.role);
-          localStorage.setItem('userName', data.user.name);
-          
-          // Redirecionar conforme role
-          if (data.user.role === 'admin') { 
-            window.location.href = 'admin-dashboard.html'; 
-            return;
-          } else if (data.user.role === 'secretary') { 
-            // Buscar ou adicionar dados da secretary
-            let sec = secretarias.find(s => s.email.toLowerCase() === email);
-            if (!sec) {
-              sec = { id: Date.now(), nome: data.user.name, email, senha: password, role: 'secretary' };
-              secretarias.push(sec);
-              localStorage.setItem('secretarias', JSON.stringify(secretarias));
-            }
-            localStorage.setItem('usuarioLogado', JSON.stringify(sec));
-            window.location.href = 'agenda.html'; 
-            return;
-          } else { 
-            window.location.href = 'perfil-paciente.html'; 
-            return;
-          }
+          token = data.token;
+          userRole = data.user.role;
+          userName = data.user.name;
+          loginOk = true;
         }
       } catch (err) { 
         // API falhou
+      }
+      
+      // ========== SE LOGIN API OK ==========
+      if (loginOk) {
+        localStorage.setItem('authToken', token);
+        localStorage.setItem('userRole', userRole);
+        localStorage.setItem('userName', userName);
+        
+        if (userRole === 'admin') { 
+          window.location.href = 'admin-dashboard.html'; 
+          return;
+        } else if (userRole === 'secretary') { 
+          // Adicionar na lista local se não existir
+          let sec = secretarias.find(s => s.email.toLowerCase() === email);
+          if (!sec) {
+            sec = { id: Date.now(), nome: userName, email, senha: password, role: 'secretary' };
+            secretarias.push(sec);
+            localStorage.setItem('secretarias', JSON.stringify(secretarias));
+          }
+          localStorage.setItem('usuarioLogado', JSON.stringify(sec));
+          window.location.href = 'agenda.html'; 
+          return;
+        } else { 
+          window.location.href = 'perfil-paciente.html'; 
+          return;
+        }
       }
       
       // ========== SE NADA FUNCIONOU ==========
