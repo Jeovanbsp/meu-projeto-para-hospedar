@@ -276,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     window.excluirSecretaria = (id, nome) => {
+        console.log('Excluir ID:', id, 'tipo:', typeof id);
         document.getElementById('alerta-titulo').textContent = 'Excluir Secretária';
         document.getElementById('alerta-mensagem').textContent = `Tem certeza que deseja excluir "${nome}"?`;
         document.getElementById('alerta-icone').className = 'ph-fill ph-warning';
@@ -285,7 +286,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('alerta-botao');
         btn.onclick = function() {
             const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-            const filtered = secretarias.filter(s => s.id !== id);
+            console.log('Antes:', secretarias);
+            const filtered = secretarias.filter(s => String(s.id) !== String(id));
+            console.log('Depois:', filtered);
             localStorage.setItem('secretarias', JSON.stringify(filtered));
             document.getElementById('modal-alerta').style.display = 'none';
             document.getElementById('alerta-titulo').textContent = 'Sucesso';
