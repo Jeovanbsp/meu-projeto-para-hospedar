@@ -209,11 +209,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Salvar na API externa (igual paciente)
         try {
             const payload = { nome, email, password: senha, role: 'secretary' };
+            console.log('Enviando para API:', payload);
             const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify(payload) 
             });
+            
+            console.log('Resposta Register:', response.status);
             
             if (response.ok) {
                 // Salvar no localStorage também (referência local)
@@ -224,9 +227,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchPacientes();
             } else {
                 const err = await response.json();
+                console.error('Erro register:', err);
                 alert('Erro: ' + (err.message || 'Não foi possível cadastrar'));
             }
         } catch (err) {
+            console.error('Erro conexão:', err);
             alert('Erro de conexão. Tente novamente.');
         }
     });
