@@ -93,6 +93,10 @@ app.post('/api/auth/register', async (req, res) => {
     try {
         const { nome, email, password, role, telefone } = req.body;
         
+        if (!nome || !email || !password) {
+            return res.status(400).json({ message: 'Nome, email e senha são obrigatórios.' });
+        }
+        
         const userExists = await User.findOne({ email: email.toLowerCase().trim() });
         if (userExists) {
             return res.status(400).json({ message: 'Este e-mail já está em uso.' });
@@ -101,18 +105,22 @@ app.post('/api/auth/register', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        // Validar role (aceitar qualquer role válida ou usar padrão)
+        const validRoles = ['paciente', 'admin', 'secretary'];
+        const userRole = validRoles.includes(role) ? role : 'paciente';
+
         const newUser = new User({
             nome,
             email: email.toLowerCase().trim(),
             password: hashedPassword, 
             telefone: telefone || '', 
-            role: role || 'paciente'
+            role: userRole
         });
 
         await newUser.save();
         res.status(201).json({ message: 'Usuário criado com sucesso!' });
     } catch (err) {
-        console.error(err);
+        console.error('Erro no register:', err);
         res.status(500).json({ message: 'Erro ao cadastrar.' });
     }
 });
