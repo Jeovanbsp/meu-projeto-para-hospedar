@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Also load and render secretarias
         const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-        console.log('Carregando secretarias:', secretarias);
         
         listaBody.innerHTML = ''; 
         if (totalSpan) totalSpan.innerText = pacientes.length + secretarias.length;
@@ -210,30 +209,24 @@ document.addEventListener('DOMContentLoaded', () => {
         // Salvar na API externa (igual paciente)
         try {
             const payload = { nome, email, password: senha, role: 'secretary' };
-            console.log('Enviando para API:', payload);
             const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify(payload) 
             });
             
-            console.log('Resposta Register:', response.status);
-            
             if (response.ok) {
                 // Salvar no localStorage também (referência local)
                 secretarias.push({ id: Date.now(), nome, email, senha, role: 'secretary', createdAt: new Date().toISOString() });
                 localStorage.setItem('secretarias', JSON.stringify(secretarias));
-                console.log('Salvo no localStorage:', secretarias);
                 alert('Secretária cadastrada com sucesso!');
                 fecharModalSecretaria();
                 fetchPacientes();
             } else {
                 const err = await response.json();
-                console.error('Erro register:', err);
                 alert('Erro: ' + (err.message || 'Não foi possível cadastrar'));
             }
         } catch (err) {
-            console.error('Erro conexão:', err);
             alert('Erro de conexão. Tente novamente.');
         }
     });
@@ -276,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     window.excluirSecretaria = (id, nome) => {
-        console.log('Excluir ID:', id, 'tipo:', typeof id);
         document.getElementById('alerta-titulo').textContent = 'Excluir Secretária';
         document.getElementById('alerta-mensagem').textContent = `Tem certeza que deseja excluir "${nome}"?`;
         document.getElementById('alerta-icone').className = 'ph-fill ph-warning';
@@ -286,9 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('alerta-botao');
         btn.onclick = function() {
             const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-            console.log('Antes:', secretarias);
             const filtered = secretarias.filter(s => String(s.id) !== String(id));
-            console.log('Depois:', filtered);
             localStorage.setItem('secretarias', JSON.stringify(filtered));
             document.getElementById('modal-alerta').style.display = 'none';
             document.getElementById('alerta-titulo').textContent = 'Sucesso';

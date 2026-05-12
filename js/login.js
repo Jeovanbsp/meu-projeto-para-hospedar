@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       } catch (err) { 
-        console.error('Erro API:', err); 
+        // API falhou, tentar local
       }
       
       // ========== SE API FALHOU, TENTAR LOCAL ==========
