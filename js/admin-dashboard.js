@@ -199,12 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!email.includes('@') || !email.includes('.')) { alert('Email inválido!'); return; }
         const senha = document.getElementById('secretaria-senha').value;
         
-        // Verificar localStorage
-        const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-        if (secretarias.find(s => s.email === email)) {
-            alert('Email já cadastrado!');
-            return;
-        }
+        // Remover verificação local - deixar API decidir
+        let secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
         
         // Salvar na API externa (igual paciente)
         try {
@@ -224,7 +220,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchPacientes();
             } else {
                 const err = await response.json();
-                alert('Erro: ' + (err.message || 'Não foi possível cadastrar'));
+                if (err.message === 'Este e-mail já está em uso.') {
+                    // Se já existe na API, adicionar no localStorage também
+                    if (!secretarias.find(s => s.email === email)) {
+                        secretarias.push({ id: Date.now(), nome, email, senha, role: 'secretary', createdAt: new Date().toISOString() });
+                        localStorage.setItem('secretarias', JSON.stringify(secretarias));
+                        alert('Secretária já existe na base de dados. Adicionada à lista!');
+                        fecharModalSecretaria();
+                        fetchPacientes();
+                    } else {
+                        alert('Email já cadastrado!');
+                    }
+                } else {
+                    alert('Erro: ' + (err.message || 'Não foi possível cadastrar'));
+                }
             }
         } catch (err) {
             alert('Erro de conexão. Tente novamente.');
