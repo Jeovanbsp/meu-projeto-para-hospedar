@@ -431,11 +431,10 @@ function carregarStats() {
             const dataTag = tag.dataContato ? formatDate(tag.dataContato) : 'Sem data';
             const jaPassou = tag.dataContato && new Date(tag.dataContato) < new Date();
             const corData = jaPassou ? '#ff6b6b' : '#2ADCA1';
-            const icone = i === 0 ? '<i class="ph ph-bell" style="color:#f39c12;font-size:1.2rem;"></i>' : '<i class="ph ph-pin" style="color:#f39c12;font-size:1rem;"></i>';
-            listaHtml += '<div style="display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #eee;">';
-            listaHtml += '<span style="font-size:1.2rem;">' + icone + '</span>';
-            listaHtml += '<div><span style="font-weight:700; color:' + corData + ';">DATA: ' + dataTag + '</span><br>';
-            listaHtml += '<span style="color:#555;">' + tag.paciente + ' - ' + tag.titulo + '</span></div></div>';
+            const marcador = i === 0 ? '•' : '◦';
+            listaHtml += '<div style="padding:8px 0; border-bottom:1px solid #eee;">';
+            listaHtml += '<div style="font-weight:700; color:' + corData + '; font-size:0.9rem;">DATA: ' + dataTag + '</div>';
+            listaHtml += '<div style="color:#555; margin-top:3px;">' + tag.paciente + ' - ' + tag.titulo + '</div></div>';
         });
         
         alerta.style.display = 'block';

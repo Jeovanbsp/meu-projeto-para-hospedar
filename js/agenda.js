@@ -52,6 +52,22 @@ async function saveToAPI(key, data) {
 
 async function init() {
     console.log('init() chamado - carregando dados...');
+    
+    // Verificar parametros da URL para ativar aba especifica
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+        // Ativar a aba especificada na URL
+        setTimeout(() => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            const tabBtn = document.querySelector('[data-tab="' + tabParam + '"]');
+            const tabContent = document.getElementById('tab-' + tabParam);
+            if (tabBtn) tabBtn.classList.add('active');
+            if (tabContent) tabContent.classList.add('active');
+        }, 100);
+    }
+    
     // Try load from API, fallback to localStorage
     const [apiDisp, apiAgend, apiPats, apiHist, apiTags, apiMsgs] = await Promise.all([
         loadFromAPI('disponibilidade'),
