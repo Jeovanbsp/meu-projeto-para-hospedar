@@ -3,16 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (formLogin) {
     formLogin.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
       const password = document.getElementById('senha').value;
       const msgErro = document.getElementById('msg-erro');
       const btnEntrar = e.submitter;
       if (btnEntrar) { btnEntrar.disabled = true; btnEntrar.innerHTML = '<i class="ph ph-circle-notch ph-spin"></i> Entrando...'; }
       if (msgErro) msgErro.style.display = 'none';
       
-      // Verificar Secretária local - aceita email E senha
+      // Verificar Secretária local - aceitar email E senha (case insensitive)
       const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-      const secretaria = secretarias.find(s => s.email === email && s.senha === password);
+      const secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
       if (secretaria) { 
         localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
         localStorage.setItem('userRole', 'secretary'); 
@@ -21,13 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return; 
       }
 
-      // API externa - so para admin/paciente
+      // Verificar se é admin local (sem API)
+      const adminEmail = localStorage.getItem('adminEmail') || 'admin@aisha.com';
+      const adminSenha = localStorage.getItem('adminSenha') || 'aisha123';
+      if (email === adminEmail && password === adminSenha) {
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('userName', 'Admin Dra. Aisha');
+        window.location.href = 'admin-dashboard.html';
+        return;
+      }
+
+      // API externa - so para admin/paciente que veio da API
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
       try {
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
         
         if (!res.ok) {
-          // Se a API der erro,，可能是 credenciais locais ainda - deixar passar
           if (msgErro) { msgErro.innerText = "E-mail ou senha incorretos."; msgErro.style.display = 'block'; }
           return;
         }
