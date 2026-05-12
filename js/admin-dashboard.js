@@ -485,6 +485,8 @@ function atualizarStats() {
     document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadasFiltradas.length;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
+    // Buscar tags do localStorage
+    const tags = JSON.parse(localStorage.getItem('tags') || '[]');
     const tagsP = tags.filter(t => !t.dataContato).length;
     const tagsC = tags.filter(t => t.dataContato).length;
     const historicoContatosFiltrado = historico.filter(h => h.tipo === 'contato').length;
@@ -545,9 +547,16 @@ function atualizarStats() {
 
 // Funcao para atualizar dados - busca da API e atualiza stats
 async function atualizarDados() {
-    const botao = document.querySelector('button[onclick="atualizarDados()"]');
+    const botoes = document.querySelectorAll('button');
+    let botao = null;
+    for (let btn of botoes) {
+        if (btn.getAttribute('onclick')?.includes('atualizarDados')) {
+            botao = btn;
+            break;
+        }
+    }
     if (botao) {
-        botao.innerHTML = '<i class="ph ph-arrows-clockwise ph-spin"></i> Atualizando...';
+        botao.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Atualizando...';
         botao.disabled = true;
     }
     
