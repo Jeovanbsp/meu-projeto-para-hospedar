@@ -71,6 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Also load and render secretarias
         const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+        console.log('Carregando secretarias:', secretarias);
         
         listaBody.innerHTML = ''; 
         if (totalSpan) totalSpan.innerText = pacientes.length + secretarias.length;
@@ -222,6 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Salvar no localStorage também (referência local)
                 secretarias.push({ id: Date.now(), nome, email, senha, role: 'secretary', createdAt: new Date().toISOString() });
                 localStorage.setItem('secretarias', JSON.stringify(secretarias));
+                console.log('Salvo no localStorage:', secretarias);
                 alert('Secretária cadastrada com sucesso!');
                 fecharModalSecretaria();
                 fetchPacientes();
