@@ -12,9 +12,15 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
       
-      // ========== PRIMEIRO: TENTAR LOCAL (email + senha) ==========
+      // ========== PRIMEIRO: TENTAR LOCAL (email + senha exata) ==========
       let secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-      let secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
+      let secretaria = secretarias.find(s => {
+        const emailLocal = (s.email || '').toLowerCase().trim();
+        const senhaLocal = String(s.senha || '').trim();
+        const senhaInserida = String(password).trim();
+        return emailLocal === email && senhaLocal === senhaInserida;
+      });
+      
       if (secretaria) { 
         localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
         localStorage.setItem('userRole', 'secretary'); 
@@ -74,15 +80,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       
-      // ========== SE API FALHOU mas LOCAL TEM O EMAIL (qualquer senha) ==========
-      let secLocal = secretarias.find(s => s.email.toLowerCase() === email);
+      // ========== SE API FALHOU mas LOCAL TEM O EMAIL ==========
+      let secLocal = secretarias.find(s => (s.email || '').toLowerCase().trim() === email);
       if (secLocal) {
-        // Permite login apenas pelo email se existir local
-        localStorage.setItem('usuarioLogado', JSON.stringify(secLocal));
-        localStorage.setItem('userRole', 'secretary'); 
-        localStorage.setItem('userName', secLocal.nome);
-        window.location.href = 'agenda.html'; 
-        return; 
+        // Se a API falhou, EXIGIR senha correta (segurança)
+        const senhaLocal = String(secLocal.senha || '').trim();
+        const senhaInserida = String(password).trim();
+        if (senhaLocal === senhaInserida) {
+          localStorage.setItem('usuarioLogado', JSON.stringify(secLocal));
+          localStorage.setItem('userRole', 'secretary'); 
+          localStorage.setItem('userName', secLocal.nome);
+          window.location.href = 'agenda.html'; 
+          return;
+        }
       }
       
       // ========== SE NADA FUNCIONOU ==========
