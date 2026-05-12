@@ -893,15 +893,19 @@ function excluirHistorico(index) {
 
 
 // Função para renderizar Histórico de Contatos (na aba Tags)
+// APENAS mostra tags que foram confirmadas pelo botão "Confirmar" em Tags Criadas
 function renderHistorico() {
-    // Filtrar apenas contatos (tags confirmadas)
     const container = document.getElementById("historico-lista");
     if (!container) return;
-    if (historico.length === 0) {
-        container.innerHTML = "<div class=\"empty-state\">Nenhum contato registrado</div>";
+    
+    // Filtrar APENAS tipo 'contato' - que são as tags confirmadas
+    let filtered = historico.filter(h => h.tipo === 'contato');
+    
+    if (filtered.length === 0) {
+        container.innerHTML = "<div class=\"empty-state\">Nenhum contato registrado.<br>Aconfirmar uma tag em Tags Criadas para adicionar aqui.</div>";
         return;
     }
-    let filtered = historico.filter(h => h.tipo === 'contato' || h.tipo === 'consulta');
+    
     filtered.sort((a, b) => b.data.localeCompare(a.data));
     
     container.innerHTML = filtered.map((h, i) => {

@@ -140,8 +140,12 @@
                 <div style="color: #666; font-size: 0.9rem;">Horarios Disponiveis</div>
             </div>
             <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
-                <div style="font-size: 2.5rem; font-weight: 700; color: #25c095;" id="total-mensagens">0</div>
-                <div style="color: #666; font-size: 0.9rem;">Mensagens para Enviar</div>
+                <div style="font-size: 2.5rem; font-weight: 700; color: #f39c12;" id="total-mensagens-pendentes">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Mensagens Pendentes</div>
+            </div>
+            <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 2.5rem; font-weight: 700; color: #2ADCA1;" id="total-mensagens-enviadas">0</div>
+                <div style="color: #666; font-size: 0.9rem;">Mensagens Enviadas</div>
             </div>
             <div style="background: white; padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
                 <div style="font-size: 2.5rem; font-weight: 700; color: #f39c12;" id="total-pacientes">0</div>
@@ -170,7 +174,7 @@
                     <option value="11">Novembro</option>
                     <option value="12">Dezembro</option>
                 </select>
-                <button onclick="limparFiltros()" style="padding: 10px 20px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">Limpar</button>
+                <button onclick="limparFiltros()" style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;"><i class="ph ph-x-circle"></i> Limpar Filtros</button>
             </div>
         </div>
 
@@ -194,7 +198,7 @@
         <!-- Botao Gerenciar Dados (Popup) -->
         <div style="margin-top: 25px; text-align: center; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
             <button onclick="abrirGerenciar()" style="background: #fff0f0; color: #ff6b6b; border: 2px solid #ff6b6b; padding: 12px 30px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem;"><i class="ph ph-gear"></i> Gerenciar Dados</button>
-            <button onclick="carregarStats(); atualizarStats()" style="background: #2ADCA1; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-left: 10px;"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
+            <button onclick="atualizarDados()" style="background: #2ADCA1; color: white; border: none; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 1rem; margin-left: 10px;"><i class="ph ph-arrows-clockwise"></i> Atualizar</button>
         </div>
 
         <!-- Divisorio Visual -->

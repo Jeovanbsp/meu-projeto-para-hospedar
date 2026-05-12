@@ -404,10 +404,13 @@ function carregarStats() {
     document.getElementById('total-agendamentos').textContent = agendamentos.filter(a => a.status === 'pendente').length;
     document.getElementById('total-consultas').textContent = consultasRealizadas;
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
-    // Contar tags: pendentes (sem dataContato) + confirmadas (com dataContato)
+    // Contar tags: pendentes (sem dataContato) = Mensagens Pendentes
     const tagsPendentes = tags.filter(t => !t.dataContato).length;
     const tagsConfirmadas = tags.filter(t => t.dataContato).length;
-    document.getElementById('total-mensagens').textContent = tagsPendentes + ' pend / ' + tagsConfirmadas + ' conf';
+    // Contar historico tipo 'contato' = Mensagens Enviadas (que vem do Historico de Contatos)
+    const historicoContatos = historico.filter(h => h.tipo === 'contato').length;
+    document.getElementById('total-mensagens-pendentes').textContent = tagsPendentes;
+    document.getElementById('total-mensagens-enviadas').textContent = historicoContatos;
     document.getElementById('total-pacientes').textContent = pacientes.length;
     
     // Alerta de mensagens pendentes (tags) - Mostrar organizado por data
@@ -484,20 +487,25 @@ function atualizarStats() {
     document.getElementById('total-disponiveis').textContent = disponibilidade.length;
     const tagsP = tags.filter(t => !t.dataContato).length;
     const tagsC = tags.filter(t => t.dataContato).length;
-    document.getElementById('total-mensagens').textContent = tagsP + ' pend / ' + tagsC + ' conf';
+    const historicoContatosFiltrado = historico.filter(h => h.tipo === 'contato').length;
+    document.getElementById('total-mensagens-pendentes').textContent = tagsP;
+    document.getElementById('total-mensagens-enviadas').textContent = historicoContatosFiltrado;
     
-    // Grafico por mes
+    // Grafico por mes - usando dados filtrados
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Maio', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
     const dadosMes = new Array(12).fill(0);
+    // Usar os agendamentos ja filtrados pelo filtro de ano/mes
     agendamentos.forEach(a => {
         if (a.date) dadosMes[parseInt(a.date.substring(5, 7)) - 1]++;
     });
     
     if (chartMensal) chartMensal.destroy();
-    // Contagem de historico com status realizado
+    // Contagem de historico com status realizado ( filtrado por ano/mes)
     const historicoCount = new Array(12).fill(0);
     historico.forEach(h => {
-        if (h.realizadoEm) historicoCount[parseInt(h.realizadoEm.substring(5, 7)) - 1]++;
+        if (h.realizadoEm && (!ano || h.realizadoEm.startsWith(ano)) && (!mes || h.realizadoEm.substring(5,7).startsWith(mes))) {
+            historicoCount[parseInt(h.realizadoEm.substring(5, 7)) - 1]++;
+        }
     });
     chartMensal = new Chart(document.getElementById('graficoMensal'), {
         type: 'bar',
@@ -511,15 +519,14 @@ function atualizarStats() {
         options: { responsive: true, maintainAspectRatio: false }
     });
     
-    // Grafico por local - apenas consultas confirmadas (historico)
+    // Grafico por local - usando dados filtrados de agendamentos
     const locais = { 'Presencial': 0, 'Online': 0, 'Domiciliar': 0 };
-    historico.forEach(h => {
-        if (h.tipo === 'consulta' || h.tipo === 'contato') {
-            const local = h.location || h.titulo || '';
-            if (local.includes('Online')) locais['Online']++;
-            else if (local.includes('Domiciliar')) locais['Domiciliar']++;
-            else if (!local.includes('contato')) locais['Presencial']++; // Default: presencial
-        }
+    // Usar agendamentos para contar por local
+    agendamentos.forEach(a => {
+        const local = a.location || '';
+        if (local.includes('Online')) locais['Online']++;
+        else if (local.includes('Domiciliar')) locais['Domiciliar']++;
+        else locais['Presencial']++; // Default: presencial
     });
     
     if (chartLocal) chartLocal.destroy();
@@ -534,6 +541,59 @@ function atualizarStats() {
         },
         options: { responsive: true, maintainAspectRatio: false }
     });
+}
+
+// Funcao para atualizar dados - busca da API e atualiza stats
+async function atualizarDados() {
+    const botao = document.querySelector('button[onclick="atualizarDados()"]');
+    if (botao) {
+        botao.innerHTML = '<i class="ph ph-arrows-clockwise ph-spin"></i> Atualizando...';
+        botao.disabled = true;
+    }
+    
+    const token = localStorage.getItem('authToken');
+    const API_ADMIN_BASE = 'https://aishageriatria.onrender.com';
+    
+    try {
+        // Buscar dados da API
+        const [agendamentosRes, historicoRes, disponibilidadeRes, tagsRes] = await Promise.all([
+            fetch(`${API_ADMIN_BASE}/api/config/agendamentos`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_ADMIN_BASE}/api/config/historico`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_ADMIN_BASE}/api/config/disponibilidade`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetch(`${API_ADMIN_BASE}/api/config/tags`, { headers: { 'Authorization': `Bearer ${token}` } })
+        ]);
+        
+        if (agendamentosRes.ok) {
+            const agendamentos = await agendamentosRes.json();
+            localStorage.setItem('agendamentos', JSON.stringify(agendamentos));
+        }
+        if (historicoRes.ok) {
+            const historico = await historicoRes.json();
+            localStorage.setItem('historico', JSON.stringify(historico));
+        }
+        if (disponibilidadeRes.ok) {
+            const disponibilidade = await disponibilidadeRes.json();
+            localStorage.setItem('disponibilidade', JSON.stringify(disponibilidade));
+        }
+        if (tagsRes.ok) {
+            const tags = await tagsRes.json();
+            localStorage.setItem('tags', JSON.stringify(tags));
+        }
+        
+        // Atualizar stats
+        carregarStats();
+        atualizarStats();
+    } catch (error) {
+        console.error('Erro ao atualizar:', error);
+        // Se der erro, tenta carregar do localStorage
+        carregarStats();
+        atualizarStats();
+    }
+    
+    if (botao) {
+        botao.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Atualizar';
+        botao.disabled = false;
+    }
 }
 
 function limparFiltros() {
