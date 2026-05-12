@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.abrirModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'flex'; };
     window.fecharModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'none'; document.getElementById('form-cadastro-secretaria').reset(); };
     
-    document.getElementById('form-cadastro-secretaria').addEventListener('submit', async (e) => {
+    document.getElementById('form-cadastro-secretaria').addEventListener('submit', (e) => {
         e.preventDefault();
         const nome = document.getElementById('secretaria-nome').value;
         const email = document.getElementById('secretaria-email').value;
@@ -206,29 +206,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        // Criar na API externa igual paciente
-        try {
-            const payload = { nome, email, password: senha, role: 'secretary' };
-            const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify(payload) 
-            });
-            
-            if (response.ok) {
-                // Salvar no localStorage também
-                secretarias.push({ id: Date.now(), nome, email, senha, createdAt: new Date().toISOString() });
-                localStorage.setItem('secretarias', JSON.stringify(secretarias));
-                alert('Secretária cadastrada com sucesso!');
-                fecharModalSecretaria();
-                fetchPacientes(); // Refresh list
-            } else {
-                const error = await response.json();
-                alert('Erro: ' + (error.message || 'Não foi possível cadastrar'));
-            }
-        } catch (err) {
-            alert('Erro de conexão. Tente novamente.');
-        }
+        // Salvar apenas no localStorage (modo local, sem API)
+        secretarias.push({ id: Date.now(), nome, email, senha, role: 'secretary', createdAt: new Date().toISOString() });
+        localStorage.setItem('secretarias', JSON.stringify(secretarias));
+        
+        alert('Secretária cadastrada com sucesso!');
+        fecharModalSecretaria();
+        fetchPacientes(); // Refresh list
     });
     
     // Funções para editar e excluir secretária
