@@ -31,28 +31,34 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         const payload = { email, password };
-        console.log('Login payload:', payload);
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' }, 
           body: JSON.stringify({ email, password }) 
         });
         
-        console.log('Login API response:', res.status);
-        
         if (res.ok) {
           const data = await res.json();
-          console.log('Login data:', data);
           token = data.token;
           userRole = data.user.role;
           userName = data.user.name;
           loginOk = true;
-        } else {
-          const err = await res.json();
-          console.log('Login error:', err);
         }
       } catch (err) { 
-        console.log('Login exception:', err);
+        // API falhou
+      }
+      
+      // ========== SE API FALHOU mas LOCAL TEM, LOGAR ASSIM MESMO ==========
+      if (!loginOk && secretarias.length > 0) {
+        let sec = secretarias.find(s => s.email.toLowerCase() === email);
+        if (sec) {
+          // Login local funciona mesmo se API falhar
+          localStorage.setItem('usuarioLogado', JSON.stringify(sec));
+          localStorage.setItem('userRole', 'secretary'); 
+          localStorage.setItem('userName', sec.nome);
+          window.location.href = 'agenda.html'; 
+          return;
+        }
       }
       
       // ========== SE LOGIN API OK ==========
