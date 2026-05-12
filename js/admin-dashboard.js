@@ -192,25 +192,43 @@ document.addEventListener('DOMContentLoaded', () => {
     window.abrirModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'flex'; };
     window.fecharModalSecretaria = () => { document.getElementById('modal-secretaria').style.display = 'none'; document.getElementById('form-cadastro-secretaria').reset(); };
     
-    document.getElementById('form-cadastro-secretaria').addEventListener('submit', (e) => {
+    document.getElementById('form-cadastro-secretaria').addEventListener('submit', async (e) => {
         e.preventDefault();
         const nome = document.getElementById('secretaria-nome').value;
         const email = document.getElementById('secretaria-email').value;
         if (!email.includes('@') || !email.includes('.')) { alert('Email inválido!'); return; }
         const senha = document.getElementById('secretaria-senha').value;
         
-        // Salvar no localStorage
+        // Verificar se já existe lokalmente
         const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
         if (secretarias.find(s => s.email === email)) {
             alert('Email já cadastrado!');
             return;
         }
-        secretarias.push({ id: Date.now(), nome, email, senha, createdAt: new Date().toISOString() });
-        localStorage.setItem('secretarias', JSON.stringify(secretarias));
         
-        alert('Secretária cadastrada com sucesso!');
-        fecharModalSecretaria();
-        fetchPacientes(); // Refresh list
+        // Criar na API externa igual paciente
+        try {
+            const payload = { nome, email, password: senha, role: 'secretary' };
+            const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload) 
+            });
+            
+            if (response.ok) {
+                // Salvar no localStorage também
+                secretarias.push({ id: Date.now(), nome, email, senha, createdAt: new Date().toISOString() });
+                localStorage.setItem('secretarias', JSON.stringify(secretarias));
+                alert('Secretária cadastrada com sucesso!');
+                fecharModalSecretaria();
+                fetchPacientes(); // Refresh list
+            } else {
+                const error = await response.json();
+                alert('Erro: ' + (error.message || 'Não foi possível cadastrar'));
+            }
+        } catch (err) {
+            alert('Erro de conexão. Tente novamente.');
+        }
     });
     
     // Funções para editar e excluir secretária
