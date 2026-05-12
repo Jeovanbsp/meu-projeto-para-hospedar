@@ -12,7 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
       
-      // ========== TENTAR LOGIN API DIRETO ==========
+      // ========== PRIMEIRO: TENTAR LOCAL ==========
+      const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+      const secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
+      if (secretaria) { 
+        localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
+        localStorage.setItem('userRole', 'secretary'); 
+        localStorage.setItem('userName', secretaria.nome);
+        window.location.href = 'agenda.html'; 
+        return; 
+      }
+
+      // ========== SEGUNDO: TENTAR API ==========
       try {
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { 
           method: 'POST', 
@@ -31,9 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'admin-dashboard.html'; 
             return;
           } else if (data.user.role === 'secretary') { 
-            // Buscar dados da secretary
-            const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-            let sec = secretarias.find(s => s.email === email);
+            // Buscar ou adicionar dados da secretary
+            let sec = secretarias.find(s => s.email.toLowerCase() === email);
             if (!sec) {
               sec = { id: Date.now(), nome: data.user.name, email, senha: password, role: 'secretary' };
               secretarias.push(sec);
@@ -48,20 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       } catch (err) { 
-        // API falhou, tentar local
+        // API falhou
       }
       
-      // ========== SE API FALHOU, TENTAR LOCAL ==========
-      const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
-      const secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
-      if (secretaria) { 
-        localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
-        localStorage.setItem('userRole', 'secretary'); 
-        localStorage.setItem('userName', secretaria.nome);
-        window.location.href = 'agenda.html'; 
-        return; 
-      }
-
       // ========== SE NADA FUNCIONOU ==========
       if (msgErro) { 
         msgErro.innerText = "E-mail ou senha incorretos."; 
