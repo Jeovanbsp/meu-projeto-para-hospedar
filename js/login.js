@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       const API_ADMIN_BASE = window.location.hostname === 'localhost' ? 'http://localhost:3001' : 'https://aishageriatria.onrender.com';
       
-      // ========== PRIMEIRO: TENTAR LOCAL ==========
+      // ========== PRIMEIRO: TENTAR LOCAL (email + senha) ==========
       let secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
       let secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
       if (secretaria) { 
@@ -48,19 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // API falhou
       }
       
-      // ========== SE API FALHOU mas LOCAL TEM, LOGAR ASSIM MESMO ==========
-      if (!loginOk && secretarias.length > 0) {
-        let sec = secretarias.find(s => s.email.toLowerCase() === email);
-        if (sec) {
-          // Login local funciona mesmo se API falhar
-          localStorage.setItem('usuarioLogado', JSON.stringify(sec));
-          localStorage.setItem('userRole', 'secretary'); 
-          localStorage.setItem('userName', sec.nome);
-          window.location.href = 'agenda.html'; 
-          return;
-        }
-      }
-      
       // ========== SE LOGIN API OK ==========
       if (loginOk) {
         localStorage.setItem('authToken', token);
@@ -85,6 +72,17 @@ document.addEventListener('DOMContentLoaded', () => {
           window.location.href = 'perfil-paciente.html'; 
           return;
         }
+      }
+      
+      // ========== SE API FALHOU mas LOCAL TEM O EMAIL (qualquer senha) ==========
+      let secLocal = secretarias.find(s => s.email.toLowerCase() === email);
+      if (secLocal) {
+        // Permite login apenas pelo email se existir local
+        localStorage.setItem('usuarioLogado', JSON.stringify(secLocal));
+        localStorage.setItem('userRole', 'secretary'); 
+        localStorage.setItem('userName', secLocal.nome);
+        window.location.href = 'agenda.html'; 
+        return; 
       }
       
       // ========== SE NADA FUNCIONOU ==========
