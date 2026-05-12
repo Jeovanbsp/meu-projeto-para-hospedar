@@ -36,15 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
           body: JSON.stringify({ email, password }) 
         });
         
+        console.log('Login API response:', res.status);
+        
         if (res.ok) {
           const data = await res.json();
+          console.log('Login data:', data);
           token = data.token;
           userRole = data.user.role;
           userName = data.user.name;
           loginOk = true;
+        } else {
+          const err = await res.json();
+          console.log('Login error:', err);
         }
       } catch (err) { 
-        // API falhou
+        console.log('Login exception:', err);
       }
       
       // ========== SE LOGIN API OK ==========
