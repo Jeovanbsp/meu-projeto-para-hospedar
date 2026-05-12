@@ -22,8 +22,8 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['paciente', 'admin'], // Só pode ser um desses dois
-    default: 'paciente', // O padrão é sempre 'paciente'
+    enum: ['paciente', 'admin', 'secretary'],
+    default: 'paciente',
   }
 }, {
   timestamps: true // Salva data de criação e atualização (bom para controle)
