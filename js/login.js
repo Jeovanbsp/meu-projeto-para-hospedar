@@ -30,6 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
       let token = '';
       
       try {
+        const payload = { email, password };
+        console.log('Login payload:', payload);
         const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' }, 
