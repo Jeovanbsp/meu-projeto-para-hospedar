@@ -12,8 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Verificar Secretária local - aceitar email E senha (case insensitive)
       const secretarias = JSON.parse(localStorage.getItem('secretarias') || '[]');
+      console.log('Secretarias no localStorage:', secretarias);
       const secretaria = secretarias.find(s => (s.email || '').toLowerCase().trim() === email && s.senha === password);
       if (secretaria) { 
+        console.log('Secretaria encontrada:', secretaria);
         localStorage.setItem('usuarioLogado', JSON.stringify(secretaria));
         localStorage.setItem('userRole', 'secretary'); 
         localStorage.setItem('userName', secretaria.nome);
