@@ -1343,3 +1343,29 @@ footer .copyright {
     display: inline-block;
 }
 
+
+
+/* Serviço Largo */
+.servico-delicado.largo {
+    flex: 1 1 100%;
+    max-width: 100%;
+}
+
+/* Seção Em Breve */
+.servicos-em-breve {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.servicos-em-breve .servico-delicado {
+    background: #f0f0f0;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    position: relative;
+}
+
