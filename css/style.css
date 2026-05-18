@@ -1384,6 +1384,8 @@ footer .copyright {
     display: block;
     text-align: center;
     text-decoration: none;
+    border-radius: 15px;
+    margin: 15px;
 }
 
 .cta-section .btn-agendar-full:hover {
