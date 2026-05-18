@@ -1372,27 +1372,21 @@ footer .copyright {
 
 /* CTA Section */
 .cta-section {
-    background: #f0fff4;
-    padding: 25px 20px;
-    text-align: center;
-    border-top: 3px solid #2ADCA1;
-    border-bottom: 3px solid #2ADCA1;
+    padding: 0;
 }
 
-.cta-section .btn-agendar {
+.cta-section .btn-agendar-full {
     background: #2ADCA1;
     color: #fff;
-    padding: 18px 35px;
-    border-radius: 35px;
+    padding: 20px;
     font-size: 16px;
     font-weight: 600;
-    display: inline-block;
+    display: block;
+    text-align: center;
     text-decoration: none;
-    max-width: 600px;
-    line-height: 1.4;
 }
 
-.cta-section .btn-agendar:hover {
+.cta-section .btn-agendar-full:hover {
     background: #25b58a;
 }
 
