@@ -591,6 +591,253 @@ main {
 }
 
 /* =========================
+    Seção Diferenciais na Geriatria (Cards de Programas)
+========================= */
+.diferenciais-geriatria {
+    padding: 80px 20px;
+    background: #f9fcfc;
+    text-align: center;
+}
+
+.diferenciais-geriatria .titulo-secao {
+    font-size: 2.8rem;
+    color: #1a3a2a;
+    margin-bottom: 10px;
+}
+
+.diferenciais-geriatria .subtitulo-secao {
+    font-size: 1.3rem;
+    color: #666;
+    margin-bottom: 50px;
+}
+
+.cards-programas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.card-programa {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border: 2px solid transparent;
+    transition: all 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-programa:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+.card-programa.card-destaque {
+    border-color: #2ADCA1;
+    position: relative;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fff7 100%);
+}
+
+.card-header {
+    margin-bottom: 15px;
+}
+
+.tag-destaque {
+    background: #e8f5ef;
+    color: #1a6b4a;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.tag-mais-procurado {
+    background: #2ADCA1;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.card-programa h3 {
+    font-size: 1.5rem;
+    color: #1a3a2a;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.card-subtitle {
+    font-size: 1.05rem;
+    color: #2c5e4a;
+    margin-bottom: 20px;
+}
+
+.beneficios {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 25px;
+    text-align: left;
+    width: 100%;
+}
+
+.beneficios li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    color: #444;
+}
+
+.beneficios li i {
+    color: #2ADCA1;
+    font-size: 18px;
+}
+
+.btn-entenda {
+    background: transparent;
+    border: 2px solid #2ADCA1;
+    color: #2ADCA1;
+    padding: 14px 30px;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    width: 100%;
+    margin-top: auto;
+}
+
+.btn-entenda:hover {
+    background: #2ADCA1;
+    color: #fff;
+}
+
+.btn-entenda.btn-preenchido {
+    background: #2ADCA1;
+    color: #fff;
+}
+
+.btn-entenda.btn-preenchido:hover {
+    background: #24b685;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal-overlay.ativo {
+    display: block;
+    opacity: 1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 1001;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.modal.ativo {
+    display: block;
+    opacity: 1;
+}
+
+.fechar-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #999;
+    cursor: pointer;
+}
+
+.conteudo-modal h2 {
+    color: #2ADCA1;
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+}
+
+.conteudo-modal h3 {
+    color: #666;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+.conteudo-modal p {
+    color: #444;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+.conteudo-modal h4 {
+    color: #1a3a2a;
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+
+.conteudo-modal ul {
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+.conteudo-modal ul li {
+    color: #444;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    line-height: 1.5;
+}
+
+.btn-agendar-modal {
+    display: block;
+    background: #2ADCA1;
+    color: #fff;
+    text-align: center;
+    padding: 18px 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn-agendar-modal:hover {
+    background: #24b685;
+}
+
+/* =========================
    Seção Condições Acompanhadas (Pills)
 ========================= */
 .condicoes-acompanhadas {
