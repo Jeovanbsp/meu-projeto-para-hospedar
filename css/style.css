@@ -4,7 +4,7 @@
 body {
     font-family: 'Montserrat', Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    padding-top: 150px;
     background: #fdfdfd; 
     color: #2c3e50;
     box-sizing: border-box;
@@ -301,66 +301,69 @@ main {
 ========================= */
 .sobre {
     background: #e0f5ef;
-    padding: 60px 40px;
-    border-radius: 0; 
-    box-shadow: 0 6px 25px rgba(42, 220, 161, 0.15);
-    width: 100%;
-    max-width: 100%; 
-    margin: 0; 
-    transition: transform 0.3s;
-    box-sizing: border-box;
+    padding: 0 !important;
     overflow: hidden;
-    position: relative; 
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
     z-index: 1; 
 }
 
 .sobre-container {
     display: flex;
-    align-items: center; /* ALINHA VERTICALMENTE A IMAGEM E O TEXTO */
-    gap: 40px; /* Aumenta o espaço entre imagem e texto */
+    align-items: center;
+    max-width: 1200px;
+    width: 100%;
+    min-height: 500px;
+    position: relative;
+    gap: 40px;
 }
 
 /* Coluna da imagem da boneca */
 .sobre-imagem-boneca {
-    flex-shrink: 0; /* Impede que a imagem encolha demais */
-    align-self: center; /* Garante alinhamento central vertical */
-    max-width: 250px; /* Largura máxima para a coluna da imagem */
-    width: 100%; /* Permite que ocupe menos em telas pequenas */
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 500px;
 }
 
 .sobre-imagem-boneca img {
-    display: block; 
-    width: 100%; 
-    height: auto; 
+    height: 100% !important;
+    width: auto;
+    object-fit: contain;
+    display: block;
 }
 
 /* Coluna do texto */
 .sobre-texto {
-    flex: 1; 
-    text-align: left; 
-    padding: 10px 0; /* Pequeno padding vertical para texto */
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
 }
 
 .sobre:hover {
     transform: translateY(-5px);
 }
 
-.sobre h2 {
-    color: #2c3e50;
-    font-size: 28px;
-    margin-top: 0; 
-    margin-bottom: 10px; /* Reduz espaço abaixo do título */
-    position: relative; 
-    z-index: 1;
+.sobre h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    line-height: 1.2;
 }
 
 .sobre p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #2c3e50;
-    margin-bottom: 20px; /* Reduz espaço abaixo do parágrafo */
-    position: relative; 
-    z-index: 1;
+    font-size: 1.2rem;
+    margin-bottom: 35px;
+    color: #333;
+    max-width: 600px;
 }
 
 /* Botão Agendar (WhatsApp) */

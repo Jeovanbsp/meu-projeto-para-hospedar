@@ -19,9 +19,28 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
+        .main-nav ul { display: flex; align-items: center; gap: 20px; list-style: none; margin: 0; padding: 0; }
+        .ficha-link { color: #2ADCA1; font-weight: 700; text-decoration: none; border: 1px solid #2ADCA1; padding: 5px 10px; border-radius: 5px; transition: background 0.3s; display: flex; align-items: center; gap: 6px; }
+        .ficha-link:hover { background-color: rgba(42, 220, 161, 0.1); }
+        .novo-header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
+
+        .sobre { padding: 0 !important; background-color: #e8f7f2; overflow: hidden; display: flex; justify-content: center; }
+        .sobre-container { display: flex; align-items: center; max-width: 1200px; width: 100%; min-height: 500px; position: relative; }
+        .sobre-imagem-boneca { flex: 1; display: flex; align-items: flex-end; justify-content: center; height: 500px; }
+        .sobre-imagem-boneca img { height: 100% !important; width: auto; object-fit: contain; display: block; }
+        .sobre-texto { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .sobre-texto h1 { font-size: 3rem; margin-bottom: 20px; color: #1a1a1a; line-height: 1.2; }
+        .sobre-texto p { font-size: 1.2rem; margin-bottom: 35px; color: #333; max-width: 600px; }
         .botoes-hero { display: flex; justify-content: center; width: 100%; }
-        .botoes-hero .btn-agendar { padding: 18px 35px; font-size: 1.2rem; font-weight: 700; background-color: #2ADCA1; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); display: flex; align-items: center; gap: 10px; }
+        .botoes-hero .btn-agendar { padding: 18px 45px; font-size: 1.2rem; font-weight: 700; background-color: #2ADCA1; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); display: flex; align-items: center; gap: 10px; }
         .botoes-hero .btn-agendar:hover { background-color: #24b685; transform: translateY(-3px); }
+
+        @media (max-width: 900px) {
+            .sobre-container { flex-direction: column; padding: 40px 20px; min-height: auto; }
+            .sobre-imagem-boneca { height: 350px; }
+            .sobre-imagem-boneca img { height: 350px !important; }
+            .sobre-texto h1 { font-size: 2.2rem; }
+        }
     </style>
 </head>
 <body>
