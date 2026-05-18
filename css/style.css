@@ -974,7 +974,7 @@ footer .copyright {
 .local {
     background: #ffffff;
     border-radius: 16px; 
-    padding: 25px;
+    padding: 30px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
     border: 1px solid #eee; 
     display: flex;
@@ -982,6 +982,18 @@ footer .copyright {
     justify-content: space-between;
     transition: transform 0.3s, box-shadow 0.3s; 
     flex: 1 1 450px;
+}
+
+.local h3 {
+    font-size: 26px;
+    color: #2ADCA1;
+    margin-bottom: 8px;
+}
+
+.local h4 {
+    font-size: 22px;
+    color: #2c3e50;
+    margin-bottom: 20px;
 }
 
 .local .mapa {
