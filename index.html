@@ -19,54 +19,39 @@
     <link rel="stylesheet" href="css/style.css">
 
     <style>
-        .main-nav ul { display: flex; align-items: center; gap: 20px; list-style: none; margin: 0; padding: 0; }
-        .ficha-link { color: #2ADCA1; font-weight: 700; text-decoration: none; border: 1px solid #2ADCA1; padding: 5px 10px; border-radius: 5px; transition: background 0.3s; display: flex; align-items: center; gap: 6px; }
-        .ficha-link:hover { background-color: rgba(42, 220, 161, 0.1); }
-        .novo-header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; }
-
-        .sobre { padding: 60px 20px !important; background-color: #e8f7f2; overflow: hidden; display: flex; justify-content: center; margin: 0; width: 100%; max-width: 100%; border-radius: 0; }
-        .sobre-container { display: flex; align-items: center; max-width: 1400px; width: 100%; min-height: 500px; position: relative; }
-        .sobre-imagem-boneca { flex: 1; display: flex; align-items: flex-end; justify-content: center; height: 500px; }
-        .sobre-imagem-boneca img { height: 100% !important; width: auto; object-fit: contain; display: block; }
-        .sobre-texto { flex: 1.5; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .sobre-texto h1 { font-size: 3rem; margin-bottom: 20px; color: #1a1a1a; line-height: 1.2; }
-        .sobre-texto p { font-size: 1.2rem; margin-bottom: 35px; color: #333; max-width: 600px; }
         .botoes-hero { display: flex; justify-content: center; width: 100%; }
         .botoes-hero .btn-agendar { padding: 18px 45px; font-size: 1.2rem; font-weight: 700; background-color: #2ADCA1; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); display: flex; align-items: center; gap: 10px; }
         .botoes-hero .btn-agendar:hover { background-color: #24b685; transform: translateY(-3px); }
-
-        @media (max-width: 900px) {
-            .sobre-container { flex-direction: column; padding: 40px 20px; min-height: auto; }
-            .sobre-imagem-boneca { height: 350px; }
-            .sobre-imagem-boneca img { height: 350px !important; }
-            .sobre-texto h1 { font-size: 2.2rem; }
-        }
     </style>
 </head>
 <body>
 
-    <header class="novo-header">
-        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-            <a href="index.html" class="logo">
-                <img src="img/layout.png" alt="Logotipo Dra. Aisha Wenzinger Geriatria" style="height: 160px !important; width: auto;">
-            </a>
-            
-            <nav class="main-nav" id="mobile-menu"> 
+    <!-- Barra de Navegação Superior -->
+    <section class="barra-navegacao">
+        <div class="barra-navegacao-container">
+            <nav class="nav-esquerda">
                 <ul>
-                    <li><a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link"><i class="ph ph-file-text"></i> Ficha Pré-Atendimento</a></li>
                     <li><a href="#sobre-mim-section">Sobre Mim</a></li> 
                     <li><a href="#experiencia-section">Experiência</a></li> 
                     <li><a href="#locais">Onde Atende</a></li>
-                    <li><a href="#contato">Contato</a></li>
-                    <li><a href="login.html" style="font-weight: bold; color: #2ADCA1; display: flex; align-items: center; gap: 6px;"><i class="ph ph-user"></i> Login</a></li>
                 </ul>
             </nav>
-
-            <button class="hamburger" id="hamburger-button" aria-label="Abrir menu">
-                <span class="hamburger-box"><span class="hamburger-inner"></span></span>
-            </button>
+            
+            <div class="logo-centralizado">
+                <a href="index.html">
+                    <img src="img/layout.png" alt="Logotipo Dra. Aisha Wenzinger Geriatria">
+                </a>
+            </div>
+            
+            <nav class="nav-direita">
+                <ul>
+                    <li><a href="https://forms.gle/ZcDhK1CPUVdn78hF7" target="_blank" class="ficha-link"><i class="ph ph-file-text"></i> Ficha Pré</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                    <li><a href="login.html" class="btn-login"><i class="ph ph-user"></i> Login</a></li>
+                </ul>
+            </nav>
         </div>
-    </header>
+    </section>
 
     <main>
         <section class="sobre">
