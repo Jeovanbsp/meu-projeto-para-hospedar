@@ -981,6 +981,13 @@ footer .copyright {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s, box-shadow 0.3s; 
+    flex: 1 1 450px;
+}
+
+.local .mapa {
+    margin-top: 15px;
+    border-radius: 12px;
+    overflow: hidden;
 }
 .local:hover {
     transform: translateY(-5px);
