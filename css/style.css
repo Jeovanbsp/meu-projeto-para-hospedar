@@ -392,12 +392,12 @@ main {
 
 .servico-delicado {
     background: #ffffff; 
-    padding: 25px 20px;
+    padding: 30px 25px;
     border-radius: 16px; 
     border: 1px solid #e0f5ef; 
     box-shadow: 0 2px 8px rgba(0,0,0,0.05); 
     text-align: center;
-    flex: 1 1 280px;
+    flex: 1 1 350px;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -408,13 +408,13 @@ main {
 
 .servico-delicado h3 {
     color: #2ADCA1;
-    font-size: 18px;
-    margin-bottom: 10px;
+    font-size: 22px;
+    margin-bottom: 12px;
 }
 
 .servico-delicado p {
     color: #2c3e50;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.5;
 }
 
@@ -422,27 +422,30 @@ main {
     Nova Seção Sobre Mim (Layout Lado a Lado)
 ========================= */
 .sobre-mim {
-    max-width: 1100px; 
+    max-width: 1200px; 
     margin: 50px auto;
-    padding: 20px;
+    padding: 30px;
     box-sizing: border-box;
 }
 
 .sobre-mim-container {
     display: flex;
     align-items: flex-start; 
-    gap: 50px; 
+    gap: 60px; 
+    justify-content: flex-end;
 }
 
 .sobre-mim-imagem {
-    flex: 0 0 340px; 
+    flex: 0 0 420px; 
     text-align: center;
     background: #ffffff; 
     border-radius: 16px; 
-    padding: 25px; 
+    padding: 30px; 
     box-shadow: 0 8px 25px rgba(0,0,0,0.06); 
     border: 1px solid #f0f0f0; 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    order: 2;
+    margin-left: auto;
 }
 
 .sobre-mim-imagem:hover {
@@ -461,7 +464,7 @@ main {
 }
 
 .profile-caption {
-    font-size: 14px; 
+    font-size: 16px; 
     font-weight: normal; 
     color: #555; 
     line-height: 1.4; 
@@ -469,7 +472,7 @@ main {
 
 .profile-caption .name {
     font-weight: 600; 
-    font-size: 16px; 
+    font-size: 18px; 
     color: #2c3e50;
     display: block;
     margin-bottom: 5px; 
@@ -478,6 +481,7 @@ main {
 .sobre-mim-texto {
     flex: 1; 
     text-align: left;
+    font-size: 18px;
     padding-top: 0; 
 }
 
@@ -506,27 +510,30 @@ main {
     NOVA SEÇÃO Experiência Profissional (LAYOUT TEXTO COM IMAGEM)
 ========================= */
 .experiencia-texto-com-imagem {
-    max-width: 1100px; 
+    max-width: 1200px; 
     margin: 50px auto;
-    padding: 20px;
+    padding: 30px;
     box-sizing: border-box;
 }
 
 .experiencia-container-novo {
     display: flex;
-    align-items: flex-start; /* Alinha a imagem e o texto no topo */
-    gap: 50px; /* Espaço entre a imagem e o texto */
+    align-items: flex-start;
+    gap: 60px;
+    justify-content: flex-end;
 }
 
 .experiencia-imagem-lateral {
-    flex: 0 0 340px; /* Largura fixa para a imagem */
+    flex: 0 0 420px;
     text-align: center;
     background: #ffffff; 
     border-radius: 16px; 
-    padding: 25px; 
+    padding: 30px; 
     box-shadow: 0 8px 25px rgba(0,0,0,0.06); 
     border: 1px solid #f0f0f0; 
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    order: 2;
+    margin-left: auto;
 }
 
 .experiencia-imagem-lateral:hover {
@@ -537,15 +544,16 @@ main {
 .experiencia-imagem-lateral img {
     width: 100%;
     height: auto;
-    aspect-ratio: 4 / 3; /* Proporção mais horizontal para a imagem do consultório */
+    aspect-ratio: 4 / 3;
     object-fit: cover; 
     border-radius: 12px;
 }
 
 .experiencia-conteudo-texto {
-    flex: 1; /* Ocupa o restante do espaço */
+    flex: 1;
     text-align: left;
     padding-top: 0; 
+    font-size: 18px;
 }
 
 .experiencia-conteudo-texto h3 {
