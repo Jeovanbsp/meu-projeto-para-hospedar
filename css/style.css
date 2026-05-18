@@ -4,7 +4,7 @@
 body {
     font-family: 'Montserrat', Arial, sans-serif;
     margin: 0;
-    padding-top: 150px;
+    padding-top: 145px;
     background: #fdfdfd; 
     color: #2c3e50;
     box-sizing: border-box;
@@ -17,7 +17,7 @@ body {
 .logo-topo {
     background: #ffffff;
     width: 100%;
-    padding: 10px 20px;
+    padding: 10px 20px 0 20px;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
