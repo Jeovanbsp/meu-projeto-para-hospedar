@@ -99,11 +99,6 @@
                     </div>
                     <h3>PROGRAMA VITALIDADE 60+</h3>
                     <p class="card-subtitle">Preserve sua autonomía e qualidade de vida</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Duas consultas anuais</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
                     <button class="btn-entenda" onclick="abrirModal(1)">Entenda esse Programa</button>
                 </div>
 
@@ -114,11 +109,6 @@
                     </div>
                     <h3>PROGRAMA MOVIMENTO & MEMÓRIA</h3>
                     <p class="card-subtitle">Cuidados preventivos para manter independência</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consulta a cada 4 meses</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
                     <button class="btn-entenda btn-preenchido" onclick="abrirModal(2)">Entenda esse Programa</button>
                 </div>
 
@@ -129,11 +119,6 @@
                     </div>
                     <h3>CUIDADO GERIÁTRICO INTEGRADO</h3>
                     <p class="card-subtitle">Coordenação completa do cuidado</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consulta a cada 3 meses</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
                     <button class="btn-entenda" onclick="abrirModal(3)">Entenda esse Programa</button>
                 </div>
 
@@ -144,17 +129,22 @@
                     </div>
                     <h3>SUPORTE GERIÁTRICO AVANÇADO</h3>
                     <p class="card-subtitle">Conforto, segurança e dignidade</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consultas mensais</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
                     <button class="btn-entenda" onclick="abrirModal(4)">Entenda esse Programa</button>
                 </div>
             </div>
         </section>
 
         <section class="servicos-destaque-delicado">
+            <div class="servico-delicado">
+                <h3><i class="ph ph-heartbeat" style="color: #2ADCA1;"></i> Plano de Cuidado Contínuo</h3>
+                <p>Plano de cuidado contínuo com geriatra, de acordo com o nível de fragilidade do idoso.</p>
+                <button class="btn-entenda btn-menor" onclick="abrirModalInfo('plano')">Entenda como funciona</button>
+            </div>
+            <div class="servico-delicado">
+                <h3><i class="ph ph-file-text" style="color: #2ADCA1;"></i> Prontuário Eletrônico</h3>
+                <p>Sistema de prontuário eletrônico para facilitar atendimentos em emergência e clínicas.</p>
+                <button class="btn-entenda btn-menor" onclick="abrirModalInfo('prontuario')">Entenda como funciona</button>
+            </div>
             <div class="servico-delicado">
                 <h3><i class="ph ph-video-conference" style="color: #2ADCA1;"></i> Telemedicina</h3>
                 <p>Consultas online com segurança e comodidade, sem sair de casa.</p>
@@ -167,75 +157,19 @@
                 <h3><i class="ph ph-first-aid" style="color: #2ADCA1;"></i> Atendimento Presencial</h3>
                 <p>Consultas realizadas em consultório com infraestrutura completa para seu conforto.</p> 
             </div>
-        </section>
-
-        <!-- Seção Diferenciais na Geriatria -->
-        <section class="diferenciais-geriatria" id="programas-section">
-            <h2 class="titulo-secao">Nosso Diferencial na Geriatria</h2>
-            <p class="subtitulo-secao">Programas especializados para cada fase da vida</p>
-            
-            <div class="cards-programas">
-                <!-- Card 1: Vitalidade 60+ -->
-                <div class="card-programa">
-                    <div class="card-header">
-                        <span class="tag-destaque">Para Idosos Independentes</span>
-                    </div>
-                    <h3>PROGRAMA VITALIDADE 60+</h3>
-                    <p class="card-subtitle">Preserve sua autonomía e qualidade de vida</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Duas consultas anuais</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
-                    <button class="btn-entenda" onclick="abrirModal(1)">Entenda esse Programa</button>
-                </div>
-
-                <!-- Card 2: Movimento & Memória (Destaque) -->
-                <div class="card-programa card-destaque">
-                    <div class="card-header">
-                        <span class="tag-mais-procurado">Mais Procurado</span>
-                    </div>
-                    <h3>PROGRAMA MOVIMENTO & MEMÓRIA</h3>
-                    <p class="card-subtitle">Cuidados preventivos para manter independência</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consulta a cada 4 meses</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
-                    <button class="btn-entenda btn-preenchido" onclick="abrirModal(2)">Entenda esse Programa</button>
-                </div>
-
-                <!-- Card 3: Cuidado Geriátrico Integrado -->
-                <div class="card-programa">
-                    <div class="card-header">
-                        <span class="tag-destaque">Para Idosos com Suporte</span>
-                    </div>
-                    <h3>CUIDADO GERIÁTRICO INTEGRADO</h3>
-                    <p class="card-subtitle">Coordenação completa do cuidado</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consulta a cada 3 meses</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
-                    <button class="btn-entenda" onclick="abrirModal(3)">Entenda esse Programa</button>
-                </div>
-
-                <!-- Card 4: Suporte Geriátrico Avançado -->
-                <div class="card-programa">
-                    <div class="card-header">
-                        <span class="tag-destaque">Para Cuidado Contínuo</span>
-                    </div>
-                    <h3>SUPORTE GERIÁTRICO AVANÇADO</h3>
-                    <p class="card-subtitle">Conforto, segurança e dignidade</p>
-                    <ul class="beneficios">
-                        <li><i class="ph ph-check-circle"></i> Consultas mensais</li>
-                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
-                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
-                    </ul>
-                    <button class="btn-entenda" onclick="abrirModal(4)">Entenda esse Programa</button>
-                </div>
+            <div class="servico-delicado em-breve">
+                <span class="tag-em-breve">Em Breve</span>
+                <h3><i class="ph ph-users" style="color: #2ADCA1;"></i> Plano com Equipe Multiprofissional</h3>
+                <p>Atendimento completo com equipe multidisciplinar especializada.</p>
+            </div>
+            <div class="servico-delicado em-breve">
+                <span class="tag-em-breve">Em Breve</span>
+                <h3><i class="ph ph-brain" style="color: #2ADCA1;"></i> Cuidadores Especializados</h3>
+                <p>Cuidadores com especialidade em demência avançada.</p>
             </div>
         </section>
+
+        >
 
         <!-- Modais -->
         <div class="modal-overlay" id="modal-overlay" onclick="fecharModal()"></div>
@@ -453,6 +387,28 @@
 
             ultimoScroll = scrollAtual; // Atualiza a posição de rolagem
         });
+
+        // informações extras para os novos serviços
+        const infoServicos = {
+            plano: {
+                titulo: "Plano de Cuidado Contínuo",
+                descricao: "Nosso plano de cuidado contínuo é personalizado de acordo com o nível de fragilidade do idoso.",
+                beneficios: ["Avaliação geriátrica completa", "Plano de cuidados personalizado", "Acompanhamento regular conforme fragilidade", "Coordenação com outros profissionais de saúde"]
+            },
+            prontuario: {
+                titulo: "Prontuário Eletrônico",
+                descricao: "Sistema de prontuário eletrônico para facilitar atendimentos de emergência e clínicas parceiras.",
+                beneficios: ["Acesso rápido em emergências", "Informações compartilhadas", "Histórico de medicamentos", "Registro de alergias"]
+            }
+        };
+
+        function abrirModalInfo(tipo) {
+            const info = infoServicos[tipo];
+            const conteudo = `<h2>${info.titulo}</h2><p>${info.descricao}</p><h4>Como funciona:</h4><ul>${info.beneficios.map(b => `<li>${b}</li>`).join("")}</ul>`;
+            document.getElementById("conteudo-modal").innerHTML = conteudo;
+            document.getElementById("modal").classList.add("ativo");
+            document.getElementById("modal-overlay").classList.add("ativo");
+        }
     </script>
 </body>
 </html>
