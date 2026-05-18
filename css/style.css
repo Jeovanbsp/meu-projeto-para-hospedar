@@ -1392,3 +1392,9 @@ footer .copyright {
     background: #25b58a;
 }
 
+.cta-section .btn-agendar-full::before,
+.cta-section .btn-agendar-full::after {
+    display: none !important;
+    content: none !important;
+}
+
