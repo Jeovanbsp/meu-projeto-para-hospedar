@@ -989,7 +989,10 @@ footer .copyright {
     border-radius: 12px;
     overflow: hidden;
     width: 100%;
+    max-width: 280px;
     aspect-ratio: 1 / 1;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .local .mapa-iframe {
