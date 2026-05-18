@@ -755,7 +755,7 @@ main {
     transform: translate(-50%, -50%);
     background: #fff;
     border-radius: 20px;
-    padding: 40px;
+    padding: 40px 50px 40px 40px;
     max-width: 600px;
     width: 90%;
     max-height: 80vh;
@@ -773,13 +773,25 @@ main {
 
 .fechar-modal {
     position: absolute;
-    top: 15px;
+    top: 20px;
     right: 20px;
-    background: none;
+    background: #f5f5f5;
     border: none;
-    font-size: 32px;
-    color: #999;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #666;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.fechar-modal:hover {
+    background: #e0e0e0;
+    color: #333;
 }
 
 .conteudo-modal h2 {

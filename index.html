@@ -86,6 +86,74 @@
             </div>
         </section> 
         
+        <!-- Seção Diferenciais na Geriatria -->
+        <section class="diferenciais-geriatria" id="programas-section">
+            <h2 class="titulo-secao">Nosso Diferencial na Geriatria</h2>
+            <p class="subtitulo-secao">Programas especializados para cada fase da vida</p>
+            
+            <div class="cards-programas">
+                <!-- Card 1: Vitalidade 60+ -->
+                <div class="card-programa">
+                    <div class="card-header">
+                        <span class="tag-destaque">Para Idosos Independentes</span>
+                    </div>
+                    <h3>PROGRAMA VITALIDADE 60+</h3>
+                    <p class="card-subtitle">Preserve sua autonomía e qualidade de vida</p>
+                    <ul class="beneficios">
+                        <li><i class="ph ph-check-circle"></i> Duas consultas anuais</li>
+                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
+                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
+                    </ul>
+                    <button class="btn-entenda" onclick="abrirModal(1)">Entenda esse Programa</button>
+                </div>
+
+                <!-- Card 2: Movimento & Memória (Destaque) -->
+                <div class="card-programa card-destaque">
+                    <div class="card-header">
+                        <span class="tag-mais-procurado">Mais Procurado</span>
+                    </div>
+                    <h3>PROGRAMA MOVIMENTO & MEMÓRIA</h3>
+                    <p class="card-subtitle">Cuidados preventivos para manter independência</p>
+                    <ul class="beneficios">
+                        <li><i class="ph ph-check-circle"></i> Consulta a cada 4 meses</li>
+                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
+                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
+                    </ul>
+                    <button class="btn-entenda btn-preenchido" onclick="abrirModal(2)">Entenda esse Programa</button>
+                </div>
+
+                <!-- Card 3: Cuidado Geriátrico Integrado -->
+                <div class="card-programa">
+                    <div class="card-header">
+                        <span class="tag-destaque">Para Idosos com Suporte</span>
+                    </div>
+                    <h3>CUIDADO GERIÁTRICO INTEGRADO</h3>
+                    <p class="card-subtitle">Coordenação completa do cuidado</p>
+                    <ul class="beneficios">
+                        <li><i class="ph ph-check-circle"></i> Consulta a cada 3 meses</li>
+                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
+                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
+                    </ul>
+                    <button class="btn-entenda" onclick="abrirModal(3)">Entenda esse Programa</button>
+                </div>
+
+                <!-- Card 4: Suporte Geriátrico Avançado -->
+                <div class="card-programa">
+                    <div class="card-header">
+                        <span class="tag-destaque">Para Cuidado Contínuo</span>
+                    </div>
+                    <h3>SUPORTE GERIÁTRICO AVANÇADO</h3>
+                    <p class="card-subtitle">Conforto, segurança e dignidade</p>
+                    <ul class="beneficios">
+                        <li><i class="ph ph-check-circle"></i> Consultas mensais</li>
+                        <li><i class="ph ph-check-circle"></i> Renovação de receita</li>
+                        <li><i class="ph ph-check-circle"></i> Contato direto com equipe</li>
+                    </ul>
+                    <button class="btn-entenda" onclick="abrirModal(4)">Entenda esse Programa</button>
+                </div>
+            </div>
+        </section>
+
         <section class="servicos-destaque-delicado">
             <div class="servico-delicado">
                 <h3><i class="ph ph-video-conference" style="color: #2ADCA1;"></i> Telemedicina</h3>
@@ -222,6 +290,8 @@
 
         function abrirModal(id) {
             const programa = programas[id];
+            const mensagem = `Olá! Tenho interesse no ${programa.titulo} - ${programa.subtitulo} e gostaria de entender melhor os detalhes do programa.`;
+            const mensagemEncoded = encodeURIComponent(mensagem);
             const conteudo = `
                 <h2>${programa.titulo}</h2>
                 <h3>${programa.subtitulo}</h3>
@@ -230,7 +300,7 @@
                 <ul>
                     ${programa.beneficios.map(b => `<li>${b}</li>`).join('')}
                 </ul>
-                <a href="https://wa.me/5571983943153" class="btn-agendar-modal" target="_blank">Agendar Consulta de Avaliação</a>
+                <a href="https://wa.me/5571983943153?text=${mensagemEncoded}" class="btn-agendar-modal" target="_blank">Agendar Consulta de Avaliação</a>
             `;
             document.getElementById('conteudo-modal').innerHTML = conteudo;
             document.getElementById('modal').classList.add('ativo');
