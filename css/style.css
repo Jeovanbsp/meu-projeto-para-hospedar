@@ -339,7 +339,7 @@ main {
 }
 
 .sobre-imagem-boneca img {
-    height: 120% !important;
+    height: 100% !important;
     width: auto;
     object-fit: contain;
     display: block;
