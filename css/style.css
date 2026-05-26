@@ -313,6 +313,22 @@ main {
     padding-top: 80px; /* Espaço para a barra fixa */
 }
 
+/* Coluna da logo lateral - posicionada no canto esquerdo */
+.sobre-logo-lateral {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+}
+
+.sobre-logo-lateral img {
+    max-height: 180px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 /* Coluna da imagem da boneca */
 .sobre-imagem-boneca {
     flex: 1;
@@ -320,27 +336,11 @@ main {
     align-items: flex-end;
     justify-content: center;
     height: 100%; max-height: 650px;
+    margin-left: 180px;
 }
 
 .sobre-imagem-boneca img {
     height: 100% !important;
-    width: auto;
-    object-fit: contain;
-    display: block;
-}
-
-/* Coluna da logo lateral - canto esquerdo */
-.sobre-logo-lateral {
-    flex: 0 0 150px;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%; max-height: 650px;
-    padding-left: 5px;
-}
-
-.sobre-logo-lateral img {
-    max-height: 200px;
     width: auto;
     object-fit: contain;
     display: block;
