@@ -4,7 +4,7 @@
 body {
     font-family: 'Montserrat', Arial, sans-serif;
     margin: 0;
-    padding-top: 145px;
+    padding: 0;
     background: #fdfdfd; 
     color: #2c3e50;
     box-sizing: border-box;
@@ -50,8 +50,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
     z-index: 100;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
 
 .barra-navegacao-container {
@@ -307,6 +310,7 @@ main {
     min-height: 100%; max-height: 650px;
     position: relative;
     gap: 40px;
+    padding-top: 80px; /* Espaço para a barra fixa */
 }
 
 /* Coluna da imagem da boneca */
@@ -320,6 +324,22 @@ main {
 
 .sobre-imagem-boneca img {
     height: 100% !important;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Coluna da logo lateral */
+.sobre-logo-lateral {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%; max-height: 650px;
+}
+
+.sobre-logo-lateral img {
+    max-height: 100%;
     width: auto;
     object-fit: contain;
     display: block;
@@ -1034,11 +1054,15 @@ footer .copyright {
 /* Breakpoint onde o menu hamburger aparece */
 @media (max-width: 768px) {
     body {
-        padding-top: 100px; /* Reduz o espaçamento do topo em mobile */
+        padding-top: 0;
     }
 
     main {
         padding: 0 15px;
+    }
+
+    .sobre-container {
+        padding-top: 70px;
     }
 
     /* Ajustes para o novo header no mobile */
