@@ -336,7 +336,7 @@ main {
     align-items: center;
     justify-content: flex-start;
     height: 100%; max-height: 650px;
-    padding-left: 10px;
+    padding-left: 5px;
 }
 
 .sobre-logo-lateral img {
