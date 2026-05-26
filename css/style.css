@@ -317,7 +317,7 @@ main {
 .sobre-logo-lateral {
     position: absolute;
     left: 40px;
-    top: 50%;
+    top: 42%;
     transform: translateY(-50%);
     z-index: 10;
 }
