@@ -315,31 +315,31 @@ main {
 
 /* Coluna da imagem da boneca */
 .sobre-imagem-boneca {
-    flex: 0.8;
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%; max-height: 650px;
+}
+
+.sobre-imagem-boneca img {
+    height: 100% !important;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+/* Coluna da logo lateral - canto direito */
+.sobre-logo-lateral {
+    flex: 0 0 150px;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     height: 100%; max-height: 650px;
 }
 
-.sobre-imagem-boneca img {
-    height: 80% !important;
-    width: auto;
-    object-fit: contain;
-    display: block;
-}
-
-/* Coluna da logo lateral */
-.sobre-logo-lateral {
-    flex: 0.6;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%; max-height: 650px;
-}
-
 .sobre-logo-lateral img {
-    max-height: 50%;
+    max-height: 200px;
     width: auto;
     object-fit: contain;
     display: block;
