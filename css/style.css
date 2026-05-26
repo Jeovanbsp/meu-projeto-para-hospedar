@@ -316,7 +316,7 @@ main {
 /* Coluna da logo lateral - posicionada no canto esquerdo */
 .sobre-logo-lateral {
     position: absolute;
-    left: 15px;
+    left: 50px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
