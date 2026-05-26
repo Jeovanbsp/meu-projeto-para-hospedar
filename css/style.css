@@ -315,15 +315,15 @@ main {
 
 /* Coluna da imagem da boneca */
 .sobre-imagem-boneca {
-    flex: 1;
+    flex: 0.8;
     display: flex;
-    align-items: flex-end;
-    justify-content: center;
+    align-items: center;
+    justify-content: flex-end;
     height: 100%; max-height: 650px;
 }
 
 .sobre-imagem-boneca img {
-    height: 100% !important;
+    height: 80% !important;
     width: auto;
     object-fit: contain;
     display: block;
@@ -331,15 +331,15 @@ main {
 
 /* Coluna da logo lateral */
 .sobre-logo-lateral {
-    flex: 1;
+    flex: 0.6;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     height: 100%; max-height: 650px;
 }
 
 .sobre-logo-lateral img {
-    max-height: 100%;
+    max-height: 50%;
     width: auto;
     object-fit: contain;
     display: block;
