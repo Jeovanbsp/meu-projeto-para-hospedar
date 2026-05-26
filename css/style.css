@@ -329,13 +329,14 @@ main {
     display: block;
 }
 
-/* Coluna da logo lateral - canto direito */
+/* Coluna da logo lateral - canto esquerdo */
 .sobre-logo-lateral {
     flex: 0 0 150px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     height: 100%; max-height: 650px;
+    padding-left: 10px;
 }
 
 .sobre-logo-lateral img {
