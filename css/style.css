@@ -323,7 +323,7 @@ main {
 }
 
 .sobre-logo-lateral img {
-    max-height: 180px;
+    max-height: 250px;
     width: auto;
     object-fit: contain;
     display: block;
