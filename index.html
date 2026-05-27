@@ -309,20 +309,23 @@
         const barraNav = document.querySelector('.barra-navegacao');
 
         window.addEventListener('scroll', () => {
-            let scrollAtual = window.scrollY;
+            // Só aplica o efeito em telas maiores que 768px
+            if (window.innerWidth > 768) {
+                let scrollAtual = window.scrollY;
 
-            // Se rolou para baixo e já desceu mais de 100px, esconde o topo E a barra verde
-            if (scrollAtual > ultimoScroll && scrollAtual > 100) {
-                topo.classList.add('esconder-topo');
-                if (barraNav) barraNav.classList.add('esconder-topo');
-            } 
-            // Se rolou para cima, mostra o topo E a barra verde
-            else {
-                topo.classList.remove('esconder-topo');
-                if (barraNav) barraNav.classList.remove('esconder-topo');
+                // Se rolou para baixo e já desceu mais de 100px, esconde o topo E a barra verde
+                if (scrollAtual > ultimoScroll && scrollAtual > 100) {
+                    topo.classList.add('esconder-topo');
+                    if (barraNav) barraNav.classList.add('esconder-topo');
+                } 
+                // Se rolou para cima, mostra o topo E a barra verde
+                else {
+                    topo.classList.remove('esconder-topo');
+                    if (barraNav) barraNav.classList.remove('esconder-topo');
+                }
+
+                ultimoScroll = scrollAtual;
             }
-
-            ultimoScroll = scrollAtual; // Atualiza a posição de rolagem
         });
 
         // informações extras para os novos serviços
