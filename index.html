@@ -38,12 +38,21 @@
         .botoes-hero .btn-agendar:hover { background-color: #24b685; transform: translateY(-3px); }
 
         @media (max-width: 900px) {
-            .sobre-container { flex-direction: column; padding: 80px 20px 40px; min-height: auto; }
-            .sobre-imagem-boneca { height: 300px; }
-            .sobre-imagem-boneca img { height: 300px !important; }
-            .sobre-logo-lateral { height: 200px; }
-            .sobre-logo-lateral img { max-height: 180px; }
-            .sobre-texto h1 { font-size: 2.2rem; }
+            .sobre-container { flex-direction: column; padding: 80px 15px 40px; min-height: auto; }
+            .sobre-imagem-boneca { height: 280px; width: 100%; }
+            .sobre-imagem-boneca img { height: 280px !important; width: auto; }
+            .sobre-logo-lateral { display: none; }
+            .sobre-texto { padding: 10px; }
+            .sobre-texto h1 { font-size: 1.6rem; margin-bottom: 15px; }
+            .sobre-texto p { font-size: 1rem; margin-bottom: 20px; }
+            .botoes-hero .btn-agendar { padding: 15px 30px; font-size: 1rem; }
+        }
+        
+        @media (max-width: 480px) {
+            .sobre-texto h1 { font-size: 1.4rem; }
+            .sobre-texto p { font-size: 0.9rem; }
+            .sobre-imagem-boneca { height: 220px; }
+            .sobre-imagem-boneca img { height: 220px !important; }
         }
     </style>
 </head>

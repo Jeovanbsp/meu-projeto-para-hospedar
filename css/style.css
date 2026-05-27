@@ -1145,6 +1145,38 @@ footer .copyright {
         display: none; /* Esconde a linha verde no mobile */
     }
 
+    /* Barra de navegação verde no mobile */
+    .barra-navegacao {
+        position: fixed;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background: #2ADCA1;
+        padding: 10px 15px;
+    }
+
+    .barra-navegacao-container {
+        justify-content: center;
+    }
+
+    .barra-navegacao nav ul {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px 15px;
+    }
+
+    .barra-navegacao nav a {
+        font-size: 13px;
+        color: #fff;
+    }
+
+    .ficha-link {
+        background: rgba(255,255,255,0.2);
+        padding: 8px 12px;
+        border-radius: 20px;
+    }
+
     /* Caixa de boas-vindas (.sobre) - Mobile */
     .sobre-container {
         flex-direction: column; 
@@ -1165,7 +1197,7 @@ footer .copyright {
 
     .sobre-texto {
         text-align: center; 
-        padding: 0; 
+        padding: 0 10px; 
     }
 
     /* Responsividade da seção Sobre Mim */
@@ -1173,53 +1205,35 @@ footer .copyright {
         flex-direction: column;
         align-items: center; 
         gap: 30px;
+        padding: 20px 15px;
     }
 
     .sobre-mim-imagem {
         flex-basis: auto;
-        width: 100%;
-        max-width: 340px; 
+        width: 80%;
+        max-width: 250px; 
         min-height: auto; 
     }
 
     .profile-img {
         aspect-ratio: 1 / 1; 
-        max-height: 300px;
+        max-height: 250px;
     }
     
     .sobre-mim-texto {
         padding-top: 0; 
+        text-align: left;
     }
 
     .sobre-mim-texto h3 { 
-        text-align: center; 
+        text-align: left; 
         margin-top: 0; 
+        font-size: 22px;
     }
 
-    /* Responsividade da NOVA SEÇÃO Experiência Profissional */
-    .experiencia-container-novo {
-        flex-direction: column; /* Empilha no mobile */
-        align-items: center; 
-        gap: 30px;
-    }
-
-    .experiencia-imagem-lateral {
-        flex-basis: auto;
-        width: 100%;
-        max-width: 340px; /* Limita a largura do card no mobile */
-    }
-
-    .experiencia-imagem-lateral img {
-        aspect-ratio: 16 / 9; /* Mais horizontal no mobile se desejar */
-    }
-
-    .experiencia-conteudo-texto {
-        padding-top: 0; 
-    }
-
-    .experiencia-conteudo-texto h3 { 
-        text-align: center; 
-        margin-top: 0; 
+    .sobre-mim {
+        padding: 20px 15px;
+        margin: 20px auto;
     }
 
     /* Regra .card antiga (mantida do seu original) */
@@ -1230,6 +1244,83 @@ footer .copyright {
     .card-agendamento {
         padding: 25px 20px;
         margin-top: 20px;
+    }
+
+    /* Responsividade seção Em Desenvolvimento */
+    .em-desenvolvimento-section {
+        padding: 20px 15px;
+        margin: 20px auto;
+    }
+
+    .titulo-em-desenvolvimento {
+        font-size: 20px;
+    }
+
+    .galeria-imagens img {
+        max-width: 100%;
+    }
+
+    /* Ajustes gerais no mobile */
+    .sobre-mim-texto .historia {
+        font-size: 15px;
+        text-align: left;
+        line-height: 1.6;
+    }
+
+    .sobre-mim-texto .historia p {
+        margin-bottom: 12px;
+    }
+
+    /* Ajuste footer e outras seções no mobile */
+    .localizacao {
+        padding: 30px 15px;
+    }
+
+    .localizacao h2 {
+        font-size: 20px;
+    }
+
+    .iframe-container {
+        width: 100%;
+        padding-bottom: 56.25%;
+    }
+
+    /* Ajuste serviços no mobile */
+    .servicos-destaque-delicado {
+        padding: 30px 15px;
+    }
+
+    .servicos-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .servico-card {
+        padding: 20px;
+    }
+
+    .servico-card h4 {
+        font-size: 18px;
+    }
+
+    .servico-card p {
+        font-size: 14px;
+    }
+
+    /* Ajuste carrossel no mobile */
+    .carrossel-section {
+        padding: 30px 15px;
+    }
+
+    /* Ajuste footer */
+    footer {
+        padding: 30px 15px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
     }
 }
 
