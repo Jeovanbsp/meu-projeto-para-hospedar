@@ -1073,254 +1073,267 @@ footer .copyright {
 
 /* Breakpoint onde o menu hamburger aparece */
 @media (max-width: 768px) {
+    * {
+        box-sizing: border-box;
+    }
+
     body {
         padding-top: 0;
+        margin: 0;
     }
 
     main {
-        padding: 0 15px;
+        padding: 0;
     }
 
-    .sobre-container {
-        padding-top: 70px;
-    }
-
-    /* Ajustes para o novo header no mobile */
+    /* Header fixo no mobile */
     .novo-header {
-        padding: 15px 20px; 
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1002;
+        background: #fff;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 8px 15px;
     }
 
     .header-container {
-        /* Logo e Hamburger ficam nas pontas */
-        justify-content: space-between; 
+        justify-content: space-between;
     }
 
     .logo img {
-        height: 50px; 
-    }
-    
-    /* MOSTRA O BOTÃO HAMBURGER */
-    .hamburger {
-        display: inline-block;
+        height: 40px !important;
     }
 
-    /* ESTILOS DO MENU MOBILE (quando ativo) */
-    .main-nav {
-        display: none; /* Escondido por padrão */
-        position: absolute;
-        top: 100%; /* Começa logo abaixo do header */
-        left: 0;
-        width: 100%;
-        background-color: #ffffff;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        padding: 20px 0;
-    }
-
-    .main-nav.is-active {
-        display: block; /* Mostra o menu quando ativo */
-    }
-
-    .main-nav ul {
-        flex-direction: column; /* Links em coluna */
-        align-items: center; /* Centraliza os links */
-        gap: 0; /* Remove gap horizontal */
-    }
-
-    .main-nav li {
-        width: 100%; /* Ocupa toda a largura */
-        text-align: center;
-    }
-
-    .main-nav a {
-        display: block; /* Faz o link ocupar o li inteiro */
-        padding: 15px 0; /* Espaçamento vertical */
-        width: 100%;
-        border-bottom: 1px solid #eee; /* Linha separadora */
-    }
-    .main-nav li:last-child a {
-        border-bottom: none; /* Remove a última linha */
-    }
-
-    .main-nav a::after {
-        display: none; /* Esconde a linha verde no mobile */
-    }
-
-    /* Barra de navegação verde no mobile */
+    /* Barra de navegação verde - MENOR no mobile */
     .barra-navegacao {
         position: fixed;
-        top: 60px;
+        top: 56px;
         left: 0;
         width: 100%;
-        z-index: 1000;
+        z-index: 1001;
         background: #2ADCA1;
-        padding: 10px 15px;
-    }
-
-    .barra-navegacao-container {
-        justify-content: center;
+        padding: 8px 10px;
     }
 
     .barra-navegacao nav ul {
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px 15px;
+        gap: 8px 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
     }
 
     .barra-navegacao nav a {
-        font-size: 13px;
+        font-size: 11px;
         color: #fff;
+        text-decoration: none;
+        padding: 5px 8px;
     }
 
     .ficha-link {
-        background: rgba(255,255,255,0.2);
-        padding: 8px 12px;
-        border-radius: 20px;
+        background: rgba(255,255,255,0.25);
+        padding: 5px 10px;
+        border-radius: 15px;
     }
 
-    /* Caixa de boas-vindas (.sobre) - Mobile */
+    .btn-login {
+        background: #fff;
+        color: #2ADCA1;
+        border-radius: 15px;
+        padding: 5px 10px;
+    }
+
+    /* Hero - SOBRE - Mobile */
+    .sobre {
+        padding: 0 !important;
+        background-color: #e8f7f2;
+        margin-top: 100px;
+    }
+
     .sobre-container {
-        flex-direction: column; 
-        gap: 20px;
+        flex-direction: column;
+        padding: 15px !important;
+        min-height: auto !important;
+        gap: 15px;
+    }
+
+    .sobre-logo-lateral {
+        display: none;
     }
 
     .sobre-imagem-boneca {
-        flex-basis: auto; 
-        align-self: center; 
-        width: 60%; 
-        max-width: 180px; 
+        width: 50%;
+        max-width: 150px;
+        height: auto !important;
+        align-self: center;
     }
 
     .sobre-imagem-boneca img {
-        min-height: auto; 
-        aspect-ratio: auto; 
+        height: auto !important;
+        width: 100%;
+        max-height: 180px;
     }
 
     .sobre-texto {
-        text-align: center; 
-        padding: 0 10px; 
+        padding: 10px;
+        text-align: center;
     }
 
-    /* Responsividade da seção Sobre Mim */
-    .sobre-mim-container {
-        flex-direction: column;
-        align-items: center; 
-        gap: 30px;
-        padding: 20px 15px;
+    .sobre-texto h1 {
+        font-size: 1.3rem !important;
+        margin-bottom: 10px;
+        line-height: 1.2;
     }
 
-    .sobre-mim-imagem {
-        flex-basis: auto;
-        width: 80%;
-        max-width: 250px; 
-        min-height: auto; 
+    .sobre-texto p {
+        font-size: 0.9rem !important;
+        margin-bottom: 15px;
+        line-height: 1.4;
     }
 
-    .profile-img {
-        aspect-ratio: 1 / 1; 
-        max-height: 250px;
-    }
-    
-    .sobre-mim-texto {
-        padding-top: 0; 
-        text-align: left;
+    .botoes-hero {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
-    .sobre-mim-texto h3 { 
-        text-align: left; 
-        margin-top: 0; 
-        font-size: 22px;
+    .botoes-hero .btn-agendar {
+        padding: 12px 25px;
+        font-size: 0.9rem;
+        border-radius: 25px;
     }
 
-    .sobre-mim {
-        padding: 20px 15px;
-        margin: 20px auto;
-    }
-
-    /* Regra .card antiga (mantida do seu original) */
-    .card {
-        width: 100%;
-    }
-
-    .card-agendamento {
-        padding: 25px 20px;
-        margin-top: 20px;
-    }
-
-    /* Responsividade seção Em Desenvolvimento */
-    .em-desenvolvimento-section {
-        padding: 20px 15px;
-        margin: 20px auto;
-    }
-
-    .titulo-em-desenvolvimento {
-        font-size: 20px;
-    }
-
-    .galeria-imagens img {
-        max-width: 100%;
-    }
-
-    /* Ajustes gerais no mobile */
-    .sobre-mim-texto .historia {
-        font-size: 15px;
-        text-align: left;
-        line-height: 1.6;
-    }
-
-    .sobre-mim-texto .historia p {
-        margin-bottom: 12px;
-    }
-
-    /* Ajuste footer e outras seções no mobile */
-    .localizacao {
-        padding: 30px 15px;
-    }
-
-    .localizacao h2 {
-        font-size: 20px;
-    }
-
-    .iframe-container {
-        width: 100%;
-        padding-bottom: 56.25%;
-    }
-
-    /* Ajuste serviços no mobile */
+    /* Serviços */
     .servicos-destaque-delicado {
-        padding: 30px 15px;
+        padding: 20px 15px;
+    }
+
+    .servicos-destaque-delicado h2 {
+        font-size: 1.3rem;
     }
 
     .servicos-grid {
         grid-template-columns: 1fr;
+        padding: 0;
         gap: 15px;
     }
 
     .servico-card {
-        padding: 20px;
+        padding: 15px;
     }
 
     .servico-card h4 {
-        font-size: 18px;
+        font-size: 16px;
+        margin-bottom: 8px;
     }
 
     .servico-card p {
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 1.4;
     }
 
-    /* Ajuste carrossel no mobile */
-    .carrossel-section {
-        padding: 30px 15px;
+    /* Sobre Mim */
+    .sobre-mim {
+        max-width: 100%;
+        margin: 20px 0;
+        padding: 20px 15px;
     }
 
-    /* Ajuste footer */
-    footer {
-        padding: 30px 15px;
-    }
-
-    .footer-content {
+    .sobre-mim-container {
         flex-direction: column;
         gap: 20px;
+        padding: 0;
+    }
+
+    .sobre-mim-imagem {
+        width: 60%;
+        max-width: 180px;
+        margin: 0 auto;
+        flex-basis: auto;
+    }
+
+    .profile-img {
+        width: 100%;
+        max-height: 180px;
+        aspect-ratio: 1 / 1;
+    }
+
+    .sobre-mim-texto {
+        padding: 0;
+    }
+
+    .sobre-mim-texto h3 {
+        font-size: 18px;
         text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .sobre-mim-texto .historia {
+        font-size: 14px;
+        line-height: 1.5;
+        text-align: left;
+    }
+
+    .sobre-mim-texto .historia p {
+        margin-bottom: 10px;
+    }
+
+    /* Em Desenvolvimento */
+    .em-desenvolvimento-section {
+        max-width: 100%;
+        margin: 20px 0;
+        padding: 20px 15px;
+    }
+
+    .titulo-em-desenvolvimento {
+        font-size: 18px;
+        margin-bottom: 15px;
+    }
+
+    .galeria-imagens {
+        gap: 15px;
+    }
+
+    .galeria-imagens img {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Localização */
+    .localizacao {
+        padding: 20px 15px;
+    }
+
+    .localizacao h2 {
+        font-size: 18px;
+    }
+
+    .iframe-container {
+        width: 100%;
+        padding-bottom: 75%;
+    }
+
+    /* Footer */
+    footer {
+        padding: 20px 15px;
+    }
+
+    footer h3 {
+        font-size: 16px;
+    }
+
+    footer p, footer a {
+        font-size: 13px;
+    }
+
+    .social-icons {
+        gap: 15px;
+    }
+
+    .social-icons img {
+        width: 30px;
     }
 }
 

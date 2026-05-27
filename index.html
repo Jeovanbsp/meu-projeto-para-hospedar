@@ -37,22 +37,15 @@
         .botoes-hero .btn-agendar { padding: 18px 45px; font-size: 1.2rem; font-weight: 700; background-color: #2ADCA1; color: white; text-decoration: none; border-radius: 50px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); display: flex; align-items: center; gap: 10px; }
         .botoes-hero .btn-agendar:hover { background-color: #24b685; transform: translateY(-3px); }
 
-        @media (max-width: 900px) {
-            .sobre-container { flex-direction: column; padding: 80px 15px 40px; min-height: auto; }
-            .sobre-imagem-boneca { height: 280px; width: 100%; }
-            .sobre-imagem-boneca img { height: 280px !important; width: auto; }
+        @media (max-width: 768px) {
+            .sobre-container { flex-direction: column; padding: 15px !important; min-height: auto !important; }
+            .sobre-imagem-boneca { width: 50%; max-width: 150px; height: auto !important; }
+            .sobre-imagem-boneca img { height: auto !important; width: 100%; max-height: 180px; }
             .sobre-logo-lateral { display: none; }
             .sobre-texto { padding: 10px; }
-            .sobre-texto h1 { font-size: 1.6rem; margin-bottom: 15px; }
-            .sobre-texto p { font-size: 1rem; margin-bottom: 20px; }
-            .botoes-hero .btn-agendar { padding: 15px 30px; font-size: 1rem; }
-        }
-        
-        @media (max-width: 480px) {
-            .sobre-texto h1 { font-size: 1.4rem; }
-            .sobre-texto p { font-size: 0.9rem; }
-            .sobre-imagem-boneca { height: 220px; }
-            .sobre-imagem-boneca img { height: 220px !important; }
+            .sobre-texto h1 { font-size: 1.3rem !important; }
+            .sobre-texto p { font-size: 0.9rem !important; }
+            .botoes-hero .btn-agendar { padding: 12px 25px; font-size: 0.9rem; }
         }
     </style>
 </head>
