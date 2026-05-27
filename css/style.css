@@ -139,7 +139,12 @@ body {
 
 /* CLASSE PARA ESCONDER O MENU */
 .esconder-topo {
-    transform: translateY(-100%); 
+    transform: translateY(-150%); 
+    transition: transform 0.3s ease-in-out;
+}
+
+.barra-navegacao.esconder-topo {
+    transform: translateY(-150%);
 }
 
 .header-container {

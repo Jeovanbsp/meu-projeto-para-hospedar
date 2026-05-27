@@ -305,18 +305,21 @@
         // NOVO: EFEITO DO CABEÇALHO (SMART HEADER)
         // ==========================================
         let ultimoScroll = window.scrollY;
-        const topo = document.querySelector('.novo-header'); 
+        const topo = document.querySelector('.novo-header');
+        const barraNav = document.querySelector('.barra-navegacao');
 
         window.addEventListener('scroll', () => {
             let scrollAtual = window.scrollY;
 
-            // Se rolou para baixo e já desceu mais de 100px, esconde o topo
+            // Se rolou para baixo e já desceu mais de 100px, esconde o topo E a barra verde
             if (scrollAtual > ultimoScroll && scrollAtual > 100) {
                 topo.classList.add('esconder-topo');
+                if (barraNav) barraNav.classList.add('esconder-topo');
             } 
-            // Se rolou para cima, mostra o topo
+            // Se rolou para cima, mostra o topo E a barra verde
             else {
                 topo.classList.remove('esconder-topo');
+                if (barraNav) barraNav.classList.remove('esconder-topo');
             }
 
             ultimoScroll = scrollAtual; // Atualiza a posição de rolagem
