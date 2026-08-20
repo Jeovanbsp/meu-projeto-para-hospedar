@@ -70,7 +70,10 @@ document.addEventListener('DOMContentLoaded', () => {
             <li onclick="abrirFicha('${f._id}')">
                 <span class="ficha-nome"><i class="ph ph-user-circle"></i> ${escapar(f.nome)}</span>
                 <span class="ficha-data"><i class="ph ph-calendar-blank"></i> ${formatarDataHora(f.createdAt)}</span>
-                <span><button class="btn-ver-ficha"><i class="ph ph-eye"></i> Ver ficha</button></span>
+                <span class="acoes-linha">
+                    <button class="btn-ver-ficha"><i class="ph ph-eye"></i> Ver ficha</button>
+                    <button class="btn-apagar-linha" title="Apagar ficha" onclick="event.stopPropagation(); excluirFichaLista('${f._id}')"><i class="ph ph-trash"></i></button>
+                </span>
             </li>
         `).join('');
     };
@@ -317,24 +320,41 @@ document.addEventListener('DOMContentLoaded', () => {
         doc.save(nomeArquivo);
     }
 
-    // === EXCLUIR FICHA ===
+    // === EXCLUIR FICHA (pelo modal aberto) ===
     async function excluirFicha() {
         if (!fichaAbertaId) return;
         if (!confirm('Tem certeza que deseja excluir esta ficha? Esta ação não pode ser desfeita.')) return;
 
         try {
-            const response = await fetchComTimeout(`${API_URL}/${fichaAbertaId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-
-            if (!response.ok) throw new Error('Erro ao excluir ficha.');
-
+            await excluirFichaPorId(fichaAbertaId);
             fecharModalFicha();
-            fetchFichas();
         } catch (error) {
             alert(error.message);
         }
+    }
+
+    // === EXCLUIR FICHA (direto na lista) ===
+    window.excluirFichaLista = async (id) => {
+        const ficha = fichasGlobais.find(f => f._id === id);
+        const nome = ficha ? ficha.nome : 'este paciente';
+        if (!confirm(`Tem certeza que deseja apagar a ficha de "${nome}"? Esta ação não pode ser desfeita.`)) return;
+
+        try {
+            await excluirFichaPorId(id);
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    async function excluirFichaPorId(id) {
+        const response = await fetchComTimeout(`${API_URL}/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error('Erro ao excluir ficha.');
+
+        fetchFichas();
     }
 
     vincularBotoesRodape();
