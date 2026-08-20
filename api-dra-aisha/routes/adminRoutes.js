@@ -207,6 +207,22 @@ router.get('/fichas/:id', async (req, res) => {
     }
 });
 
+// Editar ficha (respostas e dados básicos)
+router.put('/fichas/:id', async (req, res) => {
+    try {
+        const { nome, cpf, dataNascimento, respostas } = req.body;
+        const ficha = await FichaPreAtendimento.findByIdAndUpdate(
+            req.params.id,
+            { nome, cpf, dataNascimento, respostas },
+            { new: true }
+        ).lean();
+        if (!ficha) return res.status(404).json({ message: 'Ficha não encontrada.' });
+        res.json(ficha);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao editar ficha.' });
+    }
+});
+
 // Excluir ficha
 router.delete('/fichas/:id', async (req, res) => {
     try {

@@ -7,6 +7,7 @@
     <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="css/style.css">
     <style>
         body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding-top: 180px; }
@@ -67,6 +68,21 @@
         .lgpd-info { font-size: 0.78rem; color: #1e8e6a; display: flex; align-items: center; gap: 6px; }
         .btn-excluir-ficha { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
         .btn-excluir-ficha:hover { background: #ff6b6b; color: white; }
+
+        .footer-acoes { display: flex; gap: 8px; flex-wrap: wrap; }
+        .btn-pdf-ficha { background: #f4f8fc; color: #007bff; border: 1px solid #007bff; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .btn-pdf-ficha:hover { background: #007bff; color: white; }
+        .btn-editar-ficha { background: #fff4e5; color: #f39c12; border: 1px solid #f39c12; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .btn-editar-ficha:hover { background: #f39c12; color: white; }
+        .btn-salvar-ficha { background: #e8f9f4; color: #2ADCA1; border: 1px solid #2ADCA1; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .btn-salvar-ficha:hover { background: #2ADCA1; color: white; }
+        .btn-cancelar-edicao { background: #f0f0f0; color: #666; border: 1px solid #ccc; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .btn-cancelar-edicao:hover { background: #e0e0e0; }
+
+        /* MODO EDIÇÃO */
+        .campo-edicao { width: 100%; box-sizing: border-box; padding: 8px 10px; border: 1px solid #2ADCA1; border-radius: 6px; font-family: 'Montserrat', sans-serif; font-size: 0.88rem; outline: none; }
+        textarea.campo-edicao { min-height: 60px; resize: vertical; }
+        .modal-ficha-body.editando .resposta-item { background: #fbfdfb; border: 1px dashed #cdeee0; border-radius: 8px; padding: 12px; margin-bottom: 8px; }
 
         @media (max-width: 768px) {
             body { padding-top: 130px; }
@@ -136,7 +152,11 @@
             <div class="modal-ficha-body" id="modal-ficha-body"></div>
             <div class="modal-ficha-footer">
                 <span class="lgpd-info"><i class="ph ph-shield-check"></i> Termo de privacidade (LGPD) aceito no envio da ficha.</span>
-                <button class="btn-excluir-ficha" id="btn-excluir-ficha"><i class="ph ph-trash"></i> Excluir ficha</button>
+                <div class="footer-acoes">
+                    <button class="btn-pdf-ficha" id="btn-pdf-ficha"><i class="ph ph-file-pdf"></i> Gerar PDF</button>
+                    <button class="btn-editar-ficha" id="btn-editar-ficha"><i class="ph ph-pencil-simple"></i> Editar</button>
+                    <button class="btn-excluir-ficha" id="btn-excluir-ficha"><i class="ph ph-trash"></i> Excluir ficha</button>
+                </div>
             </div>
         </div>
     </div>
