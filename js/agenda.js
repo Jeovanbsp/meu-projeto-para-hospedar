@@ -500,7 +500,10 @@ function fecharModalEditar() {
 function abrirModalConfirm(msg, onConfirm) {
     document.getElementById('modal-confirm-msg').innerText = msg;
     document.getElementById('modal-confirm').classList.add('active');
-    document.getElementById('modal-confirm-btn').onclick = () => { onConfirm(); fecharModalConfirm(); };
+    document.getElementById('modal-confirm-btn').onclick = () => {
+        fecharModalConfirm(); // fecha SEMPRE, mesmo se a ação falhar
+        try { onConfirm(); } catch (e) { console.error('Erro ao confirmar ação:', e); }
+    };
 }
 function fecharModalConfirm() {
     document.getElementById('modal-confirm').classList.remove('active');
@@ -859,6 +862,14 @@ function marcarContato(paciente) {
     atualizarContador();
     fecharModalVerTag();
 }
+
+// Clique fora de qualquer modal (no fundo escuro) fecha o modal.
+// Proteção contra a sensação de "página travada" com overlay aberto.
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.classList.remove('active');
+    });
+});
 
 init();
 

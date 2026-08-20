@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
 
-// ROTAS PÚBLICAS PARA DADOS DE CONFIG (sem auth)
+// ROTAS PROTEGIDAS (LGPD): dados de pacientes (nomes, contatos, endereços)
+// não podem ficar expostos publicamente. Exige login (token JWT).
+router.use(authMiddleware);
 // Salvar disponibilidade
 router.post('/disponibilidade', async (req, res) => {
     try {
