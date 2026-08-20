@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ficha de Pré-Atendimento | Dra. Aishá Wenzinger</title>
+    <meta name="description" content="Preencha a ficha de pré-atendimento para agilizar sua consulta com a Dra. Aishá Wenzinger. Seus dados são protegidos conforme a LGPD.">
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; }
+
+        .ficha-header { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 12px 0; position: sticky; top: 0; z-index: 100; }
+        .ficha-header-container { max-width: 900px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; }
+        .ficha-header img { height: 60px; width: auto; }
+        .ficha-header a.voltar { color: #2ADCA1; font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 6px; }
+
+        .ficha-container { max-width: 800px; margin: 30px auto 60px; padding: 0 15px; }
+
+        .ficha-intro { background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); border-top: 6px solid #2ADCA1; margin-bottom: 25px; }
+        .ficha-intro h1 { color: #1a3a2a; font-size: 1.6rem; margin: 0 0 10px; }
+        .ficha-intro p { color: #555; line-height: 1.6; margin: 8px 0; font-size: 0.95rem; }
+        .obrigatorio { color: #e74c3c; }
+
+        .secao-titulo { display: flex; align-items: center; gap: 10px; color: #1a3a2a; font-size: 1.15rem; font-weight: 700; margin: 35px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #2ADCA1; }
+        .secao-titulo i { color: #2ADCA1; font-size: 1.4rem; }
+
+        .pergunta-card { background: #ffffff; border-radius: 12px; padding: 22px 25px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 15px; }
+        .pergunta-card label.pergunta { display: block; font-weight: 600; color: #2c3e50; margin-bottom: 12px; line-height: 1.5; font-size: 0.97rem; }
+        .pergunta-card .exemplo { font-weight: 400; color: #888; font-size: 0.85rem; display: block; margin-top: 4px; }
+
+        .pergunta-card input[type="text"], .pergunta-card input[type="date"], .pergunta-card textarea {
+            width: 100%; box-sizing: border-box; padding: 12px 14px; border: 1px solid #ddd; border-radius: 8px;
+            font-family: 'Montserrat', sans-serif; font-size: 0.95rem; outline: none; transition: border 0.2s;
+        }
+        .pergunta-card input:focus, .pergunta-card textarea:focus { border-color: #2ADCA1; }
+        .pergunta-card textarea { min-height: 100px; resize: vertical; }
+
+        .opcoes { display: flex; flex-direction: column; gap: 10px; }
+        .opcao { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; color: #444; font-size: 0.95rem; line-height: 1.4; }
+        .opcao input[type="radio"] { margin-top: 2px; accent-color: #2ADCA1; width: 17px; height: 17px; flex-shrink: 0; cursor: pointer; }
+
+        .campo-detalhe { display: none; margin-top: 12px; }
+        .campo-detalhe.visivel { display: block; }
+        .campo-detalhe label { display: block; font-size: 0.85rem; color: #666; margin-bottom: 5px; font-weight: 600; }
+
+        /* LGPD */
+        .lgpd-box { background: #eefaf5; border: 1px solid #2ADCA1; border-radius: 12px; padding: 25px; margin-top: 35px; }
+        .lgpd-box h2 { color: #1a3a2a; font-size: 1.1rem; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+        .lgpd-box h2 i { color: #2ADCA1; }
+        .lgpd-box p { color: #444; font-size: 0.88rem; line-height: 1.7; margin: 8px 0; }
+        .lgpd-consent { display: flex; align-items: flex-start; gap: 10px; margin-top: 18px; background: #fff; padding: 15px; border-radius: 8px; border: 1px solid #cdeee0; cursor: pointer; }
+        .lgpd-consent input[type="checkbox"] { margin-top: 3px; width: 18px; height: 18px; accent-color: #2ADCA1; flex-shrink: 0; cursor: pointer; }
+        .lgpd-consent span { font-size: 0.9rem; color: #2c3e50; font-weight: 600; line-height: 1.5; }
+
+        .btn-enviar { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; margin-top: 30px; padding: 18px; background-color: #2ADCA1; color: #fff; border: none; border-radius: 50px; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(42, 220, 161, 0.3); }
+        .btn-enviar:hover { background-color: #24b685; transform: translateY(-2px); }
+        .btn-enviar:disabled { background-color: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .msg-feedback { display: none; margin-top: 20px; padding: 15px 20px; border-radius: 10px; font-weight: 600; text-align: center; }
+        .msg-feedback.sucesso { display: block; background: #e8f9f4; color: #1e8e6a; border: 1px solid #2ADCA1; }
+        .msg-feedback.erro { display: block; background: #fff0f0; color: #c0392b; border: 1px solid #ff6b6b; }
+
+        .tela-sucesso { display: none; text-align: center; background: #fff; border-radius: 12px; padding: 60px 30px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-top: 30px; }
+        .tela-sucesso i { font-size: 4rem; color: #2ADCA1; }
+        .tela-sucesso h2 { color: #1a3a2a; margin: 15px 0 10px; }
+        .tela-sucesso p { color: #555; line-height: 1.6; }
+        .tela-sucesso a { display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; padding: 12px 30px; background-color: #2ADCA1; color: #fff; text-decoration: none; border-radius: 50px; font-weight: 700; }
+
+        @media (max-width: 768px) {
+            .ficha-header img { height: 45px; }
+            .ficha-intro h1 { font-size: 1.25rem; }
+            .pergunta-card { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="ficha-header">
+        <div class="ficha-header-container">
+            <a href="index.html"><img src="img/layout.png" alt="Dra. Aisha Wenzinger Geriatria"></a>
+            <a href="index.html" class="voltar"><i class="ph ph-arrow-left"></i> Voltar ao site</a>
+        </div>
+    </header>
+
+    <main class="ficha-container" id="ficha-container">
+
+        <div class="ficha-intro">
+            <h1><i class="ph ph-clipboard-text" style="color:#2ADCA1;"></i> Ficha de Pré-Atendimento</h1>
+            <p>Para tornar a consulta mais produtiva e personalizada, pedimos que preencha este questionário com as informações do paciente. As respostas chegam diretamente à Dra. Aishá antes do atendimento.</p>
+            <p>Se tiver dúvidas, um familiar ou cuidador pode preencher pelo paciente.</p>
+            <p><span class="obrigatorio">*</span> Perguntas obrigatórias</p>
+        </div>
+
+        <form id="form-ficha" novalidate>
+
+            <!-- ========== DADOS INICIAIS ========== -->
+            <div class="secao-titulo"><i class="ph ph-user"></i> Dados do Paciente</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Motivo da consulta: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="motivoConsulta" value="Acompanhamento com profissional que unifique os atendimentos" required> Acompanhamento com profissional que unifique os atendimentos</label>
+                    <label class="opcao"><input type="radio" name="motivoConsulta" value="Investigação e/ou acompanhamento de quadro Cognitivo/Demência"> Investigação e/ou acompanhamento de quadro Cognitivo/Demência</label>
+                    <label class="opcao"><input type="radio" name="motivoConsulta" value="Outro" data-detalhe="detalhe-motivo"> Outro</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-motivo">
+                    <label>Caso outro, preencha por favor:</label>
+                    <input type="text" name="motivoConsultaOutro" placeholder="Descreva o motivo da consulta">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="nome">Nome: <span class="obrigatorio">*</span></label>
+                <input type="text" id="nome" name="nome" placeholder="Nome completo do paciente" required>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="cpf">CPF: <span class="obrigatorio">*</span></label>
+                <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="dataNascimento">Data de Nascimento / Idade: <span class="obrigatorio">*</span></label>
+                <input type="text" id="dataNascimento" name="dataNascimento" placeholder="Ex.: 01/01/1950 - 75 anos" required>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="formacao">Formação Profissional / Escolaridade: <span class="obrigatorio">*</span></label>
+                <input type="text" id="formacao" name="formacao" placeholder="Ex.: Professor aposentado - Ensino Superior" required>
+            </div>
+
+            <!-- ========== HÁBITOS E HISTÓRICO ========== -->
+            <div class="secao-titulo"><i class="ph ph-heartbeat"></i> Hábitos e Histórico de Saúde</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Mora sozinho(a)? Caso não, com quem? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="moraSozinho" value="Sim, mora sozinho(a)" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="moraSozinho" value="Não" data-detalhe="detalhe-mora"> Não</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-mora">
+                    <label>Com quem mora?</label>
+                    <input type="text" name="moraSozinhoDetalhe" placeholder="Ex.: com a filha e o genro">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Religião: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="religiao" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="religiao" value="Sim" data-detalhe="detalhe-religiao"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-religiao">
+                    <label>Caso sim, qual?</label>
+                    <input type="text" name="religiaoDetalhe" placeholder="Ex.: Católica, Evangélica...">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Atividade física: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="atividadeFisica" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="atividadeFisica" value="Sim" data-detalhe="detalhe-atividade"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-atividade">
+                    <label>Caso sim, quais?</label>
+                    <input type="text" name="atividadeFisicaDetalhe" placeholder="Ex.: caminhada, hidroginástica...">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Hobbys: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="hobbys" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="hobbys" value="Sim" data-detalhe="detalhe-hobbys"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-hobbys">
+                    <label>Caso sim, quais?</label>
+                    <input type="text" name="hobbysDetalhe" placeholder="Ex.: crochê, leitura, dominó...">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Alergias: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="alergias" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="alergias" value="Sim" data-detalhe="detalhe-alergias"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-alergias">
+                    <label>Caso sim, quais?</label>
+                    <input type="text" name="alergiasDetalhe" placeholder="Ex.: dipirona, frutos do mar...">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Problemas de Saúde / Comorbidades: <span class="obrigatorio">*</span>
+                    <span class="exemplo">Exemplo: pressão alta, diabetes, colesterol alto, demência, passado de infarto</span>
+                </label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="comorbidades" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="comorbidades" value="Sim" data-detalhe="detalhe-comorbidades"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-comorbidades">
+                    <label>Caso sim, quais?</label>
+                    <input type="text" name="comorbidadesDetalhe" placeholder="Ex.: hipertensão e diabetes">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="medicacoes">Medicações de uso contínuo: <span class="obrigatorio">*</span></label>
+                <textarea id="medicacoes" name="medicacoes" placeholder="Liste as medicações e horários, ou escreva 'Nenhuma'" required></textarea>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="cirurgias">Cirurgias prévias: <span class="obrigatorio">*</span></label>
+                <textarea id="cirurgias" name="cirurgias" placeholder="Liste as cirurgias já realizadas, ou escreva 'Nenhuma'" required></textarea>
+            </div>
+
+            <!-- ========== VACINAS E COVID ========== -->
+            <div class="secao-titulo"><i class="ph ph-syringe"></i> Vacinas e COVID-19</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Já tomou a vacina de COVID? Quantas doses? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="vacinaCovid" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="vacinaCovid" value="Sim" data-detalhe="detalhe-vacina-covid"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-vacina-covid">
+                    <label>Quantas doses?</label>
+                    <input type="text" name="vacinaCovidDetalhe" placeholder="Ex.: 4 doses">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Já teve COVID? Quantas vezes? Precisou ficar internado? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="teveCovid" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="teveCovid" value="Sim" data-detalhe="detalhe-teve-covid"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-teve-covid">
+                    <label>Quantas vezes? Precisou ficar internado?</label>
+                    <input type="text" name="teveCovidDetalhe" placeholder="Ex.: 1 vez, sem internação">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Influenza (Gripe): última dose? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="vacinaGripe" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="vacinaGripe" value="Sim" data-detalhe="detalhe-gripe"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-gripe">
+                    <label>Quando foi a última dose?</label>
+                    <input type="text" name="vacinaGripeDetalhe" placeholder="Ex.: em 2025">
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Vacina de Pneumococo? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="vacinaPneumococo" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="vacinaPneumococo" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Vacina de Dt (Tétano)? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="vacinaTetano" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="vacinaTetano" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Vacina de Hep. B? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="vacinaHepB" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="vacinaHepB" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <!-- ========== PERCEPÇÃO DO ESQUECIMENTO ========== -->
+            <div class="secao-titulo"><i class="ph ph-brain"></i> Percepção do Paciente e/ou dos Familiares sobre o Esquecimento</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Paciente: você considera que está mais esquecido que o habitual? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="pacienteMaisEsquecido" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="pacienteMaisEsquecido" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Se o paciente não for capaz de responder, o familiar considera que o paciente está mais esquecido que o normal? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="familiarMaisEsquecido" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="familiarMaisEsquecido" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Está mais esquecido que o habitual? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="maisEsquecido" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="maisEsquecido" value="Sim" data-detalhe="detalhe-esquecido"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-esquecido">
+                    <label>Caso sim, quando o paciente ou a família notou que estava mais esquecido? O que chamou atenção para o esquecimento "estar estranho ou diferente"?</label>
+                    <textarea name="maisEsquecidoDetalhe" placeholder="Ex.: há cerca de 1 ano, começou a esquecer o fogão ligado..."></textarea>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Já tem diagnóstico prévio de demência? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="diagnosticoDemencia" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="diagnosticoDemencia" value="Sim" data-detalhe="detalhe-demencia"> Sim</label>
+                </div>
+                <div class="campo-detalhe" id="detalhe-demencia">
+                    <label>Caso sim, quando? Já foi acompanhado antes por Geriatra ou Neurologista por causa da Demência/Esquecimento?</label>
+                    <textarea name="diagnosticoDemenciaDetalhe" placeholder="Ex.: diagnóstico em 2023, acompanhado por neurologista..."></textarea>
+                </div>
+            </div>
+
+            <!-- ========== ATIVIDADES DA VIDA DIÁRIA ========== -->
+            <div class="secao-titulo"><i class="ph ph-person-simple-walk"></i> Atividades da Vida Diária</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Capaz de andar: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="andar" value="Sim, sem ajuda" required> Sim, sem ajuda</label>
+                    <label class="opcao"><input type="radio" name="andar" value="Sim, com ajuda"> Sim, com ajuda</label>
+                    <label class="opcao"><input type="radio" name="andar" value="Não - Totalmente acamado"> Não — totalmente acamado</label>
+                    <label class="opcao"><input type="radio" name="andar" value="Não - Parcialmente acamado (capaz de ficar sentado numa poltrona, cadeira, ajudar nas transferências)"> Não — parcialmente acamado (capaz de ficar sentado numa poltrona, cadeira, ajudar nas transferências)</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de tomar banho só: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="banho" value="Sozinho sem ajuda" required> Sozinho sem ajuda</label>
+                    <label class="opcao"><input type="radio" name="banho" value="Supervisão (alguém dando comando - ex: lava ali) ou ajuda parcial"> Supervisão (alguém dando comando — ex: "lava ali") ou ajuda parcial</label>
+                    <label class="opcao"><input type="radio" name="banho" value="Não, precisa de ajuda total"> Não, precisa de ajuda total</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Trocar de roupa: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="trocarRoupa" value="Sozinho" required> Sozinho</label>
+                    <label class="opcao"><input type="radio" name="trocarRoupa" value="Supervisão ou ajuda parcial"> Supervisão ou ajuda parcial</label>
+                    <label class="opcao"><input type="radio" name="trocarRoupa" value="Não, precisa de ajuda total"> Não, precisa de ajuda total</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Higiene pessoal (após uso do vaso para xixi e cocô): <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="higienePessoal" value="Sozinho" required> Sozinho</label>
+                    <label class="opcao"><input type="radio" name="higienePessoal" value="Supervisão ou ajuda parcial"> Supervisão ou ajuda parcial</label>
+                    <label class="opcao"><input type="radio" name="higienePessoal" value="Não, precisa de ajuda total"> Não, precisa de ajuda total</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Uso de fraldas: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="fraldas" value="Não" required> Não</label>
+                    <label class="opcao"><input type="radio" name="fraldas" value="O tempo todo"> O tempo todo</label>
+                    <label class="opcao"><input type="radio" name="fraldas" value="Apenas para dormir"> Apenas para dormir</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">Usar os talheres: <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="talheres" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="talheres" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de sair sozinho de casa e voltar sem problemas (como se perder)? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="sairSozinho" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="sairSozinho" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de usar o telefone/celular sem ajuda? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="usarTelefone" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="usarTelefone" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de pagar as próprias contas? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="pagarContas" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="pagarContas" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de cozinhar seguindo uma receita ou sem receita? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="cozinhar" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="cozinhar" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <div class="pergunta-card">
+                <label class="pergunta">É capaz de tomar as medicações por conta própria? <span class="obrigatorio">*</span></label>
+                <div class="opcoes">
+                    <label class="opcao"><input type="radio" name="tomarMedicacoes" value="Sim" required> Sim</label>
+                    <label class="opcao"><input type="radio" name="tomarMedicacoes" value="Não"> Não</label>
+                </div>
+            </div>
+
+            <!-- ========== OBSERVAÇÕES FINAIS ========== -->
+            <div class="secao-titulo"><i class="ph ph-note-pencil"></i> Para Finalizar</div>
+
+            <div class="pergunta-card">
+                <label class="pergunta" for="observacoes">Algo a mais que queira acrescentar antes da consulta?</label>
+                <textarea id="observacoes" name="observacoes" placeholder="Escreva aqui qualquer informação que considere importante..."></textarea>
+            </div>
+
+            <!-- ========== LGPD ========== -->
+            <div class="lgpd-box">
+                <h2><i class="ph ph-shield-check"></i> Privacidade e Proteção de Dados (LGPD)</h2>
+                <p>Em conformidade com a <strong>Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 — LGPD)</strong>, informamos que os dados coletados nesta ficha (incluindo dados pessoais e dados sensíveis de saúde) têm como <strong>única finalidade</strong> a preparação e a realização do atendimento médico pela Dra. Aishá Wenzinger.</p>
+                <p><strong>Como tratamos seus dados:</strong></p>
+                <p>• As informações são armazenadas de forma segura, com acesso restrito à equipe responsável pelo atendimento.<br>
+                • Os dados <strong>não serão compartilhados, vendidos ou utilizados</strong> para qualquer outra finalidade sem o seu consentimento.<br>
+                • O tratamento de dados de saúde é realizado no contexto da prestação de serviços de saúde, conforme previsto no art. 11 da LGPD.<br>
+                • Você pode, a qualquer momento, <strong>solicitar o acesso, a correção ou a exclusão</strong> dos seus dados, entrando em contato com o consultório.</p>
+                <label class="lgpd-consent">
+                    <input type="checkbox" id="lgpdAceite" required>
+                    <span>Li e compreendi o aviso de privacidade e <span class="obrigatorio">autorizo o tratamento dos meus dados pessoais e de saúde</span> para fins de pré-atendimento médico, conforme a LGPD (Lei nº 13.709/2018). <span class="obrigatorio">*</span></span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-enviar" id="btn-enviar"><i class="ph ph-paper-plane-tilt"></i> Enviar Ficha</button>
+            <div class="msg-feedback" id="msg-feedback"></div>
+        </form>
+
+        <div class="tela-sucesso" id="tela-sucesso">
+            <i class="ph ph-check-circle"></i>
+            <h2>Ficha enviada com sucesso!</h2>
+            <p>Obrigado! Suas respostas foram enviadas com segurança para a Dra. Aishá.<br>Nos vemos na consulta!</p>
+            <a href="index.html"><i class="ph ph-house"></i> Voltar ao site</a>
+        </div>
+
+    </main>
+
+    <script src="js/ficha-pre-atendimento.js"></script>
+</body>
+</html>

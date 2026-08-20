@@ -178,6 +178,45 @@ router.delete('/banner/:id', async (req, res) => {
     }
 });
 
+// ==========================================
+// FICHAS DE PRÉ-ATENDIMENTO (HISTÓRICO)
+// ==========================================
+const FichaPreAtendimento = require('../models/FichaPreAtendimento');
+
+// Listar fichas (histórico: quem respondeu e quando)
+router.get('/fichas', async (req, res) => {
+    try {
+        const fichas = await FichaPreAtendimento.find()
+            .select('nome cpf dataNascimento createdAt')
+            .sort({ createdAt: -1 })
+            .lean();
+        res.json(fichas);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar fichas.' });
+    }
+});
+
+// Visualizar uma ficha completa
+router.get('/fichas/:id', async (req, res) => {
+    try {
+        const ficha = await FichaPreAtendimento.findById(req.params.id).lean();
+        if (!ficha) return res.status(404).json({ message: 'Ficha não encontrada.' });
+        res.json(ficha);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao buscar ficha.' });
+    }
+});
+
+// Excluir ficha
+router.delete('/fichas/:id', async (req, res) => {
+    try {
+        await FichaPreAtendimento.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Ficha excluída com sucesso.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Erro ao excluir ficha.' });
+    }
+});
+
 module.exports = router;
 // 8. DISPONIBILIDADE
 router.post('/disponibilidade', async (req, res) => {

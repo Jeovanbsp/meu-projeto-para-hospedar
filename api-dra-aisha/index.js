@@ -59,10 +59,12 @@ app.get('/api/banners/publico', async (req, res) => {
 const adminRoutes = require('./routes/adminRoutes');
 const pacienteRoutes = require('./routes/pacienteRoutes');
 const configRoutes = require('./routes/configRoutes');
+const fichaRoutes = require('./routes/fichaRoutes');
 
 app.use('/api/admin', adminRoutes);
 app.use('/api/config', configRoutes); // Rotas pública para dados
 app.use('/api/prontuario', pacienteRoutes);
+app.use('/api/ficha', fichaRoutes); // Rota pública: ficha de pré-atendimento
 
 // ==========================================
 // ROTAS DE AUTENTICAÇÃO

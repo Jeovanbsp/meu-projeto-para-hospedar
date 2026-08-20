@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fichas de Pré-Atendimento - Painel Admin</title>
+    <link rel="icon" type="image/x-icon" href="img/icone-dr-aisha.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { background-color: #f4f6f8; font-family: 'Montserrat', sans-serif; margin: 0; padding-top: 180px; }
+
+        .header-fixo { background-color: #ffffff; box-shadow: 0 2px 10px rgba(0,0,0,0.05); padding: 10px 0; position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; }
+        .logo img { height: 160px; width: auto; display: block; }
+        .header-container { display: flex; justify-content: space-between; align-items: center; max-width: 1600px; margin: 0 auto; padding: 0 20px; }
+        .header-left { flex: 1; display: flex; justify-content: flex-start; }
+        .header-center { flex: 2; display: flex; justify-content: center; align-items: center; gap: 8px; color: #2c3e50; font-weight: 700; font-size: 1.1rem; white-space: nowrap; }
+        .header-right { flex: 1; display: flex; justify-content: flex-end; }
+        .btn-header-sair { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 36px; padding: 0 15px; background-color: #ff6b6b; color: white; border-radius: 8px; font-weight: bold; font-size: 0.85rem; border: none; cursor: pointer; }
+        .btn-header-sair:hover { background-color: #e05b5b; }
+
+        .dashboard-container { padding: 20px; max-width: 1100px; width: 95%; margin: 20px auto; }
+        .titulo-secao { color: #555; font-weight: 700; font-size: 1.2rem; margin-bottom: 20px; margin-top: 0; }
+
+        .admin-tabs { display: flex; gap: 5px; margin-bottom: 25px; background: white; padding: 8px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); width: fit-content; }
+        .admin-tab { padding: 12px 25px; border: none; background: transparent; color: #666; font-weight: 600; cursor: pointer; border-radius: 8px; transition: 0.2s; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .admin-tab:hover { background: #f5f5f5; }
+        .admin-tab.active { background: #2ADCA1; color: white; }
+
+        .card-lista { background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
+        .total-badge { background-color: #e8f9f4; color: #2ADCA1; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; margin-left: 8px; }
+
+        .search-container { flex-grow: 1; min-width: 220px; position: relative; }
+        .search-container i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 1.1rem; }
+        .search-container input { width: 100%; box-sizing: border-box; padding: 12px 15px 12px 40px; border: 1px solid #ddd; border-radius: 8px; outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.95rem; }
+
+        .lista-fichas { list-style: none; padding: 0; margin: 0; }
+        .lista-fichas li { display: grid; grid-template-columns: minmax(180px, 2fr) 1fr auto; gap: 15px; align-items: center; padding: 15px 10px; border-bottom: 1px solid #f5f5f5; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .lista-fichas li:hover { background: #f0fdf9; }
+        .ficha-nome { font-weight: 600; color: #2c3e50; display: flex; align-items: center; gap: 8px; }
+        .ficha-nome i { color: #2ADCA1; }
+        .ficha-data { color: #888; font-size: 0.85rem; display: flex; align-items: center; gap: 6px; }
+        .btn-ver-ficha { padding: 8px 16px; background: #f0fdf9; color: #2ADCA1; border: 1px solid #2ADCA1; border-radius: 8px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+        .btn-ver-ficha:hover { background: #2ADCA1; color: white; }
+
+        .lista-vazia { text-align: center; color: #888; padding: 40px 0; }
+
+        /* MODAL DA FICHA COMPLETA */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 2000; backdrop-filter: blur(3px); }
+        .modal-ficha { background: white; border-radius: 15px; width: 92%; max-width: 750px; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.2); overflow: hidden; }
+        .modal-ficha-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #eee; background: #f0fdf9; }
+        .modal-ficha-header h3 { margin: 0; color: #1a3a2a; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+        .modal-ficha-header h3 i { color: #2ADCA1; }
+        .modal-fechar { background: none; border: none; font-size: 1.6rem; cursor: pointer; color: #888; line-height: 1; }
+        .modal-fechar:hover { color: #e74c3c; }
+        .modal-ficha-body { padding: 25px; overflow-y: auto; }
+        .ficha-info-topo { background: #f8f9fa; border-radius: 10px; padding: 15px 20px; margin-bottom: 20px; font-size: 0.9rem; color: #555; display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .ficha-info-topo strong { color: #2c3e50; }
+        .resposta-item { padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .resposta-item:last-child { border-bottom: none; }
+        .resposta-pergunta { font-weight: 600; color: #2c3e50; font-size: 0.9rem; margin-bottom: 4px; }
+        .resposta-texto { color: #555; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; }
+        .resposta-vazia { color: #bbb; font-style: italic; }
+        .modal-ficha-footer { padding: 15px 25px; border-top: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .lgpd-info { font-size: 0.78rem; color: #1e8e6a; display: flex; align-items: center; gap: 6px; }
+        .btn-excluir-ficha { background: #fff0f0; color: #ff6b6b; border: 1px solid #ff6b6b; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; }
+        .btn-excluir-ficha:hover { background: #ff6b6b; color: white; }
+
+        @media (max-width: 768px) {
+            body { padding-top: 130px; }
+            .header-container { flex-direction: column; gap: 10px; }
+            .logo img { height: 80px; }
+            .lista-fichas li { grid-template-columns: 1fr; gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-fixo">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="admin-dashboard.html" class="logo"><img src="img/layout.png" alt="Dra. Aisha"></a>
+            </div>
+            <div class="header-center">
+                <i class="ph ph-shield-check" style="color: #2ADCA1;"></i> Painel Admin
+            </div>
+            <div class="header-right">
+                <button id="btn-logout" class="btn-header-sair"><i class="ph ph-sign-out"></i> Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- TABS DE NAVEGAÇÃO -->
+        <div class="admin-tabs">
+            <a href="admin-dashboard.html" class="admin-tab">
+                <i class="ph ph-squares-four"></i> Visão Geral
+            </a>
+            <a href="agenda.html" class="admin-tab">
+                <i class="ph ph-calendar-check"></i> Agenda
+            </a>
+            <a href="admin-fichas.html" class="admin-tab active">
+                <i class="ph ph-clipboard-text"></i> Fichas
+            </a>
+        </div>
+
+        <h2 class="titulo-secao"><i class="ph ph-clipboard-text" style="vertical-align: middle;"></i> Histórico de Fichas de Pré-Atendimento</h2>
+
+        <div class="card-lista">
+            <div class="header-card">
+                <div>
+                    <strong style="color:#2c3e50;">Fichas recebidas</strong>
+                    <span class="total-badge" id="texto-total">0</span>
+                </div>
+                <div class="search-container">
+                    <i class="ph ph-magnifying-glass"></i>
+                    <input type="text" id="input-pesquisa" placeholder="Pesquisar por nome ou CPF...">
+                </div>
+            </div>
+
+            <ul class="lista-fichas" id="lista-fichas">
+                <li class="lista-vazia">Carregando fichas...</li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- MODAL: FICHA COMPLETA -->
+    <div class="modal-overlay" id="modal-ficha">
+        <div class="modal-ficha">
+            <div class="modal-ficha-header">
+                <h3><i class="ph ph-clipboard-text"></i> <span id="modal-titulo">Ficha de Pré-Atendimento</span></h3>
+                <button class="modal-fechar" onclick="fecharModalFicha()">×</button>
+            </div>
+            <div class="modal-ficha-body" id="modal-ficha-body"></div>
+            <div class="modal-ficha-footer">
+                <span class="lgpd-info"><i class="ph ph-shield-check"></i> Termo de privacidade (LGPD) aceito no envio da ficha.</span>
+                <button class="btn-excluir-ficha" id="btn-excluir-ficha"><i class="ph ph-trash"></i> Excluir ficha</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin-fichas.js"></script>
+    <script src="js/logout.js"></script>
+</body>
+</html>
