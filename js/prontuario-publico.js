@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try {
         // Busca os dados na rota pública do backend
-        const response = await fetch(`${API_BASE}/api/prontuario/publico/${encodeURIComponent(userId)}`);
+        const response = await fetchSeguro(`${API_BASE}/api/prontuario/publico/${encodeURIComponent(userId)}`);
         
         if (!response.ok) {
             throw new Error('Prontuário não encontrado ou inativo.');

@@ -298,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA DE DADOS ---
     const fetchProntuario = async () => {
         try {
-            const response = await fetch(API_URL, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await fetchSeguro(API_URL, { headers: { 'Authorization': `Bearer ${token}` } });
             const data = await response.json();
             currentMedicacoes = data.medicacoes || [];
             currentMedicos = data.medicosAssistentes || [];
@@ -366,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const res = await fetch(API_URL, { 
+            const res = await fetchSeguro(API_URL, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, 
                 body: JSON.stringify(payload) 

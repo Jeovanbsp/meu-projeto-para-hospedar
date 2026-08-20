@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const response = await fetch(API_URL, {
+        const response = await fetchSeguro(API_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           // Nota: Certifique-se que o backend espera 'senha' ou 'password'

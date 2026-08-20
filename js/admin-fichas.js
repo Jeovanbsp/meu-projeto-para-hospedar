@@ -32,20 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let modoEdicao = false;
 
     // === FETCH COM TIMEOUT (evita "travar" quando o Render está acordando) ===
-    async function fetchComTimeout(url, options = {}, timeoutMs = 20000) {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), timeoutMs);
-        try {
-            return await fetch(url, { ...options, signal: controller.signal });
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                throw new Error('O servidor demorou muito para responder (pode estar reiniciando). Tente novamente em alguns segundos.');
-            }
-            throw error;
-        } finally {
-            clearTimeout(timer);
-        }
-    }
+    const fetchComTimeout = window.fetchSeguro;
 
     function formatarDataHora(iso) {
         const d = new Date(iso);

@@ -26,7 +26,7 @@ async function loadFromAPI(key) {
     const token = localStorage.getItem('authToken');
     if (!token) return null;
     try {
-        const res = await fetch(API_ENDPOINTS[key], { headers: { 'Authorization': `Bearer ${token}` } });
+        const res = await fetchSeguro(API_ENDPOINTS[key], { headers: { 'Authorization': `Bearer ${token}` } });
         return res.ok ? await res.json() : null;
     } catch { return null; }
 }
@@ -35,7 +35,7 @@ async function saveToAPI(key, data) {
     const token = localStorage.getItem('authToken');
     if (!token) return;
     try {
-        const res = await fetch(API_ENDPOINTS[key], {
+        const res = await fetchSeguro(API_ENDPOINTS[key], {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(data)

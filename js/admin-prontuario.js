@@ -257,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const metodo = id ? 'PUT' : 'POST';
 
         try {
-            const res = await fetch(url, { method: metodo, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
+            const res = await fetchSeguro(url, { method: metodo, headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
             if(res.ok) {
                 const data = await res.json();
                 currentEvolucoes = data.prontuario.evolucoes;
@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- CARREGAMENTO INICIAL ---
     const fetchProntuario = async () => {
         try {
-            const response = await fetch(API_URL_ADMIN, { headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await fetchSeguro(API_URL_ADMIN, { headers: { 'Authorization': `Bearer ${token}` } });
             const data = await response.json();
             
             currentMedicacoes = data.medicacoes || [];
@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.removerEvolucao = async (id) => {
         if(!confirm('Excluir permanentemente?')) return;
         try {
-            const res = await fetch(`${API_URL_EVOLUCAO}/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await fetchSeguro(`${API_URL_EVOLUCAO}/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
             if(res.ok) {
                 const d = await res.json();
                 currentEvolucoes = d.prontuario.evolucoes;
@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         try {
-            const res = await fetch(API_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
+            const res = await fetchSeguro(API_URL_ADMIN, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
             if(res.ok) { 
                 mensagemRetorno.innerText = 'Prontuário salvo!'; 
                 mensagemRetorno.style.color = '#2ADCA1';

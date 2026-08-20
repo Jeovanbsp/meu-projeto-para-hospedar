@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         btnEnviar.innerHTML = '<i class="ph ph-circle-notch"></i> Enviando...';
 
         try {
-            const response = await fetch(`${API_BASE}/api/ficha`, {
+            const response = await fetchSeguro(`${API_BASE}/api/ficha`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

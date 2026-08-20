@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
       
       try {
         const payload = { email, password };
-        const res = await fetch(`${API_ADMIN_BASE}/api/auth/login`, { 
+        const res = await fetchSeguro(`${API_ADMIN_BASE}/api/auth/login`, { 
           method: 'POST', 
           headers: { 'Content-Type': 'application/json' }, 
           body: JSON.stringify({ email, password }) 

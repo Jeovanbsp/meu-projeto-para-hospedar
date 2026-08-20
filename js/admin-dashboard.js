@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchPacientes = async () => {
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetchSeguro(API_URL, {
                 method: 'GET',
                 headers: { 
                     'Content-Type': 'application/json', 
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.deletarPaciente = async (id, nome) => {
         if (!confirm(`Deseja excluir "${nome}"?`)) return;
         try {
-            const response = await fetch(API_PACIENTE_URL + id, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+            const response = await fetchSeguro(API_PACIENTE_URL + id, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
             if (response.ok) fetchPacientes();
         } catch (error) { alert('Erro ao excluir.'); }
     };
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Salvar na API externa (igual paciente)
         try {
             const payload = { nome, email, password: senha, role: 'secretary' };
-            const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { 
+            const response = await fetchSeguro(`${API_ADMIN_BASE}/api/auth/register`, { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify(payload) 
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('form-cadastro-paciente')?.addEventListener('submit', async (e) => {
         e.preventDefault();
         const payload = { nome: document.getElementById('novo-nome').value, email: document.getElementById('novo-email').value, password: document.getElementById('novo-senha').value, telefone: document.getElementById('novo-telefone').value, role: 'paciente' };
-        const response = await fetch(`${API_ADMIN_BASE}/api/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const response = await fetchSeguro(`${API_ADMIN_BASE}/api/auth/register`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if (response.ok) { fecharModalCadastro(); fetchPacientes(); }
     });
 
@@ -322,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const payload = { nome: document.getElementById('edit-nome').value, email: document.getElementById('edit-email').value, telefone: document.getElementById('edit-telefone').value };
         const novaSenha = document.getElementById('edit-senha').value;
         if (novaSenha.trim() !== '') { payload.password = novaSenha; }
-        const response = await fetch(API_PACIENTE_URL + id, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
+        const response = await fetchSeguro(API_PACIENTE_URL + id, { method: 'PUT', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(payload) });
         if (response.ok) { fecharModalEditar(); fetchPacientes(); }
     });
 
@@ -335,7 +335,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const carregarBannersAdmin = async () => {
         try {
-            const res = await fetch(`${API_ADMIN_BASE}/api/admin/banners`, { headers: { 'Authorization': `Bearer ${token}` }});
+            const res = await fetchSeguro(`${API_ADMIN_BASE}/api/admin/banners`, { headers: { 'Authorization': `Bearer ${token}` }});
             const banners = await res.json();
             
             if (!listaBanners) return;
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.deletarBanner = async (id) => {
         if(!confirm('Remover esta imagem do site público?')) return;
         try {
-            const res = await fetch(`${API_ADMIN_BASE}/api/admin/banner/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
+            const res = await fetchSeguro(`${API_ADMIN_BASE}/api/admin/banner/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` }});
             if(res.ok) carregarBannersAdmin();
         } catch (e) { alert('Erro.'); }
     };
@@ -391,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const reader = new FileReader();
         reader.onloadend = async () => {
             try {
-                const res = await fetch(`${API_ADMIN_BASE}/api/admin/banner`, {
+                const res = await fetchSeguro(`${API_ADMIN_BASE}/api/admin/banner`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ titulo, imagem: reader.result })
@@ -592,10 +592,10 @@ async function atualizarDados() {
     try {
         // Buscar dados da API
         const [agendamentosRes, historicoRes, disponibilidadeRes, tagsRes] = await Promise.all([
-            fetch(`${API_ADMIN_BASE}/api/config/agendamentos`, { headers: { 'Authorization': `Bearer ${token}` } }),
-            fetch(`${API_ADMIN_BASE}/api/config/historico`, { headers: { 'Authorization': `Bearer ${token}` } }),
-            fetch(`${API_ADMIN_BASE}/api/config/disponibilidade`, { headers: { 'Authorization': `Bearer ${token}` } }),
-            fetch(`${API_ADMIN_BASE}/api/config/tags`, { headers: { 'Authorization': `Bearer ${token}` } })
+            fetchSeguro(`${API_ADMIN_BASE}/api/config/agendamentos`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetchSeguro(`${API_ADMIN_BASE}/api/config/historico`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetchSeguro(`${API_ADMIN_BASE}/api/config/disponibilidade`, { headers: { 'Authorization': `Bearer ${token}` } }),
+            fetchSeguro(`${API_ADMIN_BASE}/api/config/tags`, { headers: { 'Authorization': `Bearer ${token}` } })
         ]);
         
         if (agendamentosRes.ok) {
